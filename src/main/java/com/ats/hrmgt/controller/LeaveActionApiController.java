@@ -425,6 +425,7 @@ public class LeaveActionApiController {
 		try {
 
 			Setting setting = settingRepo.findByKey("CONTILEAVE");
+			Setting COMPOFFCONDITION = settingRepo.findByKey("COMPOFFCONDITION");
 
 			List<LeaveApply> list = leaveApplyRepository.checkDateForRepetedLeaveValidation(fromDate, toDate, empId);
 
@@ -440,6 +441,10 @@ public class LeaveActionApiController {
 					if (shortName.equalsIgnoreCase("LWP") || shortName.equalsIgnoreCase("SL")) {
 
 						info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays);
+
+					} else if (shortName.equalsIgnoreCase("COMPOFF")) {
+						info.setError(true);
+						info.setMsg("Insufficient Leaves.");
 					} else {
 
 						list = leaveApplyRepository.checkContinueDateLeave(fromDate, toDate, empId, leaveTypeId);
@@ -461,10 +466,18 @@ public class LeaveActionApiController {
 					/*
 					 * info.setError(false); info.setMsg("you can apply");
 					 */
-					info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays);
+
+					if (shortName.equalsIgnoreCase("COMPOFF")) {
+						info.setError(true);
+						info.setMsg("Insufficient Leaves.");
+					} else {
+						info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays);
+					}
+
 				}
 
 			}
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -485,7 +498,7 @@ public class LeaveActionApiController {
 				LeaveTypeWithLimit leaveTypeWithLimit = leaveTypeWithLimitRepository.LeaveTypeWithLimit(empId,
 						leaveTypeId, calendearYear.getCalYrId());
 
-				  //System.out.println(leaveTypeWithLimit.getMaxNoDays() + " " + noOfDays);
+				// System.out.println(leaveTypeWithLimit.getMaxNoDays() + " " + noOfDays);
 				if (leaveTypeWithLimit.getMaxNoDays() != 0 && leaveTypeWithLimit.getMaxNoDays() < noOfDays) {
 
 					info.setError(true);
