@@ -1,4 +1,4 @@
-/*package com.ats.hrmgt.controller;
+package com.ats.hrmgt.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 @RestController
-public class AttendanceApiController {
+public class AttendanceApiControllerchange {
 
 	@Autowired
 	AccessRightModuleRepository accessRightModuleRepository;
@@ -166,7 +166,7 @@ public class AttendanceApiController {
 			for (int i = 0; i < empList.size(); i++) {
 
 				String empName = empList.get(i).getFirstName() + " " + empList.get(i).getSurname();
-				
+				/*
 				 * summaryDailyAttendance = new SummaryDailyAttendance();
 				 * summaryDailyAttendance.setEmpCode(empList.get(i).getEmpCode());
 				 * summaryDailyAttendance.setEmpId(empList.get(i).getEmpId());
@@ -176,7 +176,7 @@ public class AttendanceApiController {
 				 * summaryDailyAttendance.setLoginName(String.valueOf(userId));
 				 * summaryDailyAttendance.setRecStatus("O");
 				 * summaryDailyAttendanceList.add(summaryDailyAttendance);
-				 
+				 */
 
 				dailyDailySummryQuery = dailyDailySummryQuery + "('0', '1', '" + empList.get(i).getEmpId() + "', '"
 						+ empList.get(i).getEmpCode() + "', '" + empName + "', '" + month + "', '" + year
@@ -217,7 +217,7 @@ public class AttendanceApiController {
 					temp = Calendar.getInstance();
 					temp.setTime(j);
 					String attdate = sf.format(j);
-					
+					/*
 					 * DailyAttendance dailyAttendance = new DailyAttendance();
 					 * dailyAttendance.setEmpCode(summaryDailyAttendance.getEmpCode());
 					 * dailyAttendance.setEmpId(summaryDailyAttendance.getEmpId());
@@ -230,7 +230,7 @@ public class AttendanceApiController {
 					 * dailyAttendance.setEmpJson(json); dailyAttendance.setRecStatus("O");
 					 * dailyAttendance.setAttStatus("NA"); dailyAttendance.setLateMark("0");
 					 * dailyAttendanceList.add(dailyAttendance);
-					 
+					 */
 
 					dailyDailyQuery = dailyDailyQuery + "('0', '1','" + empList.get(i).getEmpCode() + "','" + empName
 							+ "','" + attdate + "', 'NA', '0', '0', NULL, 'O', \n '" + userId + "', NULL, NULL, NULL, '"
@@ -246,11 +246,11 @@ public class AttendanceApiController {
 			dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);
 			dailyDailySummryQuery = dailyDailySummryQuery.substring(0, dailyDailySummryQuery.length() - 1);
 
-			
+			/*
 			 * Calendar cal1 = Calendar.getInstance(); SimpleDateFormat date_format = new
 			 * SimpleDateFormat("HH:mm:ss");
 			 * System.out.println(date_format.format(cal1.getTime()));
-			 
+			 */
 			jdbcTemplate.batchUpdate(dailyDailyQuery);
 			jdbcTemplate.batchUpdate(dailyDailySummryQuery);
 
@@ -260,10 +260,10 @@ public class AttendanceApiController {
 
 			// List<DailyAttendance> dailyAttendanceSaveRes =
 			// dailyAttendanceRepository.saveAll(dailyAttendanceList);
-			
+			/*
 			 * cal1 = Calendar.getInstance();
 			 * System.out.println(date_format.format(cal1.getTime()));
-			 
+			 */
 			List<SummaryDailyAttendance> summaryDailyAttendanceSaveRes = summaryDailyAttendanceRepository
 					.saveAll(summaryDailyAttendanceList);
 			info.setError(false);
@@ -360,20 +360,20 @@ public class AttendanceApiController {
 			List<LvType> lvTypeList = lvTypeRepository.findAll();
 
 			// System.out.println(fileUploadedDataList);
-			
+			/*
 			 * List<SummaryDailyAttendance> summaryDailyAttendanceList =
 			 * summaryDailyAttendanceRepository .summaryDailyAttendanceList(month, year);
-			 
+			 */
 
 			//
 
 			// List<MstWeeklyOff> mstWeeklyOffList = mstWeeklyOffRepository.findAll();
-			
+			/*
 			 * List<LvType> lvTypeList = lvTypeRepository.findAll(); List<Holiday>
 			 * 
 			 * List<LvmSumUp> lvmSumUpList = lvmSumUpRepository.findAll();
 			 * 
-			 
+			 */
 
 			MstEmpType mstEmpType = new MstEmpType();
 			ShiftMaster shiftMaster = new ShiftMaster();
@@ -611,69 +611,111 @@ public class AttendanceApiController {
 					dailyAttendanceList.get(i).setCasetype(atteanceCase);
 
 					try {
+
 						/// start cases implementation
-						if (atteanceCase.equals("1357") || atteanceCase.equals("1367") || atteanceCase.equals("2357")
-								|| atteanceCase.equals("2367") || atteanceCase.equals("1358")
-								|| atteanceCase.equals("1368") || atteanceCase.equals("2358")
-								|| atteanceCase.equals("2368")) {
-							if (atteanceCase.equals("1358") || atteanceCase.equals("1368")
-									|| atteanceCase.equals("2358") || atteanceCase.equals("2368")) {
-								String newStts = AttendanceStatus(employee, dailyAttendanceList.get(i),
-										dailyAttendanceList.get(i).getEmpId(), dailyAttendanceList.get(i).getAttDate(),
-										atteanceCase, dailyAttendanceList.get(i).getWorkingHrs(), shiftMaster,
-										mstEmpType);
+						if (atteanceCase.equals("1357") || atteanceCase.equals("1457") || atteanceCase.equals("2357")
+								|| atteanceCase.equals("2457")) {
 
-								dailyAttendanceList.get(i).setAttStatus(newStts);
-								for (int j = 0; j < lvTypeList.size(); j++) {
-									if (lvTypeList.get(j).getNameSd().equals(newStts)) {
-										dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
-										break;
-									}
+							// first cancel leave and apply As thumb
+
+							// start Cancle leave
+							try {
+
+								float updateNoOfDays = 0;
+
+								if (stsInfo.getDuration() != 1) {
+									// cancel halfDay leave
+									updateNoOfDays = (float) 0.5;
+
+								} else {
+									// cancel full leave
+									updateNoOfDays = 1;
 								}
 
-							} // $case == "1358" || $case == "1368" || $case == "2358" || $case == "2368"
-							else if (atteanceCase.equals("1357") || atteanceCase.equals("1367")
-									|| atteanceCase.equals("2357") || atteanceCase.equals("2367")) {
-								// echo "<stat>".$rs_emp_type->wh_work;
+								Date date = new Date();
+								SimpleDateFormat dtformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-								String newStts = AttendanceStatus(employee, dailyAttendanceList.get(i),
-										dailyAttendanceList.get(i).getEmpId(), dailyAttendanceList.get(i).getAttDate(),
-										atteanceCase, dailyAttendanceList.get(i).getWorkingHrs(), shiftMaster,
-										mstEmpType);
+								int updateNoOfDaysInLeave = leaveApplyRepository.updateNoOfDaysInLeave(
+										stsInfo.getLeaveId(), updateNoOfDays, "Cancel By System");
 
-								dailyAttendanceList.get(i).setAttStatus(newStts);
-								for (int j = 0; j < lvTypeList.size(); j++) {
-									if (lvTypeList.get(j).getNameSd().equals(newStts)) {
-										dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
-										break;
-									}
+								LeaveApply leaveSummary = new LeaveApply();
+								leaveSummary.setCalYrId(2);
+								leaveSummary.setEmpId(dailyAttendanceList.get(i).getEmpId());
+								leaveSummary.setFinalStatus(1);
+								leaveSummary.setLeaveDuration(String.valueOf(stsInfo.getDuration()));
+								leaveSummary.setCirculatedTo("1");
+								leaveSummary.setLeaveEmpReason("Leave Add And Cancel By System");
+								leaveSummary.setLeaveCancleRemark("Leave Add And Cancel By System");
+								leaveSummary.setLvtApplicationIdParent(stsInfo.getLeaveId());
+								leaveSummary.setLvTypeId(stsInfo.getLeaveTyId());
+								leaveSummary.setLeaveFromdt(sf.format(defaultDate));
+								leaveSummary.setLeaveTodt(sf.format(defaultDate));
+								leaveSummary.setExInt1(7);
+								leaveSummary.setExInt2(1);
+								leaveSummary.setExInt3(1);
+								leaveSummary.setExVar1("NA");
+								leaveSummary.setExVar2("NA");
+								leaveSummary.setExVar3("NA");
+								leaveSummary.setIsActive(1);
+								leaveSummary.setDelStatus(1);
+								leaveSummary.setMakerUserId(dataForUpdateAttendance.getUserId());
+								leaveSummary.setMakerEnterDatetime(dtformat.format(date));
+
+								if (stsInfo.getDuration() != 1) {
+									// cancel halfDay leave
+									leaveSummary.setLeaveNumDays((float) 0.5);
+
+								} else {
+									// cancel full leave
+									leaveSummary.setLeaveNumDays(1);
 								}
 
-								// $rs_emp_type->wh_work == 'Comp Off'
-							} // $case == "1357" || $case == "1367" || $case == "2357" || $case == "2367"
-						} // $case == "1357" || $case == "1367" || $case == "2357" || $case == "2367" ||
-							// $case == "1358" || $case == "1368" || $case == "2358" || $case == "2368"
-						else if (atteanceCase.equals("1457") || atteanceCase.equals("1458")
-								|| atteanceCase.equals("1467") || atteanceCase.equals("1468")) {
+								LeaveApply saveLeave = leaveApplyRepository.saveAndFlush(leaveSummary);
 
-							String newStts = AttendanceStatus(employee, dailyAttendanceList.get(i),
-									dailyAttendanceList.get(i).getEmpId(), dailyAttendanceList.get(i).getAttDate(),
-									atteanceCase, dailyAttendanceList.get(i).getWorkingHrs(), shiftMaster, mstEmpType);
+								LeaveTrail lt = new LeaveTrail();
+								lt.setEmpRemarks(leaveSummary.getLeaveEmpReason());
+								lt.setLeaveId(saveLeave.getLeaveId());
+								lt.setLeaveStatus(7);
+								lt.setEmpId(dailyAttendanceList.get(i).getEmpId());
+								lt.setExInt1(1);
+								lt.setExInt2(1);
+								lt.setExInt3(1);
+								lt.setExVar1("NA");
+								lt.setExVar2("NA");
+								lt.setExVar3("NA");
+								lt.setMakerUserId(dataForUpdateAttendance.getUserId());
+								lt.setMakerEnterDatetime(dtformat.format(date));
+								LeaveTrail saveTr = leaveTrailRepository.saveAndFlush(lt);
 
-							dailyAttendanceList.get(i).setAttStatus(newStts);
-							for (int j = 0; j < lvTypeList.size(); j++) {
-								if (lvTypeList.get(j).getNameSd().equals(newStts)) {
-									dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
-									break;
-								}
+								int updateTrailId = leaveApplyRepository.updateLeaveApply(saveLeave.getLeaveId(),
+										saveTr.getTrailPkey());
+
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
-						} // $case == "1457" || $case == "1458" || $case == "1467" || $case == "1468"
-						else if (atteanceCase.equals("2457") || atteanceCase.equals("2458")) {
-							if (atteanceCase.equals("2457")) {
+
+							// end Cancle leave
+
+							if (atteanceCase.equals("1357") || atteanceCase.equals("1457")
+									|| atteanceCase.equals("2357")) {
+
+								String newStts = AttendanceStatus(employee, dailyAttendanceList.get(i),
+										dailyAttendanceList.get(i).getEmpId(), dailyAttendanceList.get(i).getAttDate(),
+										atteanceCase, dailyAttendanceList.get(i).getWorkingHrs(), shiftMaster,
+										mstEmpType);
+
+								dailyAttendanceList.get(i).setAttStatus(newStts);
+								for (int j = 0; j < lvTypeList.size(); j++) {
+									if (lvTypeList.get(j).getNameSd().equals(newStts)) {
+										dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
+										break;
+									}
+								}
+							} else {
 
 								if (dailyAttendanceList.get(i).getWorkingHrs() >= Float
 										.parseFloat(shiftMaster.getShiftHr())) {
-									// echo
+
 									if (dailyAttendanceList.get(i).getWorkingHrs() > shiftMaster.getShiftOtHour()) {
 										if (mstEmpType.getOtApplicable().contains("Yes")) {
 											dailyAttendanceList.get(i).setAttStatus("OT");
@@ -684,8 +726,7 @@ public class AttendanceApiController {
 													break;
 												}
 											}
-										} // $rs_emp_type->ot_applicable == 'Yes'
-										else {
+										} else {
 											dailyAttendanceList.get(i).setAttStatus("P");
 											for (int j = 0; j < lvTypeList.size(); j++) {
 												if (lvTypeList.get(j).getNameSd().equals("P")) {
@@ -706,84 +747,6 @@ public class AttendanceApiController {
 											}
 										}
 									}
-									// start Cancle leave
-									try {
-
-										float updateNoOfDays = 0;
-
-										if (stsInfo.getDuration() != 1) {
-											// cancel halfDay leave
-											updateNoOfDays = (float) 0.5;
-
-										} else {
-											// cancel full leave
-											updateNoOfDays = 1;
-										}
-
-										Date date = new Date();
-										SimpleDateFormat dtformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-										int updateNoOfDaysInLeave = leaveApplyRepository.updateNoOfDaysInLeave(
-												stsInfo.getLeaveId(), updateNoOfDays, "Cancel By System");
-
-										LeaveApply leaveSummary = new LeaveApply();
-										leaveSummary.setCalYrId(2);
-										leaveSummary.setEmpId(dailyAttendanceList.get(i).getEmpId());
-										leaveSummary.setFinalStatus(1);
-										leaveSummary.setLeaveDuration(String.valueOf(stsInfo.getDuration()));
-										leaveSummary.setCirculatedTo("1");
-										leaveSummary.setLeaveEmpReason("Leave Add And Cancel By System");
-										leaveSummary.setLeaveCancleRemark("Leave Add And Cancel By System");
-										leaveSummary.setLvtApplicationIdParent(stsInfo.getLeaveId());
-										leaveSummary.setLvTypeId(stsInfo.getLeaveTyId());
-										leaveSummary.setLeaveFromdt(sf.format(defaultDate));
-										leaveSummary.setLeaveTodt(sf.format(defaultDate));
-										leaveSummary.setExInt1(7);
-										leaveSummary.setExInt2(1);
-										leaveSummary.setExInt3(1);
-										leaveSummary.setExVar1("NA");
-										leaveSummary.setExVar2("NA");
-										leaveSummary.setExVar3("NA");
-										leaveSummary.setIsActive(1);
-										leaveSummary.setDelStatus(1);
-										leaveSummary.setMakerUserId(dataForUpdateAttendance.getUserId());
-										leaveSummary.setMakerEnterDatetime(dtformat.format(date));
-
-										if (stsInfo.getDuration() != 1) {
-											// cancel halfDay leave
-											leaveSummary.setLeaveNumDays((float) 0.5);
-
-										} else {
-											// cancel full leave
-											leaveSummary.setLeaveNumDays(1);
-										}
-
-										LeaveApply saveLeave = leaveApplyRepository.saveAndFlush(leaveSummary);
-
-										LeaveTrail lt = new LeaveTrail();
-										lt.setEmpRemarks(leaveSummary.getLeaveEmpReason());
-										lt.setLeaveId(saveLeave.getLeaveId());
-										lt.setLeaveStatus(7);
-										lt.setEmpId(dailyAttendanceList.get(i).getEmpId());
-										lt.setExInt1(1);
-										lt.setExInt2(1);
-										lt.setExInt3(1);
-										lt.setExVar1("NA");
-										lt.setExVar2("NA");
-										lt.setExVar3("NA");
-										lt.setMakerUserId(dataForUpdateAttendance.getUserId());
-										lt.setMakerEnterDatetime(dtformat.format(date));
-										LeaveTrail saveTr = leaveTrailRepository.saveAndFlush(lt);
-
-										int updateTrailId = leaveApplyRepository
-												.updateLeaveApply(saveLeave.getLeaveId(), saveTr.getTrailPkey());
-
-									} catch (Exception e) {
-										e.printStackTrace();
-									}
-
-									// end Cancle leave
-
 								} // $working_hrs >= $resultp->working_hrs
 								else if (dailyAttendanceList.get(i).getWorkingHrs() >= Float
 										.parseFloat(shiftMaster.getShiftHalfdayHr())
@@ -835,34 +798,52 @@ public class AttendanceApiController {
 										}
 									}
 
-								} // $working_hrs >= $resulthd->working_hrs && $working_hrs <
-									// $resultp->working_hrs
+								}
+							}
+						} else if (atteanceCase.equals("1358") || atteanceCase.equals("1458")
+								|| atteanceCase.equals("2358") || atteanceCase.equals("2458")) {
 
-							} // $case == '2457'
-							else if (atteanceCase.equals("2458")) {
+							// Apply leave
 
-								if (stsInfo.getLeaveTyId() == 2) {
+							if (stsInfo.getLeaveTyId() == 2) {
 
-									dailyAttendanceList.get(i).setAttStatus("LWP");
-									for (int j = 0; j < lvTypeList.size(); j++) {
-										if (lvTypeList.get(j).getNameSd().equals("LWP")) {
-											dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
-											break;
-										}
-									}
-								} else {
-									dailyAttendanceList.get(i).setAttStatus("PL");
-									for (int j = 0; j < lvTypeList.size(); j++) {
-										if (lvTypeList.get(j).getNameSd().equals("PL")) {
-											dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
-											break;
-										}
+								dailyAttendanceList.get(i).setAttStatus("LWP");
+								for (int j = 0; j < lvTypeList.size(); j++) {
+									if (lvTypeList.get(j).getNameSd().equals("LWP")) {
+										dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
+										break;
 									}
 								}
+							} else {
+								dailyAttendanceList.get(i).setAttStatus("PL");
+								for (int j = 0; j < lvTypeList.size(); j++) {
+									if (lvTypeList.get(j).getNameSd().equals("PL")) {
+										dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
+										break;
+									}
+								}
+							}
 
-							} // $case == '2458'
-						} // $case == "2457" || $case == "2458"
-						else if (atteanceCase.equals("2467") || atteanceCase.equals("2468")) {
+						} else if (atteanceCase.equals("1367") || atteanceCase.equals("1368")
+								|| atteanceCase.equals("1467") || atteanceCase.equals("1468")
+								|| atteanceCase.equals("2367") || atteanceCase.equals("2368")) {
+
+							// apply wo,ho,wo-ot,ho-ot
+
+							String newStts = AttendanceStatus(employee, dailyAttendanceList.get(i),
+									dailyAttendanceList.get(i).getEmpId(), dailyAttendanceList.get(i).getAttDate(),
+									atteanceCase, dailyAttendanceList.get(i).getWorkingHrs(), shiftMaster, mstEmpType);
+
+							dailyAttendanceList.get(i).setAttStatus(newStts);
+							for (int j = 0; j < lvTypeList.size(); j++) {
+								if (lvTypeList.get(j).getNameSd().equals(newStts)) {
+									dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
+									break;
+								}
+							}
+
+						} else if (atteanceCase.equals("2467") || atteanceCase.equals("2468")) {
+							// as thumb or direct AB
 							if (atteanceCase.equals("2467")) {
 
 								if (mstEmpType.getMinworkApplicable().equals("Yes")) {
@@ -880,8 +861,7 @@ public class AttendanceApiController {
 														break;
 													}
 												}
-											} // $rs_emp_type->ot_applicable == 'Yes'
-											else {
+											} else {
 												dailyAttendanceList.get(i).setAttStatus("P");
 												for (int j = 0; j < lvTypeList.size(); j++) {
 													if (lvTypeList.get(j).getNameSd().equals("P")) {
@@ -891,8 +871,7 @@ public class AttendanceApiController {
 													}
 												}
 											}
-										} // $working_hrs > $rs_shift_timming->shift_hr
-										else {
+										} else {
 											dailyAttendanceList.get(i).setAttStatus("P");
 											for (int j = 0; j < lvTypeList.size(); j++) {
 												if (lvTypeList.get(j).getNameSd().equals("P")) {
@@ -902,19 +881,16 @@ public class AttendanceApiController {
 												}
 											}
 										}
-									} // $working_hrs >= $resultp->working_hrs
-									else if (dailyAttendanceList.get(i).getWorkingHrs() >= Float
+									} else if (dailyAttendanceList.get(i).getWorkingHrs() >= Float
 											.parseFloat(shiftMaster.getShiftHalfdayHr())
 											&& dailyAttendanceList.get(i).getWorkingHrs() < Float
 													.parseFloat(shiftMaster.getShiftHr())) {
-										// echo "<present and >hd111";
-										// HD
+
 										if (mstEmpType.getHalfDay().equals("Yes")) {
-											// echo
+
 											if (PL_CL_HD_leave_insert_automatic == 1) {
 
-											} // $PL_CL_HD_leave_insert_automatic == "1"
-											else {
+											} else {
 												dailyAttendanceList.get(i).setAttStatus("HD");
 												for (int j = 0; j < lvTypeList.size(); j++) {
 													if (lvTypeList.get(j).getNameSd().equals("HD")) {
@@ -924,8 +900,7 @@ public class AttendanceApiController {
 													}
 												}
 											}
-										} // $rs_emp_type->half_day == 'Yes'
-										else {
+										} else {
 											dailyAttendanceList.get(i).setAttStatus("P");
 											for (int j = 0; j < lvTypeList.size(); j++) {
 												if (lvTypeList.get(j).getNameSd().equals("P")) {
@@ -935,9 +910,7 @@ public class AttendanceApiController {
 												}
 											}
 										}
-									} // $working_hrs >= $resulthd->working_hrs && $working_hrs <
-										// $resultp->working_hrs
-									else if (dailyAttendanceList.get(i).getWorkingHrs() < Float
+									} else if (dailyAttendanceList.get(i).getWorkingHrs() < Float
 											.parseFloat(shiftMaster.getShiftHalfdayHr())) {
 										dailyAttendanceList.get(i).setEarlyGoingMark(0);
 										dailyAttendanceList.get(i).setLateMark("0");
@@ -949,9 +922,8 @@ public class AttendanceApiController {
 												break;
 											}
 										}
-									} // $working_hrs < $resulthd->working_hrs
-								} // $rs_emp_type->minwork_applicable == 'Yes'
-								else {
+									}
+								} else {
 									if (dailyAttendanceList.get(i).getWorkingHrs() > shiftMaster.getShiftOtHour()) {
 										dailyAttendanceList.get(i).setAttStatus("OT");
 										for (int j = 0; j < lvTypeList.size(); j++) {
@@ -961,8 +933,7 @@ public class AttendanceApiController {
 												break;
 											}
 										}
-									} // $working_hrs > $rs_shift_timming->shift_hr
-									else {
+									} else {
 										dailyAttendanceList.get(i).setAttStatus("P");
 										for (int j = 0; j < lvTypeList.size(); j++) {
 											if (lvTypeList.get(j).getNameSd().equals("P")) {
@@ -973,8 +944,7 @@ public class AttendanceApiController {
 										}
 									}
 								}
-							} // $case == '2467'
-							else if (atteanceCase.equals("2468")) {
+							} else if (atteanceCase.equals("2468")) {
 
 								if (defaultDate.compareTo(sf.parse(employee.getCmpJoiningDate())) >= 0) {
 									dailyAttendanceList.get(i).setAttStatus("AB");
@@ -985,8 +955,7 @@ public class AttendanceApiController {
 										}
 									}
 
-								} // $att_date >= $forsaterday->cmp_joining_date
-								else {
+								} else {
 									dailyAttendanceList.get(i).setAttStatus("NA");
 									for (int j = 0; j < lvTypeList.size(); j++) {
 										if (lvTypeList.get(j).getNameSd().equals("NA")) {
@@ -996,9 +965,8 @@ public class AttendanceApiController {
 									}
 
 								}
-							} // $case == '2468'
-						} // $case == '2467' || $case == '2468'
-							////////////////////
+							}
+						}
 
 						// end cases implementation
 					} catch (Exception e) {
@@ -1147,10 +1115,10 @@ public class AttendanceApiController {
 
 							presentDays = (float) (presentDays
 									+ (dailyDailyInformationList.get(j).getDaycount() * 0.5));
-							
+							/*
 							 * holidayPresentHalf = (float) (holidayPresentHalf +
 							 * (dailyDailyInformationList.get(j).getDaycount() * 0.5));
-							 
+							 */
 							paidLeave = (float) (paidLeave + (dailyDailyInformationList.get(j).getDaycount() * 0.5));
 						}
 						if (dailyDailyInformationList.get(j).getLvSumupId() == 21) { // 21=HD
@@ -1434,12 +1402,12 @@ public class AttendanceApiController {
 			Date fmdt = df.parse(fromDate);
 			Date todt = df.parse(toDate);
 
-			
+			/*
 			 * System.out.println(fmdt + " " + todt);
 			 * 
 			 * Calendar temp = Calendar.getInstance(); temp.setTime(fmdt); int year =
 			 * temp.get(Calendar.YEAR); int month = temp.get(Calendar.MONTH) + 1;
-			 
+			 */
 
 			List<EmpInfo> empList = empInfoRepository.getEmpListAll(fromDate);
 
@@ -1452,7 +1420,7 @@ public class AttendanceApiController {
 			for (Date j = fmdt; j.compareTo(todt) <= 0;) {
 				dates.add(sf.format(j));
 
-				 System.out.println(sf.parse(sf.format(j))); 
+				/* System.out.println(sf.parse(sf.format(j))); */
 				j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
 			}
 
@@ -1722,11 +1690,11 @@ public class AttendanceApiController {
 					// System.out.println(fileUploadedData);
 
 					info = getVariousListForUploadAttendace(dataForUpdateAttendance);
-					
+					/*
 					 * info = finalUpdateDailySumaryRecord(dailyRecordByDate.get(0).getAttDate(),
 					 * dailyRecordByDate.get(0).getAttDate(), userId, shiftWeeklyofById.getMonth(),
 					 * shiftWeeklyofById.getYear(), shiftWeeklyofById.getEmpId());
-					 
+					 */
 
 				}
 			}
@@ -1818,7 +1786,7 @@ public class AttendanceApiController {
 
 		try {
 
-			
+			/*
 			 * SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); Date fmdt =
 			 * df.parse(fromDate); Date todt = df.parse(toDate);
 			 * 
@@ -1827,7 +1795,7 @@ public class AttendanceApiController {
 			 * int fixDailyDailyRecord =
 			 * dailyAttendanceRepository.fixDailyDailyRecord(df.format(j), empIds);
 			 * j.setTime(j.getTime() + 1000 * 60 * 60 * 24); }
-			 
+			 */
 			int fixDailyDailyRecord = dailyAttendanceRepository.fixDailyDailyRecordBetweenDate(fromDate, toDate,
 					empIds);
 			info.setError(false);
@@ -1934,4 +1902,3 @@ public class AttendanceApiController {
 	}
 
 }
-*/

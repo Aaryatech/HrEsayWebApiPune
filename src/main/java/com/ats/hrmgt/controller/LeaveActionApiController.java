@@ -443,6 +443,7 @@ public class LeaveActionApiController {
 						info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays);
 
 					} else if (shortName.equalsIgnoreCase("COMPOFF")) {
+						//match compoffApplicabale in emptype
 						info.setError(true);
 						info.setMsg("Insufficient Leaves.");
 					} else {
@@ -468,6 +469,7 @@ public class LeaveActionApiController {
 					 */
 
 					if (shortName.equalsIgnoreCase("COMPOFF")) {
+						//match compoffApplicabale in emptype
 						info.setError(true);
 						info.setMsg("Insufficient Leaves.");
 					} else {
