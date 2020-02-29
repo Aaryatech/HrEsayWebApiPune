@@ -485,7 +485,7 @@ public class LeaveActionApiController {
 				LeaveTypeWithLimit leaveTypeWithLimit = leaveTypeWithLimitRepository.LeaveTypeWithLimit(empId,
 						leaveTypeId, calendearYear.getCalYrId());
 
-				// System.out.println(leaveTypeWithLimit.getMaxNoDays() + " " + noOfDays);
+				  //System.out.println(leaveTypeWithLimit.getMaxNoDays() + " " + noOfDays);
 				if (leaveTypeWithLimit.getMaxNoDays() != 0 && leaveTypeWithLimit.getMaxNoDays() < noOfDays) {
 
 					info.setError(true);

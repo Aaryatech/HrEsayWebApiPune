@@ -758,9 +758,9 @@ public class WeeklyOffApiController {
 					totalcount = totalcount + tempdiff;
 				}
 			}
-			diff = diff - totalcount;
+			//diff = diff - totalcount;
 
-			leaveCount.setHolidaycount(totalcount);
+			leaveCount.setHolidaycount(0);
 			leaveCount.setLeavecount(diff);
 		} catch (Exception e) {
 
