@@ -22,7 +22,7 @@ import com.ats.hrmgt.model.EmployeDoc;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.EmployeeRelatedTbls;
 import com.ats.hrmgt.model.GetEmployeeDetails;
- import com.ats.hrmgt.model.Info;
+import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.TblEmpBankInfo;
 import com.ats.hrmgt.model.TblEmpInfo;
@@ -97,16 +97,14 @@ public class EmployeeApiController {
 
 	}
 
-	
-	
 	@RequestMapping(value = { "/getMaxEmp" }, method = RequestMethod.GET)
-	public int  getMaxEmp() {
-		int n=0;
+	public int getMaxEmp() {
+		int n = 0;
 		EmployeeMaster emp = new EmployeeMaster();
 
- 		try {
- 			emp = empRepo.getEmpMax();
- 			n=emp.getEmpId();
+		try {
+			emp = empRepo.getEmpMax();
+			n = emp.getEmpId();
 		} catch (Exception e) {
 			System.err.println("Excep in getEmpInfoByEmpCode : " + e.getMessage());
 			e.printStackTrace();
@@ -270,17 +268,34 @@ public class EmployeeApiController {
 
 	@RequestMapping(value = { "/getEmpRelatedInfo" }, method = RequestMethod.POST)
 	public EmployeeRelatedTbls getEmpRelatedInfo(@RequestParam String empCode) {
-		EmployeeRelatedTbls resp = new EmployeeRelatedTbls();
+
+		EmployeeRelatedTbls resp1 = new EmployeeRelatedTbls();
 
 		try {
 
-			resp = empRelatedRepo.getAllEmpRelatedInfo(empCode);
+			resp1 = empRelatedRepo.getAllEmpRelatedInfo(empCode);
+			if (resp1.getAllowanceId() == null) {
+
+				resp1.setAllowanceId("0");
+
+			}
+			if (resp1.getEmpSalAllowanceId() == null) {
+
+				resp1.setEmpSalAllowanceId("0");
+
+			}
+			if (resp1.getDocId() ==null) {
+
+				resp1.setDocId("0");
+
+			}
+
 		} catch (Exception e) {
 			System.err.println("Excep in getEmpRelatedInfo : " + e.getMessage());
 			e.printStackTrace();
 		}
 
-		return resp;
+		return resp1;
 
 	}
 
@@ -524,8 +539,6 @@ public class EmployeeApiController {
 		return empAllowance;
 
 	}
- 
-	 
 
 	/**************************************************************************/
 	@RequestMapping(value = { "/getAllEmpDocTypes" }, method = RequestMethod.POST)
