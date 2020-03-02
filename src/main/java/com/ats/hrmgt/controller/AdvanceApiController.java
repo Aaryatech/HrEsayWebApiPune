@@ -49,6 +49,31 @@ public class AdvanceApiController {
 
 	}
 
+	@RequestMapping(value = { "/saveAdvanceList" }, method = RequestMethod.POST)
+	public @ResponseBody Info saveAdvanceList(@RequestBody List<Advance> advList) {
+
+		Info info = new Info();
+		List<Advance> inf = new ArrayList<Advance>();
+		try {
+
+			inf = advanceRepo.saveAll(advList);
+			if (inf == null) {
+
+				info.setMsg("Failed");
+				info.setError(true);
+			} else {
+				info.setMsg("Success");
+				info.setError(false);
+			}
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
 	@Autowired
 	GetAdvanceRepo getAdvanceRepo;
 
@@ -134,8 +159,7 @@ public class AdvanceApiController {
 		return list;
 
 	}
-	
-	
+
 	@RequestMapping(value = { "/getAllAdvanceDetails" }, method = RequestMethod.POST)
 	public @ResponseBody List<AdvanceDetails> getAllAdvanceDetails() {
 
@@ -206,13 +230,13 @@ public class AdvanceApiController {
 	public @ResponseBody Info updateSkipAdvance(@RequestParam("dateTimeUpdate") String dateTimeUpdate,
 			@RequestParam("userId") int userId, @RequestParam("advId") int advId,
 			@RequestParam("dedMonth") int dedMonth, @RequestParam("dedYear") int dedYear,
-			@RequestParam("count") int count,@RequestParam("skipStr") String skipStr) {
- 
- 		Info info = new Info();
+			@RequestParam("count") int count, @RequestParam("skipStr") String skipStr) {
+
+		Info info = new Info();
 
 		try {
 
-			int delete = advanceRepo.skipAdvance(advId, dedYear, dedMonth, dateTimeUpdate, userId, count,skipStr);
+			int delete = advanceRepo.skipAdvance(advId, dedYear, dedMonth, dateTimeUpdate, userId, count, skipStr);
 
 			if (delete > 0) {
 				info.setError(false);
