@@ -8,6 +8,8 @@ public class LeaveStsAndLeaveId {
 	private String msg;
 	private int leaveTyId;
 	private float noOfLeave;
+	private int lvTypeId;
+	private String stsshortname;
 	
 	public int getSts() {
 		return sts;
@@ -45,10 +47,23 @@ public class LeaveStsAndLeaveId {
 	public void setNoOfLeave(float noOfLeave) {
 		this.noOfLeave = noOfLeave;
 	}
+	public int getLvTypeId() {
+		return lvTypeId;
+	}
+	public void setLvTypeId(int lvTypeId) {
+		this.lvTypeId = lvTypeId;
+	}
+	public String getStsshortname() {
+		return stsshortname;
+	}
+	public void setStsshortname(String stsshortname) {
+		this.stsshortname = stsshortname;
+	}
 	@Override
 	public String toString() {
 		return "LeaveStsAndLeaveId [sts=" + sts + ", duration=" + duration + ", leaveId=" + leaveId + ", msg=" + msg
-				+ ", leaveTyId=" + leaveTyId + ", noOfLeave=" + noOfLeave + "]";
+				+ ", leaveTyId=" + leaveTyId + ", noOfLeave=" + noOfLeave + ", lvTypeId=" + lvTypeId + ", stsshortname="
+				+ stsshortname + "]";
 	}
 	
 	

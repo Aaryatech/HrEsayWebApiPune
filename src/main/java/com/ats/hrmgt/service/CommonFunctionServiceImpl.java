@@ -584,6 +584,8 @@ public class CommonFunctionServiceImpl implements CommonFunctionService {
 					stsInfo.setLeaveId(leavetList.get(i).getLeaveId());
 					stsInfo.setLeaveTyId(leavetList.get(i).getLvTypeId());
 					stsInfo.setNoOfLeave(leavetList.get(i).getLeaveNumDays());
+					stsInfo.setLvTypeId(Integer.parseInt(leavetList.get(i).getExVar2()));
+					stsInfo.setStsshortname(leavetList.get(i).getExVar1());
 					break;
 
 				}

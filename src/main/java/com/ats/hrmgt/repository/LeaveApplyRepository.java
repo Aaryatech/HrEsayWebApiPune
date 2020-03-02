@@ -76,6 +76,21 @@ public interface LeaveApplyRepository extends JpaRepository<LeaveApply, Integer>
 	@Query(value="select * from leave_apply where ((leave_fromdt between :fromDate and :toDate) or "
 			+ " (leave_todt between :fromDate and :toDate) ) and ex_int1=3 and emp_id=:empId",nativeQuery=true)
 	List<LeaveApply> getleavetList(@Param("fromDate") String fromDate,@Param("toDate") String toDate, @Param("empId") int empId);
+	
+	
+			
+	@Query(value="select l.leave_id,l.cal_yr_id,l.emp_id,l.lv_type_id,l.leave_duration,l.leave_fromdt,l.leave_todt,l.leave_num_days,l.leave_emp_reason,l.final_status,l.del_status,"
+			+ "l.circulated_to,l.is_active,l.maker_user_id,l.maker_enter_datetime,l.ex_int1,l.ex_int2,l.ex_int3,lt.lv_title_short as ex_var1,lt.lv_sumup_id as ex_var2,"
+			+ "l.ex_var3,l.status,l.leave_cancle_remark,l.lvt_application_id_parent,l.rec_status from leave_apply l,leave_type lt where "
+			+ "((l.leave_fromdt between :fromDate and :toDate) or  (l.leave_todt between :fromDate and :toDate) ) and l.ex_int1=3 and lt.lv_type_id=l.lv_type_id",nativeQuery=true)
+	List<LeaveApply> getleavetListForAttndace(@Param("fromDate") String fromDate,@Param("toDate") String toDate);
+
+
+	@Query(value="select l.leave_id,l.cal_yr_id,l.emp_id,l.lv_type_id,l.leave_duration,l.leave_fromdt,l.leave_todt,l.leave_num_days,l.leave_emp_reason,l.final_status,l.del_status,"
+			+ "l.circulated_to,l.is_active,l.maker_user_id,l.maker_enter_datetime,l.ex_int1,l.ex_int2,l.ex_int3,lt.lv_title_short as ex_var1,lt.lv_sumup_id as ex_var2,"
+			+ "l.ex_var3,l.status,l.leave_cancle_remark,l.lvt_application_id_parent,l.rec_status from leave_apply l,leave_type lt where "
+			+ "((l.leave_fromdt between :fromDate and :toDate) or  (l.leave_todt between :fromDate and :toDate) ) and l.ex_int1=3 and lt.lv_type_id=l.lv_type_id and emp_id=:empId",nativeQuery=true)
+	List<LeaveApply> getleavetListForAttndace(@Param("fromDate") String fromDate,@Param("toDate") String toDate, @Param("empId") int empId);
 
 	
 

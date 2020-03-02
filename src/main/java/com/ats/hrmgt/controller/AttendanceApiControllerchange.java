@@ -324,12 +324,13 @@ public class AttendanceApiControllerchange {
 						dataForUpdateAttendance.getEmpId());
 				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceList(fromDate, toDate,
 						dataForUpdateAttendance.getEmpId());
-				leavetList = leaveApplyRepository.getleavetList(fromDate, toDate, dataForUpdateAttendance.getEmpId());
+				leavetList = leaveApplyRepository.getleavetListForAttndace(fromDate, toDate,
+						dataForUpdateAttendance.getEmpId());
 
 			} else {
 				leaveListAddeBySystem = leaveApplyRepository.leaveListAddeBySystem(fromDate, toDate);
 				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceList(fromDate, toDate);
-				leavetList = leaveApplyRepository.getleavetList(fromDate, toDate);
+				leavetList = leaveApplyRepository.getleavetListForAttndace(fromDate, toDate);
 			}
 
 			for (int j = 0; j < leaveListAddeBySystem.size(); j++) {
@@ -805,24 +806,20 @@ public class AttendanceApiControllerchange {
 
 							// Apply leave
 
-							if (stsInfo.getLeaveTyId() == 2) {
-
-								dailyAttendanceList.get(i).setAttStatus("LWP");
-								for (int j = 0; j < lvTypeList.size(); j++) {
-									if (lvTypeList.get(j).getNameSd().equals("LWP")) {
-										dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
-										break;
-									}
-								}
-							} else {
-								dailyAttendanceList.get(i).setAttStatus("PL");
-								for (int j = 0; j < lvTypeList.size(); j++) {
-									if (lvTypeList.get(j).getNameSd().equals("PL")) {
-										dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
-										break;
-									}
-								}
-							}
+							/*
+							 * if (stsInfo.getLeaveTyId() == 2) {
+							 * 
+							 * dailyAttendanceList.get(i).setAttStatus("LWP"); for (int j = 0; j <
+							 * lvTypeList.size(); j++) { if (lvTypeList.get(j).getNameSd().equals("LWP")) {
+							 * dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
+							 * break; } } } else { dailyAttendanceList.get(i).setAttStatus("PL"); for (int j
+							 * = 0; j < lvTypeList.size(); j++) { if
+							 * (lvTypeList.get(j).getNameSd().equals("PL")) {
+							 * dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
+							 * break; } } }
+							 */
+							dailyAttendanceList.get(i).setAttStatus(stsInfo.getStsshortname());
+							dailyAttendanceList.get(i).setLvSumupId(stsInfo.getLvTypeId());
 
 						} else if (atteanceCase.equals("1367") || atteanceCase.equals("1368")
 								|| atteanceCase.equals("1467") || atteanceCase.equals("1468")
@@ -1290,7 +1287,7 @@ public class AttendanceApiControllerchange {
 						ret = "PH-OT";
 					}
 				} // $res_getemptype->wh_work == 'OT'
-				else if (mstEmpType.getWhWork().equals("Comp Off")) {
+				else if (mstEmpType.getWhWork().equals("Compoff")) {
 					if (dailyAttendance.getWorkingHrs() >= Float.parseFloat(shiftMaster.getShiftHr())) {
 						ret = "PH-CO";
 					} // $working_hrs >= $resultp['working_hrs']
@@ -1340,7 +1337,7 @@ public class AttendanceApiControllerchange {
 						ret = "WO-OT";
 					}
 				} // $res_getemptype->wh_work == 'OT'
-				else if (mstEmpType.getWhWork().equals("Comp Off")) {
+				else if (mstEmpType.getWhWork().equals("Compoff")) {
 					if (dailyAttendance.getWorkingHrs() >= Float.parseFloat(shiftMaster.getShiftHr())) {
 						ret = "WO-CO";
 					} // $working_hrs >= $resultp['working_hrs']
