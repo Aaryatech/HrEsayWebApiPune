@@ -1079,4 +1079,90 @@ public class MasterApiController {
 
 	}
 	
+	
+	
+	@RequestMapping(value = { "/saveSkillRate" }, method = RequestMethod.POST)
+	public @ResponseBody SkillRates saveSkillRate(@RequestBody SkillRates skill) {
+
+		SkillRates save = new SkillRates();
+		try {
+
+			save = skillRatesRepo.saveAndFlush(skill);
+			if (save == null) {
+
+				save = new SkillRates();
+				save.setError(true);
+
+			} else {
+				save.setError(false);
+			}
+			 
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return save;
+
+	}
+
+	 
+	
+	@RequestMapping(value = { "/getSkillById" }, method = RequestMethod.POST)
+	public @ResponseBody SkillRates getSkillById(@RequestParam("skillId") int skillId) {
+
+		SkillRates skill = new SkillRates();
+		try {
+
+			skill = skillRatesRepo.findBySkillIdAndDelStatus(skillId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return skill;
+
+	}
+ 
+
+	@Autowired
+	EmployeeMasterRepository EmployeeMasterRepository;
+	@RequestMapping(value = { "/deleteSkillRate" }, method = RequestMethod.POST)
+	public @ResponseBody Info deleteSkillRate(@RequestParam("skillId") int  skillId) {
+
+		Info info = new Info();
+
+		try {
+			List<EmployeeMaster> lvsDet = weeklyOffRepo.findByExInt2AndDelStatus(skillId,1);
+
+			if (lvsDet.size() <= 0) {
+
+				int delete = skillRatesRepo.deleteSkillRate(skillId);
+
+				if (delete > 0) {
+					info.setError(false);
+					info.setMsg("Skill Rate Deleted Successfully");
+				} else {
+					info.setError(true);
+					info.setMsg("Failed To Delete Skill Rate");
+				}
+			}
+
+			else {
+				info.setError(true);
+				info.setMsg("Skill Rate Can't be Deleted as it is Assigned Employee ");
+			}
+
+		} catch (Exception e) {
+			info.setError(true);
+			info.setMsg("Failed To Delete Skill Rate");
+			System.err.println("Excep in deleteBank : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+	
 }

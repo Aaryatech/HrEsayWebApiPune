@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.Holiday;
 import com.ats.hrmgt.model.WeeklyOff;
 
@@ -40,6 +41,9 @@ public interface WeeklyOffRepo extends JpaRepository<WeeklyOff, Integer> {
 
 	@Query(value = " select holiday_category from m_employees   where emp_id=:empId", nativeQuery = true)
 	int getholidayCatId(@Param("empId")int empId);
+
+ 
+	List<EmployeeMaster> findByExInt2AndDelStatus(int skillId, int i);
 	 
 
 }
