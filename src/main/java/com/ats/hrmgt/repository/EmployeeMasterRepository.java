@@ -17,7 +17,7 @@ import java.lang.String;
 
 public interface EmployeeMasterRepository extends JpaRepository<EmployeeMaster, Integer> {
 
-	@Query(value = " SELECT * FROM m_employees ", nativeQuery = true)
+	@Query(value = " SELECT * FROM m_employees WHERE del_status=1", nativeQuery = true)
 	List<EmployeeMaster> getEmplistForAssignAuthorityAll();
 	 
 
@@ -41,7 +41,7 @@ public interface EmployeeMasterRepository extends JpaRepository<EmployeeMaster, 
 			"                    where\n" + 
 			"                        is_current=1\n" + 
 			"                )\n" + 
-			"            ) and e.del_status=1", nativeQuery = true)
+			"            ) and  del_status=1", nativeQuery = true)
 	List<EmployeeMaster> getemplistwhichisnotyearend();
 
 	@Query(value = "SELECT e.* from m_employees e  where e.emp_id=:empId", nativeQuery = true)

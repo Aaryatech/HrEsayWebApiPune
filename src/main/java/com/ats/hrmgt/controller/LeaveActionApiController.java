@@ -3,7 +3,9 @@ package com.ats.hrmgt.controller;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,18 +22,22 @@ import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.common.Firebase;
 import com.ats.hrmgt.model.AuthorityInformation;
 import com.ats.hrmgt.model.CalenderYear;
+import com.ats.hrmgt.model.DailyRecordForCompOff;
 import com.ats.hrmgt.model.EmpBasicAllownceForLeaveInCash;
 import com.ats.hrmgt.model.EmpLeaveHistoryRep;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.GetAuthorityIds;
 import com.ats.hrmgt.model.GetLeaveApplyAuthwise;
 import com.ats.hrmgt.model.Info;
+import com.ats.hrmgt.model.InfoForCompOffList;
 import com.ats.hrmgt.model.LeaveApply;
 import com.ats.hrmgt.model.LeaveHistory;
 import com.ats.hrmgt.model.LeaveTrail;
 import com.ats.hrmgt.model.LeaveTypeWithLimit;
+import com.ats.hrmgt.model.MstEmpType;
 import com.ats.hrmgt.model.PayableDayAndPresentDays;
 import com.ats.hrmgt.model.Setting;
+import com.ats.hrmgt.repo.DailyRecordForCompOffRepository;
 import com.ats.hrmgt.repository.AuthorityInformationRepository;
 import com.ats.hrmgt.repository.CalculateYearRepository;
 import com.ats.hrmgt.repository.EmpBasicAllownceForLeaveInCashRepo;
@@ -43,6 +49,7 @@ import com.ats.hrmgt.repository.LeaveApplyRepository;
 import com.ats.hrmgt.repository.LeaveHistoryRepo;
 import com.ats.hrmgt.repository.LeaveTrailRepository;
 import com.ats.hrmgt.repository.LeaveTypeWithLimitRepository;
+import com.ats.hrmgt.repository.MstEmpTypeRepository;
 import com.ats.hrmgt.repository.PayableDayAndPresentDaysRepo;
 import com.ats.hrmgt.repository.SettingRepo;
 
@@ -84,6 +91,12 @@ public class LeaveActionApiController {
 
 	@Autowired
 	EmpBasicAllownceForLeaveInCashRepo empBasicAllownceForLeaveInCashRepo;
+
+	@Autowired
+	MstEmpTypeRepository mstEmpTypeRepository;
+
+	@Autowired
+	DailyRecordForCompOffRepository dailyRecordForCompOffRepository;
 
 	@RequestMapping(value = { "/updateLeaveStatus" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateLeaveStatus(@RequestParam("leaveId") int leaveId,
@@ -415,17 +428,17 @@ public class LeaveActionApiController {
 	}
 
 	@RequestMapping(value = { "/checkDateForRepetedLeaveValidation" }, method = RequestMethod.POST)
-	public @ResponseBody Info checkDateForRepetedLeaveValidation(@RequestParam("fromDate") String fromDate,
-			@RequestParam("toDate") String toDate, @RequestParam("empId") int empId,
-			@RequestParam("leaveTypeId") int leaveTypeId, @RequestParam("shortName") String shortName,
-			@RequestParam("noOfDays") float noOfDays) {
+	public @ResponseBody InfoForCompOffList checkDateForRepetedLeaveValidation(
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
+			@RequestParam("empId") int empId, @RequestParam("leaveTypeId") int leaveTypeId,
+			@RequestParam("shortName") String shortName, @RequestParam("noOfDays") float noOfDays) {
 
-		Info info = new Info();
+		InfoForCompOffList info = new InfoForCompOffList();
 
 		try {
 
 			Setting setting = settingRepo.findByKey("CONTILEAVE");
-			Setting COMPOFFCONDITION = settingRepo.findByKey("COMPOFFCONDITION");
+			// Setting COMPOFFCONDITION = settingRepo.findByKey("COMPOFFCONDITION");
 
 			List<LeaveApply> list = leaveApplyRepository.checkDateForRepetedLeaveValidation(fromDate, toDate, empId);
 
@@ -442,10 +455,11 @@ public class LeaveActionApiController {
 
 						info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays);
 
-					} else if (shortName.equalsIgnoreCase("COMPOFF")) {
-						//match compoffApplicabale in emptype
-						info.setError(true);
-						info.setMsg("Insufficient Leaves.");
+					} else if (shortName.equalsIgnoreCase("Compoff")) {
+						// match compoffApplicabale in emptype
+
+						info = checkCompOff(empId, fromDate, toDate);
+
 					} else {
 
 						list = leaveApplyRepository.checkContinueDateLeave(fromDate, toDate, empId, leaveTypeId);
@@ -458,7 +472,6 @@ public class LeaveActionApiController {
 							/*
 							 * info.setError(false); info.setMsg("you can apply");
 							 */
-
 							info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays);
 						}
 					}
@@ -468,10 +481,9 @@ public class LeaveActionApiController {
 					 * info.setError(false); info.setMsg("you can apply");
 					 */
 
-					if (shortName.equalsIgnoreCase("COMPOFF")) {
-						//match compoffApplicabale in emptype
-						info.setError(true);
-						info.setMsg("Insufficient Leaves.");
+					if (shortName.equalsIgnoreCase("Compoff")) {
+						// match compoffApplicabale in emptype
+						info = checkCompOff(empId, fromDate, toDate);
 					} else {
 						info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays);
 					}
@@ -489,8 +501,8 @@ public class LeaveActionApiController {
 
 	}
 
-	public Info LeaveTypeValidation(int empId, int leaveTypeId, String shortName, float noOfDays) {
-		Info info = new Info();
+	public InfoForCompOffList LeaveTypeValidation(int empId, int leaveTypeId, String shortName, float noOfDays) {
+		InfoForCompOffList info = new InfoForCompOffList();
 
 		try {
 			Setting TYPEVALIDATION = settingRepo.findByKey("TYPEVALIDATION");
@@ -520,5 +532,64 @@ public class LeaveActionApiController {
 			e.printStackTrace();
 		}
 		return info;
+	}
+
+	public InfoForCompOffList checkCompOff(int empId, String fromDate, String toDate) {
+		InfoForCompOffList info = new InfoForCompOffList();
+
+		try {
+			MstEmpType mstEmpType = mstEmpTypeRepository.getTypeByempId(empId);
+
+			if (mstEmpType.getWhWork().equals("Compoff")) {
+
+				SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+				Date dt = sf.parse(fromDate);
+
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTime(dt);
+				cal.add(Calendar.DATE, -45);
+				dt = cal.getTime();
+				toDate = sf.format(dt);
+
+				List<DailyRecordForCompOff> dailyrecordlistforcompoff = dailyRecordForCompOffRepository
+						.dailyrecordlistforcompoff(toDate, fromDate, empId);
+
+				if (dailyrecordlistforcompoff.size() > 0) {
+
+					info.setError(false);
+					info.setMsg("you can apply");
+				} else {
+					info.setError(true);
+					info.setMsg("Insufficient compoff");
+				}
+				info.setDailyrecordlistforcompoff(dailyrecordlistforcompoff);
+			} else {
+				info.setError(true);
+				info.setMsg("You cant take compoff");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return info;
+	}
+
+	@RequestMapping(value = { "/getEmpTypeByempId" }, method = RequestMethod.POST)
+	public @ResponseBody MstEmpType getEmpTypeByempId(@RequestParam("empId") int empId) {
+
+		MstEmpType mstEmpType = new MstEmpType();
+		try {
+
+			mstEmpType = mstEmpTypeRepository.getTypeByempId(empId);
+
+			// System.err.println("LeaveHistory" + list.toString());
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return mstEmpType;
+
 	}
 }

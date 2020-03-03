@@ -441,7 +441,7 @@ public class AttendanceApiControllerchange {
 							dailyAttendanceList.get(i).setInTime(fileUploadedDataList.get(j).getInTime());
 							dailyAttendanceList.get(i).setOutTime(fileUploadedDataList.get(j).getOutTime());
 							dailyAttendanceList.get(i).setByFileUpdated(1);
-
+							dailyAttendanceList.get(i).setMultipleEntries("0");
 							if (dataForUpdateAttendance.getEmpId() == 0) {
 								dailyAttendanceList.get(i).setRowId(j + 1);
 							}
@@ -1009,7 +1009,7 @@ public class AttendanceApiControllerchange {
 							+ dailyAttendanceList.get(i).getLoginName() + "'," + "        login_time=NULL,"
 							+ "        lv_sumup_id='" + dailyAttendanceList.get(i).getLvSumupId() + "',"
 							+ "        manual_ot_hr='" + dailyAttendanceList.get(i).getManualOtHr() + "',"
-							+ "        multiple_entries=NULL," + "        ot_hr='"
+							+ "        multiple_entries='" + dailyAttendanceList.get(i).getMultipleEntries() + "', ot_hr='"
 							+ dailyAttendanceList.get(i).getOtHr() + "'," + "        out_time='"
 							+ dailyAttendanceList.get(i).getOutTime() + "'," + "        raw_data_inout=NULL,"
 							+ "        reason=NULL," + "        rec_status='"
