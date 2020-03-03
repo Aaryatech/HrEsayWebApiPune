@@ -434,7 +434,9 @@ public class LeaveActionApiController {
 			@RequestParam("shortName") String shortName, @RequestParam("noOfDays") float noOfDays) {
 
 		InfoForCompOffList info = new InfoForCompOffList();
-
+		List<DailyRecordForCompOff> dailyrecordlistforcompoff = new ArrayList<>();
+		info.setDailyrecordlistforcompoff(dailyrecordlistforcompoff);
+		
 		try {
 
 			Setting setting = settingRepo.findByKey("CONTILEAVE");
@@ -505,6 +507,9 @@ public class LeaveActionApiController {
 		InfoForCompOffList info = new InfoForCompOffList();
 
 		try {
+			List<DailyRecordForCompOff> dailyrecordlistforcompoff = new ArrayList<>();
+			info.setDailyrecordlistforcompoff(dailyrecordlistforcompoff);
+			
 			Setting TYPEVALIDATION = settingRepo.findByKey("TYPEVALIDATION");
 
 			if (Integer.parseInt(TYPEVALIDATION.getValue()) == 1) {

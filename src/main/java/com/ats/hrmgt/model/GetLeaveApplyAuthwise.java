@@ -48,7 +48,7 @@ public class GetLeaveApplyAuthwise {
  	
  	private String empPhoto;
  	
- 	
+ 	private String exVar2;
  	
 
 	public String getEmpPhoto() {
@@ -195,6 +195,14 @@ public class GetLeaveApplyAuthwise {
 		this.circulatedTo = circulatedTo;
 	}
 
+	public String getExVar2() {
+		return exVar2;
+	}
+
+	public void setExVar2(String exVar2) {
+		this.exVar2 = exVar2;
+	}
+
 	@Override
 	public String toString() {
 		return "GetLeaveApplyAuthwise [leaveId=" + leaveId + ", calYrId=" + calYrId + ", leaveTitle=" + leaveTitle
@@ -202,15 +210,7 @@ public class GetLeaveApplyAuthwise {
 				+ finAuthEmpId + ", exInt1=" + exInt1 + ", empCode=" + empCode + ", lvTypeId=" + lvTypeId
 				+ ", leaveTypeName=" + leaveTypeName + ", leaveDuration=" + leaveDuration + ", leaveFromdt="
 				+ leaveFromdt + ", leaveTodt=" + leaveTodt + ", leaveNumDays=" + leaveNumDays + ", leaveEmpReason="
-				+ leaveEmpReason + ", circulatedTo=" + circulatedTo + ", getLeaveId()=" + getLeaveId()
-				+ ", getCalYrId()=" + getCalYrId() + ", getLeaveTitle()=" + getLeaveTitle() + ", getEmpId()="
-				+ getEmpId() + ", getEmpName()=" + getEmpName() + ", getIniAuthEmpId()=" + getIniAuthEmpId()
-				+ ", getFinAuthEmpId()=" + getFinAuthEmpId() + ", getExInt1()=" + getExInt1() + ", getEmpCode()="
-				+ getEmpCode() + ", getLvTypeId()=" + getLvTypeId() + ", getLeaveTypeName()=" + getLeaveTypeName()
-				+ ", getLeaveDuration()=" + getLeaveDuration() + ", getLeaveFromdt()=" + getLeaveFromdt()
-				+ ", getLeaveTodt()=" + getLeaveTodt() + ", getLeaveNumDays()=" + getLeaveNumDays()
-				+ ", getLeaveEmpReason()=" + getLeaveEmpReason() + ", getCirculatedTo()=" + getCirculatedTo()
-				+ ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
+				+ leaveEmpReason + ", circulatedTo=" + circulatedTo + ", empPhoto=" + empPhoto + ", exVar2=" + exVar2
 				+ "]";
 	}
 

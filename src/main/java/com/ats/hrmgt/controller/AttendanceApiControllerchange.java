@@ -235,7 +235,7 @@ public class AttendanceApiControllerchange {
 					dailyDailyQuery = dailyDailyQuery + "('0', '1','" + empList.get(i).getEmpCode() + "','" + empName
 							+ "','" + attdate + "', 'NA', '0', '0', NULL, 'O', \n '" + userId + "', NULL, NULL, NULL, '"
 							+ empList.get(i).getEmpId() + "', NULL, '0', '0', '0', NULL, NULL, '0', NULL, '0', '0' \n "
-							+ ", NULL, NULL, '0', '0', '0', NULL, '0', '0.00', NULL, NULL, '0', '0', '"
+							+ ", NULL, NULL, '0', '0', '0', NULL, '0', '0.00', '0', NULL, '0', '0', '"
 							+ empList.get(i).getLocationId() + "', '0', \n '" + json + "', NULL, NULL, '0'),";
 
 					j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
@@ -440,8 +440,7 @@ public class AttendanceApiControllerchange {
 
 							dailyAttendanceList.get(i).setInTime(fileUploadedDataList.get(j).getInTime());
 							dailyAttendanceList.get(i).setOutTime(fileUploadedDataList.get(j).getOutTime());
-							dailyAttendanceList.get(i).setByFileUpdated(1);
-							dailyAttendanceList.get(i).setMultipleEntries("0");
+							dailyAttendanceList.get(i).setByFileUpdated(1); 
 							if (dataForUpdateAttendance.getEmpId() == 0) {
 								dailyAttendanceList.get(i).setRowId(j + 1);
 							}
@@ -1009,8 +1008,8 @@ public class AttendanceApiControllerchange {
 							+ dailyAttendanceList.get(i).getLoginName() + "'," + "        login_time=NULL,"
 							+ "        lv_sumup_id='" + dailyAttendanceList.get(i).getLvSumupId() + "',"
 							+ "        manual_ot_hr='" + dailyAttendanceList.get(i).getManualOtHr() + "',"
-							+ "        multiple_entries='" + dailyAttendanceList.get(i).getMultipleEntries() + "', ot_hr='"
-							+ dailyAttendanceList.get(i).getOtHr() + "'," + "        out_time='"
+							+ "        multiple_entries='" + dailyAttendanceList.get(i).getMultipleEntries()
+							+ "', ot_hr='" + dailyAttendanceList.get(i).getOtHr() + "'," + "        out_time='"
 							+ dailyAttendanceList.get(i).getOutTime() + "'," + "        raw_data_inout=NULL,"
 							+ "        reason=NULL," + "        rec_status='"
 							+ dailyAttendanceList.get(i).getRecStatus() + "'," + "        row_id='"
@@ -1891,6 +1890,26 @@ public class AttendanceApiControllerchange {
 			}
 		} catch (Exception e) {
 
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
+	@RequestMapping(value = { "/updateweeklyoffotStatutoused" }, method = RequestMethod.POST)
+	public @ResponseBody Info updateweeklyoffotStatutoused(
+			@RequestParam("dailydaillyIds") List<Integer> dailydaillyIds,@RequestParam("status") String status) {
+
+		Info info = new Info();
+		try {
+
+			int updateweeklyoffotStatutoused = dailyAttendanceRepository.updateweeklyoffotStatutoused(dailydaillyIds,status);
+			info.setError(false);
+			info.setMsg("success");
+		} catch (Exception e) {
+			info.setError(true);
+			info.setMsg("failed");
 			e.printStackTrace();
 		}
 

@@ -15,7 +15,7 @@ public interface DailyRecordForCompOffRepository extends JpaRepository<DailyReco
 			"    from\n" + 
 			"        tbl_attt_daily_daily dl \n" + 
 			"     where \n" + 
-			"        emp_id = :empId and lv_sumup_id in (13,14,18) and att_date between :fromDate and :toDate and multiple_entries=0 ", nativeQuery = true)
+			"        emp_id = :empId and lv_sumup_id in (13,14,18) and att_date between :fromDate and :toDate and multiple_entries=0  order by id asc", nativeQuery = true)
 	List<DailyRecordForCompOff> dailyrecordlistforcompoff(String fromDate, String toDate, int empId);
 
 }

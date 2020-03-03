@@ -38,7 +38,7 @@ public interface GetLeaveApplyAuthwiseRepo extends JpaRepository<GetLeaveApplyAu
 			"        le.ini_auth_emp_id,\n" + 
 			"        le.fin_auth_emp_id,\n" + 
 			"        la.ex_int1 ,\n" + 
-			"        0 AS leave_type_name \n" + 
+			"        0 AS leave_type_name,la.ex_var2\n" + 
 			"    FROM\n" + 
 			"        leave_type lt,\n" + 
 			"        leave_apply la,\n" + 
@@ -85,7 +85,7 @@ public interface GetLeaveApplyAuthwiseRepo extends JpaRepository<GetLeaveApplyAu
 			"        le.ini_auth_emp_id,\n" + 
 			"        le.fin_auth_emp_id,\n" + 
 			"        la.ex_int1,\n" + 
-			"        0 AS leave_type_name \n" + 
+			"        0 AS leave_type_name,la.ex_var2\n" + 
 			"    FROM\n" + 
 			"        leave_type lt,\n" + 
 			"        leave_apply la,\n" + 
@@ -140,7 +140,7 @@ public interface GetLeaveApplyAuthwiseRepo extends JpaRepository<GetLeaveApplyAu
 			"        0 AS ini_auth_emp_id,\n" + 
 			"        0 AS fin_auth_emp_id,\n" + 
 			"        la.ex_int1,\n" + 
-			"        0 AS leave_type_name \n" + 
+			"        0 AS leave_type_name,la.ex_var2 \n" + 
 			"    FROM\n" + 
 			"        leave_type lt,\n" + 
 			"        leave_apply la,\n" + 
