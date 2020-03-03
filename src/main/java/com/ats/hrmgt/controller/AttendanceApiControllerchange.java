@@ -48,6 +48,7 @@ import com.ats.hrmgt.model.SummaryDailyAttendance;
 import com.ats.hrmgt.model.VariousList;
 import com.ats.hrmgt.model.WeeklyOff;
 import com.ats.hrmgt.model.WeeklyOffShit;
+import com.ats.hrmgt.repo.EmpJsonDataRepository;
 import com.ats.hrmgt.repository.AccessRightModuleRepository;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
 import com.ats.hrmgt.repository.DailyDailyInformationRepository;
@@ -134,6 +135,9 @@ public class AttendanceApiControllerchange {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	EmpJsonDataRepository empJsonDataRepository;
 
 	@RequestMapping(value = { "/initiallyInsertDailyRecord" }, method = RequestMethod.POST)
 	public @ResponseBody Info initiallyInsertDailyRecord(@RequestParam("fromDate") String fromDate,
@@ -317,6 +321,7 @@ public class AttendanceApiControllerchange {
 			List<LeaveApply> leaveListAddeBySystem = new ArrayList<>();
 			List<DailyAttendance> dailyAttendanceList = new ArrayList<>();
 			List<LeaveApply> leavetList = new ArrayList<>();
+			List<EmpJsonData> jsonDataList = new ArrayList<>();
 
 			if (dataForUpdateAttendance.getEmpId() != 0) {
 
@@ -326,11 +331,13 @@ public class AttendanceApiControllerchange {
 						dataForUpdateAttendance.getEmpId());
 				leavetList = leaveApplyRepository.getleavetListForAttndace(fromDate, toDate,
 						dataForUpdateAttendance.getEmpId());
+				jsonDataList = empJsonDataRepository.jsonDataList(dataForUpdateAttendance.getEmpId());
 
 			} else {
 				leaveListAddeBySystem = leaveApplyRepository.leaveListAddeBySystem(fromDate, toDate);
 				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceList(fromDate, toDate);
 				leavetList = leaveApplyRepository.getleavetListForAttndace(fromDate, toDate);
+				jsonDataList = empJsonDataRepository.jsonDataList();
 			}
 
 			for (int j = 0; j < leaveListAddeBySystem.size(); j++) {
@@ -390,12 +397,21 @@ public class AttendanceApiControllerchange {
 				possibleShiftList = new ArrayList<>();
 
 				Date defaultDate = sf.parse(dailyAttendanceList.get(i).getAttDate());
-				ObjectMapper mapper = new ObjectMapper();
-				EmpJsonData employee = mapper.readValue(dailyAttendanceList.get(i).getEmpJson(), EmpJsonData.class);
+				//ObjectMapper mapper = new ObjectMapper();
+				// EmpJsonData employee =
+				// mapper.readValue(dailyAttendanceList.get(i).getEmpJson(), EmpJsonData.class);
+
+				EmpJsonData employee = new EmpJsonData();
+
+				for (int j = 0; j < jsonDataList.size(); j++) {
+
+					if (jsonDataList.get(j).getEmpId() == dailyAttendanceList.get(i).getEmpId()) {
+						employee = jsonDataList.get(j);
+						break;
+					}
+
+				}
 				dailyAttendanceList.get(i).setEmpType(employee.getEmpType());
-
-				// delete leave Added By System in this month
-
 				// get emptype record and break;
 
 				for (int j = 0; j < mstEmpTypeList.size(); j++) {
@@ -440,7 +456,7 @@ public class AttendanceApiControllerchange {
 
 							dailyAttendanceList.get(i).setInTime(fileUploadedDataList.get(j).getInTime());
 							dailyAttendanceList.get(i).setOutTime(fileUploadedDataList.get(j).getOutTime());
-							dailyAttendanceList.get(i).setByFileUpdated(1); 
+							dailyAttendanceList.get(i).setByFileUpdated(1);
 							if (dataForUpdateAttendance.getEmpId() == 0) {
 								dailyAttendanceList.get(i).setRowId(j + 1);
 							}
@@ -1898,13 +1914,14 @@ public class AttendanceApiControllerchange {
 	}
 
 	@RequestMapping(value = { "/updateweeklyoffotStatutoused" }, method = RequestMethod.POST)
-	public @ResponseBody Info updateweeklyoffotStatutoused(
-			@RequestParam("dailydaillyIds") List<Integer> dailydaillyIds,@RequestParam("status") String status) {
+	public @ResponseBody Info updateweeklyoffotStatutoused(@RequestParam("dailydaillyIds") List<Integer> dailydaillyIds,
+			@RequestParam("status") String status) {
 
 		Info info = new Info();
 		try {
 
-			int updateweeklyoffotStatutoused = dailyAttendanceRepository.updateweeklyoffotStatutoused(dailydaillyIds,status);
+			int updateweeklyoffotStatutoused = dailyAttendanceRepository.updateweeklyoffotStatutoused(dailydaillyIds,
+					status);
 			info.setError(false);
 			info.setMsg("success");
 		} catch (Exception e) {

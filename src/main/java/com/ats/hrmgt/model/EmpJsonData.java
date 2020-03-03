@@ -1,8 +1,12 @@
 package com.ats.hrmgt.model;
- 
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class EmpJsonData {
 	 
+	@Id
 	private int empId ; 
 	private String empCode ; 
 	private String cmpCode; 
