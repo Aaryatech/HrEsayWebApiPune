@@ -713,10 +713,7 @@ public class PayrollApiController {
 								salaryTermList.get(j).setValue(getSalaryTempList.get(i).getGetAllowanceTempList()
 										.get(index).getAllowanceValue());
 
-								/*
-								 * System.out.println( salaryTermList.get(j) + " empid " +
-								 * getSalaryTempList.get(i).getEmpId());
-								 */
+								System.out.println(salaryTermList.get(j));
 
 							}
 							break;
@@ -728,6 +725,7 @@ public class PayrollApiController {
 								getSalaryTempList.get(i).setGrossSalaryDytemp(temp);
 								salaryTermList.get(j).setValue(temp);
 							} else if (salaryTermList.get(j).getFieldName().equals("epf_wages")) {
+								System.out.println(temp);
 								getSalaryTempList.get(i).setEpfWages(temp);
 								salaryTermList.get(j).setValue(temp);
 							} else if (salaryTermList.get(j).getFieldName().equals("esic_wages_cal")) {
@@ -808,7 +806,7 @@ public class PayrollApiController {
 									getSalaryTempList.get(i).getWorkingDays(), ammt, mstEmpType, amount_round);
 							getSalaryTempList.get(i).setProductionInsentive(tempVal);
 							salaryTermList.get(j).setValue(tempVal);
-							System.out.println(ammt + "oTTTTT" + tempVal);
+							//System.out.println(ammt + "oTTTTT" + tempVal);
 
 							/*
 							 * System.out.println(getSalaryTempList.get(i).getEmpId() + " " + ammt +
@@ -1205,7 +1203,7 @@ public class PayrollApiController {
 		double otMultiplication = 0;
 
 		if (mstEmpType.getOtApplicable().equalsIgnoreCase("yes")) {
-			otMultiplication = Integer.parseInt(mstEmpType.getOtType());
+			//otMultiplication = Integer.parseInt(mstEmpType.getOtType());
 
 			if (salBasis.equalsIgnoreCase("monthly")) {
 				val = (((ammt / totalDays) / workingHour) * otHr) * otMultiplication;
@@ -1228,7 +1226,7 @@ public class PayrollApiController {
 		// metaf: amount / month_day
 		double val = 0;
 
-		if (mstEmpType.getProdIncentiveApp().equalsIgnoreCase("1")) {
+		if (mstEmpType.getWhWork().equalsIgnoreCase("OT")) {
 
 			val = perDayGrossSal;
 			val = castNumber(val, amount_round);
