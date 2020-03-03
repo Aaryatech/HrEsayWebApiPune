@@ -11,10 +11,10 @@ public class BirthHoliDash {
 	private List<HolidayMaster> holiList;
 	
 	
-	private List<TblEmpInfo> birthListUpcoming;
+	private List<GetBirthDaysForDash> birthListUpcoming;
 	
 	
-	private List<TblEmpInfo> birthListToday;
+	private List<GetBirthDaysForDash> birthListToday;
 
 
 	public List<HolidayMaster> getHoliList() {
@@ -27,22 +27,24 @@ public class BirthHoliDash {
 	}
 
 
-	public List<TblEmpInfo> getBirthListUpcoming() {
+	 
+
+	public List<GetBirthDaysForDash> getBirthListUpcoming() {
 		return birthListUpcoming;
 	}
 
 
-	public void setBirthListUpcoming(List<TblEmpInfo> birthListUpcoming) {
+	public void setBirthListUpcoming(List<GetBirthDaysForDash> birthListUpcoming) {
 		this.birthListUpcoming = birthListUpcoming;
 	}
 
 
-	public List<TblEmpInfo> getBirthListToday() {
+	public List<GetBirthDaysForDash> getBirthListToday() {
 		return birthListToday;
 	}
 
 
-	public void setBirthListToday(List<TblEmpInfo> birthListToday) {
+	public void setBirthListToday(List<GetBirthDaysForDash> birthListToday) {
 		this.birthListToday = birthListToday;
 	}
 

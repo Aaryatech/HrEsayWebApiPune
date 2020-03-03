@@ -35,9 +35,9 @@ public interface HolidayMasterRepo extends JpaRepository<HolidayMaster, Integer>
 			"FROM\n" + 
 			"    holiday_master\n" + 
 			"WHERE\n" + 
-			"    holiday_master.holiday_date BETWEEN :fromDate AND :toDate AND holiday_master.del_status = 1\n" + 
+			"    holiday_master.holiday_date BETWEEN :currDate AND DATE_ADD(:currDate, INTERVAL 30 DAY) AND holiday_master.del_status = 1\n" + 
 			"ORDER BY\n" + 
 			"    holiday_master.holiday_date ASC", nativeQuery = true)
-	List<HolidayMaster> getHolidaysForDash(@Param("fromDate") String fromDate,@Param("toDate") String toDate);
+	List<HolidayMaster> getHolidaysForDash(@Param("currDate") String currDate);
 
 }

@@ -80,5 +80,13 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 		@Query("update DailyAttendance set multipleEntries=:status  WHERE id in (:dailydaillyIds) ")
 		int updateweeklyoffotStatutoused(List<Integer> dailydaillyIds, String status);
 	
+	 	
+	 	
+		@Query(value = "select * from tbl_attt_daily_daily where att_date =:filterDate", nativeQuery = true)
+		List<DailyAttendance> dailyAttendanceListRec(@Param("filterDate") String filterDate);
+ 		
+		@Query(value = "select * from tbl_attt_daily_daily   ORDER BY tbl_attt_daily_daily.id DESC LIMIT 1", nativeQuery = true)
+		 DailyAttendance  dailyAttendanceListLastRec();
+	
  
 }
