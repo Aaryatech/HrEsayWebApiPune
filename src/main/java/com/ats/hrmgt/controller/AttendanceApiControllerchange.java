@@ -652,7 +652,9 @@ public class AttendanceApiControllerchange {
 					if (dailyAttendanceList.get(i).getInTime().equals("0:00")
 							|| dailyAttendanceList.get(i).getOutTime().equals("0:00")
 							|| dailyAttendanceList.get(i).getInTime().equals("00:00")
-							|| dailyAttendanceList.get(i).getOutTime().equals("00:00")) {
+							|| dailyAttendanceList.get(i).getOutTime().equals("00:00")
+							|| dailyAttendanceList.get(i).getInTime().equals("00:00:00")
+							|| dailyAttendanceList.get(i).getOutTime().equals("00:00:00")) {
 						presentStatus = 8;
 						dailyAttendanceList.get(i).setFullNight(0);
 					}
@@ -663,7 +665,7 @@ public class AttendanceApiControllerchange {
 					 * dailyAttendanceList.get(i).setOtHr(String.valueOf(dailyAttendanceList.get(i).
 					 * getWorkingHrs())); }
 					 */
- 
+
 					String atteanceCase = weekEndStatus + "" + holidayStatus + "" + leaveStatus + "" + presentStatus;
 
 					dailyAttendanceList.get(i).setCasetype(atteanceCase);
@@ -1290,7 +1292,7 @@ public class AttendanceApiControllerchange {
 									+ summaryDailyAttendanceList.get(i).getWeeklyOff());
 				}
 				summaryDailyAttendanceList.get(i).setCalculationDone(1);
-				
+
 				System.out.println(summaryDailyAttendanceList.get(i).getFullNight());
 			}
 
@@ -1660,7 +1662,7 @@ public class AttendanceApiControllerchange {
 					fileUploadedData.setInTime(inTime);
 					fileUploadedData.setOutTime(outTime);
 					fileUploadedDataList.add(fileUploadedData);
-
+ 
 					DataForUpdateAttendance dataForUpdateAttendance = new DataForUpdateAttendance();
 					dataForUpdateAttendance.setFromDate(dailyRecordById.getAttDate());
 					dataForUpdateAttendance.setToDate(dailyRecordById.getAttDate());
@@ -1750,11 +1752,10 @@ public class AttendanceApiControllerchange {
 					// System.out.println(fileUploadedData);
 
 					info = getVariousListForUploadAttendace(dataForUpdateAttendance);
-					/*
-					 * info = finalUpdateDailySumaryRecord(dailyRecordByDate.get(0).getAttDate(),
-					 * dailyRecordByDate.get(0).getAttDate(), userId, shiftWeeklyofById.getMonth(),
-					 * shiftWeeklyofById.getYear(), shiftWeeklyofById.getEmpId());
-					 */
+
+					info = finalUpdateDailySumaryRecord(dailyRecordByDate.get(0).getAttDate(),
+							dailyRecordByDate.get(0).getAttDate(), userId, shiftWeeklyofById.getMonth(),
+							shiftWeeklyofById.getYear(), shiftWeeklyofById.getEmpId());
 
 				}
 			}
