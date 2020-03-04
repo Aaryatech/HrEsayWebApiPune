@@ -858,6 +858,9 @@ public class PayrollApiController {
 
 				}
 
+				getSalaryTempList.get(i).setNightRate(night_allo_rate);
+				getSalaryTempList.get(i).setNightAllow(getSalaryTempList.get(i).getFullNight() * night_allo_rate);
+				
 				if (getSalaryTempList.get(i).getMlwfApplicable().equalsIgnoreCase("yes")) {
 					if (month == 6 || month == 12) {
 						getSalaryTempList.get(i).setMlwf(employee_mlwf);
@@ -1022,9 +1025,7 @@ public class PayrollApiController {
 				getSalaryTempList.get(i).setPfAdminChPercentage(tot_pf_admin_ch_percentage);
 				getSalaryTempList.get(i).setEdliPercentage(tot_edli_ch_percentage);
 				getSalaryTempList.get(i).setEdliAdminPercentage(tot_edli_admin_ch_percentage);
-				getSalaryTempList.get(i).setNightRate(night_allo_rate);
-				getSalaryTempList.get(i).setNightAllow(getSalaryTempList.get(i).getFullNight() * night_allo_rate);
-
+				 
 				getSalaryTempList.get(i).setStatusDytemp(1);
 				getSalaryTempList.get(i).setNetSalary(castNumber((getSalaryTempList.get(i).getGrossSalaryDytemp()
 						+ getSalaryTempList.get(i).getPerformanceBonus() + getSalaryTempList.get(i).getMiscExpAdd()

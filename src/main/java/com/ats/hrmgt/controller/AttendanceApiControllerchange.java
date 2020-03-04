@@ -1314,7 +1314,7 @@ public class AttendanceApiControllerchange {
 
 				summaryDailyAttendanceList.get(i).setCalculationDone(1);
 
-				System.out.println(summaryDailyAttendanceList.get(i).getFullNight());
+				//System.out.println(summaryDailyAttendanceList.get(i).getFullNight());
 			}
 
 			// System.out.println("summaryDailyAttendanceList " +
