@@ -514,7 +514,7 @@ public class PayrollApiController {
 			double tot_pf_admin_ch_percentage = 0;
 			double tot_edli_ch_percentage = 0;
 			double tot_edli_admin_ch_percentage = 0;
-			int ab_deduction = 0;
+			float ab_deduction = 0;
 			int febmonthptamount_condtioncheck = 0;
 			double febmonthptamount = 0;
 			int amount_round = 0;
@@ -552,7 +552,7 @@ public class PayrollApiController {
 				} else if (settingList.get(k).getKey().equalsIgnoreCase("ammount_format_Insert")) {
 					amount_round = Integer.parseInt(settingList.get(k).getValue());
 				} else if (settingList.get(k).getKey().equalsIgnoreCase("ab_deduction")) {
-					ab_deduction = Integer.parseInt(settingList.get(k).getValue());
+					ab_deduction = Float.parseFloat(settingList.get(k).getValue());
 				} else if (settingList.get(k).getKey().equalsIgnoreCase("employer_epf_percentage")) {
 					employer_epf_percentage = Float.parseFloat(settingList.get(k).getValue());
 				} else if (settingList.get(k).getKey().equalsIgnoreCase("employer_mlwf_value_ded")) {
@@ -835,8 +835,9 @@ public class PayrollApiController {
 
 							tempVal = ammt / getSalaryTempList.get(i).getTotalDaysInmonth();
 							double deductValue = castNumber(
-									(tempVal * getSalaryTempList.get(i).getAbsentDays() * ab_deduction), amount_round);
-							// System.out.println(ammt + "oTTTTT" + tempVal);
+									(tempVal * getSalaryTempList.get(i).getAbsentDays() * ab_deduction * 2),
+									amount_round);
+							System.out.println(ammt + "oTTTTT" + tempVal + " " + deductValue);
 							getSalaryTempList.get(i).setAbDeduction(deductValue);
 							// assign to table Filed
 							salaryTermList.get(j).setValue(deductValue);
@@ -994,14 +995,16 @@ public class PayrollApiController {
 							getSalaryTempList.get(i).setEsic(0);
 						} else {
 
-							getSalaryTempList.get(i)
-									.setEmployerEsic(castNumber(
-											(getSalaryTempList.get(i).getEsicWagesCal() * employer_esic_percentage),
-											amount_round));
-							getSalaryTempList.get(i)
-									.setEsic(castNumber(
-											(getSalaryTempList.get(i).getEsicWagesCal() * employee_esic_percentage),
-											amount_round));
+							getSalaryTempList.get(i).setEmployerEsic(castNumber(
+									((getSalaryTempList.get(i).getEsicWagesCal() + getSalaryTempList.get(i).getOtWages()
+											+ getSalaryTempList.get(i).getProductionInsentive()
+											+ getSalaryTempList.get(i).getNightAllow()) * employer_esic_percentage),
+									amount_round));
+							getSalaryTempList.get(i).setEsic(castNumber(
+									((getSalaryTempList.get(i).getEsicWagesCal() + getSalaryTempList.get(i).getOtWages()
+											+ getSalaryTempList.get(i).getProductionInsentive()
+											+ getSalaryTempList.get(i).getNightAllow()) * employee_esic_percentage),
+									amount_round));
 						}
 						// System.out.println("ESIC ==== " + getSalaryTempList.get(i).getEsicWagesCal()
 						// + "##" + employee_esic_percentage);
@@ -1389,7 +1392,7 @@ public class PayrollApiController {
 				SalaryCalc.setReward(salList.get(i).getReward());
 				SalaryCalc.setNightRate(salList.get(i).getNightRate());
 				SalaryCalc.setOtRate(salList.get(i).getOtRate());
-				
+
 				SalaryCalc saveres = salaryCalcRepo.save(SalaryCalc);
 
 				List<SalAllownceCal> allowlist = new ArrayList<>();

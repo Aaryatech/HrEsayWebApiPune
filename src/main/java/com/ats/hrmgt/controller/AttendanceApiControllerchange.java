@@ -42,6 +42,7 @@ import com.ats.hrmgt.model.LoginResponse;
 import com.ats.hrmgt.model.LvType;
 import com.ats.hrmgt.model.LvmSumUp;
 import com.ats.hrmgt.model.MstEmpType;
+import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.ShiftMaster;
 import com.ats.hrmgt.model.SummaryAttendance;
 import com.ats.hrmgt.model.SummaryDailyAttendance;
@@ -62,6 +63,7 @@ import com.ats.hrmgt.repository.LeaveTrailRepository;
 import com.ats.hrmgt.repository.LvTypeRepository;
 import com.ats.hrmgt.repository.LvmSumUpRepository;
 import com.ats.hrmgt.repository.MstEmpTypeRepository;
+import com.ats.hrmgt.repository.SettingRepo;
 import com.ats.hrmgt.repository.ShiftMasterRepository;
 import com.ats.hrmgt.repository.SummaryAttendanceRepository;
 import com.ats.hrmgt.repository.SummaryDailyAttendanceRepository;
@@ -138,7 +140,10 @@ public class AttendanceApiControllerchange {
 
 	@Autowired
 	EmpJsonDataRepository empJsonDataRepository;
-
+	
+	@Autowired
+	SettingRepo settingRepo;
+	
 	@RequestMapping(value = { "/initiallyInsertDailyRecord" }, method = RequestMethod.POST)
 	public @ResponseBody Info initiallyInsertDailyRecord(@RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("userId") int userId) {
@@ -1113,6 +1118,8 @@ public class AttendanceApiControllerchange {
 
 		try {
 
+			Setting setting = settingRepo.findByKey("ab_deduction");
+			
 			List<DailyDailyInformation> dailyDailyInformationList = new ArrayList<>();
 
 			List<SummaryDailyAttendance> summaryDailyAttendanceList = new ArrayList<>();
@@ -1150,7 +1157,7 @@ public class AttendanceApiControllerchange {
 				int totalWorkingHr = 0;
 				int totalOtHr = 0;
 				int nightcount = 0;
-
+				float ab_deduction = Float.parseFloat(setting.getValue());
 				String isDaily = "daily";
 
 				for (int j = 0; j < dailyDailyInformationList.size(); j++) {
@@ -1291,6 +1298,20 @@ public class AttendanceApiControllerchange {
 									+ summaryDailyAttendanceList.get(i).getPaidLeave()
 									+ summaryDailyAttendanceList.get(i).getWeeklyOff());
 				}
+				summaryDailyAttendanceList.get(i).setPayableDays(summaryDailyAttendanceList.get(i).getPayableDays()-(absentLeave*ab_deduction));
+				/*
+				 * ammt = calculatePdata(salaryTermList.get(j), salaryTermList,
+				 * getSalaryTempList.get(i), amount_round);
+				 * 
+				 * tempVal = ammt / getSalaryTempList.get(i).getTotalDaysInmonth(); double
+				 * deductValue = castNumber( (tempVal * getSalaryTempList.get(i).getAbsentDays()
+				 * * ab_deduction), amount_round);
+				 * 
+				 * getSalaryTempList.get(i).setAbDeduction(deductValue);
+				 * 
+				 * salaryTermList.get(j).setValue(deductValue);
+				 */
+
 				summaryDailyAttendanceList.get(i).setCalculationDone(1);
 
 				System.out.println(summaryDailyAttendanceList.get(i).getFullNight());
@@ -1662,7 +1683,7 @@ public class AttendanceApiControllerchange {
 					fileUploadedData.setInTime(inTime);
 					fileUploadedData.setOutTime(outTime);
 					fileUploadedDataList.add(fileUploadedData);
- 
+
 					DataForUpdateAttendance dataForUpdateAttendance = new DataForUpdateAttendance();
 					dataForUpdateAttendance.setFromDate(dailyRecordById.getAttDate());
 					dataForUpdateAttendance.setToDate(dailyRecordById.getAttDate());
