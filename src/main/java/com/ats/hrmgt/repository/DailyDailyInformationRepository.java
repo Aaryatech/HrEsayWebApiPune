@@ -19,7 +19,7 @@ public interface DailyDailyInformationRepository extends JpaRepository<DailyDail
 			"        sum(dl.working_hrs) as working_min,\n" + 
 			"        sum(ot_hr) as ot_min,\n" + 
 			"        sum(late_mark) as late_mark,\n" + 
-			"        sum(late_min) as  late_min,\n" + 
+			"        sum(late_min) as  late_min,sum(full_night) as  full_night,\n" + 
 			"        es.sal_basis\n" + 
 			"    from\n" + 
 			"        tbl_attt_daily_daily dl,\n" + 
@@ -43,7 +43,7 @@ public interface DailyDailyInformationRepository extends JpaRepository<DailyDail
 			"        sum(dl.working_hrs) as working_min,\n" + 
 			"        sum(ot_hr) as ot_min,\n" + 
 			"        sum(late_mark) as late_mark,\n" + 
-			"        sum(late_min) as  late_min,\n" + 
+			"        sum(late_min) as  late_min,sum(full_night) as  full_night,\n" + 
 			"        es.sal_basis\n" + 
 			"    from\n" + 
 			"        tbl_attt_daily_daily dl,\n" + 

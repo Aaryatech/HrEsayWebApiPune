@@ -451,7 +451,7 @@ public class PayrollApiController {
 				for (int j = 0; j < splt.length; j++) {
 					if (splt[j].contains("value")) {
 						String[] value = splt[j].split(":");
-						System.out.println(value[1].trim());
+						//System.out.println(value[1].trim());
 						break;
 					}
 				}
@@ -649,8 +649,8 @@ public class PayrollApiController {
 										.setAllowanceValueCal(tempVal);
 								salaryTermList.get(j).setValue(tempVal);
 
-								System.out.println(salaryTermList.get(j).getSalTermId() + " " + tempVal + ""
-										+ getSalaryTempList.get(i).getGetAllowanceTempList().get(index).getShortName());
+								/*System.out.println(salaryTermList.get(j).getSalTermId() + " " + tempVal + ""
+										+ getSalaryTempList.get(i).getGetAllowanceTempList().get(index).getShortName());*/
 
 							}
 
@@ -713,7 +713,7 @@ public class PayrollApiController {
 								salaryTermList.get(j).setValue(getSalaryTempList.get(i).getGetAllowanceTempList()
 										.get(index).getAllowanceValue());
 
-								System.out.println(salaryTermList.get(j));
+								//System.out.println(salaryTermList.get(j));
 
 							}
 							break;
@@ -725,7 +725,7 @@ public class PayrollApiController {
 								getSalaryTempList.get(i).setGrossSalaryDytemp(temp);
 								salaryTermList.get(j).setValue(temp);
 							} else if (salaryTermList.get(j).getFieldName().equals("epf_wages")) {
-								System.out.println(temp);
+								//System.out.println(temp);
 								getSalaryTempList.get(i).setEpfWages(temp);
 								salaryTermList.get(j).setValue(temp);
 							} else if (salaryTermList.get(j).getFieldName().equals("esic_wages_cal")) {
@@ -779,7 +779,7 @@ public class PayrollApiController {
 									getSalaryTempList.get(i).getTotalDaysInmonth(),
 									getSalaryTempList.get(i).getPayableDays(),
 									getSalaryTempList.get(i).getWorkingDays(), salaryType.getWorkinghr(),
-									getSalaryTempList.get(i).getTotOthr(), ammt, mstEmpType, amount_round);
+									getSalaryTempList.get(i).getTotOthr(), ammt, mstEmpType,getSalaryTempList.get(i).getRate(), amount_round);
 							getSalaryTempList.get(i).setOtWages(tempVal);
 							salaryTermList.get(j).setValue(tempVal);
 
@@ -1192,24 +1192,27 @@ public class PayrollApiController {
 	}
 
 	public double otwages(float percentage, String salBasis, int totalDays, float totalPayableDays, float workingDays,
-			double workingHour, float otHr, double ammt, MstEmpType mstEmpType, int amount_round) {
+			double workingHour, float otHr, double ammt, MstEmpType mstEmpType, double rate, int amount_round) {
 
 		workingHour = workingHour / 60;
+		
 		otHr = otHr / 60;
 		// basic+DAy
 		// metaf: amount / month_day
 		double val = 0;
-
+		 
 		double otMultiplication = 0;
-
+		 
 		if (mstEmpType.getOtApplicable().equalsIgnoreCase("yes")) {
 			//otMultiplication = Integer.parseInt(mstEmpType.getOtType());
 
 			if (salBasis.equalsIgnoreCase("monthly")) {
-				val = (((ammt / totalDays) / workingHour) * otHr) * otMultiplication;
+				//val = (((ammt / totalDays) / workingHour) * otHr) * otMultiplication;
+				val = otHr * rate;
 			} // $sal_basis == "monthly"
 			else {
-				val = ((ammt / workingHour) * otHr) * otMultiplication;
+				//val = ((ammt / workingHour) * otHr) * otMultiplication;
+				val = otHr * rate;
 			}
 			val = castNumber(val, amount_round);
 		}

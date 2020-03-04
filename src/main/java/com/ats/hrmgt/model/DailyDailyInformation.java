@@ -37,7 +37,10 @@ public class DailyDailyInformation {
 	
 	@Column(name="late_min")
 	private int lateMin;
-
+	
+	@Column(name="full_night")
+	private int fullNight;
+	
 	@Column(name="sal_basis")
 	private String salBasis;
 	
@@ -121,11 +124,19 @@ public class DailyDailyInformation {
 		this.salBasis = salBasis;
 	}
 
+	public int getFullNight() {
+		return fullNight;
+	}
+
+	public void setFullNight(int fullNight) {
+		this.fullNight = fullNight;
+	}
+
 	@Override
 	public String toString() {
 		return "DailyDailyInformation [uuid=" + uuid + ", empId=" + empId + ", daycount=" + daycount + ", lvSumupId="
 				+ lvSumupId + ", nameSd=" + nameSd + ", workingMin=" + workingMin + ", otMin=" + otMin + ", lateMark="
-				+ lateMark + ", lateMin=" + lateMin + ", salBasis=" + salBasis + "]";
+				+ lateMark + ", lateMin=" + lateMin + ", fullNight=" + fullNight + ", salBasis=" + salBasis + "]";
 	} 
 	
 	

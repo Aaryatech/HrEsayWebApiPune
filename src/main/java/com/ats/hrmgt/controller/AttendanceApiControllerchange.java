@@ -397,7 +397,7 @@ public class AttendanceApiControllerchange {
 				possibleShiftList = new ArrayList<>();
 
 				Date defaultDate = sf.parse(dailyAttendanceList.get(i).getAttDate());
-				//ObjectMapper mapper = new ObjectMapper();
+				// ObjectMapper mapper = new ObjectMapper();
 				// EmpJsonData employee =
 				// mapper.readValue(dailyAttendanceList.get(i).getEmpJson(), EmpJsonData.class);
 
@@ -528,10 +528,13 @@ public class AttendanceApiControllerchange {
 				try {
 					Date inDt = yyDtTm.parse(inDttime);// Set start date
 					Date outDt = yyDtTm.parse(outDttime);
+					String nighttime = dailyAttendanceList.get(i).getAttDate() + " 01:00:00";
 
 					if (inDt.compareTo(outDt) > 0) {
 						outDt.setTime(outDt.getTime() + 1000 * 60 * 60 * 24);
+						nighttime = sf.format(outDt) + " 01:00:00";
 					}
+					Date nighttimedt = yyDtTm.parse(nighttime);
 
 					long durationBetweenInOut = outDt.getTime() - inDt.getTime();
 					long diffHoursBetweenInOut = durationBetweenInOut / (60 * 60 * 1000);
@@ -540,9 +543,44 @@ public class AttendanceApiControllerchange {
 
 					dailyAttendanceList.get(i).setWorkingHrs(diffMinutesBetweenInOut);
 
+					/*
+					 * if (diffMinutesBetweenInOut > shiftMaster.getShiftOtHour()) {
+					 * dailyAttendanceList.get(i) .setOtHr(String.valueOf(diffMinutesBetweenInOut -
+					 * shiftMaster.getShiftOtHour())); } else {
+					 * dailyAttendanceList.get(i).setOtHr("0"); }
+					 */
+
+					// identify night work
+					if (shiftMaster.getDepartmentId() == 1) {
+
+						dailyAttendanceList.get(i).setFullNight(1);
+
+					} else if (inDt.compareTo(nighttimedt) <= 0 && outDt.compareTo(nighttimedt) >= 0) {
+
+						dailyAttendanceList.get(i).setFullNight(1);
+
+					} else {
+						dailyAttendanceList.get(i).setFullNight(0);
+					}
+
 					if (diffMinutesBetweenInOut > shiftMaster.getShiftOtHour()) {
-						dailyAttendanceList.get(i)
-								.setOtHr(String.valueOf(diffMinutesBetweenInOut - shiftMaster.getShiftOtHour()));
+						int otHr = (int) (diffMinutesBetweenInOut - shiftMaster.getShiftOtHour());
+						int otintHrs = otHr / 60;
+						int otintmin = otHr % 60;
+
+						if (otintHrs >= 1) {
+
+							int actualotmin = otintHrs * 60;
+
+							if (otintmin > 30 && otintmin < 60) {
+								actualotmin = actualotmin + 30;
+							}
+
+							dailyAttendanceList.get(i).setOtHr(String.valueOf(actualotmin));
+						} else {
+							dailyAttendanceList.get(i).setOtHr("0");
+						}
+
 					} else {
 						dailyAttendanceList.get(i).setOtHr("0");
 					}
@@ -616,12 +654,16 @@ public class AttendanceApiControllerchange {
 							|| dailyAttendanceList.get(i).getInTime().equals("00:00")
 							|| dailyAttendanceList.get(i).getOutTime().equals("00:00")) {
 						presentStatus = 8;
+						dailyAttendanceList.get(i).setFullNight(0);
 					}
 
-					if ((presentStatus == 7 && weekEndStatus == 1) || (presentStatus == 7 && holidayStatus == 1)) {
-						dailyAttendanceList.get(i).setOtHr(String.valueOf(dailyAttendanceList.get(i).getWorkingHrs()));
-					}
-
+					/*
+					 * if ((presentStatus == 7 && weekEndStatus == 1) || (presentStatus == 7 &&
+					 * holidayStatus == 1)) {
+					 * dailyAttendanceList.get(i).setOtHr(String.valueOf(dailyAttendanceList.get(i).
+					 * getWorkingHrs())); }
+					 */
+ 
 					String atteanceCase = weekEndStatus + "" + holidayStatus + "" + leaveStatus + "" + presentStatus;
 
 					dailyAttendanceList.get(i).setCasetype(atteanceCase);
@@ -1105,6 +1147,7 @@ public class AttendanceApiControllerchange {
 				int lateMark = 0;
 				int totalWorkingHr = 0;
 				int totalOtHr = 0;
+				int nightcount = 0;
 
 				String isDaily = "daily";
 
@@ -1118,6 +1161,7 @@ public class AttendanceApiControllerchange {
 						lateMark = lateMark + dailyDailyInformationList.get(j).getLateMark();
 						totalWorkingHr = totalWorkingHr + dailyDailyInformationList.get(j).getWorkingMin();
 						totalOtHr = totalOtHr + dailyDailyInformationList.get(j).getOtMin();
+						nightcount = nightcount + dailyDailyInformationList.get(j).getFullNight();
 
 						if (dailyDailyInformationList.get(j).getLvSumupId() == 5) { // 5=p,ot
 
@@ -1227,6 +1271,8 @@ public class AttendanceApiControllerchange {
 				summaryDailyAttendanceList.get(i).setAbsentDays(absentLeave);
 				summaryDailyAttendanceList.get(i).setTotalDaysInmonth(totalDaysInmonth);
 				summaryDailyAttendanceList.get(i).setWeeklyOffPresent(wot);
+				summaryDailyAttendanceList.get(i).setFullNight(nightcount);
+
 				workingDays = totalDaysInmonth - summaryDailyAttendanceList.get(i).getWeeklyOff()
 						- summaryDailyAttendanceList.get(i).getPaidHoliday();
 				summaryDailyAttendanceList.get(i).setWorkingDays(workingDays);
@@ -1244,6 +1290,8 @@ public class AttendanceApiControllerchange {
 									+ summaryDailyAttendanceList.get(i).getWeeklyOff());
 				}
 				summaryDailyAttendanceList.get(i).setCalculationDone(1);
+				
+				System.out.println(summaryDailyAttendanceList.get(i).getFullNight());
 			}
 
 			// System.out.println("summaryDailyAttendanceList " +

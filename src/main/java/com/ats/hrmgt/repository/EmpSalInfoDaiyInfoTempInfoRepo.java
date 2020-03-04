@@ -68,8 +68,18 @@ public interface EmpSalInfoDaiyInfoTempInfoRepo extends JpaRepository<EmpSalInfo
 			"        sdt.comments_for_it_bonus,\n" + 
 			"        sdt.society_contribution as society_contribution_dytemp,\n" + 
 			"        sdt.emp_category,\n" + 
-			"        sdt.basic_default,sdt.ab_deduction,sdt.epf_percentage,sdt.eps_employee_percentage,sdt.production_insentive,sdt.epf_employer_percentage"
-			+ ",sdt.eps_employer_percentage,sdt.present_insentive,sdt.night_allow,sdt.adjust_minus,sdt.adjust_plus,sdt.reward,\n" + 
+			"        sdt.basic_default,\n" + 
+			"        sdt.ab_deduction,\n" + 
+			"        sdt.epf_percentage,\n" + 
+			"        sdt.eps_employee_percentage,\n" + 
+			"        sdt.production_insentive,\n" + 
+			"        sdt.epf_employer_percentage,\n" + 
+			"        sdt.eps_employer_percentage,\n" + 
+			"        sdt.present_insentive,\n" + 
+			"        sdt.night_allow,\n" + 
+			"        sdt.adjust_minus,\n" + 
+			"        sdt.adjust_plus,\n" + 
+			"        sdt.reward,\n" + 
 			"        si.salary_info_id,\n" + 
 			"        si.salary_type_id,\n" + 
 			"        si.basic,\n" + 
@@ -146,21 +156,25 @@ public interface EmpSalInfoDaiyInfoTempInfoRepo extends JpaRepository<EmpSalInfo
 			"        sd.tot_early_going,\n" + 
 			"        sd.atsumm_uid,\n" + 
 			"        sd.calculation_done,\n" + 
-			"        ef.dob\n" + 
+			"        ef.dob,\n" + 
+			"        sr.skill_id,\n" + 
+			"        sr.rate\n" + 
 			"    from\n" + 
 			"        tbl_salary_dynamic_temp sdt,\n" + 
 			"        tbl_emp_salary_info si,\n" + 
 			"        tbl_attt_summary_daily sd,\n" + 
-			"        tbl_emp_info ef\n" + 
+			"        tbl_emp_info ef,\n" + 
+			"        m_skill_rates sr,\n" + 
+			"        m_employees e\n" + 
 			"    where\n" + 
-			"        sd.emp_id=si.emp_id          \n" + 
-			"        and sdt.emp_id=si.emp_id          \n" + 
-			"        and sd.month=:month          \n" + 
-			"        and sd.year=:year         \n" + 
-			"        and sd.month=sdt.calc_month          \n" + 
-			"        and sd.year=sdt.calc_year         \n" + 
-			"        and sdt.emp_id in (:empIds)\n" + 
-			"        and ef.emp_id=sdt.emp_id\n" + 
+			"        sd.emp_id=si.emp_id                   \n" + 
+			"        and sdt.emp_id=si.emp_id                   \n" + 
+			"        and sd.month=:month                   \n" + 
+			"        and sd.year=:year                  \n" + 
+			"        and sd.month=sdt.calc_month                   \n" + 
+			"        and sd.year=sdt.calc_year                  \n" + 
+			"        and sdt.emp_id in (:empIds)         \n" + 
+			"        and ef.emp_id=sdt.emp_id and sr.skill_id=e.ex_int2 and e.emp_id=si.emp_id  \n" + 
 			"    order by\n" + 
 			"        sd.emp_id", nativeQuery = true)
 	List<EmpSalInfoDaiyInfoTempInfo> getSalaryTempList(@Param("month") int month, @Param("year") int year,
