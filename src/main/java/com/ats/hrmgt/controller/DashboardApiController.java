@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.HolidayMaster;
 import com.ats.hrmgt.model.TblEmpInfo;
@@ -24,16 +25,22 @@ import com.ats.hrmgt.model.dashboard.GetAllPendingMasterDet;
 import com.ats.hrmgt.model.dashboard.GetBirthDaysForDash;
 import com.ats.hrmgt.model.dashboard.GetNewHiresDash;
 import com.ats.hrmgt.model.dashboard.LeavePenDash;
+import com.ats.hrmgt.model.dashboard.LoanAdvDashDet;
+import com.ats.hrmgt.model.dashboard.PayRewardDedDash;
 import com.ats.hrmgt.model.dashboard.PreDayAttnDash;
 import com.ats.hrmgt.model.repo.dash.DeptWiseWeekoffDashRepo;
 import com.ats.hrmgt.model.repo.dash.GetAllPendingMasterDetRepo;
 import com.ats.hrmgt.model.repo.dash.GetBirthDaysForDashRepo;
 import com.ats.hrmgt.model.repo.dash.GetNewHiresDashRepo;
 import com.ats.hrmgt.model.repo.dash.LeavePenDashRepo;
+import com.ats.hrmgt.model.repo.dash.LoanAdvDashDetDashRepo;
+import com.ats.hrmgt.model.repo.dash.PayRewardDedDashRepo;
 import com.ats.hrmgt.model.repo.dash.PreDayAttnDashRepo;
 import com.ats.hrmgt.repo.HolidayMasterRepo;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
 import com.ats.hrmgt.repository.TblEmpInfoRepo;
+
+import ch.qos.logback.classic.pattern.DateConverter;
 
 @RestController
 public class DashboardApiController {
@@ -142,7 +149,7 @@ public class DashboardApiController {
 
 			birthHoliDash = preDayAttnDashRepo.getAttendance(fiterdateNew);
 
-			birthHoliDash.setAttnDate(fiterdateNew);
+			birthHoliDash.setAttnDate(DateConvertor.convertToDMY(fiterdateNew));
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -194,6 +201,72 @@ public class DashboardApiController {
 		return birthHoliDash;
 
 	}
+	
+	@Autowired
+	PayRewardDedDashRepo payRewardDedDashRepo;
+	
+	@RequestMapping(value = { "/getRewardedDet" }, method = RequestMethod.POST)
+	public @ResponseBody PayRewardDedDash getRewardedDet(@RequestParam("type") int type,@RequestParam("fiterdate") String fiterdate) throws ParseException {
+
+		PayRewardDedDash birthHoliDash = new PayRewardDedDash();
+		String temp[]=fiterdate.split("-");
+		try {
+
+			
+			if(type==1) {
+				birthHoliDash = payRewardDedDashRepo.getDedDetails(temp[0], temp[1]);
+
+			}else {
+				birthHoliDash = payRewardDedDashRepo.getRewardDetails(temp[0], temp[1]);
+			}
+			
+			
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return birthHoliDash;
+
+	}
+	
+	
+	
+	@Autowired
+	LoanAdvDashDetDashRepo loanAdvDashDetDashRepo;
+	
+	
+	@RequestMapping(value = { "/getAdvLoanDash" }, method = RequestMethod.POST)
+	public @ResponseBody LoanAdvDashDet getAdvLoanDash(@RequestParam("type") int type,@RequestParam("fiterdate") String fiterdate) throws ParseException {
+
+		LoanAdvDashDet birthHoliDash = new LoanAdvDashDet();
+
+		
+		String temp[]=fiterdate.split("-");
+		try {
+
+			
+			if(type==1) {
+				birthHoliDash = loanAdvDashDetDashRepo.getAdvnceDetails( temp[0], temp[1]);
+
+			}else {
+				birthHoliDash = loanAdvDashDetDashRepo.getLoanDetails(temp[0], temp[1], fiterdate);
+			}
+			
+			
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return birthHoliDash;
+
+	}
+	
+	
+	
 	
 
 

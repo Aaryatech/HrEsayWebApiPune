@@ -1,6 +1,9 @@
 package com.ats.hrmgt.model.dashboard;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
+
+@Entity
 
 public class TypeWiseEmpAndAmts {
 	
