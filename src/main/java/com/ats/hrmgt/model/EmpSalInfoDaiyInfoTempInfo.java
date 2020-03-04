@@ -83,6 +83,9 @@ public class EmpSalInfoDaiyInfoTempInfo {
 	private double adjustMinus;
 	private double adjustPlus;
 	private double reward;
+	private double nightRate;
+	private double otRate;
+	
 	@Transient
 	private double epsDefault;
 	@Transient
@@ -1131,6 +1134,18 @@ public class EmpSalInfoDaiyInfoTempInfo {
 	public void setRate(double rate) {
 		this.rate = rate;
 	}
+	public double getNightRate() {
+		return nightRate;
+	}
+	public void setNightRate(double nightRate) {
+		this.nightRate = nightRate;
+	}
+	public double getOtRate() {
+		return otRate;
+	}
+	public void setOtRate(double otRate) {
+		this.otRate = otRate;
+	}
 	@Override
 	public String toString() {
 		return "EmpSalInfoDaiyInfoTempInfo [uuid=" + uuid + ", id=" + id + ", cmpId=" + cmpId + ", empId=" + empId
@@ -1156,16 +1171,16 @@ public class EmpSalInfoDaiyInfoTempInfo {
 				+ epsEmployeePercentage + ", productionInsentive=" + productionInsentive + ", epfEmployerPercentage="
 				+ epfEmployerPercentage + ", epsEmployerPercentage=" + epsEmployerPercentage + ", presentInsentive="
 				+ presentInsentive + ", nightAllow=" + nightAllow + ", adjustMinus=" + adjustMinus + ", adjustPlus="
-				+ adjustPlus + ", reward=" + reward + ", epsDefault=" + epsDefault + ", epmloyerEpfDefault="
-				+ epmloyerEpfDefault + ", epmloyerEpfExtra=" + epmloyerEpfExtra + ", pfAdminChPercentage="
-				+ pfAdminChPercentage + ", edliPercentage=" + edliPercentage + ", edliAdminPercentage="
-				+ edliAdminPercentage + ", employerEsicPercentageSal=" + employerEsicPercentageSal
-				+ ", employeeEsicPercentageSal=" + employeeEsicPercentageSal + ", employerMlwf=" + employerMlwf
-				+ ", salaryInfoId=" + salaryInfoId + ", salaryTypeId=" + salaryTypeId + ", basic=" + basic + ", da="
-				+ da + ", hra=" + hra + ", spa=" + spa + ", pfApplicable=" + pfApplicable + ", pfType=" + pfType
-				+ ", pfEmpPer=" + pfEmpPer + ", pfEmplrPer=" + pfEmplrPer + ", esicApplicable=" + esicApplicable
-				+ ", cmpJoiningDate=" + cmpJoiningDate + ", cmpLeavingDate=" + cmpLeavingDate + ", epfJoiningDate="
-				+ epfJoiningDate + ", leavingReason=" + leavingReason + ", salBasis=" + salBasis
+				+ adjustPlus + ", reward=" + reward + ", nightRate=" + nightRate + ", otRate=" + otRate
+				+ ", epsDefault=" + epsDefault + ", epmloyerEpfDefault=" + epmloyerEpfDefault + ", epmloyerEpfExtra="
+				+ epmloyerEpfExtra + ", pfAdminChPercentage=" + pfAdminChPercentage + ", edliPercentage="
+				+ edliPercentage + ", edliAdminPercentage=" + edliAdminPercentage + ", employerEsicPercentageSal="
+				+ employerEsicPercentageSal + ", employeeEsicPercentageSal=" + employeeEsicPercentageSal
+				+ ", employerMlwf=" + employerMlwf + ", salaryInfoId=" + salaryInfoId + ", salaryTypeId=" + salaryTypeId
+				+ ", basic=" + basic + ", da=" + da + ", hra=" + hra + ", spa=" + spa + ", pfApplicable=" + pfApplicable
+				+ ", pfType=" + pfType + ", pfEmpPer=" + pfEmpPer + ", pfEmplrPer=" + pfEmplrPer + ", esicApplicable="
+				+ esicApplicable + ", cmpJoiningDate=" + cmpJoiningDate + ", cmpLeavingDate=" + cmpLeavingDate
+				+ ", epfJoiningDate=" + epfJoiningDate + ", leavingReason=" + leavingReason + ", salBasis=" + salBasis
 				+ ", ceilingLimitEmpApplicable=" + ceilingLimitEmpApplicable + ", ceilingLimitEmployerApplicable="
 				+ ceilingLimitEmployerApplicable + ", leavingReasonEsic=" + leavingReasonEsic + ", leavingReasonPf="
 				+ leavingReasonPf + ", mlwfApplicable=" + mlwfApplicable + ", ptApplicable=" + ptApplicable
