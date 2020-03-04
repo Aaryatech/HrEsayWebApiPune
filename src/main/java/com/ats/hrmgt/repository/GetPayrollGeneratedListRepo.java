@@ -23,7 +23,7 @@ public interface GetPayrollGeneratedListRepo extends JpaRepository<GetPayrollGen
 			"        dd.weekly_off,\n" + 
 			"        dd.paid_holiday,\n" + 
 			"        dd.paid_leave,\n" + 
-			"        dd.unpaid_leave\n" + 
+			"        dd.unpaid_leave,dd.absent_days\n" + 
 			"    from\n" + 
 			"        tbl_salary_calc sc,\n" + 
 			"        m_employees e,\n" + 
@@ -55,7 +55,7 @@ public interface GetPayrollGeneratedListRepo extends JpaRepository<GetPayrollGen
 			"        dd.weekly_off,\n" + 
 			"        dd.paid_holiday,\n" + 
 			"        dd.paid_leave,\n" + 
-			"        dd.unpaid_leave\n" + 
+			"        dd.unpaid_leave,dd.absent_days\n" + 
 			"    from\n" + 
 			"        tbl_salary_calc sc,\n" + 
 			"        m_employees e,\n" + 
@@ -86,7 +86,7 @@ public interface GetPayrollGeneratedListRepo extends JpaRepository<GetPayrollGen
 			"        dd.weekly_off,\n" + 
 			"        dd.paid_holiday,\n" + 
 			"        dd.paid_leave,\n" + 
-			"        dd.unpaid_leave\n" + 
+			"        dd.unpaid_leave,dd.absent_days\n" + 
 			"    from\n" + 
 			"        tbl_salary_calc sc,\n" + 
 			"        m_employees e,\n" + 
