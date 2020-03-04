@@ -12,7 +12,7 @@ public class LeavePenDash {
 	private String uniKey;
 	
 	
-	private int  newApp;
+	private int  newApp; // used for performance bonus
 	
 	private int finalPending;
 

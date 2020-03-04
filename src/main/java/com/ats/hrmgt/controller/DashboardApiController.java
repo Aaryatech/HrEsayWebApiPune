@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Entity;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +25,7 @@ import com.ats.hrmgt.model.dashboard.BirthHoliDash;
 import com.ats.hrmgt.model.dashboard.DeptWiseWeekoffDash;
 import com.ats.hrmgt.model.dashboard.GetAllPendingMasterDet;
 import com.ats.hrmgt.model.dashboard.GetBirthDaysForDash;
+import com.ats.hrmgt.model.dashboard.GetLeaveHistForDash;
 import com.ats.hrmgt.model.dashboard.GetNewHiresDash;
 import com.ats.hrmgt.model.dashboard.LeavePenDash;
 import com.ats.hrmgt.model.dashboard.LoanAdvDashDet;
@@ -31,6 +34,7 @@ import com.ats.hrmgt.model.dashboard.PreDayAttnDash;
 import com.ats.hrmgt.model.repo.dash.DeptWiseWeekoffDashRepo;
 import com.ats.hrmgt.model.repo.dash.GetAllPendingMasterDetRepo;
 import com.ats.hrmgt.model.repo.dash.GetBirthDaysForDashRepo;
+import com.ats.hrmgt.model.repo.dash.GetLeaveHistForDashRepo;
 import com.ats.hrmgt.model.repo.dash.GetNewHiresDashRepo;
 import com.ats.hrmgt.model.repo.dash.LeavePenDashRepo;
 import com.ats.hrmgt.model.repo.dash.LoanAdvDashDetDashRepo;
@@ -108,6 +112,25 @@ public class DashboardApiController {
 
 	@RequestMapping(value = { "/getLeaveCountDash" }, method = RequestMethod.GET)
 	public @ResponseBody LeavePenDash getLeaveCountDash() throws ParseException {
+
+		LeavePenDash birthHoliDash = new LeavePenDash();
+
+		try {
+
+			birthHoliDash = leavePenDashRepo.getLeaveCnt();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return birthHoliDash;
+
+	}
+	
+	
+	@RequestMapping(value = { "/getPerformanceBonus" }, method = RequestMethod.GET)
+	public @ResponseBody LeavePenDash getPerformanceBonus() throws ParseException {
 
 		LeavePenDash birthHoliDash = new LeavePenDash();
 
@@ -266,7 +289,66 @@ public class DashboardApiController {
 	}
 	
 	
+	@RequestMapping(value = { "/getEmpAbsentLv" }, method = RequestMethod.POST)
+	public @ResponseBody 	List<DeptWiseWeekoffDash> getEmpAbsentLv(@RequestParam("fiterdate") String fiterdate)
+			throws ParseException {
+
+		List<DeptWiseWeekoffDash> list =new ArrayList<DeptWiseWeekoffDash>();
+		try {
+
+			list = deptWiseWeekoffDashRepo.getLeavesAndAbsent(fiterdate);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
 	
+	
+	
+	@RequestMapping(value = { "/getDeptWisePerformanceBonus" }, method = RequestMethod.POST)
+	public @ResponseBody 	List<DeptWiseWeekoffDash> getDeptWisePerformanceBonus(@RequestParam("fiterdate") String fiterdate)
+			throws ParseException {
+
+		List<DeptWiseWeekoffDash> list =new ArrayList<DeptWiseWeekoffDash>();
+		try {
+
+			String temp[]=fiterdate.split("-");
+			list = deptWiseWeekoffDashRepo.getDeptWisePerformanceBonus(temp[0],temp[1]);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+	
+	@Autowired
+	GetLeaveHistForDashRepo getLeaveHistForDashRepo;
+	
+	@RequestMapping(value = { "/getLeaveHistForDash" }, method = RequestMethod.POST)
+	public @ResponseBody 	List<GetLeaveHistForDash> getLeaveHistForDash(@RequestParam("empId") int empId)
+			throws ParseException {
+
+		List<GetLeaveHistForDash> list =new ArrayList<GetLeaveHistForDash>();
+		try {
+
+	 
+			list = getLeaveHistForDashRepo.getLeaveCnt(empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
 	
 
 

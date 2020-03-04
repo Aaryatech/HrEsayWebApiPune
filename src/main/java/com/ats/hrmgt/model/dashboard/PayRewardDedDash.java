@@ -14,7 +14,7 @@ public class PayRewardDedDash {
 	private int  empCount;
 	
 	
-	private double tot;
+	private String tot;
 
 
 	public String getUniKey() {
@@ -37,12 +37,12 @@ public class PayRewardDedDash {
 	}
 
 
-	public double getTot() {
+	public String getTot() {
 		return tot;
 	}
 
 
-	public void setTot(double tot) {
+	public void setTot(String tot) {
 		this.tot = tot;
 	}
 
