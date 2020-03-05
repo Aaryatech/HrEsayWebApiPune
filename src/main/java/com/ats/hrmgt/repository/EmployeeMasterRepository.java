@@ -143,6 +143,13 @@ public interface EmployeeMasterRepository extends JpaRepository<EmployeeMaster, 
 	@Modifying
 	@Query(value = "UPDATE m_employees SET sub_cmp_id =:compId WHERE emp_id IN(:empIdList)", nativeQuery = true)
 	int assignComapny(@Param("empIdList") List<Integer> empIdList, @Param("compId") String compId);
+	
+	
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE m_employees SET  ex_int2 =:skillId WHERE emp_id IN(:empIdList)", nativeQuery = true)
+	int empSkillUpdate(@Param("empIdList") List<Integer> empIdList, @Param("skillId") String skillId);
+ 
 
 	
 }

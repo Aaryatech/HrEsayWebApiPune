@@ -317,7 +317,7 @@ public class DashboardApiController {
 		try {
 
 			String temp[]=fiterdate.split("-");
-			list = deptWiseWeekoffDashRepo.getDeptWisePerformanceBonus(temp[0],temp[1]);
+			list = deptWiseWeekoffDashRepo.getDeptWisePerformanceBonus(temp[1],temp[0]);
 
 		} catch (Exception e) {
 

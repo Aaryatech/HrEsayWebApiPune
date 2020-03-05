@@ -60,6 +60,22 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
+	
+	
+	@RequestMapping(value = { "/getAllEmployeeDetailSkillRate" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailSkillRate() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			
+			System.err.println("skill");
+			list = getEmployeeDetailsRepo.getEmpDetailListForSkillRate();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetail : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 
 	 
 	@RequestMapping(value = { "/getEmpDetailListByLocId" }, method = RequestMethod.POST)
@@ -192,6 +208,8 @@ public class EmpShiftAssignApiController {
 				res = employeeMasterRepository.weekHoliCat(empIdList, upDateId);
 			}else if(flag==9) {
 				res = userRepo.updateAccLoc(empIdList, upDateId);
+			}else if(flag==10) {
+				res = employeeMasterRepository.empSkillUpdate(empIdList, upDateId);
 			}else {
 				res = 0;
 			}
