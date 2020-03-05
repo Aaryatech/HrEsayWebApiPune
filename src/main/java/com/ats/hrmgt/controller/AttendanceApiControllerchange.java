@@ -1151,6 +1151,8 @@ public class AttendanceApiControllerchange {
 				float layOff = 0;
 				float legalStrike = 0;
 				float wot = 0;
+				float phot = 0;
+				float wphot = 0;
 				int absentLeave = 0;
 				int lateMin = 0;
 				int lateMark = 0;
@@ -1204,6 +1206,18 @@ public class AttendanceApiControllerchange {
 						if (dailyDailyInformationList.get(j).getLvSumupId() == 14) { // 14=WO-OT
 
 							wot = wot + dailyDailyInformationList.get(j).getDaycount();
+
+						}
+						
+						if (dailyDailyInformationList.get(j).getLvSumupId() == 13) { // 13=PH-OT
+
+							phot = phot + dailyDailyInformationList.get(j).getDaycount();
+
+						}
+						
+						if (dailyDailyInformationList.get(j).getLvSumupId() == 18) { // 18=WO-PH-OT
+
+							wphot = wphot + dailyDailyInformationList.get(j).getDaycount();
 
 						}
 
@@ -1280,6 +1294,8 @@ public class AttendanceApiControllerchange {
 				summaryDailyAttendanceList.get(i).setAbsentDays(absentLeave);
 				summaryDailyAttendanceList.get(i).setTotalDaysInmonth(totalDaysInmonth);
 				summaryDailyAttendanceList.get(i).setWeeklyOffPresent(wot);
+				summaryDailyAttendanceList.get(i).setHolidayPresent(phot);
+				summaryDailyAttendanceList.get(i).setWeeklyOffHolidayOffPresent(wphot);
 				summaryDailyAttendanceList.get(i).setFullNight(nightcount);
 
 				workingDays = totalDaysInmonth - summaryDailyAttendanceList.get(i).getWeeklyOff()
@@ -1299,19 +1315,7 @@ public class AttendanceApiControllerchange {
 									+ summaryDailyAttendanceList.get(i).getWeeklyOff());
 				}
 				summaryDailyAttendanceList.get(i).setPayableDays(summaryDailyAttendanceList.get(i).getPayableDays()-(absentLeave*ab_deduction));
-				/*
-				 * ammt = calculatePdata(salaryTermList.get(j), salaryTermList,
-				 * getSalaryTempList.get(i), amount_round);
-				 * 
-				 * tempVal = ammt / getSalaryTempList.get(i).getTotalDaysInmonth(); double
-				 * deductValue = castNumber( (tempVal * getSalaryTempList.get(i).getAbsentDays()
-				 * * ab_deduction), amount_round);
-				 * 
-				 * getSalaryTempList.get(i).setAbDeduction(deductValue);
-				 * 
-				 * salaryTermList.get(j).setValue(deductValue);
-				 */
-
+				  
 				summaryDailyAttendanceList.get(i).setCalculationDone(1);
 
 				//System.out.println(summaryDailyAttendanceList.get(i).getFullNight());

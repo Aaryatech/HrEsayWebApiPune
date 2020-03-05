@@ -815,6 +815,8 @@ public class PayrollApiController {
 									getSalaryTempList.get(i).getSalBasis(),
 									getSalaryTempList.get(i).getTotalDaysInmonth(),
 									getSalaryTempList.get(i).getWeeklyOffPresent(),
+									getSalaryTempList.get(i).getHolidayPresent(),
+									getSalaryTempList.get(i).getWeeklyOffHolidayOffPresent(),
 									getSalaryTempList.get(i).getWorkingDays(), ammt, mstEmpType, amount_round);
 							getSalaryTempList.get(i).setProductionInsentive(tempVal);
 							salaryTermList.get(j).setValue(tempVal);
@@ -860,7 +862,7 @@ public class PayrollApiController {
 
 				getSalaryTempList.get(i).setNightRate(night_allo_rate);
 				getSalaryTempList.get(i).setNightAllow(getSalaryTempList.get(i).getFullNight() * night_allo_rate);
-				
+
 				if (getSalaryTempList.get(i).getMlwfApplicable().equalsIgnoreCase("yes")) {
 					if (month == 6 || month == 12) {
 						getSalaryTempList.get(i).setMlwf(employee_mlwf);
@@ -1025,7 +1027,7 @@ public class PayrollApiController {
 				getSalaryTempList.get(i).setPfAdminChPercentage(tot_pf_admin_ch_percentage);
 				getSalaryTempList.get(i).setEdliPercentage(tot_edli_ch_percentage);
 				getSalaryTempList.get(i).setEdliAdminPercentage(tot_edli_admin_ch_percentage);
-				 
+
 				getSalaryTempList.get(i).setStatusDytemp(1);
 				getSalaryTempList.get(i).setNetSalary(castNumber((getSalaryTempList.get(i).getGrossSalaryDytemp()
 						+ getSalaryTempList.get(i).getPerformanceBonus() + getSalaryTempList.get(i).getMiscExpAdd()
@@ -1239,10 +1241,10 @@ public class PayrollApiController {
 		return val;
 	}
 
-	public double otwageswo(float percentage, String salBasis, int totalDays, float woPresent, float workingDays,
-			double ammt, MstEmpType mstEmpType, int amount_round) {
+	public double otwageswo(float percentage, String salBasis, int totalDays, float woPresent, float phPresent,
+			float woHoPresent, float workingDays, double ammt, MstEmpType mstEmpType, int amount_round) {
 
-		double perDayGrossSal = (ammt / totalDays) * woPresent;
+		double perDayGrossSal = (ammt / totalDays) * (woPresent + phPresent + woHoPresent);
 
 		// basic+DAy
 		// metaf: amount / month_day
