@@ -282,8 +282,10 @@ public class PayrollApiController {
 			List<GetAdvanceList> getAdvanceList = getAdvanceListRepo.getAdvanceList(month, year, empIds);
 			List<GetClaimList> getClaimList = getClaimListRepo.getClaimList(month, year, empIds);
 			List<GetPayDedList> getPayDedList = getPayDedListRepo.getPayDedList(month, year, empIds);
-			List<GetPayDedList> getBonusList = getPayDedListRepo.getBonusList(month, year, empIds);
+			List<GetPayDedList> getRewardList = getPayDedListRepo.getBonusList(month, year, empIds);
 			List<GetPayDedList> getLoanList = getPayDedListRepo.getLoanList(year + "-" + month + "-01", empIds);
+			/*List<GetPayDedList> getBonusList = getPayDedListRepo.getBonusList(year + "-" + month + "-01", empIds);
+			List<GetPayDedList> getExgretiaList = getPayDedListRepo.getExgretiaList(year + "-" + month + "-01", empIds);*/
 
 			for (int i = 0; i < listForUpdatedValue.size(); i++) {
 
@@ -330,10 +332,10 @@ public class PayrollApiController {
 				}
 
 				flag = 0;
-				for (int j = 0; j < getBonusList.size(); j++) {
+				for (int j = 0; j < getRewardList.size(); j++) {
 
-					if (getBonusList.get(j).getEmpId() == listForUpdatedValue.get(i).getEmpId()) {
-						listForUpdatedValue.get(i).setReward(getBonusList.get(j).getAmt());
+					if (getRewardList.get(j).getEmpId() == listForUpdatedValue.get(i).getEmpId()) {
+						listForUpdatedValue.get(i).setReward(getRewardList.get(j).getAmt());
 						flag = 1;
 						break;
 					}
@@ -356,6 +358,34 @@ public class PayrollApiController {
 				if (flag == 0) {
 					listForUpdatedValue.get(i).setLoanDed(0);
 				}
+
+				/*flag = 0;
+				for (int j = 0; j < getBonusList.size(); j++) {
+
+					if (getBonusList.get(j).getEmpId() == listForUpdatedValue.get(i).getEmpId()) {
+						listForUpdatedValue.get(i).setBonusCal(getBonusList.get(j).getAmt());
+						flag = 1;
+						break;
+					}
+
+				}
+				if (flag == 0) {
+					listForUpdatedValue.get(i).setBonusCal(0);
+				}
+
+				flag = 0;
+				for (int j = 0; j < getExgretiaList.size(); j++) {
+
+					if (getExgretiaList.get(j).getEmpId() == listForUpdatedValue.get(i).getEmpId()) {
+						listForUpdatedValue.get(i).setExgretiaCal(getExgretiaList.get(j).getAmt());
+						flag = 1;
+						break;
+					}
+
+				}
+				if (flag == 0) {
+					listForUpdatedValue.get(i).setExgretiaCal(0);
+				}*/
 			}
 
 			List<SalaryCalcTemp> savereslist = salaryCalcTempRepo.saveAll(listForUpdatedValue);

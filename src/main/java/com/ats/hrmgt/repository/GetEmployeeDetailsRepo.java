@@ -326,7 +326,7 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"LEFT JOIN holiday_category holidaycat ON\n" + 
 			"    holidaycat.ho_cat_id = emp.holiday_category\n" + 
 			"WHERE\n" + 
-			"    emp.del_status = 1  AND emp.ex_int1=1 AND(\n" + 
+			"    emp.del_status = 1  AND emp.ex_int1 in(1,2) AND(\n" + 
 			"        salinfo.cmp_leaving_date IS NULL OR salinfo.cmp_leaving_date = '' OR salinfo.cmp_leaving_date = 1970 -00 -00 OR DATE_FORMAT(\n" + 
 			"            salinfo.cmp_leaving_date,\n" + 
 			"            '%Y-%m'\n" + 

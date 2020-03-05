@@ -37,4 +37,12 @@ public interface GetPayDedListRepo extends JpaRepository<GetPayDedList, Integer>
 	List<GetPayDedList> getBonusList(@Param("month") int month, @Param("year") int year,
 	@Param("empIds") List<Integer> empIds);
 
+	@Query(value = "select uuid() as id, emp_id, sum(paid_bonus_amt) as amt from t_bonus_calc where is_bonussheet_finalized=0 and "
+			+ "date_format(paid_bonus_date,'%Y-%m')=date_format(:date,'%Y-%m') and emp_id in (:empIds) group by emp_id", nativeQuery = true)
+	List<GetPayDedList> getBonusList(String date, List<Integer> empIds);
+
+	@Query(value = "select uuid() as id, emp_id, sum(paid_exgretia_amt) as amt from t_bonus_calc where is_exgretia_finalized=0 and "
+			+ "date_format(paid_exgretia_date,'%Y-%m')=date_format(:date,'%Y-%m') and emp_id in (:empIds) and ex_int1=1 group by emp_id", nativeQuery = true)
+	List<GetPayDedList> getExgretiaList(String date, List<Integer> empIds);
+
 }
