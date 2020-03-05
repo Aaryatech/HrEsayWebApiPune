@@ -28,6 +28,13 @@ public interface SummaryDailyAttendanceRepository extends JpaRepository<SummaryD
 	SummaryDailyAttendance findByCompanyIdAndEmpId(int companyId, int empId);
 	
  
+	
+	
+	
 	List<SummaryDailyAttendance> findAllByCompanyIdAndEmpId(int companyId, int empId);
+	
+	
+	@Query(value = "select * from tbl_attt_summary_daily where month=:month and year=:year and emp_id=:empId", nativeQuery = true)
+	 SummaryDailyAttendance summaryDailyAttendanceList1(@Param("month") String month, @Param("year") String year,  @Param("empId") int empId);
 
 }

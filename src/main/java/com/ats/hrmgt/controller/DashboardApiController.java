@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.HolidayMaster;
+import com.ats.hrmgt.model.LeaveApply;
+import com.ats.hrmgt.model.SummaryDailyAttendance;
 import com.ats.hrmgt.model.TblEmpInfo;
 import com.ats.hrmgt.model.bonus.BonusMaster;
 import com.ats.hrmgt.model.dashboard.AgeDiversityDash;
@@ -28,9 +30,11 @@ import com.ats.hrmgt.model.dashboard.GetAllPendingMasterDet;
 import com.ats.hrmgt.model.dashboard.GetBirthDaysForDash;
 import com.ats.hrmgt.model.dashboard.GetLeaveHistForDash;
 import com.ats.hrmgt.model.dashboard.GetNewHiresDash;
+import com.ats.hrmgt.model.dashboard.IncentivesAmtDash;
 import com.ats.hrmgt.model.dashboard.LeavePenDash;
 import com.ats.hrmgt.model.dashboard.LoanAdvDashDet;
 import com.ats.hrmgt.model.dashboard.PayRewardDedDash;
+import com.ats.hrmgt.model.dashboard.PerformanceProdDash;
 import com.ats.hrmgt.model.dashboard.PreDayAttnDash;
 import com.ats.hrmgt.model.repo.dash.AgeDiversityDashRepo;
 import com.ats.hrmgt.model.repo.dash.DeptWiseWeekoffDashRepo;
@@ -38,12 +42,15 @@ import com.ats.hrmgt.model.repo.dash.GetAllPendingMasterDetRepo;
 import com.ats.hrmgt.model.repo.dash.GetBirthDaysForDashRepo;
 import com.ats.hrmgt.model.repo.dash.GetLeaveHistForDashRepo;
 import com.ats.hrmgt.model.repo.dash.GetNewHiresDashRepo;
+import com.ats.hrmgt.model.repo.dash.IncentivesAmtDashRepo;
 import com.ats.hrmgt.model.repo.dash.LeavePenDashRepo;
 import com.ats.hrmgt.model.repo.dash.LoanAdvDashDetDashRepo;
 import com.ats.hrmgt.model.repo.dash.PayRewardDedDashRepo;
+import com.ats.hrmgt.model.repo.dash.PerformanceProdDashRepo;
 import com.ats.hrmgt.model.repo.dash.PreDayAttnDashRepo;
 import com.ats.hrmgt.repo.HolidayMasterRepo;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
+import com.ats.hrmgt.repository.SummaryDailyAttendanceRepository;
 import com.ats.hrmgt.repository.TblEmpInfoRepo;
 
 import ch.qos.logback.classic.pattern.DateConverter;
@@ -393,6 +400,114 @@ public class DashboardApiController {
 			birthHoliDash = ageDiversityDashRepo.getSalaryDiversity(fiterdate);
 			list.add(birthHoliDash);
 
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	// ends
+
+	@Autowired
+	SummaryDailyAttendanceRepository summaryDailyAttendanceRepository;
+
+	@RequestMapping(value = { "/getEmpLastMonthAttn" }, method = RequestMethod.POST)
+	public @ResponseBody SummaryDailyAttendance getEmpLastMonthRep(@RequestParam("fiterdate") String fiterdate,
+			@RequestParam("empId") int empId) {
+
+		SummaryDailyAttendance list = new SummaryDailyAttendance();
+
+		try {
+			String temp[] = fiterdate.split("-");
+
+			list = summaryDailyAttendanceRepository.summaryDailyAttendanceList1(temp[1], temp[0], empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/getDedTypewiseDeduction" }, method = RequestMethod.POST)
+	public @ResponseBody List<DeptWiseWeekoffDash> getDedTypewiseDeduction(@RequestParam("empId") int empId)
+			throws ParseException {
+
+		List<DeptWiseWeekoffDash> list = new ArrayList<DeptWiseWeekoffDash>();
+		try {
+
+			list = deptWiseWeekoffDashRepo.getDedTypewiseAmt(empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/getRewardWisewiseDeduction" }, method = RequestMethod.POST)
+	public @ResponseBody List<DeptWiseWeekoffDash> getRewardWisewiseDeduction(@RequestParam("empId") int empId)
+			throws ParseException {
+
+		List<DeptWiseWeekoffDash> list = new ArrayList<DeptWiseWeekoffDash>();
+		try {
+
+			list = deptWiseWeekoffDashRepo.getRewardwiseAmt(empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@Autowired
+	IncentivesAmtDashRepo incentivesAmtDashRepo;
+
+	@RequestMapping(value = { "/getEmpTotAmtsDash" }, method = RequestMethod.POST)
+	public @ResponseBody IncentivesAmtDash getEmpTotAmtsDash(@RequestParam("empId") int empId) throws ParseException {
+
+		IncentivesAmtDash list = new IncentivesAmtDash();
+		try {
+
+			list = incentivesAmtDashRepo.getWeekBirth(empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@Autowired
+	PerformanceProdDashRepo performanceProdDashRepo;
+
+	@RequestMapping(value = { "/getPerfProd" }, method = RequestMethod.POST)
+	public @ResponseBody List<PerformanceProdDash> getPerfProd(@RequestParam("fiterdate") String fiterdate,
+			@RequestParam("empId") int empId) {
+
+		List<PerformanceProdDash> list = new ArrayList<PerformanceProdDash>();
+		PerformanceProdDash prod = new PerformanceProdDash();
+
+		try {
+			String temp[] = fiterdate.split("-");
+
+			prod = performanceProdDashRepo.getPerformanceDetails(temp[0], temp[1], empId);
+			list.add(prod);
+
+			prod = performanceProdDashRepo.getProdDetails(temp[0], temp[1], empId);
+			list.add(prod);
 		} catch (Exception e) {
 
 			e.printStackTrace();

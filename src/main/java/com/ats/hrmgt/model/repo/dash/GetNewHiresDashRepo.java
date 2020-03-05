@@ -44,7 +44,7 @@ public interface GetNewHiresDashRepo extends JpaRepository<GetNewHiresDash, Stri
 	GetNewHiresDash getTodaysHire(@Param("currDate") String currDate);
 	
 	
-	@Query(value = "SELECT\n" + 
+	@Query(value = "SELECT UUID() as uni_key ,  \n" + 
 			"    (\n" + 
 			"    SELECT\n" + 
 			"        COUNT(DISTINCT tbl_emp_info.emp_id)\n" + 

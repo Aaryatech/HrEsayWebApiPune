@@ -32,7 +32,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 	
 	@Query(value = "SELECT\n" + 
 			"    dep.name_sd,\n" + 
-			"    COUNT('')\n" + 
+			"    COUNT('') AS emp_count\n" + 
 			"FROM\n" + 
 			"    tbl_attt_daily_daily tad\n" + 
 			"INNER JOIN m_employees emp ON\n" + 
@@ -50,7 +50,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 			"\n" + 
 			"dep.depart_id,\n" + 
 			"    dep.name_sd,\n" + 
-			"    COUNT(DISTINCT tad.emp_id)\n" + 
+			"    COUNT(DISTINCT tad.emp_id) as   emp_count\n" + 
 			"FROM\n" + 
 			"    tbl_attt_summary_daily tad\n" + 
 			"INNER JOIN m_employees emp ON\n" + 
@@ -78,7 +78,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 			"        m_employees\n" + 
 			"    WHERE\n" + 
 			"        dep.depart_id = m_employees.depart_id AND m_employees.del_status = 1\n" + 
-			") AS emp\n" + 
+			") AS emp_count\n" + 
 			"FROM\n" + 
 			"    m_department dep\n" + 
 			"WHERE\n" + 
@@ -88,6 +88,34 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 	List<DeptWiseWeekoffDash> getDeptWiseEmpDiversity();
 	
 	
+	
+	
+	@Query(value = "SELECT\n" + 
+			"    payDed.type_name AS name_sd,\n" + 
+			"    payDed.ded_type_id AS depart_id,\n" + 
+			"    SUM(dedDet.ded_rate) AS emp_count\n" + 
+			"FROM\n" + 
+			"    tblm_pay_deduction_details dedDet,\n" + 
+			"    tbl_pay_deduction payDed\n" + 
+			"WHERE\n" + 
+			"    dedDet.emp_id =:empId AND dedDet.ded_type_id = payDed.ded_type_id AND dedDet.del_status = 1\n" + 
+			"GROUP BY\n" + 
+			"    payDed.ded_type_id", nativeQuery = true)
+	List<DeptWiseWeekoffDash> getDedTypewiseAmt(@Param("empId") int empId);
+	
+	
+	@Query(value = "SELECT\n" + 
+			"    payreward.type_name AS name_sd,\n" + 
+			"    payreward.pay_type_id AS depart_id,\n" + 
+			"    SUM(payDet.pay_rate) AS emp_count\n" + 
+			"FROM\n" + 
+			"    tblm_pay_bonus_details payDet,\n" + 
+			"    tbl_pay_bonus payreward\n" + 
+			"WHERE\n" + 
+			"    payDet.emp_id = :empId AND payDet.pay_type_id = payreward.pay_type_id AND payDet.del_status = 1\n" + 
+			"GROUP BY\n" + 
+			"    payreward.pay_type_id", nativeQuery = true)
+	List<DeptWiseWeekoffDash> getRewardwiseAmt(@Param("empId") int empId);
 	
 	
 	

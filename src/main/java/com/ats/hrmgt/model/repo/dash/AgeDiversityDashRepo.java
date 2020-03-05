@@ -35,7 +35,7 @@ public interface AgeDiversityDashRepo extends JpaRepository<AgeDiversityDash, In
 			"            tbl_emp_info.dob,\n" + 
 			"            :currDate\n" + 
 			"        ) BETWEEN 21 AND 25 AND tbl_emp_info.del_status = 1\n" + 
-			") AS range2,\n" + 
+			") AS age_range2,\n" + 
 			"(\n" + 
 			"    SELECT\n" + 
 			"        COUNT(DISTINCT tbl_emp_info.emp_id)\n" + 
@@ -148,7 +148,7 @@ public interface AgeDiversityDashRepo extends JpaRepository<AgeDiversityDash, In
 	
 	
 	@Query(value = "\n" + 
-			"SELECT\n" + 
+			"SELECT UUID() as uni_key ,  \n" + 
 			"    (\n" + 
 			"    SELECT\n" + 
 			"        COUNT(\n" + 
@@ -239,7 +239,7 @@ public interface AgeDiversityDashRepo extends JpaRepository<AgeDiversityDash, In
 	
 	
 
-	@Query(value = "SELECT\n" + 
+	@Query(value = "SELECT UUID() as uni_key , \n" + 
 			"    (\n" + 
 			"    SELECT\n" + 
 			"        COUNT(\n" + 
