@@ -67,6 +67,28 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 	
 	
 	
+
+	@Query(value = "SELECT\n" + 
+			"    dep.name_sd,\n" + 
+			"    dep.depart_id,\n" + 
+			"    (\n" + 
+			"    SELECT\n" + 
+			"        COUNT(DISTINCT m_employees.emp_id)\n" + 
+			"    FROM\n" + 
+			"        m_employees\n" + 
+			"    WHERE\n" + 
+			"        dep.depart_id = m_employees.depart_id AND m_employees.del_status = 1\n" + 
+			") AS emp\n" + 
+			"FROM\n" + 
+			"    m_department dep\n" + 
+			"WHERE\n" + 
+			"    dep.del_status = 1\n" + 
+			"GROUP BY\n" + 
+			"    dep.depart_id", nativeQuery = true)
+	List<DeptWiseWeekoffDash> getDeptWiseEmpDiversity();
+	
+	
+	
 	
 	
 	 

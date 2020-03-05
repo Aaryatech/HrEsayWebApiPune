@@ -42,5 +42,33 @@ public interface GetNewHiresDashRepo extends JpaRepository<GetNewHiresDash, Stri
 			"        einfoNew.gender = ! 'FEMALE' AND einfoNew.gender = ! 'MALE' AND teiNew.emp_id = einfoNew.emp_id AND teiNew.cmp_joining_date BETWEEN DATE_ADD(:currDate, INTERVAL -30 DAY) AND :currDate AND teiNew.del_status = 1\n" + 
 			") AS oth_emp", nativeQuery = true)
 	GetNewHiresDash getTodaysHire(@Param("currDate") String currDate);
+	
+	
+	@Query(value = "SELECT\n" + 
+			"    (\n" + 
+			"    SELECT\n" + 
+			"        COUNT(DISTINCT tbl_emp_info.emp_id)\n" + 
+			"    FROM\n" + 
+			"        tbl_emp_info\n" + 
+			"    WHERE\n" + 
+			"        tbl_emp_info.gender = 'MALE' AND tbl_emp_info.del_status = 1\n" + 
+			") AS male_emp,\n" + 
+			"(\n" + 
+			"    SELECT\n" + 
+			"        COUNT(DISTINCT tbl_emp_info.emp_id)\n" + 
+			"    FROM\n" + 
+			"        tbl_emp_info\n" + 
+			"    WHERE\n" + 
+			"        tbl_emp_info.gender = 'FEMALE' AND tbl_emp_info.del_status = 1\n" + 
+			") AS female_emp,\n" + 
+			"(\n" + 
+			"    SELECT\n" + 
+			"        COUNT(DISTINCT tbl_emp_info.emp_id)\n" + 
+			"    FROM\n" + 
+			"        tbl_emp_info\n" + 
+			"    WHERE\n" + 
+			"        tbl_emp_info.gender = ! 'MALE' AND tbl_emp_info.gender != 'FEMALE' AND tbl_emp_info.del_status = 1\n" + 
+			") AS oth_emp", nativeQuery = true)
+	GetNewHiresDash getAgeDiversity();
 
 }

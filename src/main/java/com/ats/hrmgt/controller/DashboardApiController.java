@@ -21,6 +21,7 @@ import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.HolidayMaster;
 import com.ats.hrmgt.model.TblEmpInfo;
 import com.ats.hrmgt.model.bonus.BonusMaster;
+import com.ats.hrmgt.model.dashboard.AgeDiversityDash;
 import com.ats.hrmgt.model.dashboard.BirthHoliDash;
 import com.ats.hrmgt.model.dashboard.DeptWiseWeekoffDash;
 import com.ats.hrmgt.model.dashboard.GetAllPendingMasterDet;
@@ -31,6 +32,7 @@ import com.ats.hrmgt.model.dashboard.LeavePenDash;
 import com.ats.hrmgt.model.dashboard.LoanAdvDashDet;
 import com.ats.hrmgt.model.dashboard.PayRewardDedDash;
 import com.ats.hrmgt.model.dashboard.PreDayAttnDash;
+import com.ats.hrmgt.model.repo.dash.AgeDiversityDashRepo;
 import com.ats.hrmgt.model.repo.dash.DeptWiseWeekoffDashRepo;
 import com.ats.hrmgt.model.repo.dash.GetAllPendingMasterDetRepo;
 import com.ats.hrmgt.model.repo.dash.GetBirthDaysForDashRepo;
@@ -127,8 +129,7 @@ public class DashboardApiController {
 		return birthHoliDash;
 
 	}
-	
-	
+
 	@RequestMapping(value = { "/getPerformanceBonus" }, method = RequestMethod.GET)
 	public @ResponseBody LeavePenDash getPerformanceBonus() throws ParseException {
 
@@ -181,15 +182,15 @@ public class DashboardApiController {
 		return birthHoliDash;
 
 	}
+
 	@Autowired
- 	DeptWiseWeekoffDashRepo deptWiseWeekoffDashRepo;
-	
-	
+	DeptWiseWeekoffDashRepo deptWiseWeekoffDashRepo;
+
 	@RequestMapping(value = { "/getDashDeptWiseWeekoff" }, method = RequestMethod.POST)
-	public @ResponseBody 	List<DeptWiseWeekoffDash> getDashDeptWiseWeekoff(@RequestParam("fiterdate") String fiterdate)
+	public @ResponseBody List<DeptWiseWeekoffDash> getDashDeptWiseWeekoff(@RequestParam("fiterdate") String fiterdate)
 			throws ParseException {
 
-		List<DeptWiseWeekoffDash> list =new ArrayList<DeptWiseWeekoffDash>();
+		List<DeptWiseWeekoffDash> list = new ArrayList<DeptWiseWeekoffDash>();
 		try {
 
 			list = deptWiseWeekoffDashRepo.getAttendance(fiterdate);
@@ -202,11 +203,10 @@ public class DashboardApiController {
 		return list;
 
 	}
-	
+
 	@Autowired
 	GetAllPendingMasterDetRepo getAllPendingMasterDetRepo;
-	
-	
+
 	@RequestMapping(value = { "/getAllPendingMasterDet" }, method = RequestMethod.GET)
 	public @ResponseBody GetAllPendingMasterDet getAllPendingMasterDet() throws ParseException {
 
@@ -224,26 +224,24 @@ public class DashboardApiController {
 		return birthHoliDash;
 
 	}
-	
+
 	@Autowired
 	PayRewardDedDashRepo payRewardDedDashRepo;
-	
+
 	@RequestMapping(value = { "/getRewardedDet" }, method = RequestMethod.POST)
-	public @ResponseBody PayRewardDedDash getRewardedDet(@RequestParam("type") int type,@RequestParam("fiterdate") String fiterdate) throws ParseException {
+	public @ResponseBody PayRewardDedDash getRewardedDet(@RequestParam("type") int type,
+			@RequestParam("fiterdate") String fiterdate) throws ParseException {
 
 		PayRewardDedDash birthHoliDash = new PayRewardDedDash();
-		String temp[]=fiterdate.split("-");
+		String temp[] = fiterdate.split("-");
 		try {
 
-			
-			if(type==1) {
+			if (type == 1) {
 				birthHoliDash = payRewardDedDashRepo.getDedDetails(temp[0], temp[1]);
 
-			}else {
+			} else {
 				birthHoliDash = payRewardDedDashRepo.getRewardDetails(temp[0], temp[1]);
 			}
-			
-			
 
 		} catch (Exception e) {
 
@@ -253,31 +251,25 @@ public class DashboardApiController {
 		return birthHoliDash;
 
 	}
-	
-	
-	
+
 	@Autowired
 	LoanAdvDashDetDashRepo loanAdvDashDetDashRepo;
-	
-	
+
 	@RequestMapping(value = { "/getAdvLoanDash" }, method = RequestMethod.POST)
-	public @ResponseBody LoanAdvDashDet getAdvLoanDash(@RequestParam("type") int type,@RequestParam("fiterdate") String fiterdate) throws ParseException {
+	public @ResponseBody LoanAdvDashDet getAdvLoanDash(@RequestParam("type") int type,
+			@RequestParam("fiterdate") String fiterdate) throws ParseException {
 
 		LoanAdvDashDet birthHoliDash = new LoanAdvDashDet();
 
-		
-		String temp[]=fiterdate.split("-");
+		String temp[] = fiterdate.split("-");
 		try {
 
-			
-			if(type==1) {
-				birthHoliDash = loanAdvDashDetDashRepo.getAdvnceDetails( temp[0], temp[1]);
+			if (type == 1) {
+				birthHoliDash = loanAdvDashDetDashRepo.getAdvnceDetails(temp[0], temp[1]);
 
-			}else {
+			} else {
 				birthHoliDash = loanAdvDashDetDashRepo.getLoanDetails(temp[0], temp[1], fiterdate);
 			}
-			
-			
 
 		} catch (Exception e) {
 
@@ -287,13 +279,12 @@ public class DashboardApiController {
 		return birthHoliDash;
 
 	}
-	
-	
+
 	@RequestMapping(value = { "/getEmpAbsentLv" }, method = RequestMethod.POST)
-	public @ResponseBody 	List<DeptWiseWeekoffDash> getEmpAbsentLv(@RequestParam("fiterdate") String fiterdate)
+	public @ResponseBody List<DeptWiseWeekoffDash> getEmpAbsentLv(@RequestParam("fiterdate") String fiterdate)
 			throws ParseException {
 
-		List<DeptWiseWeekoffDash> list =new ArrayList<DeptWiseWeekoffDash>();
+		List<DeptWiseWeekoffDash> list = new ArrayList<DeptWiseWeekoffDash>();
 		try {
 
 			list = deptWiseWeekoffDashRepo.getLeavesAndAbsent(fiterdate);
@@ -306,18 +297,16 @@ public class DashboardApiController {
 		return list;
 
 	}
-	
-	
-	
-	@RequestMapping(value = { "/getDeptWisePerformanceBonus" }, method = RequestMethod.POST)
-	public @ResponseBody 	List<DeptWiseWeekoffDash> getDeptWisePerformanceBonus(@RequestParam("fiterdate") String fiterdate)
-			throws ParseException {
 
-		List<DeptWiseWeekoffDash> list =new ArrayList<DeptWiseWeekoffDash>();
+	@RequestMapping(value = { "/getDeptWisePerformanceBonus" }, method = RequestMethod.POST)
+	public @ResponseBody List<DeptWiseWeekoffDash> getDeptWisePerformanceBonus(
+			@RequestParam("fiterdate") String fiterdate) throws ParseException {
+
+		List<DeptWiseWeekoffDash> list = new ArrayList<DeptWiseWeekoffDash>();
 		try {
 
-			String temp[]=fiterdate.split("-");
-			list = deptWiseWeekoffDashRepo.getDeptWisePerformanceBonus(temp[1],temp[0]);
+			String temp[] = fiterdate.split("-");
+			list = deptWiseWeekoffDashRepo.getDeptWisePerformanceBonus(temp[1], temp[0]);
 
 		} catch (Exception e) {
 
@@ -327,18 +316,17 @@ public class DashboardApiController {
 		return list;
 
 	}
-	
+
 	@Autowired
 	GetLeaveHistForDashRepo getLeaveHistForDashRepo;
-	
+
 	@RequestMapping(value = { "/getLeaveHistForDash" }, method = RequestMethod.POST)
-	public @ResponseBody 	List<GetLeaveHistForDash> getLeaveHistForDash(@RequestParam("empId") int empId)
+	public @ResponseBody List<GetLeaveHistForDash> getLeaveHistForDash(@RequestParam("empId") int empId)
 			throws ParseException {
 
-		List<GetLeaveHistForDash> list =new ArrayList<GetLeaveHistForDash>();
+		List<GetLeaveHistForDash> list = new ArrayList<GetLeaveHistForDash>();
 		try {
 
-	 
 			list = getLeaveHistForDashRepo.getLeaveCnt(empId);
 
 		} catch (Exception e) {
@@ -349,7 +337,69 @@ public class DashboardApiController {
 		return list;
 
 	}
-	
 
+	// **************************Diversity rep*********************************
+
+	@RequestMapping(value = { "/getDashDeptWiseEmpCount" }, method = RequestMethod.GET)
+	public @ResponseBody List<DeptWiseWeekoffDash> getDashDeptWiseEmpCount() throws ParseException {
+
+		List<DeptWiseWeekoffDash> list = new ArrayList<DeptWiseWeekoffDash>();
+		try {
+
+			list = deptWiseWeekoffDashRepo.getDeptWiseEmpDiversity();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/getAgeDiversity" }, method = RequestMethod.GET)
+	public @ResponseBody GetNewHiresDash getAgeDiversity() throws ParseException {
+
+		GetNewHiresDash birthHoliDash = new GetNewHiresDash();
+
+		try {
+
+			birthHoliDash = getNewHiresDashRepo.getAgeDiversity();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return birthHoliDash;
+
+	}
+
+	@Autowired
+	AgeDiversityDashRepo ageDiversityDashRepo;
+
+	@RequestMapping(value = { "/getAgeDiversityDetail" }, method = RequestMethod.POST)
+	public @ResponseBody List<AgeDiversityDash> getAgeDiversityDetail(@RequestParam("fiterdate") String fiterdate)
+			throws ParseException {
+
+		AgeDiversityDash birthHoliDash = new AgeDiversityDash();
+		List<AgeDiversityDash> list = new ArrayList<AgeDiversityDash>();
+		try {
+
+			birthHoliDash = ageDiversityDashRepo.getAttendance(fiterdate);
+			list.add(birthHoliDash);
+			birthHoliDash = ageDiversityDashRepo.getExperienceDiversity(fiterdate);
+			list.add(birthHoliDash);
+			birthHoliDash = ageDiversityDashRepo.getSalaryDiversity(fiterdate);
+			list.add(birthHoliDash);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
 
 }
