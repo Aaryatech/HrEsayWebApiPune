@@ -20,6 +20,8 @@ import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.HolidayMaster;
 import com.ats.hrmgt.model.LeaveApply;
+import com.ats.hrmgt.model.LeaveAuthority;
+import com.ats.hrmgt.model.LeaveHistory;
 import com.ats.hrmgt.model.SummaryDailyAttendance;
 import com.ats.hrmgt.model.TblEmpInfo;
 import com.ats.hrmgt.model.bonus.BonusMaster;
@@ -50,6 +52,7 @@ import com.ats.hrmgt.model.repo.dash.PerformanceProdDashRepo;
 import com.ats.hrmgt.model.repo.dash.PreDayAttnDashRepo;
 import com.ats.hrmgt.repo.HolidayMasterRepo;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
+import com.ats.hrmgt.repository.LeaveAuthorityRepository;
 import com.ats.hrmgt.repository.SummaryDailyAttendanceRepository;
 import com.ats.hrmgt.repository.TblEmpInfoRepo;
 
@@ -354,6 +357,8 @@ public class DashboardApiController {
 		try {
 
 			list = deptWiseWeekoffDashRepo.getDeptWiseEmpDiversity();
+			
+		 
 
 		} catch (Exception e) {
 
@@ -514,6 +519,27 @@ public class DashboardApiController {
 		}
 
 		return list;
+
+	}
+
+	@Autowired
+	LeaveAuthorityRepository leaveAuthorityRepository;
+
+	@RequestMapping(value = { "/chkIsAuth" }, method = RequestMethod.POST)
+	public @ResponseBody Integer chkIsAuth(@RequestParam("empId") int empId) throws ParseException {
+		int n = 0;
+
+		List<LeaveAuthority> list = new ArrayList<LeaveAuthority>();
+		try {
+
+			list = leaveAuthorityRepository.chkAuth(empId);
+			n = list.size();
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return n;
 
 	}
 

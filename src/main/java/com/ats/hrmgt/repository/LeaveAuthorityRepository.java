@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.ats.hrmgt.model.LeaveAuthority;
+import com.ats.hrmgt.model.LeaveHistory;
  
 
 public interface LeaveAuthorityRepository extends JpaRepository<LeaveAuthority, Integer> {
@@ -24,5 +25,23 @@ public interface LeaveAuthorityRepository extends JpaRepository<LeaveAuthority, 
 	LeaveAuthority findByLaPkeyAndDelStatus(int laPkey, int i);
 
 	LeaveAuthority findByDelStatusAndEmpId(int i, int empId);
+	
+	
+
+	 
+	
+	
+	@Query(value = " SELECT\n" + 
+			"    *\n" + 
+			"FROM\n" + 
+			"    leave_authority\n" + 
+			"WHERE\n" + 
+			"    :empId IN(\n" + 
+			"        leave_authority.ini_auth_emp_id\n" + 
+			"    ) OR :empId IN(\n" + 
+			"        leave_authority.fin_auth_emp_id AND  leave_authority.del_status=1 \n" + 
+			"    )", nativeQuery = true)
+  	List<LeaveAuthority> chkAuth(@Param("empId") int empId);
+
 
 }
