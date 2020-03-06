@@ -11,11 +11,23 @@ import com.ats.hrmgt.model.DailyRecordForCompOff;
 public interface DailyRecordForCompOffRepository extends JpaRepository<DailyRecordForCompOff, Integer>{
 
 	@Query(value = "SELECT\n" + 
-			"         id,att_date,emp_id,att_status,lv_sumup_id\n" + 
+			"        id,\n" + 
+			"        att_date,\n" + 
+			"        emp_id,\n" + 
+			"        att_status,\n" + 
+			"        lv_sumup_id     \n" + 
 			"    from\n" + 
-			"        tbl_attt_daily_daily dl \n" + 
-			"     where \n" + 
-			"        emp_id = :empId and lv_sumup_id in (13,14,18) and att_date between :fromDate and :toDate and multiple_entries=0  order by id asc", nativeQuery = true)
+			"        tbl_attt_daily_daily dl       \n" + 
+			"    where\n" + 
+			"        emp_id =:empId \n" + 
+			"        and lv_sumup_id in (\n" + 
+			"            13,14,18\n" + 
+			"        ) \n" + 
+			"        and att_date between :fromDate and :toDate \n" + 
+			"        and multiple_entries=0\n" + 
+			"        and atsumm_uid=1 \n" + 
+			"    order by\n" + 
+			"        id asc", nativeQuery = true)
 	List<DailyRecordForCompOff> dailyrecordlistforcompoff(String fromDate, String toDate, int empId);
 
 }
