@@ -13,7 +13,7 @@ public interface GetLoanRepo extends JpaRepository<GetLoan, Integer> {
 	@Query(value=" SELECT\n" + 
 			"         m_employees.emp_id,\n" + 
 			"        SUM(tbl_loan_main.loan_amt) AS loan_amt,\n" + 
-			"        SUM(tbl_loan_main.loan_emi) AS loan_emi,\n" + 
+			"        SUM(tbl_loan_main.loan_emi) AS loan_emi, SUM(tbl_loan_main.loan_emi_intrest) AS  loan_emi_intrest,\n" + 
 			"        SUM(tbl_loan_main.loan_repay_amt) AS loan_repay_amt,\n" + 
 			"        SUM(         tbl_loan_main.current_outstanding     ) AS current_outstanding,\n" + 
 			"        m_employees.emp_code,\n" + 
@@ -41,7 +41,7 @@ public interface GetLoanRepo extends JpaRepository<GetLoan, Integer> {
 	@Query(value=" SELECT\n" + 
 			"         m_employees.emp_id,\n" + 
 			"        SUM(tbl_loan_main.loan_amt) AS loan_amt,\n" + 
-			"        SUM(tbl_loan_main.loan_emi) AS loan_emi,\n" + 
+			"        SUM(tbl_loan_main.loan_emi) AS loan_emi,     SUM(tbl_loan_main.loan_emi_intrest) AS  loan_emi_intrest,\n" + 
 			"        SUM(tbl_loan_main.loan_repay_amt) AS loan_repay_amt,\n" + 
 			"        SUM(         tbl_loan_main.current_outstanding     ) AS current_outstanding,\n" + 
 			"        m_employees.emp_code,\n" + 
@@ -66,7 +66,7 @@ public interface GetLoanRepo extends JpaRepository<GetLoan, Integer> {
 	@Query(value=" SELECT\n" + 
 			"         m_employees.emp_id,\n" + 
 			"        SUM(tbl_loan_main.loan_amt) AS loan_amt,\n" + 
-			"        SUM(tbl_loan_main.loan_emi) AS loan_emi,\n" + 
+			"        SUM(tbl_loan_main.loan_emi) AS loan_emi,SUM(tbl_loan_main.loan_emi_intrest) AS  loan_emi_intrest,\n" + 
 			"        SUM(tbl_loan_main.loan_repay_amt) AS loan_repay_amt,\n" + 
 			"        SUM(         tbl_loan_main.current_outstanding     ) AS current_outstanding,\n" + 
 			"        m_employees.emp_code,\n" + 
@@ -91,7 +91,7 @@ public interface GetLoanRepo extends JpaRepository<GetLoan, Integer> {
 	
 	@Query(value=" SELECT\n" + 
 			"         m_employees.emp_id,\n" + 
-			"        SUM(tbl_loan_main.loan_amt) AS loan_amt,\n" + 
+			"        SUM(tbl_loan_main.loan_amt) AS loan_amt,SUM(tbl_loan_main.loan_emi_intrest) AS  loan_emi_intrest,\n" + 
 			"        SUM(tbl_loan_main.loan_emi) AS loan_emi,\n" + 
 			"        SUM(tbl_loan_main.loan_repay_amt) AS loan_repay_amt,\n" + 
 			"        SUM(         tbl_loan_main.current_outstanding     ) AS current_outstanding,\n" + 

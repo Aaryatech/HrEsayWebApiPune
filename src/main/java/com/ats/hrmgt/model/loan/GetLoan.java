@@ -16,8 +16,13 @@ public class GetLoan {
 	private int loanRepayAmt;
 
 	private int loanEmi;
+	
+	
+	private int loanEmiIntrest;
 
- 	private String empCode;
+ 
+
+	private String empCode;
 
 	private String firstName;
 
@@ -33,7 +38,13 @@ public class GetLoan {
 	
 	private int currentOutstanding;
 	
-	
+	public int getLoanEmiIntrest() {
+		return loanEmiIntrest;
+	}
+
+	public void setLoanEmiIntrest(int loanEmiIntrest) {
+		this.loanEmiIntrest = loanEmiIntrest;
+	}
 	
 
 	public String getExVar1() {
@@ -143,12 +154,13 @@ public class GetLoan {
 	@Override
 	public String toString() {
 		return "GetLoan [empId=" + empId + ", loanAmt=" + loanAmt + ", loanRepayAmt=" + loanRepayAmt + ", loanEmi="
-				+ loanEmi + ", empCode=" + empCode + ", firstName=" + firstName + ", middleName=" + middleName
-				+ ", surname=" + surname + ", designation=" + designation + ", currentOutstanding=" + currentOutstanding
+				+ loanEmi + ", loanEmiIntrest=" + loanEmiIntrest + ", empCode=" + empCode + ", firstName=" + firstName
+				+ ", middleName=" + middleName + ", surname=" + surname + ", designation=" + designation + ", exVar1="
+				+ exVar1 + ", exVar2=" + exVar2 + ", exVar3=" + exVar3 + ", currentOutstanding=" + currentOutstanding
 				+ "]";
 	}
-	
-	
+
+	 
 
 	 
 
