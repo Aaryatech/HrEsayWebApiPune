@@ -586,22 +586,21 @@ public class BonusApiController {
 
 						// to get total from formula
 
-						List<Integer> allIdList = new ArrayList<Integer>();
-						for (int j = 0; j < formulaList.size(); j++) {
-
-							// System.err.println("formulaList for **" + formulaList.get(j));
-							Allowances ac = new Allowances();
-							try {
-								ac = AalowancesRepo.findByShortNameAndDelStatus(formulaList.get(j).trim(), 1);
-								allIdList.add(ac.getAllowanceId());
-							} catch (Exception e) {
-
-							}
-						}
+						/*
+						 * List<Integer> allIdList = new ArrayList<Integer>(); for (int j = 0; j <
+						 * formulaList.size(); j++) {
+						 * 
+						 * // System.err.println("formulaList for **" + formulaList.get(j)); Allowances
+						 * ac = new Allowances(); try { ac =
+						 * AalowancesRepo.findByShortNameAndDelStatus(formulaList.get(j).trim(), 1);
+						 * allIdList.add(ac.getAllowanceId()); } catch (Exception e) {
+						 * 
+						 * } }
+						 */
 
 						try {
 							BonusParam salCal = bonusParamRepo.getBonusParameters(empId, datesDet.getMonthFrom(),
-									datesDet.getMonthTo(), datesDet.getYearFrom(), datesDet.getYearTo(), allIdList);
+									datesDet.getMonthTo(), datesDet.getYearFrom(), datesDet.getYearTo());
 							// System.err.println("BonusParam**" + salCal.toString());
 							if (salCal.getTotalAllowance() == null) {
 								formTot = Double.parseDouble(salCal.getTotalBasicCal());
@@ -609,8 +608,8 @@ public class BonusApiController {
 							} else if (salCal.getTotalBasicCal() == null) {
 								formTot = 0;
 							} else {
-								formTot = Double.parseDouble(salCal.getTotalBasicCal())
-										+ Double.parseDouble(salCal.getTotalAllowance());
+								formTot = ((Double.parseDouble(salCal.getTotalBasicCal())
+										+ Double.parseDouble(salCal.getTotalAllowance())) / 365) * payableDay;
 							}
 
 							formTot = NumberFormatting.castNumber(formTot, insertVal);
@@ -643,15 +642,11 @@ public class BonusApiController {
 						lossPrcntAmt = lossPrcntAmt + grossBonus;
 						lossPrcntAmt = NumberFormatting.castNumber(lossPrcntAmt, insertVal);
 
-						// System.err.println("advPrcntAmt"+advPrcntAmt);
-						// System.err.println("pujaPrcntAmt"+pujaPrcntAmt);
 						System.err.println("lossPrcntAmt" + lossPrcntAmt);
 					} else {
 						isApplicable = "No";
-						// System.err.println("not Applicable");
-					}
 
-					// System.err.println("param **" + salCal.toString());
+					}
 
 					GetEmployeeDetails list = getEmployeeDetailsRepo.getEmpDetailList(empId);
 
@@ -832,9 +827,6 @@ public class BonusApiController {
 	@Autowired
 	PayBonusDetailsRepo payBonusDetailsRepo;
 
-	 
-	
-	
 	@RequestMapping(value = { "/savePayBonusDetails" }, method = RequestMethod.POST)
 	public @ResponseBody PayBonusDetails savePayBonusDetails(@RequestBody PayBonusDetails payBonusDetails) {
 
@@ -880,41 +872,34 @@ public class BonusApiController {
 	public @ResponseBody List<PayBonusDetails> getAllPayDetails() {
 
 		List<PayBonusDetails> detList = new ArrayList<PayBonusDetails>();
-		
+
 		try {
-			detList=payBonusDetailsRepo.findByDelStatus(1);
+			detList = payBonusDetailsRepo.findByDelStatus(1);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return null;
 
 	}
-	
-	
 
 	@RequestMapping(value = { "/getAllPayPedingDetails" }, method = RequestMethod.GET)
 	public @ResponseBody List<PayBonusDetails> getAllPayPedingDetails() {
 
 		List<PayBonusDetails> detList = new ArrayList<PayBonusDetails>();
-		
+
 		try {
-			detList=payBonusDetailsRepo.getAllUnpaid();
+			detList = payBonusDetailsRepo.getAllUnpaid();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return detList;
 
 	}
-	
-	
-	
-	
-	
-	
+
 	@RequestMapping(value = { "/deletePayBonusDet" }, method = RequestMethod.POST)
 	public @ResponseBody Info deletePayBonusDet(@RequestParam("payId") int payId) {
 
@@ -942,6 +927,5 @@ public class BonusApiController {
 		return info;
 
 	}
-
 
 }

@@ -11,16 +11,16 @@ import org.springframework.data.repository.query.Param;
 public interface BonusParamRepo extends JpaRepository<BonusParam, String> {
 
 	
-	@Query(value = " SELECT\n" + "UUID() as uid,\n" + "    SUM(tbl_salary_calc.basic_cal) AS total_basic_cal,\n"
+	@Query(value = " SELECT\n" + "UUID() as uid,\n" + "    SUM(tbl_salary_calc.basic_default) AS total_basic_cal,\n"
 			+ "    SUM(salall.allowance_value_cal) AS total_allowance\n" + "FROM\n" + "    tbl_salary_calc\n"
 			+ "LEFT JOIN tbl_salary_calc_allowance_cal salall ON\n"
-			+ "    salall.salary_calc_id = tbl_salary_calc.id AND allowance_id IN(:allIdList) AND salall.emp_id=:empId\n" + "WHERE\n"
+			+ "    salall.salary_calc_id = tbl_salary_calc.id    AND salall.emp_id=:empId\n" + "WHERE\n"
 			+ "    tbl_salary_calc.emp_id =:empId AND(\n" + "        (\n"
 			+ "            tbl_salary_calc.calc_month >= :monthFrom AND tbl_salary_calc.calc_year =:yearFrom\n" + "        ) OR(\n"
 			+ "            tbl_salary_calc.calc_month <=:monthTo AND tbl_salary_calc.calc_year = :yearTo \n" + "        )\n"
 			+ "    )", nativeQuery = true)
-	BonusParam getBonusParameters(@Param("empId") int empId,@Param("monthFrom") int monthFrom,@Param("monthTo") int monthTo,@Param("yearFrom") String yearFrom,@Param("yearTo") String yearTo,
-			@Param("allIdList") List<Integer> allIdList);
+	BonusParam getBonusParameters(@Param("empId") int empId,@Param("monthFrom") int monthFrom,@Param("monthTo") int monthTo,@Param("yearFrom") String yearFrom,@Param("yearTo") String yearTo
+			 );
 
 	
 
