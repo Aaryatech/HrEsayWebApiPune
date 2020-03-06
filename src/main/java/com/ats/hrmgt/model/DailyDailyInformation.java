@@ -41,6 +41,9 @@ public class DailyDailyInformation {
 	@Column(name="full_night")
 	private int fullNight;
 	
+	@Column(name="mark_compoff")
+	private int markCompoff;
+	
 	@Column(name="sal_basis")
 	private String salBasis;
 	
@@ -132,11 +135,20 @@ public class DailyDailyInformation {
 		this.fullNight = fullNight;
 	}
 
+	public int getMarkCompoff() {
+		return markCompoff;
+	}
+
+	public void setMarkCompoff(int markCompoff) {
+		this.markCompoff = markCompoff;
+	}
+
 	@Override
 	public String toString() {
 		return "DailyDailyInformation [uuid=" + uuid + ", empId=" + empId + ", daycount=" + daycount + ", lvSumupId="
 				+ lvSumupId + ", nameSd=" + nameSd + ", workingMin=" + workingMin + ", otMin=" + otMin + ", lateMark="
-				+ lateMark + ", lateMin=" + lateMin + ", fullNight=" + fullNight + ", salBasis=" + salBasis + "]";
+				+ lateMark + ", lateMin=" + lateMin + ", fullNight=" + fullNight + ", markCompoff=" + markCompoff
+				+ ", salBasis=" + salBasis + "]";
 	} 
 	
 	

@@ -21,13 +21,13 @@ import com.ats.hrmgt.repository.WeeklyOffShitRepository;
 @Service
 public class CommonFunctionServiceImpl implements CommonFunctionService {
 
-	
 	@Autowired
 	WeeklyOffShitRepository weeklyOffShitRepository;
-	
+
 	@Override
 	public Integer findDateInWeekEnd(String fromDate, String toDate, List<WeeklyOff> weeklyList,
-			List<WeeklyOffShit> weeklyOffShitList, int locationId, int weekendCatId, int empId) {
+			List<WeeklyOffShit> weeklyOffShitList, int locationId, int weekendCatId, int empId,
+			List<WeeklyOffShit> weeklyOffShitFromList) {
 
 		int sts = 2;
 
@@ -443,24 +443,26 @@ public class CommonFunctionServiceImpl implements CommonFunctionService {
 
 				if (sts == 1) {
 
-					List<WeeklyOffShit> weeklyOffShitFromList = weeklyOffShitRepository.getWeeklyOffShitListbetweenweekofffromdatebyempId(fromDate, fromDate,empId);
-					
-					if (weeklyOffShitFromList.size()>0) { 
-						sts = 2; 
-					}
-					/*Date frmdt = yydate.parse(fromDate);
+					/*
+					 * List<WeeklyOffShit> weeklyOffShitFromList =
+					 * weeklyOffShitRepository.getWeeklyOffShitListbetweenweekofffromdatebyempId(
+					 * fromDate, fromDate,empId);
+					 * 
+					 * if (weeklyOffShitFromList.size()>0) { sts = 2; }
+					 */
+					Date frmdt = yydate.parse(fromDate);
 
-					for (int i = 0; i < weeklyOffShitList.size(); i++) {
+					for (int i = 0; i < weeklyOffShitFromList.size(); i++) {
 
-						if (empId == weeklyOffShitList.get(i).getEmpId()
-								&& frmdt.compareTo(yydate.parse(weeklyOffShitList.get(i).getWeekofffromdate())) == 0) {
+						if (empId == weeklyOffShitFromList.get(i).getEmpId() && frmdt
+								.compareTo(yydate.parse(weeklyOffShitFromList.get(i).getWeekofffromdate())) == 0) {
 
 							sts = 2;
 							break;
 
 						}
 
-					}*/
+					}
 
 				}
 			}

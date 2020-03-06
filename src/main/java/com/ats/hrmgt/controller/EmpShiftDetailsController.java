@@ -301,6 +301,8 @@ public class EmpShiftDetailsController {
 			// to get holidey of that month
 			List<Holiday> holidayList = holidayRepo.getholidaybetweendate(fromDate, toDate1);
 			List<WeeklyOffShit> weeklyOffShitList = weeklyOffShitRepository.getWeeklyOffShitList(fromDate, toDate1);
+			List<WeeklyOffShit> weeklyOffShitFromList = weeklyOffShitRepository.weeklyOffShitFromList(fromDate, toDate1);
+			
 			for (int m = 0; m < empShiftList.size(); m++) {
 				int holidayCat=0;
 				
@@ -333,7 +335,7 @@ public class EmpShiftDetailsController {
 				}
 
 				int weekEndStatus = commonFunctionService.findDateInWeekEnd(calcDate, calcDate, weeklyOfflist,
-						weeklyOffShitList, empShiftList.get(m).getLocationId(),WeekoffCat,empIdNew);
+						weeklyOffShitList, empShiftList.get(m).getLocationId(),WeekoffCat,empIdNew,weeklyOffShitFromList);
 
 				int holidayStatus = commonFunctionService.findDateInHoliday(calcDate, calcDate, holidayList, location,holidayCat);
 

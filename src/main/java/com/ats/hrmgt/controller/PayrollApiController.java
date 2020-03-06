@@ -284,8 +284,11 @@ public class PayrollApiController {
 			List<GetPayDedList> getPayDedList = getPayDedListRepo.getPayDedList(month, year, empIds);
 			List<GetPayDedList> getRewardList = getPayDedListRepo.getBonusList(month, year, empIds);
 			List<GetPayDedList> getLoanList = getPayDedListRepo.getLoanList(year + "-" + month + "-01", empIds);
-			/*List<GetPayDedList> getBonusList = getPayDedListRepo.getBonusList(year + "-" + month + "-01", empIds);
-			List<GetPayDedList> getExgretiaList = getPayDedListRepo.getExgretiaList(year + "-" + month + "-01", empIds);*/
+			/*
+			 * List<GetPayDedList> getBonusList = getPayDedListRepo.getBonusList(year + "-"
+			 * + month + "-01", empIds); List<GetPayDedList> getExgretiaList =
+			 * getPayDedListRepo.getExgretiaList(year + "-" + month + "-01", empIds);
+			 */
 
 			for (int i = 0; i < listForUpdatedValue.size(); i++) {
 
@@ -359,33 +362,24 @@ public class PayrollApiController {
 					listForUpdatedValue.get(i).setLoanDed(0);
 				}
 
-				/*flag = 0;
-				for (int j = 0; j < getBonusList.size(); j++) {
-
-					if (getBonusList.get(j).getEmpId() == listForUpdatedValue.get(i).getEmpId()) {
-						listForUpdatedValue.get(i).setBonusCal(getBonusList.get(j).getAmt());
-						flag = 1;
-						break;
-					}
-
-				}
-				if (flag == 0) {
-					listForUpdatedValue.get(i).setBonusCal(0);
-				}
-
-				flag = 0;
-				for (int j = 0; j < getExgretiaList.size(); j++) {
-
-					if (getExgretiaList.get(j).getEmpId() == listForUpdatedValue.get(i).getEmpId()) {
-						listForUpdatedValue.get(i).setExgretiaCal(getExgretiaList.get(j).getAmt());
-						flag = 1;
-						break;
-					}
-
-				}
-				if (flag == 0) {
-					listForUpdatedValue.get(i).setExgretiaCal(0);
-				}*/
+				/*
+				 * flag = 0; for (int j = 0; j < getBonusList.size(); j++) {
+				 * 
+				 * if (getBonusList.get(j).getEmpId() == listForUpdatedValue.get(i).getEmpId())
+				 * { listForUpdatedValue.get(i).setBonusCal(getBonusList.get(j).getAmt()); flag
+				 * = 1; break; }
+				 * 
+				 * } if (flag == 0) { listForUpdatedValue.get(i).setBonusCal(0); }
+				 * 
+				 * flag = 0; for (int j = 0; j < getExgretiaList.size(); j++) {
+				 * 
+				 * if (getExgretiaList.get(j).getEmpId() ==
+				 * listForUpdatedValue.get(i).getEmpId()) {
+				 * listForUpdatedValue.get(i).setExgretiaCal(getExgretiaList.get(j).getAmt());
+				 * flag = 1; break; }
+				 * 
+				 * } if (flag == 0) { listForUpdatedValue.get(i).setExgretiaCal(0); }
+				 */
 			}
 
 			List<SalaryCalcTemp> savereslist = salaryCalcTempRepo.saveAll(listForUpdatedValue);
@@ -847,7 +841,8 @@ public class PayrollApiController {
 									getSalaryTempList.get(i).getWeeklyOffPresent(),
 									getSalaryTempList.get(i).getHolidayPresent(),
 									getSalaryTempList.get(i).getWeeklyOffHolidayOffPresent(),
-									getSalaryTempList.get(i).getWorkingDays(), ammt, mstEmpType, amount_round);
+									getSalaryTempList.get(i).getAtsummUid(), getSalaryTempList.get(i).getWorkingDays(),
+									ammt, mstEmpType, amount_round);
 							getSalaryTempList.get(i).setProductionInsentive(tempVal);
 							salaryTermList.get(j).setValue(tempVal);
 							// System.out.println(ammt + "oTTTTT" + tempVal);
@@ -1272,19 +1267,21 @@ public class PayrollApiController {
 	}
 
 	public double otwageswo(float percentage, String salBasis, int totalDays, float woPresent, float phPresent,
-			float woHoPresent, float workingDays, double ammt, MstEmpType mstEmpType, int amount_round) {
+			float woHoPresent, String markCompoffCount, float workingDays, double ammt, MstEmpType mstEmpType,
+			int amount_round) {
 
-		double perDayGrossSal = (ammt / totalDays) * (woPresent + phPresent + woHoPresent);
+		double perDayGrossSal = (ammt / totalDays)
+				* (woPresent + phPresent + woHoPresent - Integer.parseInt(markCompoffCount));
 
 		// basic+DAy
 		// metaf: amount / month_day
 		double val = 0;
 
-		if (mstEmpType.getWhWork().equalsIgnoreCase("OT")) {
+		//if (mstEmpType.getWhWork().equalsIgnoreCase("OT")) {
 
 			val = perDayGrossSal;
 			val = castNumber(val, amount_round);
-		}
+		//}
 
 		return val;
 	}

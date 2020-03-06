@@ -191,7 +191,7 @@ public class AttendanceApiControllerchange {
 						+ empList.get(i).getEmpCode() + "', '" + empName + "', '" + month + "', '" + year
 						+ "', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 'O', '"
 						+ userId
-						+ "', NULL, '0', NULL, NULL, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', NULL, '0'),";
+						+ "', NULL, '0', NULL, NULL, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),";
 
 				EmpJsonData empJsonData = new EmpJsonData();
 				empJsonData.setCmpCode(empList.get(i).getCmpCode());
@@ -371,6 +371,7 @@ public class AttendanceApiControllerchange {
 			List<WeeklyOff> weeklyOfflist = weeklyOffRepo.getWeeklyOffList();
 			List<WeeklyOffShit> weeklyOffShitList = weeklyOffShitRepository.getWeeklyOffShitList(fromDate, toDate);
 			List<LvType> lvTypeList = lvTypeRepository.findAll();
+			List<WeeklyOffShit> weeklyOffShitFromList = weeklyOffShitRepository.weeklyOffShitFromList(fromDate, toDate);
 
 			// System.out.println(fileUploadedDataList);
 			/*
@@ -642,7 +643,7 @@ public class AttendanceApiControllerchange {
 					int weekEndStatus = commonFunctionService.findDateInWeekEnd(sf.format(defaultDate),
 							sf.format(defaultDate), weeklyOfflist, weeklyOffShitList,
 							dailyAttendanceList.get(i).getLocationId(), employee.getWeekEndCatId(),
-							dailyAttendanceList.get(i).getEmpId());
+							dailyAttendanceList.get(i).getEmpId(), weeklyOffShitFromList);
 
 					int holidayStatus = commonFunctionService.findDateInHoliday(sf.format(defaultDate),
 							sf.format(defaultDate), holidayList, dailyAttendanceList.get(i).getLocationId(),
@@ -1168,6 +1169,8 @@ public class AttendanceApiControllerchange {
 				int totalWorkingHr = 0;
 				int totalOtHr = 0;
 				int nightcount = 0;
+				int markascompoff = 0;
+
 				float ab_deduction = Float.parseFloat(setting.getValue());
 				String isDaily = "daily";
 
@@ -1215,19 +1218,19 @@ public class AttendanceApiControllerchange {
 						if (dailyDailyInformationList.get(j).getLvSumupId() == 14) { // 14=WO-OT
 
 							wot = wot + dailyDailyInformationList.get(j).getDaycount();
-
+							markascompoff = markascompoff + dailyDailyInformationList.get(j).getMarkCompoff();
 						}
 
 						if (dailyDailyInformationList.get(j).getLvSumupId() == 13) { // 13=PH-OT
 
 							phot = phot + dailyDailyInformationList.get(j).getDaycount();
-
+							markascompoff = markascompoff + dailyDailyInformationList.get(j).getMarkCompoff();
 						}
 
 						if (dailyDailyInformationList.get(j).getLvSumupId() == 18) { // 18=WO-PH-OT
 
 							wphot = wphot + dailyDailyInformationList.get(j).getDaycount();
-
+							markascompoff = markascompoff + dailyDailyInformationList.get(j).getMarkCompoff();
 						}
 
 						if (dailyDailyInformationList.get(j).getSalBasis().equals("daily")) {
@@ -1306,6 +1309,7 @@ public class AttendanceApiControllerchange {
 				summaryDailyAttendanceList.get(i).setHolidayPresent(phot);
 				summaryDailyAttendanceList.get(i).setWeeklyOffHolidayOffPresent(wphot);
 				summaryDailyAttendanceList.get(i).setFullNight(nightcount);
+				summaryDailyAttendanceList.get(i).setAtsummUid(String.valueOf(markascompoff));
 
 				workingDays = totalDaysInmonth - summaryDailyAttendanceList.get(i).getWeeklyOff()
 						- summaryDailyAttendanceList.get(i).getPaidHoliday();
@@ -1784,6 +1788,12 @@ public class AttendanceApiControllerchange {
 
 				if (dailyRecordByDate.get(0).getByFileUpdated() == 1) {
 
+					int month = shiftWeeklyofById.getMonth();
+					int year = shiftWeeklyofById.getYear();
+					SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+					Date firstDay = new GregorianCalendar(year, month - 1, 1).getTime();
+					Date lastDay = new GregorianCalendar(year, month, 0).getTime();
+
 					List<FileUploadedData> fileUploadedDataList = new ArrayList<>();
 					FileUploadedData fileUploadedData = new FileUploadedData();
 					fileUploadedData.setEmpCode(dailyRecordByDate.get(0).getEmpCode());
@@ -1808,9 +1818,8 @@ public class AttendanceApiControllerchange {
 
 					info = getVariousListForUploadAttendace(dataForUpdateAttendance);
 
-					info = finalUpdateDailySumaryRecord(dailyRecordByDate.get(0).getAttDate(),
-							dailyRecordByDate.get(0).getAttDate(), userId, shiftWeeklyofById.getMonth(),
-							shiftWeeklyofById.getYear(), shiftWeeklyofById.getEmpId());
+					info = finalUpdateDailySumaryRecord(sf.format(firstDay), sf.format(lastDay), userId, month, year,
+							shiftWeeklyofById.getEmpId());
 
 				}
 			}

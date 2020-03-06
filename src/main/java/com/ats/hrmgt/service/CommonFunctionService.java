@@ -14,7 +14,7 @@ import com.ats.hrmgt.model.WeeklyOffShit;
 public interface CommonFunctionService {
 
 	public Integer findDateInWeekEnd(String fromDate, String toDate, List<WeeklyOff> weeklyList,
-			List<WeeklyOffShit> weeklyOffShitList, int locationId, int weekendCatId, int empId);
+			List<WeeklyOffShit> weeklyOffShitList, int locationId, int weekendCatId, int empId, List<WeeklyOffShit> weeklyOffShitFromList);
 
 	public Integer findDateInHoliday(String fromDate, String toDate, List<Holiday> holidayList, int locationId, int holidayCatId);
 
