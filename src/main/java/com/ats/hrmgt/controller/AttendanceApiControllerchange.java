@@ -633,15 +633,13 @@ public class AttendanceApiControllerchange {
 
 					if (dailyAttendanceList.get(i).getLateMin() > 0) {
 						dailyAttendanceList.get(i).setLateMark("1");
-					}  
-					
+					}
+
 					if (dailyAttendanceList.get(i).getLateMin() > allowdLateTime) {
 						dailyAttendanceList.get(i).setLateMark("0");
 						flagLatemarkHd = 1;
 					}
-					
-					
-					
+
 				} catch (Exception e) {
 					// e.printStackTrace();
 				}
@@ -1167,6 +1165,7 @@ public class AttendanceApiControllerchange {
 		try {
 
 			Setting setting = settingRepo.findByKey("ab_deduction");
+			Setting max_late_day_allowed = settingRepo.findByKey("max_late_day_allowed");
 
 			List<DailyDailyInformation> dailyDailyInformationList = new ArrayList<>();
 
@@ -1208,6 +1207,7 @@ public class AttendanceApiControllerchange {
 				int totalOtHr = 0;
 				int nightcount = 0;
 				int markascompoff = 0;
+				float latededuct = 0;
 
 				float ab_deduction = Float.parseFloat(setting.getValue());
 				String isDaily = "daily";
@@ -1329,7 +1329,8 @@ public class AttendanceApiControllerchange {
 					}
 				}
 				summaryDailyAttendanceList.get(i).setTotlateMins(lateMin);
-				summaryDailyAttendanceList.get(i).setTotlateDays(lateMark);
+
+				summaryDailyAttendanceList.get(i).setTotLate(lateMark);
 				summaryDailyAttendanceList.get(i).setTotworkingHrs(totalWorkingHr);
 				summaryDailyAttendanceList.get(i).setTotOthr(totalOtHr);
 				summaryDailyAttendanceList.get(i).setPresentDays(presentDays);
@@ -1349,6 +1350,13 @@ public class AttendanceApiControllerchange {
 				summaryDailyAttendanceList.get(i).setFullNight(nightcount);
 				summaryDailyAttendanceList.get(i).setAtsummUid(String.valueOf(markascompoff));
 
+				if (lateMark > Integer.parseInt(max_late_day_allowed.getValue())) {
+					 
+					latededuct = (lateMark - Float.parseFloat(max_late_day_allowed.getValue())) / 2;
+					 
+				}
+				summaryDailyAttendanceList.get(i).setTotlateDays(latededuct);
+
 				workingDays = totalDaysInmonth - summaryDailyAttendanceList.get(i).getWeeklyOff()
 						- summaryDailyAttendanceList.get(i).getPaidHoliday();
 				summaryDailyAttendanceList.get(i).setWorkingDays(workingDays);
@@ -1357,20 +1365,19 @@ public class AttendanceApiControllerchange {
 					summaryDailyAttendanceList.get(i)
 							.setPayableDays(summaryDailyAttendanceList.get(i).getPresentDays()
 									+ summaryDailyAttendanceList.get(i).getPaidHoliday()
-									+ summaryDailyAttendanceList.get(i).getPaidLeave());
+									+ summaryDailyAttendanceList.get(i).getPaidLeave() - latededuct);
 				} else {
 					summaryDailyAttendanceList.get(i)
 							.setPayableDays(summaryDailyAttendanceList.get(i).getPresentDays()
 									+ summaryDailyAttendanceList.get(i).getPaidHoliday()
 									+ summaryDailyAttendanceList.get(i).getPaidLeave()
-									+ summaryDailyAttendanceList.get(i).getWeeklyOff());
+									+ summaryDailyAttendanceList.get(i).getWeeklyOff() - latededuct);
 				}
 				summaryDailyAttendanceList.get(i).setPayableDays(
 						summaryDailyAttendanceList.get(i).getPayableDays() - (absentLeave * ab_deduction));
 
 				summaryDailyAttendanceList.get(i).setCalculationDone(1);
 
-				// System.out.println(summaryDailyAttendanceList.get(i).getFullNight());
 			}
 
 			// System.out.println("summaryDailyAttendanceList " +
