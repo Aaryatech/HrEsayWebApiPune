@@ -462,7 +462,22 @@ public class AttendanceApiControllerchange {
 								&& defaultDate.compareTo(uploadedDate) == 0) {
 
 							dailyAttendanceList.get(i).setInTime(fileUploadedDataList.get(j).getInTime());
-							dailyAttendanceList.get(i).setOutTime(fileUploadedDataList.get(j).getOutTime());
+
+							if (fileUploadedDataList.get(j).getOutTime().trim().equalsIgnoreCase("")
+									|| fileUploadedDataList.get(j).getOutTime().equals("0:00")
+									|| fileUploadedDataList.get(j).getOutTime().equals("0:00")
+									|| fileUploadedDataList.get(j).getOutTime().equals("00:00")
+									|| fileUploadedDataList.get(j).getOutTime().equals("00:00")
+									|| fileUploadedDataList.get(j).getOutTime().equals("00:00:00")
+									|| fileUploadedDataList.get(j).getOutTime().equals("00:00:00")) {
+
+								dailyAttendanceList.get(i).setOutTime(shiftMaster.getTotime());
+
+							} else {
+								dailyAttendanceList.get(i).setOutTime(fileUploadedDataList.get(j).getOutTime());
+							}
+
+							// System.out.println("DSfsdfdsf" + fileUploadedDataList.get(j).getOutTime());
 							dailyAttendanceList.get(i).setByFileUpdated(1);
 							if (dataForUpdateAttendance.getEmpId() == 0) {
 								dailyAttendanceList.get(i).setRowId(j + 1);
@@ -1351,9 +1366,9 @@ public class AttendanceApiControllerchange {
 				summaryDailyAttendanceList.get(i).setAtsummUid(String.valueOf(markascompoff));
 
 				if (lateMark > Integer.parseInt(max_late_day_allowed.getValue())) {
-					 
+
 					latededuct = (lateMark - Float.parseFloat(max_late_day_allowed.getValue())) / 2;
-					 
+
 				}
 				summaryDailyAttendanceList.get(i).setTotlateDays(latededuct);
 
