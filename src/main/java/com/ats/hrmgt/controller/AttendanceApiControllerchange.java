@@ -400,6 +400,7 @@ public class AttendanceApiControllerchange {
 
 			for (int i = 0; i < dailyAttendanceList.size(); i++) {
 
+				int flagLatemarkHd = 0;
 				possibleShiftList = new ArrayList<>();
 
 				Date defaultDate = sf.parse(dailyAttendanceList.get(i).getAttDate());
@@ -627,9 +628,20 @@ public class AttendanceApiControllerchange {
 					}
 
 					if (Float.parseFloat(shiftMaster.getShiftHr()) > dailyAttendanceList.get(i).getWorkingHrs()) {
-						dailyAttendanceList.get(i).setLateMark("0");
+						// dailyAttendanceList.get(i).setLateMark("0");
 					}
 
+					if (dailyAttendanceList.get(i).getLateMin() > 0) {
+						dailyAttendanceList.get(i).setLateMark("1");
+					}  
+					
+					if (dailyAttendanceList.get(i).getLateMin() > allowdLateTime) {
+						dailyAttendanceList.get(i).setLateMark("0");
+						flagLatemarkHd = 1;
+					}
+					
+					
+					
 				} catch (Exception e) {
 					// e.printStackTrace();
 				}
@@ -819,6 +831,18 @@ public class AttendanceApiControllerchange {
 											}
 										}
 									}
+
+									if (flagLatemarkHd == 1) {
+
+										dailyAttendanceList.get(i).setAttStatus("HD");
+										for (int j = 0; j < lvTypeList.size(); j++) {
+											if (lvTypeList.get(j).getNameSd().equals("HD")) {
+												dailyAttendanceList.get(i)
+														.setLvSumupId(lvTypeList.get(j).getLvSumupId());
+												break;
+											}
+										}
+									}
 								} // $working_hrs >= $resultp->working_hrs
 								else if (dailyAttendanceList.get(i).getWorkingHrs() >= Float
 										.parseFloat(shiftMaster.getShiftHalfdayHr())
@@ -942,6 +966,7 @@ public class AttendanceApiControllerchange {
 													}
 												}
 											}
+
 										} else {
 											dailyAttendanceList.get(i).setAttStatus("P");
 											for (int j = 0; j < lvTypeList.size(); j++) {
@@ -952,6 +977,19 @@ public class AttendanceApiControllerchange {
 												}
 											}
 										}
+
+										if (flagLatemarkHd == 1) {
+
+											dailyAttendanceList.get(i).setAttStatus("HD");
+											for (int j = 0; j < lvTypeList.size(); j++) {
+												if (lvTypeList.get(j).getNameSd().equals("HD")) {
+													dailyAttendanceList.get(i)
+															.setLvSumupId(lvTypeList.get(j).getLvSumupId());
+													break;
+												}
+											}
+										}
+
 									} else if (dailyAttendanceList.get(i).getWorkingHrs() >= Float
 											.parseFloat(shiftMaster.getShiftHalfdayHr())
 											&& dailyAttendanceList.get(i).getWorkingHrs() < Float
