@@ -27,6 +27,7 @@ import com.ats.hrmgt.model.DataForUpdateAttendance;
 import com.ats.hrmgt.model.EmpInfo;
 import com.ats.hrmgt.model.EmpInfoWithDateInfoList;
 import com.ats.hrmgt.model.EmpJsonData;
+import com.ats.hrmgt.model.EmpSalaryInfoForPayroll;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.FileUploadedData;
 import com.ats.hrmgt.model.GetDailyDailyRecord;
@@ -54,6 +55,7 @@ import com.ats.hrmgt.repository.AccessRightModuleRepository;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
 import com.ats.hrmgt.repository.DailyDailyInformationRepository;
 import com.ats.hrmgt.repository.EmpInfoRepository;
+import com.ats.hrmgt.repository.EmpSalaryInfoForPayrollRepository;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.GetWeeklyOffRepo;
 import com.ats.hrmgt.repository.HolidayRepo;
@@ -143,6 +145,9 @@ public class AttendanceApiControllerchange {
 
 	@Autowired
 	SettingRepo settingRepo;
+
+	@Autowired
+	EmpSalaryInfoForPayrollRepository empSalaryInfoForPayrollRepository;
 
 	@RequestMapping(value = { "/initiallyInsertDailyRecord" }, method = RequestMethod.POST)
 	public @ResponseBody Info initiallyInsertDailyRecord(@RequestParam("fromDate") String fromDate,
@@ -366,7 +371,7 @@ public class AttendanceApiControllerchange {
 
 			List<FileUploadedData> fileUploadedDataList = dataForUpdateAttendance.getFileUploadedDataList();
 			List<MstEmpType> mstEmpTypeList = mstEmpTypeRepository.findAll();
-			List<ShiftMaster> shiftList = shiftMasterRepository.findAll();
+			List<ShiftMaster> shiftList = shiftMasterRepository.findByStatus(1);
 			List<Holiday> holidayList = holidayRepo.getholidaybetweendate(fromDate, toDate);
 			List<WeeklyOff> weeklyOfflist = weeklyOffRepo.getWeeklyOffList();
 			List<WeeklyOffShit> weeklyOffShitList = weeklyOffShitRepository.getWeeklyOffShitList(fromDate, toDate);
@@ -1965,24 +1970,15 @@ public class AttendanceApiControllerchange {
 
 	@RequestMapping(value = { "/fixAttendanceByDateOfEmpLoyee" }, method = RequestMethod.POST)
 	public @ResponseBody Info fixAttendanceByDateOfEmpLoyee(@RequestParam("fromDate") String fromDate,
-			@RequestParam("toDate") String toDate, @RequestParam("empIds") List<Integer> empIds) {
+			@RequestParam("toDate") String toDate, @RequestParam("empIds") List<Integer> empIds,
+			@RequestParam("isFixed") int isFixed, @RequestParam("sts") String sts) {
 
 		Info info = new Info();
 
 		try {
 
-			/*
-			 * SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); Date fmdt =
-			 * df.parse(fromDate); Date todt = df.parse(toDate);
-			 * 
-			 * for (Date j = fmdt; j.compareTo(todt) <= 0;) {
-			 * 
-			 * int fixDailyDailyRecord =
-			 * dailyAttendanceRepository.fixDailyDailyRecord(df.format(j), empIds);
-			 * j.setTime(j.getTime() + 1000 * 60 * 60 * 24); }
-			 */
-			int fixDailyDailyRecord = dailyAttendanceRepository.fixDailyDailyRecordBetweenDate(fromDate, toDate,
-					empIds);
+			int fixDailyDailyRecord = dailyAttendanceRepository.fixDailyDailyRecordBetweenDate(fromDate, toDate, empIds,
+					isFixed, sts);
 			info.setError(false);
 			info.setMsg("success");
 
@@ -1993,6 +1989,25 @@ public class AttendanceApiControllerchange {
 		}
 
 		return info;
+
+	}
+
+	@RequestMapping(value = { "/getListForfixunfixAttendance" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmpSalaryInfoForPayroll> getListForfixunfixAttendance(@RequestParam("month") int month,
+			@RequestParam("year") int year, @RequestParam("isFixed") int isFixed, @RequestParam("sts") String sts) {
+
+		List<EmpSalaryInfoForPayroll> list = new ArrayList<>();
+
+		try {
+
+			list = empSalaryInfoForPayrollRepository.getListForfixunfixAttendance(month, year, isFixed, sts);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
 
 	}
 
