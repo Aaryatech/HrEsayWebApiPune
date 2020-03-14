@@ -24,6 +24,7 @@ import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.DailyDailyInfomationForChart;
 import com.ats.hrmgt.model.DailyDailyInformation;
 import com.ats.hrmgt.model.DataForUpdateAttendance;
+import com.ats.hrmgt.model.DateAndDay;
 import com.ats.hrmgt.model.EmpInfo;
 import com.ats.hrmgt.model.EmpInfoWithDateInfoList;
 import com.ats.hrmgt.model.EmpJsonData;
@@ -476,7 +477,7 @@ public class AttendanceApiControllerchange {
 									|| fileUploadedDataList.get(j).getInTime().equals("00:00:00")
 									|| fileUploadedDataList.get(j).getInTime().equals("00:00:00")) {
 
-								dailyAttendanceList.get(i).setOutTime(fileUploadedDataList.get(j).getOutTime());
+								dailyAttendanceList.get(i).setOutTime("00:00:00");
 
 							} else if (fileUploadedDataList.get(j).getOutTime().trim().equalsIgnoreCase("")
 									|| fileUploadedDataList.get(j).getOutTime().equals("0:00")
@@ -486,7 +487,7 @@ public class AttendanceApiControllerchange {
 									|| fileUploadedDataList.get(j).getOutTime().equals("00:00:00")
 									|| fileUploadedDataList.get(j).getOutTime().equals("00:00:00")) {
 
-								dailyAttendanceList.get(i).setOutTime(shiftMaster.getTotime());
+								//dailyAttendanceList.get(i).setOutTime(shiftMaster.getTotime());
 
 							} else {
 								dailyAttendanceList.get(i).setOutTime(fileUploadedDataList.get(j).getOutTime());
@@ -1564,10 +1565,22 @@ public class AttendanceApiControllerchange {
 					toDate);
 
 			List<String> dates = new ArrayList<>();
+			List<DateAndDay> dateAndDayList = new ArrayList<>();
+			
 			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
-
+			SimpleDateFormat sdf = new SimpleDateFormat("EEE");
+			
+			
 			for (Date j = fmdt; j.compareTo(todt) <= 0;) {
+				
+				
 				dates.add(sf.format(j));
+				
+				DateAndDay dateAndDay = new DateAndDay(); 
+				String stringDate = sdf.format(j);
+				dateAndDay.setDate(sf.format(j));
+				dateAndDay.setDay(stringDate);
+				dateAndDayList.add(dateAndDay);
 
 				/* System.out.println(sf.parse(sf.format(j))); */
 				j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
@@ -1626,7 +1639,7 @@ public class AttendanceApiControllerchange {
 
 			info.setDates(dates);
 			info.setInfomationList(infomationList);
-
+			info.setDateAndDayList(dateAndDayList);
 		} catch (Exception e) {
 
 			e.printStackTrace();

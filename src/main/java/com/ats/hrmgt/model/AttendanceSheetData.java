@@ -6,7 +6,7 @@ public class AttendanceSheetData {
 	
 	private List<String> dates;
 	private List<EmpInfoWithDateInfoList> infomationList;
-	
+	private List<DateAndDay> dateAndDayList;
 	
 	public List<String> getDates() {
 		return dates;
@@ -24,9 +24,18 @@ public class AttendanceSheetData {
 		this.infomationList = infomationList;
 	}
 
+	public List<DateAndDay> getDateAndDayList() {
+		return dateAndDayList;
+	}
+
+	public void setDateAndDayList(List<DateAndDay> dateAndDayList) {
+		this.dateAndDayList = dateAndDayList;
+	}
+
 	@Override
 	public String toString() {
-		return "AttendanceSheetData [dates=" + dates + ", infomationList=" + infomationList + "]";
+		return "AttendanceSheetData [dates=" + dates + ", infomationList=" + infomationList + ", dateAndDayList="
+				+ dateAndDayList + "]";
 	}
 	
 
