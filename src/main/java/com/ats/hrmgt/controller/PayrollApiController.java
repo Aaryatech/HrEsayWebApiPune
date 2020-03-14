@@ -1277,11 +1277,11 @@ public class PayrollApiController {
 		// metaf: amount / month_day
 		double val = 0;
 
-		//if (mstEmpType.getWhWork().equalsIgnoreCase("OT")) {
+		// if (mstEmpType.getWhWork().equalsIgnoreCase("OT")) {
 
-			val = perDayGrossSal;
-			val = castNumber(val, amount_round);
-		//}
+		val = perDayGrossSal;
+		val = castNumber(val, amount_round);
+		// }
 
 		return val;
 	}
@@ -1629,8 +1629,11 @@ public class PayrollApiController {
 
 					}
 				}
-				list.get(i).setBasicCal(list.get(i).getBasicCal());
+				list.get(i).setBasicCal(castNumber(list.get(i).getBasicCal(), amount_round));
 				list.get(i).setOtWages(castNumber(list.get(i).getOtWages(), amount_round));
+				list.get(i).setProductionInsentive(castNumber(list.get(i).getProductionInsentive(), amount_round));
+				list.get(i).setReward(castNumber(list.get(i).getReward(), amount_round));
+				list.get(i).setNightAllow(castNumber(list.get(i).getReward(), amount_round));
 				list.get(i).setPerformanceBonus(castNumber(list.get(i).getPerformanceBonus(), amount_round));
 				list.get(i).setMiscExpAdd(castNumber(list.get(i).getMiscExpAdd(), amount_round));
 				list.get(i).setPtDed(castNumber(list.get(i).getPtDed(), amount_round));
