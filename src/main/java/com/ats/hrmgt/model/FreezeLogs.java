@@ -1,0 +1,124 @@
+package com.ats.hrmgt.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "logs_freezeunfreeze")
+public class FreezeLogs {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "logid")
+	private int logid;
+
+	@Column(name = "ip_address")
+	private String ipAddress;
+
+	@Column(name = "user_agent")
+	private String userAgent;
+
+	@Column(name = "user_id")
+	private int userId;
+	
+	@Column(name = "maker_enter_datetime")
+	private String makerEnterDatetime;
+
+	@Column(name = "employee_ids")
+	private String employeeIds;
+
+	@Column(name = "freeze_type")
+	private String freezeType;
+
+	@Column(name = "freeze_month")
+	private String freezeMonth;
+
+	@Column(name = "comments")
+	private String comments;
+
+	public int getLogid() {
+		return logid;
+	}
+
+	public void setLogid(int logid) {
+		this.logid = logid;
+	}
+
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public String getMakerEnterDatetime() {
+		return makerEnterDatetime;
+	}
+
+	public void setMakerEnterDatetime(String makerEnterDatetime) {
+		this.makerEnterDatetime = makerEnterDatetime;
+	}
+
+	public String getEmployeeIds() {
+		return employeeIds;
+	}
+
+	public void setEmployeeIds(String employeeIds) {
+		this.employeeIds = employeeIds;
+	}
+
+	public String getFreezeType() {
+		return freezeType;
+	}
+
+	public void setFreezeType(String freezeType) {
+		this.freezeType = freezeType;
+	}
+
+	public String getFreezeMonth() {
+		return freezeMonth;
+	}
+
+	public void setFreezeMonth(String freezeMonth) {
+		this.freezeMonth = freezeMonth;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	@Override
+	public String toString() {
+		return "FreezeLogs [logid=" + logid + ", ipAddress=" + ipAddress + ", userAgent=" + userAgent + ", userId="
+				+ userId + ", makerEnterDatetime=" + makerEnterDatetime + ", employeeIds=" + employeeIds
+				+ ", freezeType=" + freezeType + ", freezeMonth=" + freezeMonth + ", comments=" + comments + "]";
+	}
+	
+	
+
+}
