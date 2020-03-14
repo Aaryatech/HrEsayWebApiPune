@@ -468,7 +468,17 @@ public class AttendanceApiControllerchange {
 
 							dailyAttendanceList.get(i).setInTime(fileUploadedDataList.get(j).getInTime());
 
-							if (fileUploadedDataList.get(j).getOutTime().trim().equalsIgnoreCase("")
+							if (fileUploadedDataList.get(j).getInTime().trim().equalsIgnoreCase("")
+									|| fileUploadedDataList.get(j).getInTime().equals("0:00")
+									|| fileUploadedDataList.get(j).getInTime().equals("0:00")
+									|| fileUploadedDataList.get(j).getInTime().equals("00:00")
+									|| fileUploadedDataList.get(j).getInTime().equals("00:00")
+									|| fileUploadedDataList.get(j).getInTime().equals("00:00:00")
+									|| fileUploadedDataList.get(j).getInTime().equals("00:00:00")) {
+
+								dailyAttendanceList.get(i).setOutTime(fileUploadedDataList.get(j).getOutTime());
+
+							} else if (fileUploadedDataList.get(j).getOutTime().trim().equalsIgnoreCase("")
 									|| fileUploadedDataList.get(j).getOutTime().equals("0:00")
 									|| fileUploadedDataList.get(j).getOutTime().equals("0:00")
 									|| fileUploadedDataList.get(j).getOutTime().equals("00:00")
@@ -860,6 +870,7 @@ public class AttendanceApiControllerchange {
 												break;
 											}
 										}
+										dailyAttendanceList.get(i).setLateMark("0");
 									}
 								} // $working_hrs >= $resultp->working_hrs
 								else if (dailyAttendanceList.get(i).getWorkingHrs() >= Float
@@ -1006,6 +1017,7 @@ public class AttendanceApiControllerchange {
 													break;
 												}
 											}
+											dailyAttendanceList.get(i).setLateMark("0");
 										}
 
 									} else if (dailyAttendanceList.get(i).getWorkingHrs() >= Float
@@ -1026,6 +1038,7 @@ public class AttendanceApiControllerchange {
 														break;
 													}
 												}
+												dailyAttendanceList.get(i).setLateMark("0");
 											}
 										} else {
 											dailyAttendanceList.get(i).setAttStatus("P");
