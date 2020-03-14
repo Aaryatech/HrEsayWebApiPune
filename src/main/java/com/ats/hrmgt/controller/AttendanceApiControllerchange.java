@@ -487,7 +487,7 @@ public class AttendanceApiControllerchange {
 									|| fileUploadedDataList.get(j).getOutTime().equals("00:00:00")
 									|| fileUploadedDataList.get(j).getOutTime().equals("00:00:00")) {
 
-								//dailyAttendanceList.get(i).setOutTime(shiftMaster.getTotime());
+								// dailyAttendanceList.get(i).setOutTime(shiftMaster.getTotime());
 
 							} else {
 								dailyAttendanceList.get(i).setOutTime(fileUploadedDataList.get(j).getOutTime());
@@ -1119,7 +1119,7 @@ public class AttendanceApiControllerchange {
 				}
 
 				querysb = new StringBuilder();
-
+				dailyAttendanceList.get(i).setLoginName(dataForUpdateAttendance.getUserId() + ": import Exel");
 				// System.out.println("case type
 				// -----------------"+dailyAttendanceList.get(i).getCasetype());
 				if (dailyAttendanceList.get(i).getByFileUpdated() == 1) {
@@ -1566,17 +1566,15 @@ public class AttendanceApiControllerchange {
 
 			List<String> dates = new ArrayList<>();
 			List<DateAndDay> dateAndDayList = new ArrayList<>();
-			
+
 			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
 			SimpleDateFormat sdf = new SimpleDateFormat("EEE");
-			
-			
+
 			for (Date j = fmdt; j.compareTo(todt) <= 0;) {
-				
-				
+
 				dates.add(sf.format(j));
-				
-				DateAndDay dateAndDay = new DateAndDay(); 
+
+				DateAndDay dateAndDay = new DateAndDay();
 				String stringDate = sdf.format(j);
 				dateAndDay.setDate(sf.format(j));
 				dateAndDay.setDay(stringDate);
@@ -1752,7 +1750,7 @@ public class AttendanceApiControllerchange {
 					String[] othrsarry = otHours.split(":");
 					int othrs = (Integer.parseInt(othrsarry[0]) * 60) + Integer.parseInt(othrsarry[1]);
 					dailyRecordById.setOtHr(String.valueOf(othrs));
-
+					dailyRecordById.setLoginName(userId+":manualchange");
 					DailyAttendance updateRes = dailyAttendanceRepository.save(dailyRecordById);
 
 					info = finalUpdateDailySumaryRecord(fromDate, toDate, userId, month, year,
