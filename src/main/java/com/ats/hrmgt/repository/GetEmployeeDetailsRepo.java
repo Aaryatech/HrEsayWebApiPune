@@ -600,5 +600,65 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"            OR DATE_FORMAT(             salinfo.cmp_leaving_date,             '%Y-%m'         ) >= DATE_FORMAT(CURDATE(), '%Y-%m'))", nativeQuery = true)
 
 	List<GetEmployeeDetails> getEmpDetailListForSkillRate();
+
+
+
+	@Query(value = " SELECT\n" + 
+			"        emp.*,\n" + 
+			"        dep.name_sd AS dept_name,\n" + 
+			"        dg.name_sd AS emp_desgn,\n" + 
+			"        role.emp_type_name   AS loc_name,\n" + 
+			"        con.org_name,\n" + 
+			"        sht.shiftname,\n" + 
+			"        emptyp.name AS emp_type_name,\n" + 
+			"        saltype.sal_type_name,\n" + 
+			"        succomp.name_sd AS sub_comp_name,\n" + 
+			"        wocat.wo_cat_short_name AS wo_cat_name,\n" + 
+			"        holidaycat.ho_cat_short_name AS ho_cat_name,\n" + 
+			"        salinfo.gross_salary      \n" + 
+			"    FROM\n" + 
+			"        m_employees emp      \n" + 
+			"    INNER JOIN\n" + 
+			"        tbl_emp_salary_info salinfo              \n" + 
+			"            ON     emp.emp_id = salinfo.emp_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_designation dg              \n" + 
+			"            ON     emp.designation_id = dg.desig_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_department dep              \n" + 
+			"            ON     emp.depart_id = dep.depart_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_contractor con              \n" + 
+			"            ON     emp.contractor_id = con.contractor_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_mst_emp_types emptyp              \n" + 
+			"            ON     emp.emp_type = emptyp.emp_type_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_shift_timming sht              \n" + 
+			"            ON     emp.current_shiftid = sht.id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        mst_salary_types saltype              \n" + 
+			"            ON     salinfo.salary_type_id = saltype.sal_type_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_mst_sub_company succomp              \n" + 
+			"            ON     succomp.company_id = emp.sub_cmp_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        weekoff_category wocat              \n" + 
+			"            ON     wocat.wo_cat_id = emp.weekend_category      \n" + 
+			"    LEFT JOIN\n" + 
+			"        holiday_category holidaycat              \n" + 
+			"            ON     holidaycat.ho_cat_id = emp.holiday_category \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_access_role_name role              \n" + 
+			"            ON     role.emp_type_id = emp.emp_category      \n" + 
+			"    WHERE\n" + 
+			"        emp.del_status = 1          \n" + 
+			"        AND(\n" + 
+			"            salinfo.cmp_leaving_date IS NULL              \n" + 
+			"            OR salinfo.cmp_leaving_date = ''              \n" + 
+			"            OR salinfo.cmp_leaving_date = 1970 -00 -00              \n" + 
+			"            OR DATE_FORMAT(             salinfo.cmp_leaving_date,             '%Y-%m'         ) >= DATE_FORMAT(CURDATE(), '%Y-%m')\n" + 
+			"        )", nativeQuery = true) 
+	List<GetEmployeeDetails> getAllEmployeeDetailAccesssRole();
    
 }

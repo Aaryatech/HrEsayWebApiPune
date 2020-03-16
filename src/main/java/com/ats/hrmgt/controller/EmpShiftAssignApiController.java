@@ -76,6 +76,22 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
+	
+	@RequestMapping(value = { "/getAllEmployeeDetailAccesssRole" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailAccesssRole() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			
+			 
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailAccesssRole();
+			
+		} catch (Exception e) {
+			 
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 
 	 
 	@RequestMapping(value = { "/getEmpDetailListByLocId" }, method = RequestMethod.POST)
@@ -210,6 +226,8 @@ public class EmpShiftAssignApiController {
 				res = userRepo.updateAccLoc(empIdList, upDateId);
 			}else if(flag==10) {
 				res = employeeMasterRepository.empSkillUpdate(empIdList, upDateId);
+			}else if(flag==11) {
+				res = employeeMasterRepository.empEmpCategoryUpdate(empIdList, upDateId);
 			}else {
 				res = 0;
 			}
