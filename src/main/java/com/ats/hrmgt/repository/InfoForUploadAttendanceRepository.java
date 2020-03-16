@@ -30,10 +30,10 @@ public interface InfoForUploadAttendanceRepository extends JpaRepository<InfoFor
 			"        COALESCE(( select\n" + 
 			"            count(*) \n" + 
 			"        from\n" + 
-			"            tbl_attt_daily_daily \n" + 
+			"            tbl_attt_daily_daily,m_employees \n" + 
 			"        where\n" + 
 			"            att_date between :fromDate and :toDate \n" + 
-			"            and by_file_updated=1 ),\n" + 
+			"            and by_file_updated=1 and m_employees.emp_id=tbl_attt_daily_daily.emp_id and m_employees.del_status=1),\n" + 
 			"        0)  as updated_by_file",nativeQuery=true)
 	InfoForUploadAttendance getInformationOfUploadedAttendance(@Param("fromDate") String fromDate,
 			@Param("toDate") String toDate);
