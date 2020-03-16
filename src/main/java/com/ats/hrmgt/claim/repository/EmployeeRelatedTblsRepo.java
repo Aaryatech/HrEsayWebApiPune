@@ -43,7 +43,7 @@ public interface EmployeeRelatedTblsRepo extends JpaRepository<EmployeeRelatedTb
 			"        m_user u \n" + 
 			"            ON     emp.emp_id = u.emp_id \n" + 
 			"    WHERE\n" + 
-			"        emp.emp_code = :empCode and del_status=1",nativeQuery=true)
+			"        emp.emp_code = :empCode and emp.del_status=1",nativeQuery=true)
 	EmployeeRelatedTbls getAllEmpRelatedInfo(@Param("empCode") String empCode);
 
 }
