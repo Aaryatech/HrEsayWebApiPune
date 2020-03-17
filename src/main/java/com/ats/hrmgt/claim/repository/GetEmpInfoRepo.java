@@ -229,7 +229,7 @@ public interface GetEmpInfoRepo extends JpaRepository<GetEmployeeInfo, Integer> 
 			"where\n" + 
 			"        emp_info.depart_id=m_department.depart_id          \n" + 
 			"        and emp_info.designation_id= m_designation.desig_id           \n" + 
-			"        and emp_info.emp_id=tbl_mst_emp_types.emp_type_id          \n" + 
+			"        and emp_info.emp_type=tbl_mst_emp_types.emp_type_id          \n" + 
 			"        and emp_info.del_status=1             \n" + 
 			"         and emp_info.location_id IN(\n" + 
 			"         :locIdList \n" + 
