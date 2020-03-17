@@ -689,6 +689,23 @@ public class MasterApiController {
 		return shiftList;
 
 	}
+	
+	@RequestMapping(value = { "/getShiftListByLpad" }, method = RequestMethod.POST)
+	public @ResponseBody List<ShiftMaster> getShiftListByLpad() {
+
+		List<ShiftMaster> shiftList = new ArrayList<>();
+		try {
+
+			shiftList = shiftMasterRepository.getShiftListByLpad();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return shiftList;
+
+	}
 
 	@RequestMapping(value = { "/deleteShiftTime" }, method = RequestMethod.POST)
 	public @ResponseBody Info deleteShiftTime(@RequestParam("shiftId") int shiftId) {
