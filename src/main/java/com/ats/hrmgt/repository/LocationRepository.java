@@ -26,12 +26,19 @@ public interface LocationRepository extends JpaRepository<Location, Integer>{
 	List<Location> findByDelStatusAndCompId(int i, int companyId);
 
 	Location findByLocHrContactEmailAndDelStatus(String email, int i);
-
 	
 	Location findByLocHrContactNumberAndDelStatus(String mobileNo, int i);
 
 	List<Location> findByDelStatusAndIsActiveAndLocIdIn(int i, int j, List<Integer> locIds);
 
-	List<Location> findByDelStatusAndCompIdOrderByLocIdDesc(int i, int companyId);	
+	List<Location> findByDelStatusAndCompIdOrderByLocIdDesc(int i, int companyId);
+
+	@Query(value="  select " + 
+			"        * \n" + 
+			"    from " + 
+			"        m_location " + 
+			"    where " + 
+			"        loc_id IN (:locIds) ", nativeQuery=true)
+	List<Location> getLocationsByIds(@Param("locIds") List<Location> locIds);	
 
 }

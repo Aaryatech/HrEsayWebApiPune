@@ -503,6 +503,23 @@ public class MasterApiController {
 
 	}
 
+	@RequestMapping(value = { "/getLocationsByIds" }, method = RequestMethod.POST)
+	public @ResponseBody List<Location> getLocationsByIds(@RequestParam List<Location> locIds) {
+
+		 List<Location> locs= new ArrayList<Location>();
+		try {
+
+			locs = locationRepository.getLocationsByIds(locIds);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return locs;
+
+	}
+	
 	@RequestMapping(value = { "/getCalculateYearListIsCurrent" }, method = RequestMethod.GET)
 	public @ResponseBody CalenderYear getCalculateYearListIsCurrent() {
 
