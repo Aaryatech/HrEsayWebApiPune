@@ -95,7 +95,7 @@ public interface GetClaimApplyAuthwiseRepo   extends JpaRepository<GetClaimApply
 			"                AND le.ca_fin_auth_emp_id != le.ca_ini_auth_emp_id                       \n" + 
 			"            )               \n" + 
 			"            OR(\n" + 
-			"                le.emp_id=1                                   \n" + 
+			"                le.emp_id=:empId                                   \n" + 
 			"                AND  la.claim_status in (\n" + 
 			"                    2,1                 \n" + 
 			"                )                                   \n" + 

@@ -136,7 +136,7 @@ public interface GetEmpInfoRepo extends JpaRepository<GetEmployeeInfo, Integer> 
 			"    WHERE\n" + 
 			"        emp_info.depart_id = m_department.depart_id \n" + 
 			"        AND emp_info.designation_id = m_designation.desig_id \n" + 
-			"        AND emp_info.emp_id = tbl_mst_emp_types.emp_type_id \n" + 
+			"        AND emp_info.emp_type = tbl_mst_emp_types.emp_type_id \n" + 
 			"        AND emp_info.del_status = 1  \n" + 
 			"        \n" + 
 			"        AND emp_info.cmp_code = m_company.company_id \n" + 
@@ -276,7 +276,7 @@ public interface GetEmpInfoRepo extends JpaRepository<GetEmployeeInfo, Integer> 
 			"    m_company,\n" + 
 			"    m_designation\n" + 
 			"WHERE\n" + 
-			"    emp_info.depart_id = m_department.depart_id AND emp_info.designation_id = m_designation.desig_id AND emp_info.emp_id = tbl_mst_emp_types.emp_type_id AND emp_info.del_status = 1  AND emp_info.cmp_code =:companyId AND emp_info.cmp_code = m_company.company_id AND   emp_info.emp_id IN(:empIdList)", nativeQuery = true)
+			"    emp_info.depart_id = m_department.depart_id AND emp_info.designation_id = m_designation.desig_id AND emp_info.emp_type = tbl_mst_emp_types.emp_type_id AND emp_info.del_status = 1  AND emp_info.cmp_code =:companyId AND emp_info.cmp_code = m_company.company_id AND   emp_info.emp_id IN(:empIdList)", nativeQuery = true)
 
 	List<GetEmployeeInfo> getEmpIdListByCompanyIdForClaim(@Param("companyId") int companyId,@Param("empIdList") List<GetEmployeeAuthorityWise> empIdList);
 
