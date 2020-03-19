@@ -222,6 +222,21 @@ public class LoanApiController {
 		return list;
 
 	}
+	
+	@RequestMapping(value = { "/getAddLoanType" }, method = RequestMethod.GET)
+	public @ResponseBody Setting getAddLoanType() {	
+		Setting setting = new Setting();
+		String str = new String();
+		try {
+			setting = settingRepo.findByKey("LoanCalculationType");
+			
+			
+		}catch (Exception e) {
+			e.getMessage();
+		}
+		return setting;
+		
+	}
 
 	@Autowired
 	GetLoanRepo getLoanRepo;
