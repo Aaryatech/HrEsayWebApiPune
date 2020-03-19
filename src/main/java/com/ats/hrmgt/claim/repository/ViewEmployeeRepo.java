@@ -12,10 +12,11 @@ public interface ViewEmployeeRepo extends JpaRepository<ViewEmployee, Integer> {
 			"    t1.emp_id,\n" + 
 			"    t1.emp_code,\n" + 
 			"    t1.first_name,\n" + 
-			"    t1.middle_name,\n" + 
+			"    t1.middle_name as emp_mid_name,\n" + 
 			"    t1.surname,\n" + 
 			"    t1.mobile_no_1,\n" + 
 			"    t1.mobile_no_2,\n" + 
+			"    t1.ex_int1 AS authority_desig_type,\n" + 
 			"    t2.company_name,\n" + 
 			"    t1.uan,\n" + 
 			"    t1.esic_no,\n" + 
@@ -27,7 +28,6 @@ public interface ViewEmployeeRepo extends JpaRepository<ViewEmployee, Integer> {
 			"    t5.name AS desingnation,\n" + 
 			"    t6.name depart_name,\n" + 
 			"    t7.loc_name AS location,\n" + 
-			"    t7.ex_int1 AS authority_desig_type,\n" + 
 			"    t8.name AS emp_type,\n" + 
 			"    t9.emp_type_name AS emp_category,\n" + 
 			"    t10.middle_name,\n" + 

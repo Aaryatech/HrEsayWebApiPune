@@ -15,6 +15,7 @@ public class ViewEmployee {
 	private int empId ;
 	private String empCode ;
 	private String firstName ;
+	private String empMidName;
 	private String surname;
 	
 	@Column(name="mobile_no_1")
@@ -40,7 +41,7 @@ public class ViewEmployee {
 	
 	private String middleName;
 	private String middleNameRelation;
-	private String dob;
+	private Date dob;
 	private String gender;
 	private String maritalStatus;
 	private String email;
@@ -121,6 +122,13 @@ public class ViewEmployee {
 	}
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
+	}
+	
+	public String getEmpMidName() {
+		return empMidName;
+	}
+	public void setEmpMidName(String empMidName) {
+		this.empMidName = empMidName;
 	}
 	public String getSurname() {
 		return surname;
@@ -237,10 +245,11 @@ public class ViewEmployee {
 	public void setMiddleNameRelation(String middleNameRelation) {
 		this.middleNameRelation = middleNameRelation;
 	}
-	public String getDob() {
+	@JsonFormat(locale = "hi",timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getDob() {
 		return dob;
 	}
-	public void setDob(String dob) {
+	public void setDob(Date dob) {
 		this.dob = dob;
 	}
 	public String getGender() {
@@ -580,16 +589,16 @@ public class ViewEmployee {
 	}
 	@Override
 	public String toString() {
-		return "ViewEmployee [empId=" + empId + ", empCode=" + empCode + ", firstName=" + firstName + ", surname="
-				+ surname + ", mobileNo1=" + mobileNo1 + ", mobileNo2=" + mobileNo2 + ", companyName=" + companyName
-				+ ", uan=" + uan + ", esicNo=" + esicNo + ", aadharNo=" + aadharNo + ", panCardNo=" + panCardNo
-				+ ", pfNo=" + pfNo + ", contractorName=" + contractorName + ", skill=" + skill + ", desingnation="
-				+ desingnation + ", location=" + location + ", departName=" + departName + ", authorityDesigType="
-				+ authorityDesigType + ", empType=" + empType + ", empCategory=" + empCategory + ", middleName="
-				+ middleName + ", middleNameRelation=" + middleNameRelation + ", dob=" + dob + ", gender=" + gender
-				+ ", maritalStatus=" + maritalStatus + ", email=" + email + ", address=" + address
-				+ ", permanentAddress=" + permanentAddress + ", empQualification=" + empQualification + ", emerName="
-				+ emerName + ", emerContactNo1=" + emerContactNo1 + ", emerContactNo2=" + emerContactNo2
+		return "ViewEmployee [empId=" + empId + ", empCode=" + empCode + ", firstName=" + firstName + ", empMidName="
+				+ empMidName + ", surname=" + surname + ", mobileNo1=" + mobileNo1 + ", mobileNo2=" + mobileNo2
+				+ ", companyName=" + companyName + ", uan=" + uan + ", esicNo=" + esicNo + ", aadharNo=" + aadharNo
+				+ ", panCardNo=" + panCardNo + ", pfNo=" + pfNo + ", contractorName=" + contractorName + ", skill="
+				+ skill + ", desingnation=" + desingnation + ", location=" + location + ", departName=" + departName
+				+ ", authorityDesigType=" + authorityDesigType + ", empType=" + empType + ", empCategory=" + empCategory
+				+ ", middleName=" + middleName + ", middleNameRelation=" + middleNameRelation + ", dob=" + dob
+				+ ", gender=" + gender + ", maritalStatus=" + maritalStatus + ", email=" + email + ", address="
+				+ address + ", permanentAddress=" + permanentAddress + ", empQualification=" + empQualification
+				+ ", emerName=" + emerName + ", emerContactNo1=" + emerContactNo1 + ", emerContactNo2=" + emerContactNo2
 				+ ", emerContactAddr=" + emerContactAddr + ", bloodGroup=" + bloodGroup + ", uniformSize=" + uniformSize
 				+ ", name1=" + name1 + ", relation1=" + relation1 + ", dob1=" + dob1 + ", name2=" + name2
 				+ ", relation2=" + relation2 + ", dob2=" + dob2 + ", name3=" + name3 + ", relation3=" + relation3
@@ -605,6 +614,5 @@ public class ViewEmployee {
 				+ epfJoiningDate + ", leavingReason=" + leavingReason + ", leavingReasonEsic=" + leavingReasonEsic
 				+ ", leavingReasonPf=" + leavingReasonPf + "]";
 	}
-	
 	
 }
