@@ -28,6 +28,7 @@ import com.ats.hrmgt.model.EmpSalaryInfo;
 import com.ats.hrmgt.model.EmpSalaryInfoForPayroll;
 import com.ats.hrmgt.model.GetAdvanceList;
 import com.ats.hrmgt.model.GetClaimList;
+import com.ats.hrmgt.model.GetEmpDetail;
 import com.ats.hrmgt.model.GetPayDedList;
 import com.ats.hrmgt.model.GetPayrollGeneratedList;
 import com.ats.hrmgt.model.GetSalDynamicTempRecord;
@@ -45,6 +46,7 @@ import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.SlabMaster;
 import com.ats.hrmgt.model.loan.LoanDetails;
 import com.ats.hrmgt.model.loan.LoanMain;
+import com.ats.hrmgt.repo.GetEmpDetailRepo;
 import com.ats.hrmgt.repo.bonus.PayBonusDetailsRepo;
 import com.ats.hrmgt.repo.loan.LoanDetailsRepo;
 import com.ats.hrmgt.repo.loan.LoanMainRepo;
@@ -148,6 +150,9 @@ public class PayrollApiController {
 
 	@Autowired
 	PayBonusDetailsRepo payBonusDetailsRepo;
+
+	@Autowired
+	GetEmpDetailRepo getEmpDetailRepo;
 
 	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForPayRoll" }, method = RequestMethod.POST)
 	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForPayRoll(@RequestParam("month") int month,
@@ -623,6 +628,10 @@ public class PayrollApiController {
 
 					if (salaryTermList.get(j).getSalTypeId() == salaryType.getSalTypeId()) {
 
+						getSalaryTempList.get(i).setNightRate(night_allo_rate);
+						getSalaryTempList.get(i)
+								.setNightAllow(getSalaryTempList.get(i).getFullNight() * night_allo_rate);
+
 						double ammt = 0;
 						int index = 0;
 						int findAll = 0;
@@ -692,6 +701,10 @@ public class PayrollApiController {
 									amount_round);
 
 							if (getSalaryTempList.get(i).getPtApplicable().equalsIgnoreCase("yes")) {
+
+								tempVal = tempVal + getSalaryTempList.get(i).getOtWages()
+										+ getSalaryTempList.get(i).getProductionInsentive()
+										+ getSalaryTempList.get(i).getNightAllow();
 
 								for (int k = 0; k < slabMasterList.size(); k++) {
 
@@ -885,9 +898,6 @@ public class PayrollApiController {
 
 				}
 
-				getSalaryTempList.get(i).setNightRate(night_allo_rate);
-				getSalaryTempList.get(i).setNightAllow(getSalaryTempList.get(i).getFullNight() * night_allo_rate);
-
 				if (getSalaryTempList.get(i).getMlwfApplicable().equalsIgnoreCase("yes")) {
 					if (month == 6 || month == 12) {
 						getSalaryTempList.get(i).setMlwf(employee_mlwf);
@@ -1052,18 +1062,20 @@ public class PayrollApiController {
 				getSalaryTempList.get(i).setPfAdminChPercentage(tot_pf_admin_ch_percentage);
 				getSalaryTempList.get(i).setEdliPercentage(tot_edli_ch_percentage);
 				getSalaryTempList.get(i).setEdliAdminPercentage(tot_edli_admin_ch_percentage);
-
-				getSalaryTempList.get(i).setStatusDytemp(1);
-				getSalaryTempList.get(i).setNetSalary(castNumber((getSalaryTempList.get(i).getGrossSalaryDytemp()
-						+ getSalaryTempList.get(i).getPerformanceBonus() + getSalaryTempList.get(i).getMiscExpAdd()
+				getSalaryTempList.get(i).setGrossSalaryDytemp(castNumber(getSalaryTempList.get(i).getGrossSalaryDytemp()
 						+ getSalaryTempList.get(i).getOtWages() + getSalaryTempList.get(i).getProductionInsentive()
-						+ getSalaryTempList.get(i).getReward() + getSalaryTempList.get(i).getNightAllow())
-						- (getSalaryTempList.get(i).getAdvanceDed() + getSalaryTempList.get(i).getLoanDed()
-								+ getSalaryTempList.get(i).getPayDed() + getSalaryTempList.get(i).getEsic()
-								+ getSalaryTempList.get(i).getEmployeePf() + getSalaryTempList.get(i).getPtDed()
-								+ getSalaryTempList.get(i).getItded() + getSalaryTempList.get(i).getTds()
-								+ getSalaryTempList.get(i).getSocietyContributionDytemp()),
-						amount_round));
+						+ getSalaryTempList.get(i).getNightAllow(), amount_round));
+				getSalaryTempList.get(i).setStatusDytemp(1);
+				getSalaryTempList.get(i)
+						.setNetSalary(castNumber((getSalaryTempList.get(i).getGrossSalaryDytemp()
+								+ getSalaryTempList.get(i).getPerformanceBonus()
+								+ getSalaryTempList.get(i).getMiscExpAdd() + getSalaryTempList.get(i).getReward())
+								- (getSalaryTempList.get(i).getAdvanceDed() + getSalaryTempList.get(i).getLoanDed()
+										+ getSalaryTempList.get(i).getPayDed() + getSalaryTempList.get(i).getEsic()
+										+ getSalaryTempList.get(i).getEmployeePf() + getSalaryTempList.get(i).getPtDed()
+										+ getSalaryTempList.get(i).getItded() + getSalaryTempList.get(i).getTds()
+										+ getSalaryTempList.get(i).getSocietyContributionDytemp()),
+								amount_round));
 
 				getSalaryTempList.get(i).setLoginName(String.valueOf(userId));
 				// System.out.println(salaryTermList);
@@ -1657,6 +1669,23 @@ public class PayrollApiController {
 		}
 
 		return payRollDataForProcessing;
+	}
+
+	@RequestMapping(value = { "/getEmpDetailForPayRoll" }, method = RequestMethod.POST)
+	@ResponseBody
+	public List<GetEmpDetail> getEmpDetailForPayRoll(@RequestParam("empIds") List<Integer> empIds) {
+
+		List<GetEmpDetail> list = new ArrayList<>();
+
+		try {
+
+			list = getEmpDetailRepo.getPayrollGenratedList(empIds);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 
 }

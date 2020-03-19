@@ -904,25 +904,18 @@ public class AttendanceApiControllerchange {
 
 								} else {
 
-									if (stsInfo.getLeaveTyId() == 2) {
-										dailyAttendanceList.get(i).setAttStatus("LWP");
-										for (int j = 0; j < lvTypeList.size(); j++) {
-											if (lvTypeList.get(j).getNameSd().equals("LWP")) {
-												dailyAttendanceList.get(i)
-														.setLvSumupId(lvTypeList.get(j).getLvSumupId());
-												break;
-											}
-										}
-									} else {
-										dailyAttendanceList.get(i).setAttStatus("PL");
-										for (int j = 0; j < lvTypeList.size(); j++) {
-											if (lvTypeList.get(j).getNameSd().equals("PL")) {
-												dailyAttendanceList.get(i)
-														.setLvSumupId(lvTypeList.get(j).getLvSumupId());
-												break;
-											}
-										}
-									}
+									/*
+									 * if (stsInfo.getLeaveTyId() == 2) {
+									 * dailyAttendanceList.get(i).setAttStatus("LWP"); for (int j = 0; j <
+									 * lvTypeList.size(); j++) { if (lvTypeList.get(j).getNameSd().equals("LWP")) {
+									 * dailyAttendanceList.get(i) .setLvSumupId(lvTypeList.get(j).getLvSumupId());
+									 * break; } } } else { dailyAttendanceList.get(i).setAttStatus("PL"); for (int j
+									 * = 0; j < lvTypeList.size(); j++) { if
+									 * (lvTypeList.get(j).getNameSd().equals("PL")) { dailyAttendanceList.get(i)
+									 * .setLvSumupId(lvTypeList.get(j).getLvSumupId()); break; } } }
+									 */
+									dailyAttendanceList.get(i).setAttStatus(stsInfo.getStsshortname());
+									dailyAttendanceList.get(i).setLvSumupId(stsInfo.getLvTypeId());
 
 								}
 							}
@@ -1750,7 +1743,7 @@ public class AttendanceApiControllerchange {
 					String[] othrsarry = otHours.split(":");
 					int othrs = (Integer.parseInt(othrsarry[0]) * 60) + Integer.parseInt(othrsarry[1]);
 					dailyRecordById.setOtHr(String.valueOf(othrs));
-					dailyRecordById.setLoginName(userId+":manualchange");
+					dailyRecordById.setLoginName(userId + ":manualchange");
 					DailyAttendance updateRes = dailyAttendanceRepository.save(dailyRecordById);
 
 					info = finalUpdateDailySumaryRecord(fromDate, toDate, userId, month, year,
