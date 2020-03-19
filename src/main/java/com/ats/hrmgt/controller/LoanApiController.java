@@ -180,7 +180,7 @@ public class LoanApiController {
 			LocalDate localDate = LocalDate.parse(startDate);
 
 		//	System.out.println("bef" + localDate);
-			LocalDate oneMonthLater = localDate.plusMonths(Integer.parseInt(tenure));
+			LocalDate oneMonthLater = localDate.plusMonths(Integer.parseInt(tenure)-1);
 			//System.out.println("aft" + oneMonthLater);
 
 			list.setCalDate(String.valueOf(oneMonthLater));
