@@ -33,6 +33,7 @@ import com.ats.hrmgt.model.GetPayDedList;
 import com.ats.hrmgt.model.GetPayrollGeneratedList;
 import com.ats.hrmgt.model.GetSalDynamicTempRecord;
 import com.ats.hrmgt.model.Info;
+import com.ats.hrmgt.model.LateMarkListForInsertAdvance;
 import com.ats.hrmgt.model.MstEmpType;
 import com.ats.hrmgt.model.PayRollDataForProcessing;
 import com.ats.hrmgt.model.SalAllownceCal;
@@ -44,6 +45,7 @@ import com.ats.hrmgt.model.SalaryTypesMaster;
 import com.ats.hrmgt.model.SampleClass;
 import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.SlabMaster;
+import com.ats.hrmgt.model.advance.Advance;
 import com.ats.hrmgt.model.loan.LoanDetails;
 import com.ats.hrmgt.model.loan.LoanMain;
 import com.ats.hrmgt.repo.GetEmpDetailRepo;
@@ -60,6 +62,7 @@ import com.ats.hrmgt.repository.GetClaimListRepo;
 import com.ats.hrmgt.repository.GetPayDedListRepo;
 import com.ats.hrmgt.repository.GetPayrollGeneratedListRepo;
 import com.ats.hrmgt.repository.GetSalDynamicTempRecordRepository;
+import com.ats.hrmgt.repository.LateMarkListForInsertAdvanceRepository;
 import com.ats.hrmgt.repository.MstEmpTypeRepository;
 import com.ats.hrmgt.repository.PayDeductionDetailsRepo;
 import com.ats.hrmgt.repository.SalAllownceCalRepo;
@@ -154,6 +157,9 @@ public class PayrollApiController {
 	@Autowired
 	GetEmpDetailRepo getEmpDetailRepo;
 
+	@Autowired
+	LateMarkListForInsertAdvanceRepository lateMarkListForInsertAdvanceRepository;
+
 	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForPayRoll" }, method = RequestMethod.POST)
 	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForPayRoll(@RequestParam("month") int month,
 			@RequestParam("year") int year) {
@@ -212,15 +218,15 @@ public class PayrollApiController {
 	}
 
 	@RequestMapping(value = { "/updateAllowAmtInSalTemp" }, method = RequestMethod.POST)
-	public Info updateAllowAmtInSalTemp(@RequestParam("month") int month,
-			@RequestParam("year") int year, @RequestParam("empIds") List<Integer> empIds,
-			@RequestParam("userId") int userId) {
+	public Info updateAllowAmtInSalTemp(@RequestParam("month") int month, @RequestParam("year") int year,
+			@RequestParam("empIds") List<Integer> empIds, @RequestParam("userId") int userId) {
 
 		Info info = new Info();
 
 		try {
 			List<SalAllownceTemp> salAllowTempList = salAllownceTempRepo.findByDelStatusAndEmpIdIn(empIds, month, year);
-			//List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
+			// List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0,
+			// 1);
 			List<EmpSalAllowance> empAllowanceList = empSalAllowanceRepo.findByDelStatusAndEmpId(1, empIds);
 
 			for (int k = 0; k < salAllowTempList.size(); k++) {
@@ -233,11 +239,11 @@ public class PayrollApiController {
 					}
 				}
 
-			} 
+			}
 			List<SalAllownceTemp> update = salAllownceTempRepo.saveAll(salAllowTempList);
 			info.setError(false);
 			info.setMsg("success");
-			
+
 		} catch (Exception e) {
 			info.setError(true);
 			info.setMsg("failed");
@@ -254,12 +260,53 @@ public class PayrollApiController {
 		Info info = new Info();
 
 		try {
+			Date date = new Date();
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd");
+
+			// insertadvance for late mark deduct
+
+			int deleteAdvanceBydefault = advanceRepo.deleteAdvanceBydefault(month, year, empIds);
+			List<LateMarkListForInsertAdvance> latemarkList = lateMarkListForInsertAdvanceRepository
+					.getlatemarkList(month, year, empIds);
+			List<Advance> advlist = new ArrayList<>();
+
+			for (int i = 0; i < latemarkList.size(); i++) {
+
+				double advanceAmt = latemarkList.get(i).getTotlateDays()
+						* (latemarkList.get(i).getGrSal() / latemarkList.get(i).getTotalDaysInmonth());
+
+				Advance adv = new Advance();
+				adv.setAdvAmount(advanceAmt);
+				adv.setAdvDate(sf2.format(date));
+				adv.setAdvRemainingAmount(advanceAmt);
+				adv.setAdvRemarks("LATEMARKDEDUCT");
+				adv.setCmpId(1);
+				adv.setEmpId(latemarkList.get(i).getEmpId());
+				adv.setDedMonth(month);
+				adv.setDedYear(year);
+				adv.setExInt1(1);
+				adv.setExVar1("NA");
+				adv.setExVar2("NA");
+				adv.setVoucherNo("LATEMARKDEDUCT");
+				adv.setIsDed(0);
+				adv.setIsUsed(0);
+				adv.setLoginName(String.valueOf(userId));
+				adv.setLoginTime(sf.format(date));
+				adv.setSkipId(0);
+				adv.setDelStatus(1);
+				advlist.add(adv);
+				// Advance save = advanceRepo.saveAndFlush(adv);
+
+			}
+			List<Advance> save = advanceRepo.saveAll(advlist);
+
+			// start process
 			List<EmpSalaryInfoForPayroll> list = empSalaryInfoForPayrollRepository
 					.getEmployeeListWithEmpSalEnfoForPayRollForTempInsert(month, year, empIds);
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
 			List<EmpSalAllowance> empAllowanceList = empSalAllowanceRepo.findByDelStatusAndEmpId(1, empIds);
-			Date date = new Date();
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 			// insert code if record not inserted in temp table
 			for (int i = 0; i < list.size(); i++) {
 

@@ -36,6 +36,11 @@ public interface AdvanceRepo extends JpaRepository<Advance, Integer> {
 	@Modifying
 	@Query("update Advance set is_ded=1 where ded_month=:month and ded_year=:year and del_status=1 and is_ded=0 and emp_id in (:empIds)")
 	int updateAdv(@Param("month")int month, @Param("year") int year, @Param("empIds") List<Integer> empIds);
+
+	@Transactional
+	@Modifying
+	@Query("delete from Advance where ded_month=:month and ded_year=:year and ex_int1=1 and del_status=1 and is_ded=0 and emp_id in (:empIds)")
+	int deleteAdvanceBydefault(int month, int year, List<Integer> empIds);
 	
 	
 	
