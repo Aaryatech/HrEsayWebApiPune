@@ -45,4 +45,8 @@ public interface GetPayDedListRepo extends JpaRepository<GetPayDedList, Integer>
 			+ "date_format(paid_exgretia_date,'%Y-%m')=date_format(:date,'%Y-%m') and emp_id in (:empIds) and ex_int1=1 group by emp_id", nativeQuery = true)
 	List<GetPayDedList> getExgretiaList(String date, List<Integer> empIds);
 
+	@Query(value = "select uuid() as id, emp_id,  current_outstanding as amt from tbl_loan_main where  del_status=1 "
+			+ "and current_outstanding>0 and emp_id in (:empIds) group by emp_id", nativeQuery = true)
+	GetPayDedList getLoanListForFullFinal(List<Integer> empIds);
+
 }

@@ -1,28 +1,21 @@
 package com.ats.hrmgt.controller;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+ 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.ats.hrmgt.model.Allowances;
-import com.ats.hrmgt.model.EmpSalAllowance;
-import com.ats.hrmgt.model.EmpSalaryInfoForPayroll;
-import com.ats.hrmgt.model.GetAdvanceList;
-import com.ats.hrmgt.model.GetClaimList;
-import com.ats.hrmgt.model.GetPayDedList;
-import com.ats.hrmgt.model.Info;
-import com.ats.hrmgt.model.SalAllownceTemp;
-import com.ats.hrmgt.model.SalaryCalcTemp;
+import com.ats.hrmgt.model.AdvanceAndLoanInfo; 
+import com.ats.hrmgt.model.GetAdvanceList; 
+import com.ats.hrmgt.model.GetPayDedList; 
 import com.ats.hrmgt.repository.GetAdvanceListRepo;
 import com.ats.hrmgt.repository.GetClaimListRepo;
 import com.ats.hrmgt.repository.GetPayDedListRepo;
 
+@RestController
 public class FullAndFinalApiController {
 
 	@Autowired
@@ -35,20 +28,35 @@ public class FullAndFinalApiController {
 	GetPayDedListRepo getPayDedListRepo;
 
 	@RequestMapping(value = { "/getAllAmountDeductionSectionListForFullnFinal" }, method = RequestMethod.POST)
-	public Info getAllAmountDeductionSectionListForFullnFinal(@RequestParam("empIds") List<Integer> empIds) {
+	public AdvanceAndLoanInfo getAllAmountDeductionSectionListForFullnFinal(
+			@RequestParam("empId") List<Integer> empIds) {
 
-		Info info = new Info();
+		AdvanceAndLoanInfo info = new AdvanceAndLoanInfo();
 
 		try {
 
-			/*List<GetAdvanceList> getAdvanceList = getAdvanceListRepo.getAdvanceList(empIds);
-			List<GetClaimList> getClaimList = getClaimListRepo.getClaimList(empIds);
-			List<GetPayDedList> getPayDedList = getPayDedListRepo.getPayDedList(empIds);
-			List<GetPayDedList> getRewardList = getPayDedListRepo.getBonusList(empIds);
-			List<GetPayDedList> getLoanList = getPayDedListRepo.getLoanList(empIds);*/
-			  
-		} catch (Exception e) {
+			GetAdvanceList getAdvanceList = getAdvanceListRepo.getAdvanceListForFullFinal(empIds);
+			GetPayDedList getLoanList = getPayDedListRepo.getLoanListForFullFinal(empIds);
+
+			if(getAdvanceList!=null) {
+				info.setAdvanceAmt(getAdvanceList.getAdvAmount());
+			}else {
+				info.setAdvanceAmt(0);
+			}
+			
+			if(getLoanList!=null) {
+				info.setLoanAmt(getLoanList.getAmt());
+			}else {
+				info.setLoanAmt(0);
+			}
+			
 			 
+			// List<GetClaimList> getClaimList = getClaimListRepo.getClaimList(empIds);
+			// List<GetPayDedList> getPayDedList = getPayDedListRepo.getPayDedList(empIds);
+			// List<GetPayDedList> getRewardList = getPayDedListRepo.getBonusList(empIds);
+
+		} catch (Exception e) {
+
 			e.printStackTrace();
 		}
 

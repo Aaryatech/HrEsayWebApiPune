@@ -15,4 +15,8 @@ public interface GetAdvanceListRepo extends JpaRepository<GetAdvanceList, Intege
 	List<GetAdvanceList> getAdvanceList(@Param("month") int month, @Param("year") int year,
 			@Param("empIds") List<Integer> empIds);
 
+	
+    @Query(value = "select id, emp_id, sum(adv_amount) as adv_amount from tbl_advance where del_status=1 and is_ded=0  and emp_id in (:empIds) group by emp_id", nativeQuery = true)
+	GetAdvanceList getAdvanceListForFullFinal(List<Integer> empIds);
+
 }
