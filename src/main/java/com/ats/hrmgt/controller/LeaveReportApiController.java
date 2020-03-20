@@ -226,13 +226,13 @@ public class LeaveReportApiController {
 	EmpAttendeanceRepRepo empAttendeanceRepRepo;
 
 	@RequestMapping(value = { "/getDailyAttendenceReport" }, method = RequestMethod.POST)
-	public @ResponseBody List<EmpAttendeanceRep> getDailyAttendenceReport(@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
+	public @ResponseBody List<EmpAttendeanceRep> getDailyAttendenceReport(@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,@RequestParam("companyId") int companyId) {
 
 		List<EmpAttendeanceRep> list = new ArrayList<EmpAttendeanceRep>();
 
 		try {
 
-			list = empAttendeanceRepRepo.getSpecEmpAdvForReport(fromDate, toDate);
+			list = empAttendeanceRepRepo.getSpecEmpAdvForReport(fromDate, toDate,companyId);
 
 		} catch (Exception e) {
 

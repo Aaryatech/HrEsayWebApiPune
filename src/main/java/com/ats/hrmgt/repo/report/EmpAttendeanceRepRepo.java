@@ -18,29 +18,29 @@ public interface EmpAttendeanceRepRepo extends JpaRepository<EmpAttendeanceRep, 
 			"            tbl_attt_daily_daily     \n" + 
 			"        WHERE\n" + 
 			"            tbl_attt_daily_daily.lv_sumup_id = 5 \n" + 
-			"            AND tbl_attt_daily_daily.att_date BETWEEN :fromDate AND :toDate) AS emp_present,\n" + 
+			"        AND tbl_attt_daily_daily.company_id=:companyId    AND tbl_attt_daily_daily.att_date BETWEEN :fromDate AND :toDate) AS emp_present,\n" + 
 			"        (     SELECT\n" + 
 			"            COUNT(tbl_attt_daily_daily.id)     \n" + 
 			"        FROM\n" + 
 			"            tbl_attt_daily_daily     \n" + 
 			"        WHERE\n" + 
 			"            tbl_attt_daily_daily.lv_sumup_id = 12 \n" + 
-			"            AND tbl_attt_daily_daily.att_date BETWEEN :fromDate AND :toDate) AS week_off,\n" + 
+			"         AND tbl_attt_daily_daily.company_id=:companyId   AND tbl_attt_daily_daily.att_date BETWEEN :fromDate AND :toDate) AS week_off,\n" + 
 			"        (     SELECT\n" + 
 			"            COUNT(tbl_attt_daily_daily.id)     \n" + 
 			"        FROM\n" + 
 			"            tbl_attt_daily_daily     \n" + 
 			"        WHERE\n" + 
 			"            tbl_attt_daily_daily.lv_sumup_id = 7 \n" + 
-			"            AND  tbl_attt_daily_daily.att_date BETWEEN :fromDate AND :toDate) AS paid_leave,\n" + 
+			"         AND tbl_attt_daily_daily.company_id=:companyId   AND  tbl_attt_daily_daily.att_date BETWEEN :fromDate AND :toDate) AS paid_leave,\n" + 
 			"        (     SELECT\n" + 
 			"            COUNT(tbl_attt_daily_daily.id)     \n" + 
 			"        FROM\n" + 
 			"            tbl_attt_daily_daily     \n" + 
 			"        WHERE\n" + 
 			"            tbl_attt_daily_daily.lv_sumup_id IN(11,22) \n" + 
-			"            AND tbl_attt_daily_daily.att_date BETWEEN :fromDate AND :toDate) AS unpaid_leave",nativeQuery=true)
-	List<EmpAttendeanceRep> getSpecEmpAdvForReport(@Param("fromDate") String fromDate,@Param("toDate") String toDate);
+			"            AND tbl_attt_daily_daily.company_id=:companyId AND tbl_attt_daily_daily.att_date BETWEEN :fromDate AND :toDate) AS unpaid_leave",nativeQuery=true)
+	List<EmpAttendeanceRep> getSpecEmpAdvForReport(@Param("fromDate") String fromDate,@Param("toDate") String toDate, @Param("companyId") int companyId);
 	
 
 }
