@@ -1388,6 +1388,8 @@ public class AttendanceApiControllerchange {
 						- summaryDailyAttendanceList.get(i).getPaidHoliday();
 				summaryDailyAttendanceList.get(i).setWorkingDays(workingDays);
 
+				latededuct=0;//dont deduct late deduct from payable days for pune;
+				
 				if (isDaily.equals("daily")) {
 					summaryDailyAttendanceList.get(i)
 							.setPayableDays(summaryDailyAttendanceList.get(i).getPresentDays()

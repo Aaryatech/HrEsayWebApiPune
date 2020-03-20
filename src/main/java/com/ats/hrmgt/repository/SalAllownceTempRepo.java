@@ -22,5 +22,19 @@ public interface SalAllownceTempRepo extends JpaRepository<SalAllownceTemp, Inte
 	@Modifying
 	@Query("delete from SalAllownceTemp where emp_sal_allowance_id in (:detailIds)")
 	int deleteFromTempAll(@Param("detailIds") List<Integer> detailIds);
+	
+    @Query(value = "select\n" + 
+    		"    sta.*\n" + 
+    		"from\n" + 
+    		"    tbl_salary_dynamic_temp_allowance_cal sta,tbl_salary_dynamic_temp sdt \n" + 
+    		"where\n" + 
+    		"    sta.del_status=1\n" + 
+    		"    and sdt.id=sta.tbl_salary_dynamic_temp_id\n" + 
+    		"    and sdt.calc_month=:month\n" + 
+    		"    and sdt.calc_year=:year\n" + 
+    		"    and (\n" + 
+    		"        sta.emp_id in (:empIds)\n" + 
+    		"    )", nativeQuery = true)
+	List<SalAllownceTemp> findByDelStatusAndEmpIdIn(@Param("empIds") List<Integer> empIds,@Param("month") int month,@Param("year") int year);
 
 }

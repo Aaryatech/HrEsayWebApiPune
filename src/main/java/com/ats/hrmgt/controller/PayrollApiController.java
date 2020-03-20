@@ -211,6 +211,42 @@ public class PayrollApiController {
 		return payRollDataForProcessing;
 	}
 
+	@RequestMapping(value = { "/updateAllowAmtInSalTemp" }, method = RequestMethod.POST)
+	public Info updateAllowAmtInSalTemp(@RequestParam("month") int month,
+			@RequestParam("year") int year, @RequestParam("empIds") List<Integer> empIds,
+			@RequestParam("userId") int userId) {
+
+		Info info = new Info();
+
+		try {
+			List<SalAllownceTemp> salAllowTempList = salAllownceTempRepo.findByDelStatusAndEmpIdIn(empIds, month, year);
+			//List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
+			List<EmpSalAllowance> empAllowanceList = empSalAllowanceRepo.findByDelStatusAndEmpId(1, empIds);
+
+			for (int k = 0; k < salAllowTempList.size(); k++) {
+
+				for (int j = 0; j < empAllowanceList.size(); j++) {
+					if (salAllowTempList.get(k).getEmpId() == empAllowanceList.get(j).getEmpId()
+							&& salAllowTempList.get(k).getAllowanceId() == empAllowanceList.get(j).getAllowanceId()) {
+						salAllowTempList.get(k).setAllowanceValue(empAllowanceList.get(j).getAllowanceValue());
+
+					}
+				}
+
+			} 
+			List<SalAllownceTemp> update = salAllownceTempRepo.saveAll(salAllowTempList);
+			info.setError(false);
+			info.setMsg("success");
+			
+		} catch (Exception e) {
+			info.setError(true);
+			info.setMsg("failed");
+			e.printStackTrace();
+		}
+
+		return info;
+	}
+
 	@RequestMapping(value = { "/insertPayrollIntempTable" }, method = RequestMethod.POST)
 	public Info insertPayrollIntempTable(@RequestParam("month") int month, @RequestParam("year") int year,
 			@RequestParam("empIds") List<Integer> empIds, @RequestParam("userId") int userId) {
