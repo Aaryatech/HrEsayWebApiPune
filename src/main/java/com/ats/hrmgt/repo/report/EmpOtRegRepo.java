@@ -12,7 +12,7 @@ public interface EmpOtRegRepo extends JpaRepository<EmpOtReg, Integer> {
 	
 @Query(value="SELECT\n" + 
 		"    UUID() AS id, atd.emp_id, atd.emp_code, atd.emp_name AS emp_name, desg.name AS designation, SUM(atd.tot_othr) AS ot_hr,\n" + 
-		"    MONTHNAME(STR_TO_DATE(atd.month, '%m')) AS MONTH\n" + 
+		"    MONTHNAME(STR_TO_DATE(atd.month, '%m')) AS MONTH, 0001-01-01 AS date\n" + 
 		"FROM\n" + 
 		"    tbl_attt_summary_daily atd \n" + 
 		"    inner join     m_employees emp on atd.emp_id  = emp.emp_id \n" + 
@@ -24,9 +24,44 @@ public interface EmpOtRegRepo extends JpaRepository<EmpOtReg, Integer> {
 		"    atd.emp_id , atd.month\n" + 
 		"ORDER BY\n" + 
 		" atd.emp_id, atd.month",nativeQuery=true)
-List<EmpOtReg> getEmpOtDetails(@Param("companyId") int companyId, @Param("month")String month,
+List<EmpOtReg> getEmpOtSummary(@Param("companyId") int companyId, @Param("month")String month,
 		@Param("year") String year, @Param("tomonth") String tomonth, @Param("toyear") String toyear);
+
+@Query(value="SELECT\n" + 
+		"        UUID() AS id,\n" + 
+		"        atd.emp_id,\n" + 
+		"        atd.emp_code,\n" + 
+		"        atd.emp_name AS emp_name,\n" + 
+		"        desg.name AS designation,\n" + 
+		"        (atd.ot_hr / 60)  AS ot_hr ,\n" + 
+		"        atd.att_date AS date, 'NA' AS MONTH \n" + 
+		"    FROM\n" + 
+		"        tbl_attt_daily_daily  atd      \n" + 
+		"    inner join\n" + 
+		"        m_employees emp \n" + 
+		"            on atd.emp_id  = emp.emp_id      \n" + 
+		"    inner join\n" + 
+		"        m_designation desg \n" + 
+		"            on emp.designation_id  = desg.desig_id       \n" + 
+		"    inner join\n" + 
+		"        tbl_mst_emp_types  emptype \n" + 
+		"            on emp.emp_type  = emptype.emp_type_id  \n" + 
+		"            and ot_applicable='Yes' \n" + 
+		"    WHERE\n" + 
+		"        atd.att_date BETWEEN :fromDate  AND :toDate\n" + 
+		"        AND emp.del_status = 1 \n" + 
+		"        AND atd.company_id=:companyId\n" + 
+		"    GROUP BY\n" + 
+		"        atd.emp_id ,\n" + 
+		"        atd.att_date \n" + 
+		"    ORDER BY\n" + 
+		"        atd.emp_id,\n" + 
+		"        atd.att_date",nativeQuery=true)
+List<EmpOtReg> getEmpOtDetails(@Param("companyId") int companyId, @Param("fromDate") String fromDate, @Param("toDate") String toDate);
+
 }
+
+
 
 	/*	SELECT \n" + 
 		"UUID() as id,\n" +

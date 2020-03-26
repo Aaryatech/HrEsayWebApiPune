@@ -1,7 +1,11 @@
 package com.ats.hrmgt.model.report;
 
+import java.sql.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class EmpOtReg {
@@ -13,6 +17,7 @@ public class EmpOtReg {
 	private String designation;
 	private float otHr;
 	private String month;
+	private Date date;
 	public int getEmpId() {
 		return empId;
 	}
@@ -56,11 +61,17 @@ public class EmpOtReg {
 	public void setId(String id) {
 		this.id = id;
 	}
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getDate() {
+		return date;
+	}
+	public void setDate(Date date) {
+		this.date = date;
+	}
 	@Override
 	public String toString() {
 		return "EmpOtReg [id=" + id + ", empId=" + empId + ", empCode=" + empCode + ", empName=" + empName
-				+ ", designation=" + designation + ", otHr=" + otHr + ", month=" + month + "]";
+				+ ", designation=" + designation + ", otHr=" + otHr + ", month=" + month + ", date=" + date + "]";
 	}
-	
 	
 }

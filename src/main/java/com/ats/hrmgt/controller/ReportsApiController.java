@@ -76,8 +76,8 @@ public class ReportsApiController {
 
 	}	
 	
-	@RequestMapping(value = { "/getEmpOtRegDetails" }, method = RequestMethod.POST)
-	public @ResponseBody List<EmpOtReg> getEmpOtRegDetails(@RequestParam("companyId") int companyId,
+	@RequestMapping(value = { "/getEmpOtRegSummary" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmpOtReg> getEmpOtRegSummary(@RequestParam("companyId") int companyId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
 
 		List<EmpOtReg> list = new ArrayList<EmpOtReg>();
@@ -104,7 +104,62 @@ public class ReportsApiController {
 			
 			System.out.println("To Date After-----------"+year+"/"+month+"/"+date);
 			
-			list = otRepo.getEmpOtDetails(companyId, month, year, tomonth ,toyear);
+			list = otRepo.getEmpOtSummary(companyId, month, year, tomonth ,toyear);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}	
+	
+	@RequestMapping(value = { "/getEmpOtRegDetails" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmpOtReg> getEmpOtRegDetails(@RequestParam("companyId") int companyId,
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
+
+		List<EmpOtReg> list = new ArrayList<EmpOtReg>();
+
+		try {
+			
+			
+			list = otRepo.getEmpOtDetails(companyId, fromDate, toDate);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}	
+	
+	@RequestMapping(value = { "/getEmpLateMarkSummary" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmpLateMarkDetails> getEmpLateMarkSummary(@RequestParam("companyId") int companyId,
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
+
+		List<EmpLateMarkDetails> list = new ArrayList<EmpLateMarkDetails>();
+
+		try {
+			String frmDate = fromDate;
+			//System.out.println("From Date Before-----------"+frmDate);
+			String[] parts = frmDate.split("-");
+			String date = parts[2];
+			String month = parts[1];
+			String year = parts[0];
+			//System.out.println("From Date After-----------"+date+"/"+month+"/"+year);
+			
+			
+			String tDate = toDate;
+		//	System.out.println("To Date Before-----------"+toDate);
+			String[] toparts = tDate.split("-");
+			String todate = toparts[2];
+			String tomonth = toparts[1];
+			String toyear = toparts[0];
+		//	System.out.println("To Date After-----------"+todate+"/"+tomonth+"/"+toyear);
+
+			list = empLateRepo.getEmpLateMarkSummaryReport(companyId, month, year, tomonth ,toyear);
 
 		} catch (Exception e) {
 
@@ -125,21 +180,21 @@ public class ReportsApiController {
 			String frmDate = fromDate;
 			//System.out.println("From Date Before-----------"+frmDate);
 			String[] parts = frmDate.split("-");
-			String date = parts[0];
+			String date = parts[2];
 			String month = parts[1];
-			String year = parts[2];
+			String year = parts[0];
 			//System.out.println("From Date After-----------"+date+"/"+month+"/"+year);
 			
 			
 			String tDate = toDate;
 		//	System.out.println("To Date Before-----------"+toDate);
 			String[] toparts = tDate.split("-");
-			String todate = toparts[0];
+			String todate = toparts[2];
 			String tomonth = toparts[1];
-			String toyear = toparts[2];
+			String toyear = toparts[0];
 		//	System.out.println("To Date After-----------"+todate+"/"+tomonth+"/"+toyear);
 
-			list = empLateRepo.getEmpLateMarkDetailReport(companyId, month, year, tomonth ,toyear);
+			list = empLateRepo.getEmpLateMarkDetailReport(companyId,fromDate, toDate);
 
 		} catch (Exception e) {
 
