@@ -14,6 +14,7 @@ public class GetClaimApplyAuthWise {
 	//GetClaimTrailStatus
 	//GetEmployeeAuthorityWise
 	
+	
 	@Id
 	private int claimId;
 		
