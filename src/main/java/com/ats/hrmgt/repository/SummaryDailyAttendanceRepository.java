@@ -27,9 +27,6 @@ public interface SummaryDailyAttendanceRepository extends JpaRepository<SummaryD
 
 	SummaryDailyAttendance findByCompanyIdAndEmpId(int companyId, int empId);
 	
- 
-	
-	
 	
 	List<SummaryDailyAttendance> findAllByCompanyIdAndEmpId(int companyId, int empId);
 	
@@ -37,4 +34,12 @@ public interface SummaryDailyAttendanceRepository extends JpaRepository<SummaryD
 	@Query(value = "select * from tbl_attt_summary_daily where month=:month and year=:year and emp_id=:empId", nativeQuery = true)
 	 SummaryDailyAttendance summaryDailyAttendanceList1(@Param("month") String month, @Param("year") String year,  @Param("empId") int empId);
 
+	@Query(value = "SELECT * FROM `tbl_attt_summary_daily` WHERE emp_id=:empId AND company_id=:companyId AND month BETWEEN :fmonth AND :lmonth AND year BETWEEN :fyear AND :lyear", nativeQuery = true)
+	List<SummaryDailyAttendance> findAllByCompanyIdAndEmpId(@Param("companyId") int companyId, @Param("empId") int empId, @Param("fmonth") String fmonth, @Param("fyear") String fyear,
+			@Param("lmonth") String lmonth, @Param("lyear") String lyear);
+	
+	@Query(value = "SELECT * FROM `tbl_attt_summary_daily` WHERE company_id=:companyId AND month BETWEEN :fmonth AND :lmonth AND year BETWEEN :fyear AND :lyear", nativeQuery = true)
+	List<SummaryDailyAttendance> findAllByCompanyId(@Param("companyId") int companyId, @Param("fmonth") String fmonth, @Param("fyear") String fyear,
+			@Param("lmonth") String lmonth, @Param("lyear") String lyear);
+	
 }

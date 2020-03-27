@@ -320,14 +320,33 @@ public class GraphApiController {
 			@RequestParam("toDate") String toDate) {
 		List<EmpDailyAttendanceGraph> list = new ArrayList<EmpDailyAttendanceGraph>();
 		try {
+			System.out.println("*********************"+fromDate+" "+toDate);
 			String[] shortMonths = new DateFormatSymbols().getShortMonths();
 			Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(fromDate);
 			Date date2 = new SimpleDateFormat("dd-MM-yyyy").parse(toDate);
 			List<String> dateList = DateConvertor.getAllMonthBetDates(date1, date2);
-		//	System.err.println("datelist " + dateList.toString());
+			System.err.println("datelist " + dateList.toString());
+
+			/*List<SummaryDailyAttendance> attList = summaryDailyAttendanceRepository
+					.findAllByCompanyIdAndEmpId(companyId, empId);*/
+			
+			String startDate = fromDate;
+			String lastDate = toDate;
+			
+			String[] parts = startDate.split("-");
+			String fmonth = parts[1]; 
+			String fyear  = parts[2]; 
+			System.out.println("From-------"+fmonth+" "+fyear);
+			
+			String[] lastparts = lastDate.split("-");
+			String lmonth = lastparts[1]; 
+			String lyear  = lastparts[2];
+			System.out.println("To------------"+lmonth+" "+lyear);
+			
 
 			List<SummaryDailyAttendance> attList = summaryDailyAttendanceRepository
-					.findAllByCompanyIdAndEmpId(companyId, empId);
+					.findAllByCompanyIdAndEmpId(companyId, empId,fmonth, fyear, lmonth, lyear);
+			 System.out.println("List:::::::::::"+attList);
 
 		//	System.err.println("  attList" + attList.toString());
 			for (int i = 0; i < dateList.size(); i++) {
@@ -353,9 +372,8 @@ public class GraphApiController {
 						presentdays = attList.get(j).getPresentDays();
 						paidHoliday = attList.get(j).getPaidHoliday();
 						paidLeave = attList.get(j).getPaidLeave();
-						unpaidLeave = attList.get(j).getUnpaidLeave();
+						unpaidLeave = attList.get(j).getUnpaidLeave() + attList.get(j).getUnpaidHoliday()+attList.get(j).getAbsentDays();
 						monthDays = attList.get(j).getTotalDaysInmonth();
-						unpaidHoliday = attList.get(j).getUnpaidHoliday();
 						lateMarks=attList.get(j).getTotLate();
 						payableDays=attList.get(j).getPayableDays();
 						dailyrec.setMonthDays(monthDays);
@@ -367,6 +385,8 @@ public class GraphApiController {
 						dailyrec.setWorkingDays(workingDays);
 						dailyrec.setLateMarks(lateMarks);
 						dailyrec.setPayableDaysDays(payableDays);
+						dailyrec.setWeekOff(attList.get(j).getWeeklyOff());
+						
 						break;
 					}
 
@@ -388,6 +408,80 @@ public class GraphApiController {
 	}
 	
 	
+	@RequestMapping(value = { "/getEmpAttendanceSum" }, method = RequestMethod.POST)
+	public List<EmpDailyAttendanceGraph> getEmpAttendanceGraphNew(@RequestParam("companyId") int companyId,
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
+		List<EmpDailyAttendanceGraph> list = new ArrayList<EmpDailyAttendanceGraph>();
+		try {
+			String[] shortMonths = new DateFormatSymbols().getShortMonths();
+			Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(fromDate);
+			Date date2 = new SimpleDateFormat("dd-MM-yyyy").parse(toDate);
+			List<String> dateList = DateConvertor.getAllMonthBetDates(date1, date2);
+			System.err.println("datelist " + dateList.toString());
+
+			String startDate = fromDate;
+			String lastDate = toDate;
+			
+			String[] parts = startDate.split("-");
+			String fmonth = parts[1]; 
+			String fyear  = parts[2]; 
+			System.out.println("From-------"+fmonth+" "+fyear);
+			
+			String[] lastparts = lastDate.split("-");
+			String lmonth = lastparts[1]; 
+			String lyear  = lastparts[2];
+			System.out.println("To------------"+lmonth+" "+lyear);
+			
+
+			List<SummaryDailyAttendance> attList = summaryDailyAttendanceRepository
+					.findAllByCompanyId(companyId,fmonth, fyear, lmonth, lyear);
+			 System.out.println("List:::::::::::"+attList);
+
+		//	System.err.println("  attList" + attList.toString());
+		
+				
+
+				
+				double unpaidLeave = 0;
+				double monthDays = 0;
+				
+				
+
+				for (int j = 0; j < attList.size(); j++) {
+					EmpDailyAttendanceGraph dailyrec = new EmpDailyAttendanceGraph();
+					int month = attList.get(j).getMonth();
+					int year = attList.get(j).getYear();
+							
+					
+						unpaidLeave = attList.get(j).getUnpaidLeave() + attList.get(j).getUnpaidHoliday()+attList.get(j).getAbsentDays();
+						monthDays = attList.get(j).getTotalDaysInmonth();
+						
+						dailyrec.setMonthDays(attList.get(j).getTotalDaysInmonth());
+						dailyrec.setPaidHoliday(attList.get(j).getPaidHoliday());
+						dailyrec.setPaidLeave(attList.get(j).getPaidLeave());
+						dailyrec.setPresentdays(attList.get(j).getPresentDays());
+						dailyrec.setUnpaidLeave(unpaidLeave);
+						dailyrec.setWorkingDays( attList.get(j).getWorkingDays());
+						dailyrec.setLateMarks(attList.get(j).getTotLate());
+						dailyrec.setPayableDaysDays(attList.get(j).getPayableDays());
+						dailyrec.setWeekOff(attList.get(j).getWeeklyOff());
+						dailyrec.setEmpName(attList.get(j).getEmpName());
+						dailyrec.setEmpCode(attList.get(j).getEmpCode());
+						
+						dailyrec.setDate(new DateFormatSymbols().getMonths()[month-1].toString().concat("-").concat(String.valueOf(year)));
+						dailyrec.setMonth(month);
+						dailyrec.setYear(year);
+						list.add(dailyrec);
+
+					}
+
+		} catch (Exception e) {
+			System.err.println("Excep in getEmpAttendanceSum : " + e.getMessage());
+			e.printStackTrace();
+		}
+		System.out.println("List:::::::::::"+list);
+		return list;
+	}
 	@Autowired
 	LoanMainRepo loanMainRepo;
 	@RequestMapping(value = { "/getEmpLoanGraph" }, method = RequestMethod.POST)
