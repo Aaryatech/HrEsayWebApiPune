@@ -27,6 +27,7 @@ import com.ats.hrmgt.model.EmpBasicAllownceForLeaveInCash;
 import com.ats.hrmgt.model.EmpLeaveHistoryRep;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.GetAuthorityIds;
+import com.ats.hrmgt.model.GetDetailForGraduaty;
 import com.ats.hrmgt.model.GetLeaveApplyAuthwise;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.InfoForCompOffList;
@@ -44,6 +45,7 @@ import com.ats.hrmgt.repository.EmpBasicAllownceForLeaveInCashRepo;
 import com.ats.hrmgt.repository.EmpLeaveHistoryRepRepo;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.GetAuthorityIdsRepo;
+import com.ats.hrmgt.repository.GetDetailForGraduatyRepo;
 import com.ats.hrmgt.repository.GetLeaveApplyAuthwiseRepo;
 import com.ats.hrmgt.repository.LeaveApplyRepository;
 import com.ats.hrmgt.repository.LeaveHistoryRepo;
@@ -97,6 +99,9 @@ public class LeaveActionApiController {
 
 	@Autowired
 	DailyRecordForCompOffRepository dailyRecordForCompOffRepository;
+	
+	@Autowired
+	GetDetailForGraduatyRepo getDetailForGraduatyRepo;
 
 	@RequestMapping(value = { "/updateLeaveStatus" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateLeaveStatus(@RequestParam("leaveId") int leaveId,
@@ -427,6 +432,25 @@ public class LeaveActionApiController {
 
 	}
 
+	@RequestMapping(value = { "/getdetailforgraduaty" }, method = RequestMethod.POST)
+	public @ResponseBody GetDetailForGraduaty getdetailforgraduaty(@RequestParam("empId") int empId) {
+
+		GetDetailForGraduaty getDetailForGraduaty = new GetDetailForGraduaty();
+		try {
+
+			getDetailForGraduaty = getDetailForGraduatyRepo.getdetailforgraduaty(empId);
+
+			// System.err.println("LeaveHistory" + list.toString());
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return getDetailForGraduaty;
+
+	}
+
 	@RequestMapping(value = { "/checkDateForRepetedLeaveValidation" }, method = RequestMethod.POST)
 	public @ResponseBody InfoForCompOffList checkDateForRepetedLeaveValidation(
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
@@ -436,7 +460,7 @@ public class LeaveActionApiController {
 		InfoForCompOffList info = new InfoForCompOffList();
 		List<DailyRecordForCompOff> dailyrecordlistforcompoff = new ArrayList<>();
 		info.setDailyrecordlistforcompoff(dailyrecordlistforcompoff);
-		
+
 		try {
 
 			Setting setting = settingRepo.findByKey("CONTILEAVE");
@@ -509,7 +533,7 @@ public class LeaveActionApiController {
 		try {
 			List<DailyRecordForCompOff> dailyrecordlistforcompoff = new ArrayList<>();
 			info.setDailyrecordlistforcompoff(dailyrecordlistforcompoff);
-			
+
 			Setting TYPEVALIDATION = settingRepo.findByKey("TYPEVALIDATION");
 
 			if (Integer.parseInt(TYPEVALIDATION.getValue()) == 1) {
