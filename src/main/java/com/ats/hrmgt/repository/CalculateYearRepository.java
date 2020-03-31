@@ -29,4 +29,7 @@ public interface CalculateYearRepository extends JpaRepository<CalenderYear, Int
 	@Query(value="UPDATE `dm_cal_year` SET is_current=0 WHERE cal_yr_id !=:calYrId",nativeQuery=true)
 	int updateOtherIds(@Param("calYrId") int calYrId);
 
+	@Query(value="SELECT * FROM `dm_cal_year` ORDER BY cal_yr_id DESC", nativeQuery=true)
+	List<CalenderYear> getAllCalYearOrderByDesc();
+
 }

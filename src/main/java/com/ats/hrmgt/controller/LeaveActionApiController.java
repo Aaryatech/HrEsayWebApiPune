@@ -335,7 +335,7 @@ public class LeaveActionApiController {
 		List<CalenderYear> list = new ArrayList<CalenderYear>();
 		try {
 
-			list = calculateYearRepository.findAll();
+			list = calculateYearRepository.getAllCalYearOrderByDesc();
 			for (int i = 0; i < list.size(); i++) {
 				list.get(i).setCalYrFromDate(DateConvertor.convertToDMY(list.get(i).getCalYrFromDate()));
 				list.get(i).setCalYrToDate(DateConvertor.convertToDMY(list.get(i).getCalYrToDate()));
