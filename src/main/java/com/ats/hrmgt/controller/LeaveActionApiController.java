@@ -423,6 +423,19 @@ public class LeaveActionApiController {
 		return calYear;
 		
 	}
+	@RequestMapping(value = { "/getCountCalYear" }, method = RequestMethod.GET)
+	public @ResponseBody Integer getCountCalYear() {
+		int cntCalYear = 0;
+		try {
+			cntCalYear = calculateYearRepository.countCalyear();
+		}catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		
+		return cntCalYear;
+		
+	}
+	
 	
 	@Autowired
 	EmpLeaveHistoryRepRepo empLeaveHistoryRepRepo;

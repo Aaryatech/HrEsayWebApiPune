@@ -32,4 +32,7 @@ public interface CalculateYearRepository extends JpaRepository<CalenderYear, Int
 	@Query(value="SELECT * FROM `dm_cal_year` ORDER BY cal_yr_id DESC", nativeQuery=true)
 	List<CalenderYear> getAllCalYearOrderByDesc();
 
+	@Query(value="SELECT COUNT(*) FROM `dm_cal_year`", nativeQuery=true)
+	int countCalyear();
+
 }
