@@ -17,6 +17,9 @@ public class GetDetailForBonus {
 	private float presentdays;
 	private float weeklyoff;
 	private float holiday;
+	private float bonusPer;
+	private double basic ; 
+	private double allowanceValue;
 	public int getId() {
 		return id;
 	}
@@ -47,10 +50,29 @@ public class GetDetailForBonus {
 	public void setHoliday(float holiday) {
 		this.holiday = holiday;
 	}
+	public float getBonusPer() {
+		return bonusPer;
+	}
+	public void setBonusPer(float bonusPer) {
+		this.bonusPer = bonusPer;
+	}
+	public double getBasic() {
+		return basic;
+	}
+	public void setBasic(double basic) {
+		this.basic = basic;
+	}
+	public double getAllowanceValue() {
+		return allowanceValue;
+	}
+	public void setAllowanceValue(double allowanceValue) {
+		this.allowanceValue = allowanceValue;
+	}
 	@Override
 	public String toString() {
 		return "GetDetailForBonus [id=" + id + ", empId=" + empId + ", presentdays=" + presentdays + ", weeklyoff="
-				+ weeklyoff + ", holiday=" + holiday + "]";
+				+ weeklyoff + ", holiday=" + holiday + ", bonusPer=" + bonusPer + ", basic=" + basic
+				+ ", allowanceValue=" + allowanceValue + "]";
 	}
 	
 	
