@@ -67,7 +67,7 @@ public interface EmpLateMarkDetailsRepo extends JpaRepository<EmpLateMarkDetails
 			"        CONCAT(:year, '-', :month, '-01'),\n" + 
 			"        '%Y-%m-%d'\n" + 
 			"    ) AND DATE_FORMAT(\n" + 
-			"        CONCAT(:toyear, '-', :tomonth, '-31'),\n" + 
+			"        CONCAT(:toyear, '-', :tomonth, '-', :daysInMonth),\n" + 
 			"        '%Y-%m-%d'\n" + 
 			"    ) AND atd.totlate_days > 0 AND emp.del_status = 1\n" + 
 			"ORDER BY\n" + 
@@ -75,7 +75,7 @@ public interface EmpLateMarkDetailsRepo extends JpaRepository<EmpLateMarkDetails
 
 	List<EmpLateMarkDetails> getEmpLateMarkDetailReportByEmpId(@Param("month")String month,
 			@Param("year") String year, @Param("tomonth") String tomonth,
-			@Param("toyear") String toyear, @Param("empId") int empId);
+			@Param("toyear") String toyear, @Param("empId") int empId, @Param("daysInMonth") int daysInMonth);
 
 	
 }

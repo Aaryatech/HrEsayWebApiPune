@@ -1,5 +1,6 @@
 package com.ats.hrmgt.controller;
 
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -226,8 +227,13 @@ public class ReportsApiController {
 			String tomonth = toparts[0];
 			String toyear = toparts[1];
 			System.out.println("To Date After-----------"+tomonth+"/"+toyear);
+			
+			// Get the number of days in that month
+			YearMonth yearMonthObject = YearMonth.of(Integer.parseInt(toyear), Integer.parseInt(tomonth));
+			int daysInMonth = yearMonthObject.lengthOfMonth(); //28  
+			//System.out.println("Ttl Days----------"+daysInMonth);
 
-			list = empLateRepo.getEmpLateMarkDetailReportByEmpId(month, year, tomonth ,toyear, empId);
+			list = empLateRepo.getEmpLateMarkDetailReportByEmpId(month, year, tomonth ,toyear, empId, daysInMonth);
 
 		} catch (Exception e) {
 

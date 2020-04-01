@@ -1,5 +1,8 @@
 package com.ats.hrmgt.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.Setting;
+import com.ats.hrmgt.model.SlabMaster;
 import com.ats.hrmgt.model.User;
 import com.ats.hrmgt.repository.SettingRepo;
 import com.ats.hrmgt.repository.UserRepo; 
@@ -66,9 +70,9 @@ public class SettingApiController {
 
 		try {
 
-			int delete = settingRepo.settingUpdate(settingId,val);
+			int editSetting = settingRepo.settingUpdate(settingId,val);
 
-			if (delete > 0) {
+			if (editSetting > 0) {
 				info.setError(false);
 				info.setMsg("setting updated");
 			} else {
@@ -142,5 +146,37 @@ public class SettingApiController {
 
 	}
 	
+	@RequestMapping(value = { "/getAllSettingLabels" }, method = RequestMethod.GET)
+	public List<Setting> getAllSettingLabels() {
+		List<Setting> list = new ArrayList<Setting>();
+		try {
+			list = settingRepo.findAllByEditableLabels();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllSettingLabels : " + e.getMessage());
+			e.printStackTrace();
+		}
 
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/getSettingById" }, method = RequestMethod.POST)
+	public @ResponseBody Setting getSettingById(@RequestParam("settingId") int settingId) {
+
+		Setting setting = new Setting();
+		 
+		try {  
+					
+			setting = settingRepo.findBySettingId(settingId);
+		
+			
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			 
+
+		}
+		return setting;
+
+	}
 }
