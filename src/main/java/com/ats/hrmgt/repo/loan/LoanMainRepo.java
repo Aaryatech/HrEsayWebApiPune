@@ -80,6 +80,9 @@ public interface LoanMainRepo  extends JpaRepository<LoanMain, Integer>{
 
 
 	List<LoanMain> findByEmpIdAndDelStatus(int empId, int i);
+
+	@Query(value="select * from tbl_loan_main  where   del_status=1 and current_outstanding>0 and emp_id in (:empIds)  ",nativeQuery=true)
+	List<LoanMain> getLoanList(List<Integer> empIds);
 	
 
 }

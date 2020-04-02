@@ -3,15 +3,19 @@ package com.ats.hrmgt.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.model.AdvanceAndLoanInfo;
+import com.ats.hrmgt.model.Designation;
+import com.ats.hrmgt.model.FullAndFinal;
 import com.ats.hrmgt.model.GetAdvanceList;
 import com.ats.hrmgt.model.GetDetailForBonus;
 import com.ats.hrmgt.model.GetPayDedList;
+import com.ats.hrmgt.repo.FullAndFinalRepo;
 import com.ats.hrmgt.repo.GetDetailForBonusRepo;
 import com.ats.hrmgt.repository.GetAdvanceListRepo;
 import com.ats.hrmgt.repository.GetClaimListRepo;
@@ -31,6 +35,9 @@ public class FullAndFinalApiController {
 
 	@Autowired
 	GetDetailForBonusRepo getDetailForBonusRepo;
+
+	@Autowired
+	FullAndFinalRepo fullAndFinalRepo;
 
 	@RequestMapping(value = { "/getAllAmountDeductionSectionListForFullnFinal" }, method = RequestMethod.POST)
 	public AdvanceAndLoanInfo getAllAmountDeductionSectionListForFullnFinal(
@@ -68,14 +75,15 @@ public class FullAndFinalApiController {
 	}
 
 	@RequestMapping(value = { "/getbonuscalDetails" }, method = RequestMethod.POST)
-	public GetDetailForBonus getbonuscalDetails(@RequestParam("empId") int empId,@RequestParam("fromMonth") int fromMonth,@RequestParam("toMonth") int toMonth
-			,@RequestParam("fromYear") int fromYear,@RequestParam("toYear") int toYear) {
+	public GetDetailForBonus getbonuscalDetails(@RequestParam("empId") int empId,
+			@RequestParam("fromMonth") int fromMonth, @RequestParam("toMonth") int toMonth,
+			@RequestParam("fromYear") int fromYear, @RequestParam("toYear") int toYear) {
 
 		GetDetailForBonus info = new GetDetailForBonus();
 
 		try {
 
-			info = getDetailForBonusRepo.getbonuscalDetails(empId,fromMonth, toMonth, fromYear, toYear); 
+			info = getDetailForBonusRepo.getbonuscalDetails(empId, fromMonth, toMonth, fromYear, toYear);
 
 		} catch (Exception e) {
 
@@ -83,6 +91,23 @@ public class FullAndFinalApiController {
 		}
 
 		return info;
+	}
+
+	@RequestMapping(value = { "/insertfullandfinalrecord" }, method = RequestMethod.POST)
+	public FullAndFinal insertfullandfinalrecord(@RequestBody FullAndFinal fullAndFinal) {
+
+		FullAndFinal save = new FullAndFinal();
+
+		try {
+
+			save = fullAndFinalRepo.save(fullAndFinal);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return save;
 	}
 
 }

@@ -1771,4 +1771,59 @@ public class PayrollApiController {
 		return list;
 	}
 
+	@RequestMapping(value = { "/updateIsPaidInPaydeClaimAdvLoanInFullFinal" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Info updateIsPaidInPaydeClaimAdvLoanInFullFinal(@RequestParam("month") int month,
+			@RequestParam("year") int year, @RequestParam("userId") int userId,
+			@RequestParam("empIds") List<Integer> empIds) {
+
+		Info info = new Info();
+
+		try {
+
+			int updateAdv = advanceRepo.updateAdv(empIds);
+			List<LoanMain> getLoanList = loanMainRepo.getLoanList(empIds);
+			Date date = new Date();
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			List<LoanDetails> loandetaillist = new ArrayList<>();
+			for (int i = 0; i < getLoanList.size(); i++) {
+				LoanDetails loanDetails = new LoanDetails();
+				loanDetails.setLoanMainId(getLoanList.get(i).getId());
+				loanDetails.setMonths(month);
+				loanDetails.setYears(year);
+				loanDetails.setPayType("SP");
+				loanDetails.setLoginName(String.valueOf(userId));
+				loanDetails.setLoginTime(sf.format(date));
+
+				int amt = 0;
+
+				amt = getLoanList.get(i).getCurrentOutstanding();
+
+				loanDetails.setAmountEmi(amt);
+				loanDetails.setRemarks("Auto Deducted :Salary Deduction");
+				getLoanList.get(i).setCurrentOutstanding(getLoanList.get(i).getCurrentOutstanding() - amt);
+				getLoanList.get(i).setCurrentTotpaid(getLoanList.get(i).getCurrentTotpaid() + amt);
+				getLoanList.get(i).setLoanStatus("Paid");
+				 
+				loandetaillist.add(loanDetails);
+			}
+
+			if (loandetaillist.size() > 0) {
+				List<LoanDetails> res = loanDetailsRepo.saveAll(loandetaillist);
+				List<LoanMain> updateRes = loanMainRepo.saveAll(getLoanList);
+			}
+
+			info.setError(false);
+			info.setMsg("success");
+
+		} catch (Exception e) {
+			info.setError(true);
+			info.setMsg("failed");
+			e.printStackTrace();
+		}
+
+		return info;
+	}
+
 }
