@@ -44,8 +44,8 @@ public interface AdvanceRepo extends JpaRepository<Advance, Integer> {
 
 	@Transactional
 	@Modifying
-	@Query("update Advance set is_ded=1 where del_status=1 and is_ded=0 and emp_id in (:empIds)")
-	int updateAdv(List<Integer> empIds);
+	@Query("update Advance set is_ded=1 where del_status=1 and is_ded=0 and emp_id=:empIds")
+	int updateAdv(int empIds);
 	
 	
 	

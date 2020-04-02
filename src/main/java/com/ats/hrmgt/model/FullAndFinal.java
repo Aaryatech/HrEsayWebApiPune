@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "logs_freezeunfreeze")
+@Table(name = "t_fulnfinal")
 public class FullAndFinal {
 	
 	@Id

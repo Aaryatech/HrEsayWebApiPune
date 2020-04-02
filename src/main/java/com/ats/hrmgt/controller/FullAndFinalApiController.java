@@ -15,8 +15,10 @@ import com.ats.hrmgt.model.FullAndFinal;
 import com.ats.hrmgt.model.GetAdvanceList;
 import com.ats.hrmgt.model.GetDetailForBonus;
 import com.ats.hrmgt.model.GetPayDedList;
+import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.repo.FullAndFinalRepo;
 import com.ats.hrmgt.repo.GetDetailForBonusRepo;
+import com.ats.hrmgt.repository.EmpSalaryInfoRepo;
 import com.ats.hrmgt.repository.GetAdvanceListRepo;
 import com.ats.hrmgt.repository.GetClaimListRepo;
 import com.ats.hrmgt.repository.GetPayDedListRepo;
@@ -38,6 +40,10 @@ public class FullAndFinalApiController {
 
 	@Autowired
 	FullAndFinalRepo fullAndFinalRepo;
+	
+	@Autowired
+	EmpSalaryInfoRepo empSalRepo;
+
 
 	@RequestMapping(value = { "/getAllAmountDeductionSectionListForFullnFinal" }, method = RequestMethod.POST)
 	public AdvanceAndLoanInfo getAllAmountDeductionSectionListForFullnFinal(
@@ -108,6 +114,24 @@ public class FullAndFinalApiController {
 		}
 
 		return save;
+	}
+
+	@RequestMapping(value = { "/updateLeaveDatainemployee" }, method = RequestMethod.POST)
+	public Info updateLeaveDatainemployee(@RequestParam int empId, @RequestParam String leaveDate,
+			@RequestParam String leaveReason, @RequestParam String lrEsic, @RequestParam String lrForPF) {
+
+		Info info = new Info();
+		try {
+
+			int res = empSalRepo.updateLeaveDatainemployee(empId,leaveDate,leaveReason,lrEsic,lrForPF);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
+
 	}
 
 }

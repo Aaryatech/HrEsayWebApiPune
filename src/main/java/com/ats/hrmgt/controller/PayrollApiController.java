@@ -1775,7 +1775,7 @@ public class PayrollApiController {
 	@ResponseBody
 	public Info updateIsPaidInPaydeClaimAdvLoanInFullFinal(@RequestParam("month") int month,
 			@RequestParam("year") int year, @RequestParam("userId") int userId,
-			@RequestParam("empIds") List<Integer> empIds) {
+			@RequestParam("empIds") int empIds) {
 
 		Info info = new Info();
 

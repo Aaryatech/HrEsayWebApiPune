@@ -405,6 +405,19 @@ public class EmpShiftAssignApiController {
 	}
 	
 	
+	
+	@RequestMapping(value = { "/getAllEmployeeDetailForFullnFinal" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailForFullnFinal() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailForFullnFinal();
+		} catch (Exception e) {
+			 
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 	///******************************Asiignment of emp Related  Master*****************
 	
 	 

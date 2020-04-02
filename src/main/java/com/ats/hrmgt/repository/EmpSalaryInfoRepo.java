@@ -28,4 +28,11 @@ public interface EmpSalaryInfoRepo extends JpaRepository<EmpSalaryInfo, Integer>
 	@Query(value = "select * from tbl_emp_salary_info  where emp_id in (:empIds)", nativeQuery = true)
 	List<EmpSalaryInfo> getSalaryInfoList(@Param("empIds") List<Integer> empIds);
 
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE tbl_emp_salary_info SET cmp_leaving_date=:leaveDate,leaving_reason=:leaveReason,leaving_reason_esic=:lrEsic,"
+			+ "leaving_reason_pf=:lrForPF WHERE emp_id=:empId", nativeQuery = true)
+	int updateLeaveDatainemployee(@Param("empId") int empId, @Param("leaveDate") String leaveDate,
+			@Param("leaveReason") String leaveReason, @Param("lrEsic") String lrEsic, @Param("lrForPF") String lrForPF);
+
 }
