@@ -23,6 +23,4 @@ public interface SlabMasterRepository extends JpaRepository<SlabMaster, Integer>
 	@Query(value="SELECT * FROM `tbl_slabs` ORDER BY slab_id DESC", nativeQuery=true)
 	public List<SlabMaster> getAllOrderBySlabIdDesc();
 
-	
-
 }
