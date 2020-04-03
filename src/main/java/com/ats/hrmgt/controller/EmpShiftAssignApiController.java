@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ats.hrmgt.model.CountOfAssignPending;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.GetEmployeeDetails;
 import com.ats.hrmgt.model.Info;
@@ -20,6 +21,7 @@ import com.ats.hrmgt.model.LeaveType;
 import com.ats.hrmgt.model.MstEmpType;
 import com.ats.hrmgt.model.SalaryTypesMaster;
 import com.ats.hrmgt.model.ShiftMaster;
+import com.ats.hrmgt.repo.CountOfAssignPendingRepository;
 import com.ats.hrmgt.repository.EmpSalaryInfoRepo;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.GetEmployeeDetailsRepo;
@@ -33,6 +35,9 @@ public class EmpShiftAssignApiController {
 
 	@Autowired
 	GetEmployeeDetailsRepo getEmployeeDetailsRepo;
+	
+	@Autowired
+	CountOfAssignPendingRepository countOfAssignPendingRepository;
 
 	@RequestMapping(value = { "/getAllEmployeeDetail" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetail() {
@@ -365,6 +370,25 @@ public class EmpShiftAssignApiController {
 		}
 
 		return a;
+
+	}
+	
+	@RequestMapping(value = { "/getCountOfAssignForAttendance" }, method = RequestMethod.GET)
+	public @ResponseBody CountOfAssignPending getCountOfAssignForAttendance() {
+
+		CountOfAssignPending count = new CountOfAssignPending();
+		 
+		try {
+
+			count = countOfAssignPendingRepository.getCountOfAssignForAttendance();
+			 
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return count;
 
 	}
 
