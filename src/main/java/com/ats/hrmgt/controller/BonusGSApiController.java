@@ -387,7 +387,7 @@ public class BonusGSApiController {
 				if (isAdd == 1) {
 					// System.err.println("isert process");
 
-					if (payableDay <= bonus.getMinDays()) {
+					if (payableDay >= bonus.getMinDays()) {
 						isApplicable = "Yes";
 
 						// System.err.println("Applicable");
@@ -408,10 +408,12 @@ public class BonusGSApiController {
 						 
 
 						try {
-							BonusParam salCal = bonusParamRepo.getBonusParameters(empId, datesDet.getMonthFrom(),
-									datesDet.getMonthTo(), datesDet.getYearFrom(), datesDet.getYearTo());
+							//BonusParam salCal = bonusParamRepo.getBonusParameters(empId, datesDet.getMonthFrom(),
+							//		datesDet.getMonthTo(), datesDet.getYearFrom(), datesDet.getYearTo());
+							
+							
 							// System.err.println("BonusParam**" + salCal.toString());
-							if (salCal.getTotalAllowance() == null) {
+							/*if (salCal.getTotalAllowance() == null) {
 								formTot = Double.parseDouble(salCal.getTotalBasicCal());
 
 							} else if (salCal.getTotalBasicCal() == null) {
@@ -419,6 +421,17 @@ public class BonusGSApiController {
 							} else {
 								formTot = ((Double.parseDouble(salCal.getTotalBasicCal())
 										+ Double.parseDouble(salCal.getTotalAllowance())) / 365) * payableDay;
+							}*/
+							
+							//mahendra 04-04-2020
+							SalaryCalc salCal = salaryCalcRepo.getBonusParametersGS(empId, datesDet.getMonthFrom(),
+									datesDet.getMonthTo(), datesDet.getYearFrom(), datesDet.getYearTo());
+							
+							if (salCal.getGrossSalDefault() != 0) {
+								formTot = salCal.getGrossSalDefault();
+
+							}else {
+								formTot = 0;
 							}
 
 							formTot = NumberFormatting.castNumber(formTot, insertVal);
@@ -430,7 +443,7 @@ public class BonusGSApiController {
 
 							bonusAmt = (formTot * bonusPrcnt) / 100;
 							bonusAmt = NumberFormatting.castNumber(bonusAmt, insertVal);
-							grossBonus = formTot + bonusAmt;
+							grossBonus = formTot ;//+ bonusAmt;
 
 							grossBonus = NumberFormatting.castNumber(grossBonus, insertVal);
 
@@ -440,7 +453,8 @@ public class BonusGSApiController {
 						}
 						// System.err.println("grossBonus"+grossBonus);
 						// System.err.println("formTot"+formTot);
-						advPrcntAmt = (grossBonus * advPrcnt) / 100;
+						
+						/*advPrcntAmt = (grossBonus * advPrcnt) / 100;
 						advPrcntAmt = advPrcntAmt + grossBonus;
 						advPrcntAmt = NumberFormatting.castNumber(advPrcntAmt, insertVal);
 						pujaPrcntAmt = (grossBonus * pujaPrcnt) * 100;
@@ -449,7 +463,7 @@ public class BonusGSApiController {
 
 						lossPrcntAmt = (grossBonus * lossPrcnt) / 100;
 						lossPrcntAmt = lossPrcntAmt + grossBonus;
-						lossPrcntAmt = NumberFormatting.castNumber(lossPrcntAmt, insertVal);
+						lossPrcntAmt = NumberFormatting.castNumber(lossPrcntAmt, insertVal);*///04-04-2020
 
 						System.err.println("lossPrcntAmt" + lossPrcntAmt);
 					} else {
@@ -480,7 +494,7 @@ public class BonusGSApiController {
 					calcSave.setLoginIdBonus(userId);
 					calcSave.setLoginTimeBonus(sf.format(date));
 					calcSave.setBonusApplicable(isApplicable);
-					calcSave.setGrossBonusAmt(grossBonus);
+					calcSave.setGrossBonusAmt(bonusAmt);
 					calcSave.setExgratiaPrcnt(0);
 
 					calcSave.setDedBonusAdvAmt(advPrcntAmt);
@@ -501,10 +515,10 @@ public class BonusGSApiController {
 					calcSave.setPaidExgretiaAmt(0);
 					// calcSave.setPaidExgretiaDate(paidExgretiaDate);
 					calcSave.setRecStatus(0);// ***
-					calcSave.setTotalBonusWages((int) formTot);// ******
+					calcSave.setTotalBonusWages(formTot);// Gross Salary Default
 					calcSave.setTotalExgretiaDays(0);
 					calcSave.setTotalExgretiaWages(0);
-					calcSave.setTotalBonusDays((int) payableDay);// ***
+					calcSave.setTotalBonusDays(payableDay);// ***
 
 					ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 					String json = ow.writeValueAsString(calcSave);
@@ -763,12 +777,10 @@ public class BonusGSApiController {
 	
 	
 	@RequestMapping(value = { "/empExgratiaUpdateToBonusSaveGS" }, method = RequestMethod.POST)
-	public @ResponseBody Info empExgratiaUpdateToBonusSaveGS(@RequestParam("empIdList") List<Integer> empIdList,
+	public @ResponseBody Info empBonusAppSaveOrUpdate(@RequestParam("empIdList") List<Integer> empIdList,
 			@RequestParam("bonusId") int bonusId, @RequestParam("companyId") int companyId,
 			@RequestParam("userId") int userId) {
-		
 		System.err.println("empExgratiaUpdateToBonusSaveGS");
-
 		Info info = new Info();
 		int flag = 0;
 		Date date = new Date();
@@ -820,23 +832,31 @@ public class BonusGSApiController {
 				double payableDays = 0;
 				String isApp = null;
 				double formTot = 0;
+				double bonusAmt = 0;
+				double netExgratiaAmt = 0;
 				BonusCalc bonusCalc = bonusCalcRepo.findByEmpIdAndBonusIdAndDelStatus(empId, bonusId, 1);
 
 				if (bonusCalc != null) {
 					isApp = bonusCalc.getBonusApplicable();
 					if (isApp.equals("Yes")) {
+						
 						payableDays = bonusCalc.getTotalBonusDays();
 						payableDays = NumberFormatting.castNumber(payableDays, insertVal);
 						formTot = bonusCalc.getTotalBonusWages();
+						bonusAmt= bonusCalc.getGrossBonusAmt();
 						formTot = NumberFormatting.castNumber(formTot, insertVal);
-						exgratiaAmt = (formTot * exgretia_percentage) / 100;
+						exgratiaAmt = formTot - bonusAmt; //(formTot * exgretia_percentage) / 100;
 						exgratiaAmt = NumberFormatting.castNumber(exgratiaAmt, insertVal);
-						grossExgratiaAmt = exgratiaAmt + formTot;
+						grossExgratiaAmt = exgratiaAmt;// + formTot;
 						grossExgratiaAmt = NumberFormatting.castNumber(grossExgratiaAmt, insertVal);
-						dedExgratiaAmt = (grossExgratiaAmt * ded_exgretia_amt_percentage) / 100;
-						dedExgratiaAmt = NumberFormatting.castNumber(dedExgratiaAmt, insertVal);
-						dedExgratiaAmt = dedExgratiaAmt + grossExgratiaAmt;
-						dedExgratiaAmt = NumberFormatting.castNumber(dedExgratiaAmt, insertVal);
+						netExgratiaAmt = grossExgratiaAmt - exgratiaAmt;
+						netExgratiaAmt = NumberFormatting.castNumber(netExgratiaAmt, insertVal);
+					//	dedExgratiaAmt = (grossExgratiaAmt * ded_exgretia_amt_percentage) / 100;
+					//	dedExgratiaAmt = NumberFormatting.castNumber(dedExgratiaAmt, insertVal);
+					//	dedExgratiaAmt = dedExgratiaAmt + grossExgratiaAmt;
+					//	dedExgratiaAmt = NumberFormatting.castNumber(dedExgratiaAmt, insertVal);
+						
+						
 					} else {
 						formTot = 0;
 						exgratiaAmt = 0;
@@ -864,7 +884,7 @@ public class BonusGSApiController {
 						organisation.setLoginTimeExgretia(yyDtTm.format(date));
 						organisation.setPaidExgretiaAmt(0);
 						organisation.setGrossExgretiaAmt(grossExgratiaAmt);
-						organisation.setNetExgretiaAmt(exgratiaAmt); 
+						organisation.setNetExgretiaAmt(netExgratiaAmt); 
 						organisation.setDedExgretiaAmt(dedExgratiaAmt);
 						ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 						String json = ow.writeValueAsString(organisation);
@@ -988,7 +1008,7 @@ public class BonusGSApiController {
 
 					organisation.setExgratiaPrcnt(exPrcnt);
 					organisation.setExgretiaApplicable("Yes");
-					organisation.setTotalExgretiaDays((int) (payableDays));
+					organisation.setTotalExgretiaDays(payableDays);
 					organisation.setTotalExgretiaWages(exgratiaAmt1);
 					organisation.setIsExgretiaFinalized(String.valueOf("0"));
 					organisation.setLoginIdExgretia(userId);

@@ -62,7 +62,7 @@ public class BonusCalc {
 
 	private String exgretiaDetails;
 
-	private int totalExgretiaDays;
+	private double totalExgretiaDays;
 
 	private double totalExgretiaWages;
 
@@ -286,11 +286,11 @@ public class BonusCalc {
 		this.exgretiaDetails = exgretiaDetails;
 	}
 
-	public int getTotalExgretiaDays() {
+	public double getTotalExgretiaDays() {
 		return totalExgretiaDays;
 	}
 
-	public void setTotalExgretiaDays(int totalExgretiaDays) {
+	public void setTotalExgretiaDays(double totalExgretiaDays) {
 		this.totalExgretiaDays = totalExgretiaDays;
 	}
 

@@ -695,7 +695,7 @@ public class BonusApiController {
 					calcSave.setTotalBonusWages((int) formTot);// ******
 					calcSave.setTotalExgretiaDays(0);
 					calcSave.setTotalExgretiaWages(0);
-					calcSave.setTotalBonusDays((int) payableDay);// ***
+					calcSave.setTotalBonusDays(payableDay);// ***
 
 					ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 					String json = ow.writeValueAsString(calcSave);
