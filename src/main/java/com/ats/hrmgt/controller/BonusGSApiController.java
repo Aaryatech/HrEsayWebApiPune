@@ -503,7 +503,7 @@ public class BonusGSApiController {
 					calcSave.setRecStatus(0);// ***
 					calcSave.setTotalBonusWages((int) formTot);// ******
 					calcSave.setTotalExgretiaDays(0);
-					calcSave.setTotalExgretiaWages("0");
+					calcSave.setTotalExgretiaWages(0);
 					calcSave.setTotalBonusDays((int) payableDay);// ***
 
 					ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -858,7 +858,7 @@ public class BonusGSApiController {
 						organisation.setExgratiaPrcnt(exgretia_percentage);
 						organisation.setExgretiaApplicable("Yes");
 						organisation.setTotalExgretiaDays((int) (payableDays));
-						organisation.setTotalExgretiaWages(String.valueOf(formTot));
+						organisation.setTotalExgretiaWages(formTot);
 						organisation.setIsExgretiaFinalized(String.valueOf("0"));
 						organisation.setLoginIdExgretia(userId);
 						organisation.setLoginTimeExgretia(yyDtTm.format(date));
@@ -956,7 +956,7 @@ public class BonusGSApiController {
 				if (isApp.equals("Yes")) {
 					payableDays = bonusCalc.getTotalBonusDays();
 					payableDays = NumberFormatting.castNumber(payableDays, insertVal);
-					exgratiaAmt1 = Double.parseDouble(bonusCalc.getTotalExgretiaWages());
+					exgratiaAmt1 = bonusCalc.getTotalExgretiaWages();
 					exgratiaAmt1 = NumberFormatting.castNumber(exgratiaAmt1, insertVal);
 
 					exgratiaAmt = (exgratiaAmt1 * exPrcnt) / 100;
@@ -989,7 +989,7 @@ public class BonusGSApiController {
 					organisation.setExgratiaPrcnt(exPrcnt);
 					organisation.setExgretiaApplicable("Yes");
 					organisation.setTotalExgretiaDays((int) (payableDays));
-					organisation.setTotalExgretiaWages(String.valueOf(exgratiaAmt1));
+					organisation.setTotalExgretiaWages(exgratiaAmt1);
 					organisation.setIsExgretiaFinalized(String.valueOf("0"));
 					organisation.setLoginIdExgretia(userId);
 					organisation.setLoginTimeExgretia(yyDtTm.format(date));
