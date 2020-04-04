@@ -27,6 +27,7 @@ import com.ats.hrmgt.model.TblEmpInfo;
 import com.ats.hrmgt.model.bonus.BonusMaster;
 import com.ats.hrmgt.model.dashboard.AgeDiversityDash;
 import com.ats.hrmgt.model.dashboard.BirthHoliDash;
+import com.ats.hrmgt.model.dashboard.CommonDash;
 import com.ats.hrmgt.model.dashboard.DeptWiseWeekoffDash;
 import com.ats.hrmgt.model.dashboard.GetAllPendingMasterDet;
 import com.ats.hrmgt.model.dashboard.GetBirthDaysForDash;
@@ -80,23 +81,26 @@ public class DashboardApiController {
 	SummaryDailyAttendanceRepository summaryDailyAttendanceRepository;
 
 	@RequestMapping(value = { "/getCommonDash" }, method = RequestMethod.POST)
-	public @ResponseBody BirthHoliDash getCommonDash(@RequestParam("fiterdate") String fiterdate,
-			@RequestParam("empId") int empId) throws ParseException {
+	public @ResponseBody CommonDash getCommonDash(@RequestParam("fiterdate") String fiterdate,
+			@RequestParam("empId") int empId,@RequestParam("userType") int userType,
+			@RequestParam("isAuth") int isAuth) throws ParseException {
 
+		CommonDash comDash = new CommonDash();
 		BirthHoliDash birthHoliDash = new BirthHoliDash();
 		List<HolidayMaster> holilist = new ArrayList<HolidayMaster>();
-
 		List<GetBirthDaysForDash> birthListUpcoming = new ArrayList<GetBirthDaysForDash>();
-
 		List<GetBirthDaysForDash> birthListToday = new ArrayList<GetBirthDaysForDash>();
-//1 getBirthDayAndHolidayDash
+		String temp[] = fiterdate.split("-");
+
+		// 1 getBirthDayAndHolidayDash
+		
+		//for all
 		try {
 
 			holilist = holidayMasterRepo.getHolidaysForDash(fiterdate);
 			birthListToday = getBirthDaysForDashRepo.getTodaysBirth(fiterdate);
 			birthListUpcoming = getBirthDaysForDashRepo.getWeekBirth(fiterdate);
-
-			birthHoliDash.setBirthListToday(birthListToday);
+ 			birthHoliDash.setBirthListToday(birthListToday);
 			birthHoliDash.setBirthListUpcoming(birthListUpcoming);
 			birthHoliDash.setHoliList(holilist);
 
@@ -105,145 +109,10 @@ public class DashboardApiController {
 			e.printStackTrace();
 		}
 
-		// 2 getNewHireDash
-		GetNewHiresDash hireDash = new GetNewHiresDash();
-
-		try {
-
-			hireDash = getNewHiresDashRepo.getTodaysHire(fiterdate);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		// 3 getLeaveCountDash
-
-		LeavePenDash leavePenDash = new LeavePenDash();
-
-		try {
-
-			leavePenDash = leavePenDashRepo.getLeaveCnt();
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		// 4 getPerformanceBonus
-
-		LeavePenDash getPerf = new LeavePenDash();
-
-		try {
-
-			getPerf = leavePenDashRepo.getLeaveCnt();
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		// 5 getAttnDash
-		PreDayAttnDash preDayAttn = new PreDayAttnDash();
-		DailyAttendance dailyAttn = new DailyAttendance();
-		List<DailyAttendance> dailyAttnList = new ArrayList<DailyAttendance>();
-		try {
-
-			String fiterdateNew = new String();
-			dailyAttnList = dailyAttendanceRepository.dailyAttendanceListRec(fiterdate);
-			if (dailyAttnList.size() == 0) {
-				dailyAttn = dailyAttendanceRepository.dailyAttendanceListLastRec();
-				fiterdateNew = dailyAttn.getAttDate();
-			} else {
-				fiterdateNew = fiterdate;
-			}
-
-			preDayAttn = preDayAttnDashRepo.getAttendance(fiterdateNew);
-
-			preDayAttn.setAttnDate(DateConvertor.convertToDMY(fiterdateNew));
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		// 6 getDashDeptWiseWeekoff
-
-		List<DeptWiseWeekoffDash> list = new ArrayList<DeptWiseWeekoffDash>();
-		try {
-
-			list = deptWiseWeekoffDashRepo.getAttendance(fiterdate);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		// 7 getAllPendingMasterDet
-
-		GetAllPendingMasterDet pendingMast = new GetAllPendingMasterDet();
-
-		try {
-
-			pendingMast = getAllPendingMasterDetRepo.getDet();
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		// 8 getRewardedDet
-		PayRewardDedDash dedDet = new PayRewardDedDash();
-		PayRewardDedDash rewardDet = new PayRewardDedDash();
-		String temp[] = fiterdate.split("-");
-		try {
-			dedDet = payRewardDedDashRepo.getDedDetails(temp[0], temp[1]);
-			rewardDet = payRewardDedDashRepo.getRewardDetails(temp[0], temp[1]);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		// 9 getAdvLoanDash
-
-		LoanAdvDashDet advDash = new LoanAdvDashDet();
-
-		LoanAdvDashDet loanDash = new LoanAdvDashDet();
-
-		try {
-
-			advDash = loanAdvDashDetDashRepo.getAdvnceDetails(temp[0], temp[1]);
-
-			loanDash = loanAdvDashDetDashRepo.getLoanDetails(temp[0], temp[1], fiterdate);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		// 10 getEmpAbsentLv
-		List<DeptWiseWeekoffDash> list1 = new ArrayList<DeptWiseWeekoffDash>();
-		try {
-
-			list1 = deptWiseWeekoffDashRepo.getLeavesAndAbsent(fiterdate);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		// 11 getDeptWisePerformanceBonus
-
-		List<DeptWiseWeekoffDash> deptWisePerformanceBonusLidt = new ArrayList<DeptWiseWeekoffDash>();
-		try {
-
-			deptWisePerformanceBonusLidt = deptWiseWeekoffDashRepo.getDeptWisePerformanceBonus(temp[1], temp[0]);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
+		comDash.setBirth(birthHoliDash);
+		
+		
+		
 		// 12 getLeaveHistForDash
 		List<GetLeaveHistForDash> leaveHistForDashlist = new ArrayList<GetLeaveHistForDash>();
 		try {
@@ -254,8 +123,8 @@ public class DashboardApiController {
 
 			e.printStackTrace();
 		}
+		comDash.setLvApplList(leaveHistForDashlist);
 
-		// **************************Diversity rep*********************************
 		// getDashDeptWiseEmpCount
 
 		List<DeptWiseWeekoffDash> listEmpDiv = new ArrayList<DeptWiseWeekoffDash>();
@@ -268,104 +137,285 @@ public class DashboardApiController {
 			e.printStackTrace();
 		}
 
-		// getAgeDiversity
-
-		GetNewHiresDash ageDiv = new GetNewHiresDash();
-
-		try {
-
-			ageDiv = getNewHiresDashRepo.getAgeDiversity();
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-//getAgeDiversityDetail
-
-		AgeDiversityDash tempList = new AgeDiversityDash();
-		List<AgeDiversityDash> divlist = new ArrayList<AgeDiversityDash>();
-		try {
-
-			tempList = ageDiversityDashRepo.getAttendance(fiterdate);
-			divlist.add(tempList);
-			tempList = ageDiversityDashRepo.getExperienceDiversity(fiterdate);
-			divlist.add(tempList);
-			tempList = ageDiversityDashRepo.getSalaryDiversity(fiterdate);
-			divlist.add(tempList);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-//getEmpLastMonthAttn
-
-		SummaryDailyAttendance summlist = new SummaryDailyAttendance();
-
-		try {
-
-			summlist = summaryDailyAttendanceRepository.summaryDailyAttendanceList1(temp[1], temp[0], empId);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
+		comDash.setDeptWiseEmpCntList(listEmpDiv);
+		
+		
+		
 		// getDedTypewiseDeduction
 
-		List<DeptWiseWeekoffDash> listDedTypewiseAm = new ArrayList<DeptWiseWeekoffDash>();
+				List<DeptWiseWeekoffDash> listDedTypewiseAm = new ArrayList<DeptWiseWeekoffDash>();
+				try {
+
+					listDedTypewiseAm = deptWiseWeekoffDashRepo.getDedTypewiseAmt(empId);
+
+				} catch (Exception e) {
+
+					e.printStackTrace();
+				}
+				comDash.setDedWiseDedList(listDedTypewiseAm);
+				// /getRewardWisewiseDeduction
+
+				List<DeptWiseWeekoffDash> rewardwiseAmtlist = new ArrayList<DeptWiseWeekoffDash>();
+				try {
+
+					rewardwiseAmtlist = deptWiseWeekoffDashRepo.getRewardwiseAmt(empId);
+
+				} catch (Exception e) {
+
+					e.printStackTrace();
+				}
+				comDash.setRewardWiseDedList(rewardwiseAmtlist);
+
+				
+				
+				
+				IncentivesAmtDash incent = new IncentivesAmtDash();
+				try {
+
+					incent = incentivesAmtDashRepo.getWeekBirth(empId);
+
+				} catch (Exception e) {
+
+					e.printStackTrace();
+				}
+
+				comDash.setIcent(incent);
+
+				// getPerfProd
+
+				PerformanceProdDash prod = new PerformanceProdDash();
+
+				try {
+
+					prod = performanceProdDashRepo.getPerformanceDetails(temp[0], temp[1], empId);
+
+					comDash.setPerfList(prod);
+					prod = performanceProdDashRepo.getProdDetails(temp[0], temp[1], empId);
+
+					comDash.setProdList(prod);
+
+				} catch (Exception e) {
+
+					e.printStackTrace();
+				}
+
+		
+		
+	//	for HR only
+		
+		if(userType==2) {
+			// 2 getNewHireDash
+			GetNewHiresDash hireDash = new GetNewHiresDash();
+
+			try {
+
+				hireDash = getNewHiresDashRepo.getTodaysHire(fiterdate);
+
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+
+			comDash.setNewHire(hireDash);
+			// 3 getLeaveCountDash
+			
+			LeavePenDash leavePenDash = new LeavePenDash();
+
+			try {
+
+				leavePenDash = leavePenDashRepo.getLeaveCnt();
+
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+			comDash.setLvDet(leavePenDash);
+			
+			
+			// 5 getAttnDash
+			PreDayAttnDash preDayAttn = new PreDayAttnDash();
+			DailyAttendance dailyAttn = new DailyAttendance();
+			List<DailyAttendance> dailyAttnList = new ArrayList<DailyAttendance>();
+			try {
+
+				String fiterdateNew = new String();
+				dailyAttnList = dailyAttendanceRepository.dailyAttendanceListRec(fiterdate);
+				if (dailyAttnList.size() == 0) {
+					dailyAttn = dailyAttendanceRepository.dailyAttendanceListLastRec();
+					fiterdateNew = dailyAttn.getAttDate();
+				} else {
+					fiterdateNew = fiterdate;
+				}
+
+				preDayAttn = preDayAttnDashRepo.getAttendance(fiterdateNew);
+
+				preDayAttn.setAttnDate(DateConvertor.convertToDMY(fiterdateNew));
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+			comDash.setAttnDet(preDayAttn);
+			
+			
+			// 7 getAllPendingMasterDet
+
+			GetAllPendingMasterDet pendingMast = new GetAllPendingMasterDet();
+
+			try {
+
+				pendingMast = getAllPendingMasterDetRepo.getDet();
+
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+			comDash.setMasterDet(pendingMast);
+			
+			
+			
+			// 9 getAdvLoanDash
+
+			LoanAdvDashDet advDash = new LoanAdvDashDet();
+
+			LoanAdvDashDet loanDash = new LoanAdvDashDet();
+
+			try {
+
+				advDash = loanAdvDashDetDashRepo.getAdvnceDetails(temp[0], temp[1]);
+				comDash.setAdvDet(advDash);
+				loanDash = loanAdvDashDetDashRepo.getLoanDetails(temp[0], temp[1], fiterdate);
+				comDash.setLoanDet(loanDash);
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+			
+			
+			
+			
+			
+			// 11 getDeptWisePerformanceBonus
+
+			List<DeptWiseWeekoffDash> deptWisePerformanceBonusLidt = new ArrayList<DeptWiseWeekoffDash>();
+			try {
+
+				deptWisePerformanceBonusLidt = deptWiseWeekoffDashRepo.getDeptWisePerformanceBonus(temp[1], temp[0]);
+
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+
+			comDash.setPerfListDept(deptWisePerformanceBonusLidt);
+			
+			
+			
+			// getAgeDiversity
+
+			GetNewHiresDash ageDiv = new GetNewHiresDash();
+
+			try {
+
+				ageDiv = getNewHiresDashRepo.getAgeDiversity();
+
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+			comDash.setAgeDiv(ageDiv);
+			// getAgeDiversityDetail
+
+			AgeDiversityDash tempList = new AgeDiversityDash();
+			try {
+
+				tempList = ageDiversityDashRepo.getAttendance(fiterdate);
+				comDash.setAgeDiversity(tempList);
+				tempList = ageDiversityDashRepo.getExperienceDiversity(fiterdate);
+				comDash.setExpDiversity(tempList);
+				tempList = ageDiversityDashRepo.getSalaryDiversity(fiterdate);
+				comDash.setSalDiversity(tempList);
+
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+
+
+		}
+		
+		
+
+		
+
+		//for HR and Authority
+		
+		if(userType==2 || isAuth >0) {
+			
+			// 6 getDashDeptWiseWeekoff
+		List<DeptWiseWeekoffDash> list = new ArrayList<DeptWiseWeekoffDash>();
 		try {
 
-			listDedTypewiseAm = deptWiseWeekoffDashRepo.getDedTypewiseAmt(empId);
+			list = deptWiseWeekoffDashRepo.getAttendance(fiterdate);
 
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
+		comDash.setDeptwiseWkoff(list);
+		
+		
+		// 8 getRewardedDet
+		
+		
+				PayRewardDedDash dedDet = new PayRewardDedDash();
+				PayRewardDedDash rewardDet = new PayRewardDedDash();
+				try {
+					dedDet = payRewardDedDashRepo.getDedDetails(temp[0], temp[1]);
+					rewardDet = payRewardDedDashRepo.getRewardDetails(temp[0], temp[1]);
 
-//			/getRewardWisewiseDeduction
+				} catch (Exception e) {
 
-		List<DeptWiseWeekoffDash> rewardwiseAmtlist = new ArrayList<DeptWiseWeekoffDash>();
-		try {
+					e.printStackTrace();
+				}
 
-			list = deptWiseWeekoffDashRepo.getRewardwiseAmt(empId);
+				comDash.setDedDet(dedDet);
+				comDash.setRewardDet(rewardDet);
+				
+				
+				// 10 getEmpAbsentLv
+				List<DeptWiseWeekoffDash> list1 = new ArrayList<DeptWiseWeekoffDash>();
+				try {
 
-		} catch (Exception e) {
+					list1 = deptWiseWeekoffDashRepo.getLeavesAndAbsent(fiterdate);
 
-			e.printStackTrace();
+				} catch (Exception e) {
+
+					e.printStackTrace();
+				}
+				comDash.setDeptWiseLvAbLList(list1);
+				
+				
+				
+				
+				// getEmpLastMonthAttn
+
+				SummaryDailyAttendance summlist = new SummaryDailyAttendance();
+
+				try {
+
+					summlist = summaryDailyAttendanceRepository.summaryDailyAttendanceList1(temp[1], temp[0], empId);
+
+				} catch (Exception e) {
+
+					e.printStackTrace();
+				}
+				comDash.setAttnLastMon(summlist);
+
+
 		}
 
-//	/getEmpTotAmtsDash	
-
-		IncentivesAmtDash incent = new IncentivesAmtDash();
-		try {
-
-			incent = incentivesAmtDashRepo.getWeekBirth(empId);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		// getPerfProd
-
-		List<PerformanceProdDash> prodList = new ArrayList<PerformanceProdDash>();
-		PerformanceProdDash prod = new PerformanceProdDash();
-
-		try {
-
-			prod = performanceProdDashRepo.getPerformanceDetails(temp[0], temp[1], empId);
-			prodList.add(prod);
-
-			prod = performanceProdDashRepo.getProdDetails(temp[0], temp[1], empId);
-			prodList.add(prod);
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		return null;
+		System.err.println("----------"+comDash.toString());
+		return comDash;
 
 	}
 
