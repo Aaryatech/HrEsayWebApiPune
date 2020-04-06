@@ -510,7 +510,7 @@ public class BonusGSApiController {
 					calcSave.setLoginIdExgretia(0);
 					calcSave.setLoginTimeExgretia("0000-00-00 00:00:00");
 					calcSave.setNetExgretiaAmt(0);
-					calcSave.setPaidBonusAmt(0);
+					calcSave.setPaidBonusAmt(bonusAmt);
 					// calcSave.setPaidBonusDate(0000-00-00);
 					calcSave.setPaidExgretiaAmt(0);
 					// calcSave.setPaidExgretiaDate(paidExgretiaDate);
@@ -745,6 +745,11 @@ public class BonusGSApiController {
 				temp.setLoginTimeExgretia("0000-00-00 00:00:00");
 				temp.setPayrollMonth(0);
 				temp.setPayrollYear(0);
+				temp.setBonusPaidDate(DateConvertor.convertToYMD(startDate));
+				temp.setExgratiaPaidDate("0000-00-00");
+				temp.setExVar1("");
+				temp.setExInt1(0);
+				
 				BonusApplicable temp1 = bonusApplicableRepo.save(temp);
 				if (temp1 != null) {
 					flag = 1;
@@ -752,10 +757,10 @@ public class BonusGSApiController {
 					flag = 0;
 				}
 			} else {
+				
 				int n = bonusApplicableRepo.updateBonus(bonusAppId, a[0], a[1]);
 				// update
 				flag = 1;
-
 			}
 
 			if (flag == 1) {
@@ -851,6 +856,10 @@ public class BonusGSApiController {
 						grossExgratiaAmt = NumberFormatting.castNumber(grossExgratiaAmt, insertVal);
 						netExgratiaAmt = grossExgratiaAmt - exgratiaAmt;
 						netExgratiaAmt = NumberFormatting.castNumber(netExgratiaAmt, insertVal);
+						
+						
+						exgretia_percentage  = (exgratiaAmt / formTot ) * 100; 
+						exgretia_percentage = NumberFormatting.castNumber(exgretia_percentage, insertVal);
 					//	dedExgratiaAmt = (grossExgratiaAmt * ded_exgretia_amt_percentage) / 100;
 					//	dedExgratiaAmt = NumberFormatting.castNumber(dedExgratiaAmt, insertVal);
 					//	dedExgratiaAmt = dedExgratiaAmt + grossExgratiaAmt;
@@ -865,7 +874,7 @@ public class BonusGSApiController {
 						payableDays = bonusCalc.getTotalBonusDays();
 						isApp = "No";
 					}
-
+					
 					int n = bonusCalcRepo.updateExgratiaAmts(formTot, grossExgratiaAmt, exgratiaAmt, dedExgratiaAmt,
 							payableDays, yyDtTm.format(date), userId, isApp, bonusCalc.getBonusCalcId(),
 							exgretia_percentage);
@@ -926,7 +935,7 @@ public class BonusGSApiController {
 	
 	@RequestMapping(value = { "/empBonusCalcUpdateForExgratiaGS" }, method = RequestMethod.POST)
 	public @ResponseBody Info empBonusCalcUpdateForExgratiaGS(@RequestParam("bonusId") int bonusId,
-			@RequestParam("bonusCalcId") int bonusCalcId, @RequestParam("exPrcnt") double exPrcnt,
+			@RequestParam("bonusCalcId") int bonusCalcId, @RequestParam("paidExgratiaAmt") double paidExgratiaAmt,
 			@RequestParam("companyId") int companyId, @RequestParam("dateTime") String dateTime,
 			@RequestParam("userId") int userId) {
 		System.err.println("empBonusCalcUpdateForExgratiaGS");
@@ -966,8 +975,11 @@ public class BonusGSApiController {
 			}
 			double exgratiaAmt = 0;
 			double grossExgratiaAmt = 0;
+			double totalExgretiaWages = 0;
 			double dedExgratiaAmt = 0;
 			double payableDays = 0;
+			double exPrcnt = 0;
+			double netExgretiaAmt = 0;
 			String isApp = null;
 			BonusCalc bonusCalc = bonusCalcRepo.findByBonusCalcIdAndDelStatus(bonusCalcId, 1);
 			double exgratiaAmt1 = 0;
@@ -976,20 +988,20 @@ public class BonusGSApiController {
 				if (isApp.equals("Yes")) {
 					payableDays = bonusCalc.getTotalBonusDays();
 					payableDays = NumberFormatting.castNumber(payableDays, insertVal);
-					exgratiaAmt1 = bonusCalc.getTotalExgretiaWages();
-					exgratiaAmt1 = NumberFormatting.castNumber(exgratiaAmt1, insertVal);
-
-					exgratiaAmt = (exgratiaAmt1 * exPrcnt) / 100;
-					exgratiaAmt = NumberFormatting.castNumber(exgratiaAmt, insertVal);
-					grossExgratiaAmt = exgratiaAmt1 + exgratiaAmt;
-					grossExgratiaAmt = NumberFormatting.castNumber(grossExgratiaAmt, insertVal);
- 					dedExgratiaAmt = (grossExgratiaAmt * ded_exgretia_amt_percentage) / 100;
-					dedExgratiaAmt = NumberFormatting.castNumber(dedExgratiaAmt, insertVal);
-					dedExgratiaAmt = dedExgratiaAmt + grossExgratiaAmt;
-					dedExgratiaAmt = NumberFormatting.castNumber(dedExgratiaAmt, insertVal);
+					totalExgretiaWages = bonusCalc.getTotalExgretiaWages();
+					netExgretiaAmt = paidExgratiaAmt;
+					grossExgratiaAmt = paidExgratiaAmt;
+					exPrcnt = (paidExgratiaAmt / totalExgretiaWages) * 100;
+					exPrcnt = NumberFormatting.castNumber(exPrcnt, insertVal);
+					//grossExgratiaAmt = exgratiaAmt1 + exgratiaAmt;
+					//grossExgratiaAmt = NumberFormatting.castNumber(grossExgratiaAmt, insertVal);
+					//dedExgratiaAmt = (grossExgratiaAmt * ded_exgretia_amt_percentage) / 100;
+					//dedExgratiaAmt = NumberFormatting.castNumber(dedExgratiaAmt, insertVal);
+					//dedExgratiaAmt = dedExgratiaAmt + grossExgratiaAmt;
+					//dedExgratiaAmt = NumberFormatting.castNumber(dedExgratiaAmt, insertVal);
 
 				} else {
-					exgratiaAmt1 = 0;
+					exgratiaAmt = 0;
 					exgratiaAmt = 0;
 					grossExgratiaAmt = 0;
 					dedExgratiaAmt = 0;
@@ -997,8 +1009,7 @@ public class BonusGSApiController {
 					isApp = "No";
 				}
 
-				int n = bonusCalcRepo.updateExgratiaAmts(exgratiaAmt1, grossExgratiaAmt, exgratiaAmt, dedExgratiaAmt,
-						payableDays, yyDtTm.format(date), userId, isApp, bonusCalc.getBonusCalcId(), exPrcnt);
+				int n = bonusCalcRepo.updateExgratiaAmtsGS(paidExgratiaAmt, grossExgratiaAmt, netExgretiaAmt, exPrcnt, yyDtTm.format(date), userId, bonusCalc.getBonusCalcId());
 
 				if (n > 0) {
 					BonusCalc bonusCalc1 = bonusCalcRepo.findByBonusCalcIdAndDelStatus(bonusCalcId, 1);
@@ -1066,6 +1077,8 @@ public class BonusGSApiController {
 
 		String paidDate = DateConvertor.convertToYMD(startDate);
 		String[] a = paidDate.split("-");
+		
+		String exgratiaDate = DateConvertor.convertToYMD(startDate);
 
 		double ded_exgretia_amt_percentage = 0.0;
 		double exgretia_percentage = 0.0;
@@ -1114,7 +1127,7 @@ public class BonusGSApiController {
 
 			int n = bonusApplicableRepo.updateBonusExgratia(bonusAppId, bonus_formula,
 					NumberFormatting.castNumber(exgretia_percentage, insertVal),
-					NumberFormatting.castNumber(ded_exgretia_amt_percentage, insertVal), userId, dateTime, remark);
+					NumberFormatting.castNumber(ded_exgretia_amt_percentage, insertVal), userId, dateTime, remark, exgratiaDate);
 			int n1 = bonusCalcRepo.updateCalcFinalizeExgratia(bonusId, paidDate);
 
 		} catch (Exception e) {

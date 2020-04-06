@@ -20,10 +20,11 @@ public interface BonusApplicableRepo extends JpaRepository<BonusApplicable, Inte
 
 	@Transactional
 	@Modifying
-	@Query("update BonusApplicable set  exgretia_formula =:bonus_formula, exgretia_percentage =:exgretia_percentage ,login_id_exgretia=:userId, login_time_exgretia =:dateTime,ded_exgretia_amt_percentage=:ded_exgretia_amt_percentage,is_exgretia_finalized='1' ,exgretia_remark =:remark WHERE bapp_no=:bonusAppId")
+	@Query("update BonusApplicable set  exgretia_formula =:bonus_formula, exgretia_percentage =:exgretia_percentage ,login_id_exgretia=:userId, "
+			+ "login_time_exgretia =:dateTime,ded_exgretia_amt_percentage=:ded_exgretia_amt_percentage,is_exgretia_finalized='1' ,exgretia_remark =:remark, exgratia_paid_date=:exgratiaDate WHERE bapp_no=:bonusAppId")
 	int updateBonusExgratia(@Param("bonusAppId") int bonusAppId, @Param("bonus_formula") String bonus_formula,
 			@Param("exgretia_percentage") double exgretia_percentage,@Param("ded_exgretia_amt_percentage") double ded_exgretia_amt_percentage, @Param("userId") int userId,
-			@Param("dateTime") String dateTime,@Param("remark") String remark);
+			@Param("dateTime") String dateTime,@Param("remark") String remark, @Param("exgratiaDate") String exgratiaDate);
 	
  
 }

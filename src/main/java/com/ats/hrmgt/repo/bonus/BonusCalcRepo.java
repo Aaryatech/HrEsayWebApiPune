@@ -49,6 +49,14 @@ public interface BonusCalcRepo extends JpaRepository<BonusCalc, Integer> {
 			@Param("exgratiaAmt") double exgratiaAmt, @Param("dedExgratiaAmt") double dedExgratiaAmt,
 			@Param("payableDays") double payableDays, @Param("dateTime") String dateTime, @Param("userId") int userId,
 			@Param("isApp") String isApp, @Param("bonusCalcId") int bonusCalcId,@Param("exgretia_percentage") double exgretia_percentage);
+	
+	@Transactional
+	@Modifying
+	@Query("update BonusCalc set  paid_exgretia_amt=:paidExgratiaAmt, gross_exgretia_amt=:grossExgratiaAmt,net_exgretia_amt=:netExgretiaAmt,"
+			+ "login_id_exgretia=:userId,login_time_exgretia=:dateTime ,ex_int1=1, exgratia_prcnt =:exgretia_percentage  WHERE bonus_calc_id=:bonusCalcId")
+	int updateExgratiaAmtsGS(@Param("paidExgratiaAmt") double paidExgratiaAmt, @Param("grossExgratiaAmt") double grossExgratiaAmt,
+			@Param("netExgretiaAmt") double netExgretiaAmt,@Param("exgretia_percentage") double exgretia_percentage,  @Param("dateTime") String dateTime, @Param("userId") int userId,
+			 @Param("bonusCalcId") int bonusCalcId);
 
 	@Transactional
 	@Modifying
