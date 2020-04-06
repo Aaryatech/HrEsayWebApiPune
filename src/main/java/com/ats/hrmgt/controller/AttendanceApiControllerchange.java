@@ -45,6 +45,7 @@ import com.ats.hrmgt.model.LvType;
 import com.ats.hrmgt.model.LvmSumUp;
 import com.ats.hrmgt.model.MstEmpType;
 import com.ats.hrmgt.model.Setting;
+import com.ats.hrmgt.model.ShiftAssignDaily;
 import com.ats.hrmgt.model.ShiftMaster;
 import com.ats.hrmgt.model.SummaryAttendance;
 import com.ats.hrmgt.model.SummaryDailyAttendance;
@@ -52,6 +53,7 @@ import com.ats.hrmgt.model.VariousList;
 import com.ats.hrmgt.model.WeeklyOff;
 import com.ats.hrmgt.model.WeeklyOffShit;
 import com.ats.hrmgt.repo.EmpJsonDataRepository;
+import com.ats.hrmgt.repo.ShiftAssignDailyRepository;
 import com.ats.hrmgt.repository.AccessRightModuleRepository;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
 import com.ats.hrmgt.repository.DailyDailyInformationRepository;
@@ -149,6 +151,9 @@ public class AttendanceApiControllerchange {
 
 	@Autowired
 	EmpSalaryInfoForPayrollRepository empSalaryInfoForPayrollRepository;
+
+	@Autowired
+	ShiftAssignDailyRepository shiftAssignDailyRepository;
 
 	@RequestMapping(value = { "/initiallyInsertDailyRecord" }, method = RequestMethod.POST)
 	public @ResponseBody Info initiallyInsertDailyRecord(@RequestParam("fromDate") String fromDate,
@@ -324,6 +329,9 @@ public class AttendanceApiControllerchange {
 
 		try {
 
+			Setting setting = settingRepo.findByKey("fix_shift");
+			int fixShiftValue = Integer.parseInt(setting.getValue());
+
 			String fromDate = dataForUpdateAttendance.getFromDate();
 			String toDate = dataForUpdateAttendance.getToDate();
 			int month = dataForUpdateAttendance.getMonth();
@@ -349,6 +357,19 @@ public class AttendanceApiControllerchange {
 				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceList(fromDate, toDate);
 				leavetList = leaveApplyRepository.getleavetListForAttndace(fromDate, toDate);
 				jsonDataList = empJsonDataRepository.jsonDataList();
+			}
+
+			List<ShiftAssignDaily> shiftAssignDailyList = new ArrayList<>();
+
+			if (fixShiftValue == 1) {
+
+				if (dataForUpdateAttendance.getEmpId() != 0) {
+					shiftAssignDailyList = shiftAssignDailyRepository.shiftAssignDailyListById(fromDate, toDate,
+							dataForUpdateAttendance.getEmpId());
+				} else {
+					shiftAssignDailyList = shiftAssignDailyRepository.shiftAssignDailyList(fromDate, toDate);
+				}
+
 			}
 
 			for (int j = 0; j < leaveListAddeBySystem.size(); j++) {
@@ -437,25 +458,60 @@ public class AttendanceApiControllerchange {
 				}
 
 				// get timeShifting record by shiftid
-				for (int j = 0; j < shiftList.size(); j++) {
 
-					if (shiftList.get(j).getId() == employee.getCurrentShiftid()
-							&& employee.getLocationId() == shiftList.get(j).getLocationId()) {
-						shiftMaster = shiftList.get(j);
-						dailyAttendanceList.get(i).setCurrentShiftid(shiftList.get(j).getId());
-						break;
+				if (fixShiftValue == 1) {
+
+					int shiftId = dailyAttendanceList.get(i).getCurrentShiftid();
+
+					for (int j = 0; j < shiftAssignDailyList.size(); j++) {
+
+						 
+						Date date = sf.parse(shiftAssignDailyList.get(j).getShiftDate());
+						
+						if (date.compareTo(defaultDate) == 0
+								&& employee.getEmpId() == shiftAssignDailyList.get(j).getEmpId()) {
+							
+							shiftId = shiftAssignDailyList.get(j).getShiftId(); 
+							break;
+						}
+
 					}
 
-				}
+					for (int j = 0; j < shiftList.size(); j++) {
 
-				// get possible timeShifting records List by same deptId of employee
-				for (int j = 0; j < shiftList.size(); j++) {
+						if (shiftList.get(j).getId() == shiftId) {
+							shiftMaster = shiftList.get(j);
+							dailyAttendanceList.get(i).setCurrentShiftid(shiftList.get(j).getId());
+							possibleShiftList.add(shiftMaster);
+							break;
+						}
 
-					if (shiftList.get(j).getSelfGroupId() == shiftMaster.getSelfGroupId()
-							&& employee.getLocationId() == shiftList.get(j).getLocationId()) {
-						possibleShiftList.add(shiftList.get(j));
+					}
+					// System.out.println(employee.getEmpCode() + " " + defaultDate + " " + shiftId
+					// );
+
+				} else {
+
+					for (int j = 0; j < shiftList.size(); j++) {
+
+						if (shiftList.get(j).getId() == employee.getCurrentShiftid()
+								&& employee.getLocationId() == shiftList.get(j).getLocationId()) {
+							shiftMaster = shiftList.get(j);
+							dailyAttendanceList.get(i).setCurrentShiftid(shiftList.get(j).getId());
+							break;
+						}
+
 					}
 
+					// get possible timeShifting records List by same deptId of employee
+					for (int j = 0; j < shiftList.size(); j++) {
+
+						if (shiftList.get(j).getSelfGroupId() == shiftMaster.getSelfGroupId()
+								&& employee.getLocationId() == shiftList.get(j).getLocationId()) {
+							possibleShiftList.add(shiftList.get(j));
+						}
+
+					}
 				}
 
 				// assign in time and out time from uploaded csv to record
@@ -1388,8 +1444,8 @@ public class AttendanceApiControllerchange {
 						- summaryDailyAttendanceList.get(i).getPaidHoliday();
 				summaryDailyAttendanceList.get(i).setWorkingDays(workingDays);
 
-				latededuct=0;//dont deduct late deduct from payable days for pune;
-				
+				latededuct = 0;// dont deduct late deduct from payable days for pune;
+
 				if (isDaily.equals("daily")) {
 					summaryDailyAttendanceList.get(i)
 							.setPayableDays(summaryDailyAttendanceList.get(i).getPresentDays()
