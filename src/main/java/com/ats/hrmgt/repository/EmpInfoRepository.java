@@ -23,4 +23,33 @@ public interface EmpInfoRepository extends JpaRepository<EmpInfo, Integer> {
 			+ "where e.emp_id=emp_sal.emp_id and e.del_status=1", nativeQuery = true)
 	List<EmpInfo> getEmpListAll();
 
+	@Query(value = " SELECT\n" + 
+			"        e.*,\n" + 
+			"        emp_sal.cmp_joining_date,\n" + 
+			"        emp_sal.sal_basis,\n" + 
+			"        emp_sal.salary_type_id  \n" + 
+			"    FROM\n" + 
+			"        m_employees e,\n" + 
+			"        tbl_emp_salary_info emp_sal \n" + 
+			"    where\n" + 
+			"        e.emp_id=emp_sal.emp_id \n" + 
+			"        and e.emp_id not in (\n" + 
+			"            select\n" + 
+			"                emp_id \n" + 
+			"            from\n" + 
+			"                t_shift_assign_daily  \n" + 
+			"            where\n" + 
+			"                shift_date between :fromDate and :toDate \n" + 
+			"            group by\n" + 
+			"                emp_id\n" + 
+			"        ) \n" + 
+			"        and e.del_status=1 \n" + 
+			"        and (\n" + 
+			"            emp_sal.cmp_leaving_date IS NULL \n" + 
+			"            or emp_sal.cmp_leaving_date='' \n" + 
+			"            or emp_sal.cmp_leaving_date=1970-00-00 \n" + 
+			"            or  date_format(emp_sal.cmp_leaving_date,'%Y-%m')>=date_format(:fromDate,'%Y-%m')\n" + 
+			"        )", nativeQuery = true)
+	List<EmpInfo> getEmpListForAssignShift(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
+
 }
