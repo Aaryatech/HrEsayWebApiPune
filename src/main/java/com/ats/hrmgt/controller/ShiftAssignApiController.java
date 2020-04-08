@@ -19,7 +19,9 @@ import com.ats.hrmgt.model.EmpInfo;
 import com.ats.hrmgt.model.EmpJsonData;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.InfoForUploadAttendance;
+import com.ats.hrmgt.model.ShiftAssignDaily;
 import com.ats.hrmgt.model.SummaryDailyAttendance;
+import com.ats.hrmgt.repo.ShiftAssignDailyRepository;
 import com.ats.hrmgt.repository.EmpInfoRepository;
 import com.ats.hrmgt.repository.InfoForUploadAttendanceRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +38,9 @@ public class ShiftAssignApiController {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	ShiftAssignDailyRepository shiftAssignDailyRepository;
 
 	@RequestMapping(value = { "/getInformationOfUploadedShift" }, method = RequestMethod.POST)
 	public @ResponseBody InfoForUploadAttendance getInformationOfUploadedShift(
@@ -95,8 +100,8 @@ public class ShiftAssignApiController {
 					String attdate = sf.format(j);
 
 					dailyDailyQuery = dailyDailyQuery + "('0', '" + empList.get(i).getEmpId() + "','"
-							+ empList.get(i).getEmpCode() + "','" + empList.get(i).getCurrentShiftid() + "','" + attdate
-							+ "','" + month + "', '" + year + "', '0', '0', NULL, NULL),";
+							+ empList.get(i).getEmpCode() + "','" + 0 + "','" + attdate + "','" + month + "', '" + year
+							+ "', '0', '0', NULL, NULL),";
 
 					j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
 
@@ -109,6 +114,27 @@ public class ShiftAssignApiController {
 
 			info.setError(false);
 			info.setMsg("success");
+		} catch (Exception e) {
+			info.setError(true);
+			info.setMsg("failed");
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
+	@RequestMapping(value = { "/updateAssignShiftByDate" }, method = RequestMethod.POST)
+	public @ResponseBody Info updateAssignShiftByDate(@RequestParam("empIdList") List<Integer> empIdList,
+			@RequestParam("assignDate") String assignDate, @RequestParam("shiftId") int shiftId) {
+
+		Info info = new Info();
+		try {
+
+			int update = shiftAssignDailyRepository.updateAssignShiftByDate(empIdList, assignDate, shiftId);
+			info.setError(false);
+			info.setMsg("success");
+
 		} catch (Exception e) {
 			info.setError(true);
 			info.setMsg("failed");

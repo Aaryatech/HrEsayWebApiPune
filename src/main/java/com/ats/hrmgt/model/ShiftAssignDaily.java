@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tbl_shift_timming")
+@Table(name = "t_shift_assign_daily")
 public class ShiftAssignDaily {
 	
 	@Id

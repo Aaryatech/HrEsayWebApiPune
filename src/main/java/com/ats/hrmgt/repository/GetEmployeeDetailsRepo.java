@@ -714,5 +714,58 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"        emp.del_status = 1 \n" + 
 			"        and emp.emp_id not in ( select f.emp_id from t_fulnfinal f)", nativeQuery = true)
 	List<GetEmployeeDetails> getAllEmployeeDetailForFullnFinal();
+
+
+	@Query(value = "SELECT\n" + 
+			"        emp.*,\n" + 
+			"        dep.name AS dept_name,\n" + 
+			"        dg.name AS emp_desgn,\n" + 
+			"        loc.loc_name,\n" + 
+			"        con.org_name,\n" + 
+			"        sht.shiftname,\n" + 
+			"        emptyp.name AS emp_type_name,\n" + 
+			"        saltype.sal_type_name,\n" + 
+			"        'NA' AS  sub_comp_name,\n" + 
+			"        'NA' AS  wo_cat_name,\n" + 
+			"        'NA'  as ho_cat_name,\n" + 
+			"        salinfo.gross_salary  \n" + 
+			"    FROM\n" + 
+			"        m_employees emp \n" + 
+			"    INNER JOIN\n" + 
+			"        tbl_emp_salary_info salinfo \n" + 
+			"            ON     emp.emp_id = salinfo.emp_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_designation dg \n" + 
+			"            ON     emp.designation_id = dg.desig_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_department dep \n" + 
+			"            ON     emp.depart_id = dep.depart_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_contractor con \n" + 
+			"            ON     emp.contractor_id = con.contractor_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_location loc \n" + 
+			"            ON     emp.location_id = loc.loc_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_mst_emp_types emptyp \n" + 
+			"            ON     emp.emp_type = emptyp.emp_type_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        t_shift_assign_daily shift \n" + 
+			"            ON     shift.emp_id = emp.emp_id\n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_shift_timming sht              \n" + 
+			"            ON     shift.shift_id = sht.id \n" + 
+			"    LEFT JOIN\n" + 
+			"        mst_salary_types saltype \n" + 
+			"            ON     salinfo.salary_type_id = saltype.sal_type_id \n" + 
+			"    WHERE\n" + 
+			"        emp.del_status = 1    \n" + 
+			"        AND (\n" + 
+			"            salinfo.cmp_leaving_date IS NULL \n" + 
+			"            or salinfo.cmp_leaving_date='' \n" + 
+			"            or salinfo.cmp_leaving_date=1970-00-00 \n" + 
+			"            or  date_format(salinfo.cmp_leaving_date,'%Y-%m')>=date_format(CURDATE(),'%Y-%m')\n" + 
+			"        ) and shift.shift_date=:date order by shift.shift_id asc", nativeQuery = true)
+	List<GetEmployeeDetails> getEmpDetailListforassignshiftbulk(@Param("date")String date);
    
 }

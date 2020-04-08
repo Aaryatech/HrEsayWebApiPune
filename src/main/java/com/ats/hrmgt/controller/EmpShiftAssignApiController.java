@@ -35,7 +35,7 @@ public class EmpShiftAssignApiController {
 
 	@Autowired
 	GetEmployeeDetailsRepo getEmployeeDetailsRepo;
-	
+
 	@Autowired
 	CountOfAssignPendingRepository countOfAssignPendingRepository;
 
@@ -51,8 +51,7 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
-	
+
 	@RequestMapping(value = { "/getAllEmployeeDetailAccesibleLoc" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailAccesibleLoc() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -65,13 +64,12 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
-	
+
 	@RequestMapping(value = { "/getAllEmployeeDetailSkillRate" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailSkillRate() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
 		try {
-			
+
 			System.err.println("skill");
 			list = getEmployeeDetailsRepo.getEmpDetailListForSkillRate();
 		} catch (Exception e) {
@@ -81,29 +79,40 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
+
 	@RequestMapping(value = { "/getAllEmployeeDetailAccesssRole" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailAccesssRole() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
 		try {
-			
-			 
+
 			list = getEmployeeDetailsRepo.getAllEmployeeDetailAccesssRole();
-			
+
 		} catch (Exception e) {
-			 
+
 			e.printStackTrace();
 		}
 
 		return list;
 	}
 
-	 
 	@RequestMapping(value = { "/getEmpDetailListByLocId" }, method = RequestMethod.POST)
 	public List<GetEmployeeDetails> getEmpDetailListByLocId(@RequestParam("locationIds") List<Integer> locationIds) {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
 		try {
 			list = getEmployeeDetailsRepo.getEmpDetailListByLocId(locationIds);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	@RequestMapping(value = { "/getEmpDetailListforassignshiftbulk" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getEmpDetailListforassignshiftbulk(@RequestParam("date") String date) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getEmpDetailListforassignshiftbulk(date);
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -143,8 +152,6 @@ public class EmpShiftAssignApiController {
 
 	@Autowired
 	EmployeeMasterRepository employeeMasterRepository;
-
-	 
 
 	@Autowired
 	SalaryTypesMasterRepo salaryTypesMasterRepo;
@@ -199,44 +206,44 @@ public class EmpShiftAssignApiController {
 		return info;
 
 	}
+
 	@Autowired
 	UserRepo userRepo;
-     
+
 	@RequestMapping(value = { "/empParamAssignmentUpdate" }, method = RequestMethod.POST)
 	public @ResponseBody Info empParamAssignmentUpdate(@RequestParam("empIdList") List<Integer> empIdList,
-			@RequestParam("upDateId") String upDateId,@RequestParam("flag") int flag) {
+			@RequestParam("upDateId") String upDateId, @RequestParam("flag") int flag) {
 
 		Info info = new Info();
 		try {
 
 			int res = 0;
-			
-			if(flag==1) {
+
+			if (flag == 1) {
 				res = employeeMasterRepository.assignHoliCat(empIdList, upDateId);
-			}else if(flag==2) {
+			} else if (flag == 2) {
 				res = employeeMasterRepository.assignComapny(empIdList, upDateId);
-			}else if(flag==3) {
+			} else if (flag == 3) {
 				res = employeeMasterRepository.assignDept(empIdList, upDateId);
-			}else if(flag==4) {
+			} else if (flag == 4) {
 				res = employeeMasterRepository.assignDesignation(empIdList, upDateId);
-			}else if(flag==5) {
+			} else if (flag == 5) {
 				res = employeeMasterRepository.assignEmpType(empIdList, upDateId);
-			}else if(flag==6) {
+			} else if (flag == 6) {
 				res = employeeMasterRepository.assignLocation(empIdList, upDateId);
-			}else if(flag==7) {
+			} else if (flag == 7) {
 				res = employeeMasterRepository.assignShift(empIdList, upDateId);
-			}else if(flag==8) {
+			} else if (flag == 8) {
 				res = employeeMasterRepository.weekHoliCat(empIdList, upDateId);
-			}else if(flag==9) {
+			} else if (flag == 9) {
 				res = userRepo.updateAccLoc(empIdList, upDateId);
-			}else if(flag==10) {
+			} else if (flag == 10) {
 				res = employeeMasterRepository.empSkillUpdate(empIdList, upDateId);
-			}else if(flag==11) {
+			} else if (flag == 11) {
 				res = employeeMasterRepository.empEmpCategoryUpdate(empIdList, upDateId);
-			}else {
+			} else {
 				res = 0;
 			}
-		
 
 			if (res > 0) {
 				info.setError(false);
@@ -258,41 +265,39 @@ public class EmpShiftAssignApiController {
 		return info;
 
 	}
-	
-	
-	  
-		@RequestMapping(value = { "/weekoffCatAssignmentUpdate" }, method = RequestMethod.POST)
-		public @ResponseBody Info weekoffCatAssignmentUpdate(@RequestParam("empIdList") List<Integer> empIdList,
-				@RequestParam("holiCatId") String holiCatId) {
 
-			Info info = new Info();
-			try {
-				
-				System.err.println("hii");
+	@RequestMapping(value = { "/weekoffCatAssignmentUpdate" }, method = RequestMethod.POST)
+	public @ResponseBody Info weekoffCatAssignmentUpdate(@RequestParam("empIdList") List<Integer> empIdList,
+			@RequestParam("holiCatId") String holiCatId) {
 
-				int res = 0;
-				res = employeeMasterRepository.weekHoliCat(empIdList, holiCatId);
+		Info info = new Info();
+		try {
 
-				if (res > 0) {
-					info.setError(false);
-					info.setMsg("success");
+			System.err.println("hii");
 
-				} else {
-					info.setError(true);
-					info.setMsg("failed");
+			int res = 0;
+			res = employeeMasterRepository.weekHoliCat(empIdList, holiCatId);
 
-				}
-			} catch (Exception e) {
+			if (res > 0) {
+				info.setError(false);
+				info.setMsg("success");
 
-				System.err.println("Exce in deleteService  " + e.getMessage());
-				e.printStackTrace();
+			} else {
 				info.setError(true);
-				info.setMsg("excep");
+				info.setMsg("failed");
+
 			}
+		} catch (Exception e) {
 
-			return info;
-
+			System.err.println("Exce in deleteService  " + e.getMessage());
+			e.printStackTrace();
+			info.setError(true);
+			info.setMsg("excep");
 		}
+
+		return info;
+
+	}
 
 	// **************************MstEmpType*******************************************
 	@Autowired
@@ -352,17 +357,17 @@ public class EmpShiftAssignApiController {
 		return list;
 
 	}
- 
+
 	@RequestMapping(value = { "/getSalStructCountEmp" }, method = RequestMethod.POST)
 	public @ResponseBody Integer getSalStructCountEmp() {
 
 		List<EmployeeMaster> list = new ArrayList<>();
-		int a=0;
+		int a = 0;
 		try {
 
 			list = employeeMasterRepository.getEmpSalAssign();
-			
-			a=list.size();
+
+			a = list.size();
 
 		} catch (Exception e) {
 
@@ -372,16 +377,15 @@ public class EmpShiftAssignApiController {
 		return a;
 
 	}
-	
+
 	@RequestMapping(value = { "/getCountOfAssignForAttendance" }, method = RequestMethod.GET)
 	public @ResponseBody CountOfAssignPending getCountOfAssignForAttendance() {
 
 		CountOfAssignPending count = new CountOfAssignPending();
-		 
+
 		try {
 
 			count = countOfAssignPendingRepository.getCountOfAssignForAttendance();
-			 
 
 		} catch (Exception e) {
 
@@ -427,25 +431,20 @@ public class EmpShiftAssignApiController {
 		return info;
 
 	}
-	
-	
-	
+
 	@RequestMapping(value = { "/getAllEmployeeDetailForFullnFinal" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailForFullnFinal() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
 		try {
 			list = getEmployeeDetailsRepo.getAllEmployeeDetailForFullnFinal();
 		} catch (Exception e) {
-			 
+
 			e.printStackTrace();
 		}
 
 		return list;
 	}
-	///******************************Asiignment of emp Related  Master*****************
-	
-	 
-	 
-
+	/// ******************************Asiignment of emp Related
+	/// Master*****************
 
 }
