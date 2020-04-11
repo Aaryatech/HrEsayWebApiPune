@@ -201,6 +201,8 @@ public class ExgratiaApiController {
 
 		String paidDate = DateConvertor.convertToYMD(startDate);
 		String[] a = paidDate.split("-");
+		
+		String exgratiaDate = DateConvertor.convertToYMD(startDate);
 
 		double ded_exgretia_amt_percentage = 0.0;
 		double exgretia_percentage = 0.0;
@@ -249,7 +251,7 @@ public class ExgratiaApiController {
 
 			int n = bonusApplicableRepo.updateBonusExgratia(bonusAppId, bonus_formula,
 					NumberFormatting.castNumber(exgretia_percentage, insertVal),
-					NumberFormatting.castNumber(ded_exgretia_amt_percentage, insertVal), userId, dateTime, remark);
+					NumberFormatting.castNumber(ded_exgretia_amt_percentage, insertVal), userId, dateTime, remark, exgratiaDate);
 			int n1 = bonusCalcRepo.updateCalcFinalizeExgratia(bonusId, paidDate);
 
 		} catch (Exception e) {
