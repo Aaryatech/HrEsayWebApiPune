@@ -26,6 +26,7 @@ import com.ats.hrmgt.repository.LoginResponseRepository;
 @RestController
 public class AccessRoleRestController {
 
+	
 	@Autowired
 	AccessRightModuleRepository accessRightModuleRepository;
 
