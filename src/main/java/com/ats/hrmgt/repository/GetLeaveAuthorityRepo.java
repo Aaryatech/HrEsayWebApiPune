@@ -14,7 +14,7 @@ public interface GetLeaveAuthorityRepo extends JpaRepository<GetLeaveAuthority, 
 	@Query(value = "SELECT\n" + 
 			"        auth.*  ,\n" + 
 			"        coalesce((SELECT\n" + 
-			"            group_concat(DISTINCT e.first_name) \n" + 
+			"            group_concat(DISTINCT e.surname,' ', e.first_name) \n" + 
 			"        FROM\n" + 
 			"            m_employees e \n" + 
 			"        WHERE\n" + 

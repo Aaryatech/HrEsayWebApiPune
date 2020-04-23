@@ -109,7 +109,7 @@ public class LoanApiController {
 		String status = null;
 		int currentOutstanding1 = Integer.parseInt(currentOut);
 		int repayAmt1 = Integer.parseInt(repayAmt);
-		if ((repayAmt1 - currentOutstanding1) == 0) {
+		if (currentOutstanding1 == 0) {
 			status = "Paid";
 		} else {
 			status = "Active";
