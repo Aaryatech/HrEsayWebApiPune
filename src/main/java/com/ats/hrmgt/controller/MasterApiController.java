@@ -472,7 +472,7 @@ public class MasterApiController {
 				}
 			} else {
 				info.setError(true);
-				info.setMsg("Loaction Can't Be Deleted as it is Assigned to Employee");
+				info.setMsg("Location can't be Deleted as it is Assigned to Employee");
 			}
 
 		} catch (Exception e) {

@@ -74,10 +74,10 @@ public class SettingApiController {
 
 			if (editSetting > 0) {
 				info.setError(false);
-				info.setMsg("setting updated");
+				info.setMsg("Setting Label Updated Successfully");
 			} else {
 				info.setError(true);
-				info.setMsg("failed");
+				info.setMsg("Failed to Updated Setting Label");
 			}
 
 		} catch (Exception e) {
