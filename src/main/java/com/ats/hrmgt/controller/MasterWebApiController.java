@@ -34,6 +34,7 @@ import com.ats.hrmgt.repository.LeaveDetailRepo;
 import com.ats.hrmgt.repository.LeaveSummaryRepository;
 import com.ats.hrmgt.repository.LocationRepository;
 import com.ats.hrmgt.repository.LoginResponseRepo;
+import com.ats.hrmgt.repository.LoginResponseRepository;
 import com.ats.hrmgt.repository.SettingRepo;
 import com.ats.hrmgt.repository.UserRepo;
 
@@ -82,6 +83,9 @@ public class MasterWebApiController {
 	
 	@Autowired
 	EmployeeInfoRepository employeeInfoRepository;
+	
+	@Autowired
+	LoginResponseRepository loginResponseRepository;
 	
 	/*
 	 * <dependency> <groupId>javax.mail</groupId> <artifactId>mail</artifactId>
@@ -242,7 +246,7 @@ public class MasterWebApiController {
 		LoginResponse loginResponse = new LoginResponse();
 		try {
 			
-			 loginResponse = loginResponseRepo.loginUser(userName, pass);
+			loginResponse = loginResponseRepository.loginProcess(userName, pass);
 			 
 			 if(loginResponse==null) {
 				 loginResponse = new LoginResponse();
