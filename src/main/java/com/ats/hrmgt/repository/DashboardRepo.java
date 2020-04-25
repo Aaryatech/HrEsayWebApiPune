@@ -335,17 +335,7 @@ public interface DashboardRepo extends JpaRepository<DashboardCount, Integer> {
 			"            AND le.cal_yr_id = :curYrId \n" + 
 			"            AND le.emp_id = la.emp_id \n" + 
 			"            AND le.ex_int1 IN(1) \n" + 
-			"            AND la.fin_auth_emp_id != la.ini_auth_emp_id     )+(SELECT\n" + 
-			"            COUNT(DISTINCT(le.leave_id))         \n" + 
-			"        FROM\n" + 
-			"            leave_authority la,\n" + 
-			"            leave_apply le         \n" + 
-			"        WHERE\n" + 
-			"            la.emp_id=:empId \n" + 
-			"            AND le.ex_int1 in (2,1)\n" + 
-			"            AND le.cal_yr_id = :curYrId \n" + 
-			"            AND le.emp_id = la.emp_id  \n" + 
-			"             )         ),\n" + 
+			"            AND la.fin_auth_emp_id != la.ini_auth_emp_id     ) ),\n" + 
 			"        0     ) AS info,\n" + 
 			"        COALESCE(         (         SELECT\n" + 
 			"            COUNT(DISTINCT(le.leave_id))         \n" + 
