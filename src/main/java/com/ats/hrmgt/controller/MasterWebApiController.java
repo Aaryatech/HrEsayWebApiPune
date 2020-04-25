@@ -1,5 +1,7 @@
 package com.ats.hrmgt.controller;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 
 
@@ -246,7 +248,12 @@ public class MasterWebApiController {
 		LoginResponse loginResponse = new LoginResponse();
 		try {
 			
-			loginResponse = loginResponseRepository.loginProcess(userName, pass);
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] messageDigest = md.digest(pass.getBytes());
+			BigInteger number = new BigInteger(1, messageDigest);
+			String hashtext = number.toString(16);
+			
+			loginResponse = loginResponseRepository.loginProcess(userName, hashtext);
 			 
 			 if(loginResponse==null) {
 				 loginResponse = new LoginResponse();
