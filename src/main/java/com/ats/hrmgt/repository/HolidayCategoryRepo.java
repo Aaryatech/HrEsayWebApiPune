@@ -14,7 +14,7 @@ import com.ats.hrmgt.model.HolidayCategory;
 
 public interface HolidayCategoryRepo  extends JpaRepository<HolidayCategory, Integer>{
 
-	List<HolidayCategory> findByDelStatus(int i);
+	List<HolidayCategory> findByDelStatusOrderByHoCatIdDesc(int i);
 
 	
 	

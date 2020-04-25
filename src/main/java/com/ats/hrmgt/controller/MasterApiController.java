@@ -918,7 +918,7 @@ public class MasterApiController {
 		List<HolidayCategory> list = new ArrayList<HolidayCategory>();
 		try {
 
-			list = holidayCategoryRepo.findByDelStatus(1);
+			list = holidayCategoryRepo.findByDelStatusOrderByHoCatIdDesc(1);
 
 		} catch (Exception e) {
 
