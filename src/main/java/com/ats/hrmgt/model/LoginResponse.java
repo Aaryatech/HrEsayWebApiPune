@@ -49,6 +49,11 @@ public class LoginResponse {
 	@Column(name="hod_dept_ids")
 	private String hodDeptIds; 
 	
+	@Column(name="is_visit")
+	private int isVisit; 
+	
+	@Column(name="emp_photo")
+	private String empPhoto; 
 	
 	
 	public String getUserPwd() {
@@ -162,12 +167,29 @@ public class LoginResponse {
 		this.hodDeptIds = hodDeptIds;
 	}
 
+	public int getIsVisit() {
+		return isVisit;
+	}
+
+	public void setIsVisit(int isVisit) {
+		this.isVisit = isVisit;
+	}
+
+	public String getEmpPhoto() {
+		return empPhoto;
+	}
+
+	public void setEmpPhoto(String empPhoto) {
+		this.empPhoto = empPhoto;
+	}
+
 	@Override
 	public String toString() {
 		return "LoginResponse [empId=" + empId + ", empCode=" + empCode + ", firstName=" + firstName + ", middleName="
 				+ middleName + ", surname=" + surname + ", motherName=" + motherName + ", emailId=" + emailId
 				+ ", userId=" + userId + ", locationIds=" + locationIds + ", userPwd=" + userPwd + ", designType="
-				+ designType + ", hodDeptIds=" + hodDeptIds + ", isError=" + isError + "]";
+				+ designType + ", hodDeptIds=" + hodDeptIds + ", isVisit=" + isVisit + ", empPhoto=" + empPhoto
+				+ ", isError=" + isError + "]";
 	}
 
 	 
