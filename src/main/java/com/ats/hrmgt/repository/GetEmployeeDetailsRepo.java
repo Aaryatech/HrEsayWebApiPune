@@ -788,5 +788,75 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"            or  date_format(salinfo.cmp_leaving_date,'%Y-%m')>=date_format(CURDATE(),'%Y-%m')\n" + 
 			"        ) and shift.shift_date=:date order by shift.shift_id asc", nativeQuery = true)
 	List<GetEmployeeDetails> getEmpDetailListforassignshiftbulk(@Param("date")String date);
+
+
+
+	@Query(value = "SELECT\n" + 
+			"        emp.*,\n" + 
+			"        dep.name_sd AS dept_name,\n" + 
+			"        dg.name_sd AS emp_desgn,\n" + 
+			"        loc.loc_name_short as  loc_name,\n" + 
+			"        con.org_name,\n" + 
+			"        empinfo.ex_var1 as shiftname,\n" + 
+			"        emptyp.name AS emp_type_name,\n" + 
+			"        saltype.sal_type_name,\n" + 
+			"        succomp.name_sd  AS sub_comp_name,\n" + 
+			"        wocat.wo_cat_short_name as wo_cat_name,\n" + 
+			"        holidaycat.ho_cat_short_name as ho_cat_name,\n" + 
+			"        salinfo.gross_salary \n" + 
+			"    FROM\n" + 
+			"        leave_authority au,\n" + 
+			"        m_employees emp \n" + 
+			"    INNER JOIN\n" + 
+			"        tbl_emp_salary_info salinfo \n" + 
+			"            ON     emp.emp_id = salinfo.emp_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_designation dg \n" + 
+			"            ON     emp.designation_id = dg.desig_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_department dep \n" + 
+			"            ON     emp.depart_id = dep.depart_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_contractor con \n" + 
+			"            ON     emp.contractor_id = con.contractor_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_location loc \n" + 
+			"            ON     emp.location_id = loc.loc_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_mst_emp_types emptyp \n" + 
+			"            ON     emp.emp_type = emptyp.emp_type_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_shift_timming sht \n" + 
+			"            ON     emp.current_shiftid = sht.id \n" + 
+			"    LEFT JOIN\n" + 
+			"        mst_salary_types saltype \n" + 
+			"            ON     salinfo.salary_type_id = saltype.sal_type_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_mst_sub_company succomp \n" + 
+			"            ON     succomp.company_id = emp.sub_cmp_id \n" + 
+			"    LEFT JOIN\n" + 
+			"        weekoff_category wocat \n" + 
+			"            ON     wocat.wo_cat_id = emp.weekend_category \n" + 
+			"    LEFT JOIN\n" + 
+			"        holiday_category holidaycat \n" + 
+			"            ON     holidaycat.ho_cat_id = emp.holiday_category \n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_emp_info empinfo \n" + 
+			"            ON     empinfo.emp_id = emp.emp_id\n" + 
+			"    WHERE\n" + 
+			"        au.emp_id = emp.emp_id \n" + 
+			"        AND(\n" + 
+			"            au.ini_auth_emp_id = :empId \n" + 
+			"            OR au.fin_auth_emp_id = :empId\n" + 
+			"            OR emp.emp_id = :empId     \n" + 
+			"        ) \n" + 
+			"        AND      emp.del_status = 1  \n" + 
+			"        AND(\n" + 
+			"            salinfo.cmp_leaving_date IS NULL \n" + 
+			"            OR salinfo.cmp_leaving_date = '' \n" + 
+			"            OR salinfo.cmp_leaving_date = 1970 -00 -00 \n" + 
+			"            OR DATE_FORMAT(             salinfo.cmp_leaving_date,             '%Y-%m'         ) >= DATE_FORMAT(CURDATE(), '%Y-%m')\n" + 
+			"        )", nativeQuery = true)
+	List<GetEmployeeDetails> getAuthorityWiseEmpListByEmpIdForApp(@Param("empId") int empId);
    
 }
