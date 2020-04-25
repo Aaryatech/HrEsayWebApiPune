@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+ 
 import com.ats.hrmgt.model.User;
 
 public interface UserRepo extends JpaRepository<User, Integer> {
@@ -30,4 +30,12 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 	int updateAccLoc(@Param("empIdList") List<Integer> empIdList, @Param("loc") String loc);
 
 	User findByEmpId(int empId);
+	
+	@Transactional
+	@Modifying
+	@Query("update User set user_pwd=:password,ex_int1=0  WHERE emp_id=:empId")
+	int updateIsVistStatus(@Param("empId") int empId, @Param("password") String password);
+	
+	@Query(value = "select e.email_id from m_employees e,m_user u where u.user_name=:inputValue and u.emp_id=e.emp_id", nativeQuery = true)
+	String getUserByEmailId(@Param("inputValue") String inputValue);
 }
