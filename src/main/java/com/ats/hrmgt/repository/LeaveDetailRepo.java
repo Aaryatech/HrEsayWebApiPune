@@ -34,7 +34,7 @@ public interface LeaveDetailRepo extends JpaRepository<LeaveDetail, Integer>{
 			"        e.middle_name as emp_mname,\n" + 
 			"        e.surname as emp_sname,\n" + 
 			"        e.emp_code, \n" + 
-			"        '' as emp_photo,\n" + 
+			"        i.ex_var1 as emp_photo,\n" + 
 			"        ' 'as emp_dept_name,\n" + 
 			"        lt.lv_title ,\n" + 
 			"        COALESCE(         (         SELECT\n" + 
@@ -54,14 +54,14 @@ public interface LeaveDetailRepo extends JpaRepository<LeaveDetail, Integer>{
 			"    FROM\n" + 
 			"        leave_apply AS l,\n" + 
 			"        m_employees AS e, \n" + 
-			"        leave_type AS lt \n" + 
+			"        leave_type AS lt,tbl_emp_info i \n" + 
 			"    WHERE\n" + 
 			"        l.emp_id =:empId \n" + 
 			"        AND l.ex_int1 IN(:status) \n" + 
 			"        AND l.emp_id = e.emp_id \n" + 
 			"        AND l.del_status = 1  \n" + 
 			"        AND lt.lv_type_id = l.lv_type_id \n" + 
-			"        and l.cal_yr_id=:curYrId\n" + 
+			"        and l.cal_yr_id=:curYrId and i.emp_id=e.emp_id\n" + 
 			"    order by\n" + 
 			"        leave_id desc", nativeQuery = true)
 	List<LeaveDetail> getLeaveStatus1(@Param("empId") int empId,@Param("status") List<Integer> status,@Param("curYrId") int curYrId);

@@ -30,7 +30,7 @@ public interface GetLeaveApplyAuthwiseRepo extends JpaRepository<GetLeaveApplyAu
 			"        la.circulated_to,\n" + 
 			"        la.leave_emp_reason,\n" + 
 			"        e.emp_code,\n" + 
-			"        \"\" as emp_photo,\n" + 
+			"        i.ex_var1 as emp_photo,\n" + 
 			"        lt.lv_title AS leave_title,\n" + 
 			"        CONCAT(e.surname,\n" + 
 			"        \" \",\n" + 
@@ -43,7 +43,7 @@ public interface GetLeaveApplyAuthwiseRepo extends JpaRepository<GetLeaveApplyAu
 			"        leave_type lt,\n" + 
 			"        leave_apply la,\n" + 
 			"        leave_authority le,\n" + 
-			"        m_employees e \n" + 
+			"        m_employees e,tbl_emp_info i \n" + 
 			"    WHERE\n" + 
 			"        la.lv_type_id = lt.lv_type_id \n" + 
 			"        AND le.emp_id = la.emp_id \n" + 
@@ -58,7 +58,7 @@ public interface GetLeaveApplyAuthwiseRepo extends JpaRepository<GetLeaveApplyAu
 			"                AND la.ex_int1 = 2         \n" + 
 			"            )          \n" + 
 			"        ) \n" + 
-			"        AND la.cal_yr_id = :currYrId", nativeQuery = true)
+			"        AND la.cal_yr_id = :currYrId and i.emp_id=e.emp_id", nativeQuery = true)
 
 	List<GetLeaveApplyAuthwise> getLeaveApplyList(@Param("empId") int empId,@Param("currYrId") int currYrId);
 	
@@ -77,7 +77,7 @@ public interface GetLeaveApplyAuthwiseRepo extends JpaRepository<GetLeaveApplyAu
 			"        la.circulated_to,\n" + 
 			"        la.leave_emp_reason,\n" + 
 			"        e.emp_code,\n" + 
-			"        \"\" as emp_photo,\n" + 
+			"        i.ex_var1 as emp_photo,\n" + 
 			"        lt.lv_title AS leave_title,\n" + 
 			"        CONCAT(e.surname,\n" + 
 			"        \" \",\n" + 
@@ -90,7 +90,7 @@ public interface GetLeaveApplyAuthwiseRepo extends JpaRepository<GetLeaveApplyAu
 			"        leave_type lt,\n" + 
 			"        leave_apply la,\n" + 
 			"        leave_authority le,\n" + 
-			"        m_employees e \n" + 
+			"        m_employees e,tbl_emp_info i \n" + 
 			"    WHERE\n" + 
 			"        la.lv_type_id = lt.lv_type_id \n" + 
 			"        AND le.emp_id = la.emp_id \n" + 
@@ -113,7 +113,7 @@ public interface GetLeaveApplyAuthwiseRepo extends JpaRepository<GetLeaveApplyAu
 			"                )                      \n" + 
 			"            )       \n" + 
 			"        ) \n" + 
-			"        AND la.cal_yr_id =:currYrId \n" + 
+			"        AND la.cal_yr_id =:currYrId and i.emp_id=e.emp_id\n" + 
 			"    ORDER BY\n" + 
 			"        la.ex_int1 DESC", nativeQuery = true)
 
