@@ -406,6 +406,12 @@ public class BonusApiController {
 				temp.setLoginTimeExgretia("0000-00-00 00:00:00");
 				temp.setPayrollMonth(0);
 				temp.setPayrollYear(0);
+				
+				//27-04-2020
+				temp.setBonusPaidDate(DateConvertor.convertToYMD(startDate));
+				temp.setExgratiaPaidDate("0000-00-00");
+				temp.setExVar1("");
+				temp.setExInt1(0);
 				BonusApplicable temp1 = bonusApplicableRepo.save(temp);
 				if (temp1 != null) {
 					flag = 1;
