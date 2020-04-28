@@ -49,7 +49,7 @@ public interface LeaveDetailRepo extends JpaRepository<LeaveDetail, Integer>{
 			"            leave_apply l                           \n" + 
 			"        WHERE\n" + 
 			"            u.user_id = l.maker_user_id                           \n" + 
-			"            AND e.emp_id = u.emp_id     ),\n" + 
+			"            AND e.emp_id = u.emp_id   AND e.emp_id =:empId  ),\n" + 
 			"        NULL     ) AS user_name \n" + 
 			"    FROM\n" + 
 			"        leave_apply AS l,\n" + 

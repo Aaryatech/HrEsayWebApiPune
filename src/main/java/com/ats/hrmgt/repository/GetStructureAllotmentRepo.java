@@ -29,7 +29,7 @@ public interface GetStructureAllotmentRepo extends JpaRepository<GetStructureAll
 			"LEFT JOIN m_designation dg ON\n" + 
 			"    e.designation_id = dg.desig_id\n" + 
 			"LEFT JOIN m_department dep ON\n" + 
-			"    e.depart_id = dep.depart_id ", nativeQuery = true)
+			"    e.depart_id = dep.depart_id where e.del_status=1", nativeQuery = true)
 
 	List<GetStructureAllotment> getStructureAllotment(@Param("companyId") int companyId);
 	
