@@ -3,6 +3,7 @@ package com.ats.hrmgt.controller;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -546,19 +547,18 @@ public class MasterWebApiController {
 		try {
 
 			MailByUsername mailByUsername = mailByUsernameRepo.getUserByEmailId(inputValue);
-			
-			
+
 			RandomString randomString = new RandomString();
 			String password = randomString.nextString();
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			byte[] messageDigest = md.digest(password.getBytes());
 			BigInteger number = new BigInteger(1, messageDigest);
 			String hashtext = number.toString(16);
-			
+
 			String finalmsg = "Your Password is:" + password
 					+ "\n DO NOT REPLY to this EMAIL-ID - contact HR.PUNE@infrabeat.com.";
 
-			 emailRes = EmailUtility.sendEmail("atsinfosoft@gmail.com", "atsinfosoft@123", mailByUsername.getEmail(),
+			emailRes = EmailUtility.sendEmail("atsinfosoft@gmail.com", "atsinfosoft@123", mailByUsername.getEmail(),
 					" HRMS Password Recovery", mailByUsername.getEmail(), finalmsg);
 			int update = userRepo.updateIsVistStatus(mailByUsername.getEmpId(), hashtext);
 		} catch (Exception e) {
@@ -569,7 +569,6 @@ public class MasterWebApiController {
 		return emailRes;
 
 	}
-	
 
 	@RequestMapping(value = { "/updateEmpProfPicForApp" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateEmpProfPicForApp(@RequestParam("empId") int empId,
@@ -579,8 +578,8 @@ public class MasterWebApiController {
 
 		try {
 
-			 //String imageSaveUrl = "/home/lenovo/Downloads/myUploads/";
-		 String imageSaveUrl = "/opt/tomcat/webapps/hr/";
+			// String imageSaveUrl = "/home/lenovo/Downloads/myUploads/";
+			String imageSaveUrl = "/opt/tomcat/webapps/hr/";
 			String getImageSaveUrl = "http://ifbthrms.infrabeat.com:8181/hr/";
 			String[] allowExt = { "jpg", "jpeg", "gif", "png" };
 			int isResize = 0;
@@ -597,16 +596,14 @@ public class MasterWebApiController {
 			if (ret == false) {
 
 				if (profilePic.getOriginalFilename() != "") {
-					 System.out.println("before split " + profilePic.getOriginalFilename());
-					String tempImg=profilePic.getOriginalFilename().split("\\.")[0];
-					  System.out.println("After split " + tempImg);
-					  tempImg=tempImg.concat(".").concat("png") ;
-					  System.out.println("final split " + tempImg);
-					
-					
+					System.out.println("before split " + profilePic.getOriginalFilename());
+					String tempImg = profilePic.getOriginalFilename().split("\\.")[0];
+					System.out.println("After split " + tempImg);
+					tempImg = tempImg.concat(".").concat("png");
+					System.out.println("final split " + tempImg);
+
 					String imageName = new String();
 					imageName = dateTimeInGMT.format(date) + "_" + tempImg;
-					
 
 					try {
 
@@ -620,8 +617,6 @@ public class MasterWebApiController {
 
 							byte[] bytes = profilePic.getBytes();
 
-					 
-
 							Files.write(path, bytes);
 
 							if (isResize == 1) {
@@ -631,7 +626,7 @@ public class MasterWebApiController {
 
 								File newFilePNG = null;
 
-								//System.out.println("File " + imageName);
+								// System.out.println("File " + imageName);
 								img = ImageIO.read(new File(imageSaveUrl + imageName));
 								tempPNG = EmailUtility.resizeImage(img, width, hieght);
 
@@ -639,13 +634,13 @@ public class MasterWebApiController {
 
 								ImageIO.write(tempPNG, extension, newFilePNG);
 
-								//System.out.println("DONE");
+								// System.out.println("DONE");
 							}
 
 							info.setError(false);
 							info.setMsg("Upload Successfully ");
-							//System.err.println("imageName " + imageName);
-							//int up = employeeInfoRepository.updateEmpProfPic(empId, imageName);
+							// System.err.println("imageName " + imageName);
+							// int up = employeeInfoRepository.updateEmpProfPic(empId, imageName);
 							int up = 0;
 							if (up > 0) {
 								info.setError(false);
@@ -671,6 +666,66 @@ public class MasterWebApiController {
 			System.out.println(e.getMessage());
 		}
 		return info;
+
+	}
+
+	@RequestMapping(value = { "/photoUpload" }, method = RequestMethod.POST)
+	public @ResponseBody Info photoUpload(@RequestParam("file") MultipartFile[] uploadfile,
+			@RequestParam("imageName") List<String> imageName, @RequestParam("type") String type) {
+
+		System.out.println("HELLO------------------------");
+
+		System.err.println(" no  of files to push " + uploadfile.length);
+		Info info = new Info();
+
+		// System.out.println("File Name " + imageName.toString());
+
+		try {
+
+			saveUploadedFiles(uploadfile, imageName, type);
+
+			info.setError(false);
+			info.setMsg("File uploaded successfully");
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+			info.setError(true);
+			info.setMsg("File upload failed");
+		}
+
+		return info;
+	}
+
+	private static String DOC_URL=	"/opt/apache-tomcat-8.5.6/webapps/media/hr/";
+	public static final String leaveDocSaveUrl = "/home/lenovo/Downloads/old/apache-tomcat-8.5.37/webapps/media/";
+	private void saveUploadedFiles(MultipartFile[] files, List<String> imageName, String type) throws IOException {
+
+		try {
+			for (int i = 0; i < files.length; i++) {
+				Path path = null;
+
+				if (type.equalsIgnoreCase("1")) {
+
+					String name = imageName.get(i).substring(1, imageName.get(i).length() - 1);
+
+					path = Paths.get(DOC_URL + name);
+				} else if (type.equalsIgnoreCase("3")) {
+
+					String name = imageName.get(i).substring(1, imageName.get(i).length() - 1);
+
+					path = Paths.get(leaveDocSaveUrl + name);
+				}
+
+				byte[] bytes = files[i].getBytes();
+
+				Files.write(path, bytes);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
