@@ -40,4 +40,7 @@ public interface HolidayMasterRepo extends JpaRepository<HolidayMaster, Integer>
 			"    holiday_master.holiday_date ASC", nativeQuery = true)
 	List<HolidayMaster> getHolidaysForDash(@Param("currDate") String currDate);
 
+	@Query(value = "select count('') as count from m_holiday where del_status=1 and ex_int1=:catId and cal_yr_id=:yearId", nativeQuery = true)
+	String getcountofholidaybyyear(@Param("catId")int catId,@Param("yearId") int yearId);
+
 }

@@ -348,6 +348,30 @@ public class LeaveHolidayApiCon {
 
 	}
 
+	@RequestMapping(value = { "/getcountofholidaybyyear" }, method = RequestMethod.POST)
+	public @ResponseBody Info getcountofholidaybyyear(@RequestParam("yearId") int yearId,
+			@RequestParam("catId") int catId) {
+
+		Info info = new Info();
+		try {
+
+			String count = holidayMasterRepo.getcountofholidaybyyear(catId, yearId);
+			info.setMsg(count);
+			if (count.equals("0")) {
+				info.setError(false);
+			} else {
+				info.setError(true);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
 	@RequestMapping(value = { "/getHolidayMasterById" }, method = RequestMethod.POST)
 	public @ResponseBody HolidayMaster getHolidayMasterById(@RequestParam("holidayId") int holidayId) {
 
