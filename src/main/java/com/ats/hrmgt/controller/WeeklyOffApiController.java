@@ -64,6 +64,23 @@ public class WeeklyOffApiController {
 
 	}
 
+	@RequestMapping(value = { "/getWeeklyOffListByCatId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetWeeklyOff> getWeeklyOffListByCatId(@RequestParam("catId") int catId) {
+
+		List<GetWeeklyOff> list = new ArrayList<GetWeeklyOff>();
+		try {
+
+			list = getWeeklyOffRepo.getWeeklyOffListByCatId(catId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
 	@RequestMapping(value = { "/saveWeeklyOff" }, method = RequestMethod.POST)
 	public @ResponseBody WeeklyOff saveWeeklyOff(@RequestBody WeeklyOff weeklyOff) {
 
@@ -758,7 +775,7 @@ public class WeeklyOffApiController {
 					totalcount = totalcount + tempdiff;
 				}
 			}
-			//diff = diff - totalcount;
+			// diff = diff - totalcount;
 
 			leaveCount.setHolidaycount(0);
 			leaveCount.setLeavecount(diff);
@@ -888,11 +905,11 @@ public class WeeklyOffApiController {
 			/*
 			 * Calendar calendar = Calendar.getInstance(); int date = 1; calendar.set(year,
 			 * monthN, date); int days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-			 */ 
+			 */
 			YearMonth yearMonthObject = YearMonth.of(year, monthN);
-			int days = yearMonthObject.lengthOfMonth(); //28  
-			 
-			//  System.out.println("Number of Days: " + days);
+			int days = yearMonthObject.lengthOfMonth(); // 28
+
+			// System.out.println("Number of Days: " + days);
 			String fromDate = String.valueOf(year).concat("-").concat(String.valueOf(monthN)).concat("-").concat("01");
 			String toDate = String.valueOf(year).concat("-").concat(String.valueOf(monthN)).concat("-")
 					.concat(String.valueOf(days));
@@ -909,7 +926,7 @@ public class WeeklyOffApiController {
 				List<WeeklyOff> weeklyOfflist = weeklyOffRepo.getWeeklyOffList();
 				datesList = commonFunctionService.getDatesOfWeeklyOfForShiftingDate(fromDate, toDate, weeklyOfflist,
 						locId, weekoffCatId);
-				//System.out.println("datesList before: " + datesList.toString());
+				// System.out.println("datesList before: " + datesList.toString());
 
 				if (shiftedList != null) {
 
