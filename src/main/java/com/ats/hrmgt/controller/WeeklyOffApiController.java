@@ -53,7 +53,7 @@ public class WeeklyOffApiController {
 		List<GetWeeklyOff> list = new ArrayList<GetWeeklyOff>();
 		try {
 
-			list = getWeeklyOffRepo.getListByCompanyId(companyId, locIdList);
+			list = getWeeklyOffRepo.getListByCompanyId(companyId);
 
 		} catch (Exception e) {
 
