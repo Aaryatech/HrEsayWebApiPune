@@ -19,7 +19,7 @@ public interface HolidayMasterRepo extends JpaRepository<HolidayMaster, Integer>
 			"        holiday_master\n" + 
 			"    where\n" + 
 			"        holiday_master.del_status=:i order by holiday_date asc", nativeQuery = true)
-	List<HolidayMaster> findByDelStatus(int i);
+	List<HolidayMaster> findByDelStatusOrder(int i);
 
 	HolidayMaster findByHolidayIdAndDelStatus(int holidayId, int i);
 

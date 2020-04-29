@@ -37,7 +37,7 @@ public class HolidayMaster {
 		this.holidayId = holidayId;
 	} 
 	
-	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy") 
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM") 
 	public Date getHolidayDate() {
 		return holidayDate;
 	}

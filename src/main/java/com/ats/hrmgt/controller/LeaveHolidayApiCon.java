@@ -337,7 +337,7 @@ public class LeaveHolidayApiCon {
 		List<HolidayMaster> list = new ArrayList<>();
 		try {
 
-			list = holidayMasterRepo.findByDelStatus(1);
+			list = holidayMasterRepo.findByDelStatusOrder(1);
 
 		} catch (Exception e) {
 
