@@ -79,6 +79,21 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
+	
+	@RequestMapping(value = { "/getAllEmployeeDetailShiftGroup" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailShiftGroup() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+
+			System.err.println("skill");
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailShiftGroup();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetail : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 
 	@RequestMapping(value = { "/getAllEmployeeDetailAccesssRole" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailAccesssRole() {
@@ -241,6 +256,8 @@ public class EmpShiftAssignApiController {
 				res = employeeMasterRepository.empSkillUpdate(empIdList, upDateId);
 			} else if (flag == 11) {
 				res = employeeMasterRepository.empEmpCategoryUpdate(empIdList, upDateId);
+			}else if (flag == 12) {
+				res = employeeMasterRepository.empEmpShiftGroupUpdate(empIdList, upDateId);
 			} else {
 				res = 0;
 			}

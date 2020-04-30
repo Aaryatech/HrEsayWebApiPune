@@ -155,6 +155,12 @@ public interface EmployeeMasterRepository extends JpaRepository<EmployeeMaster, 
 	@Modifying
 	@Query(value = "UPDATE m_employees SET  emp_category =:upDateId WHERE emp_id IN(:empIdList)", nativeQuery = true)
 	int empEmpCategoryUpdate(@Param("empIdList") List<Integer> empIdList,  @Param("upDateId") String upDateId);
+
+
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE m_employees SET  next_shiftid =:upDateId WHERE emp_id IN(:empIdList)", nativeQuery = true)
+	int empEmpShiftGroupUpdate(@Param("empIdList") List<Integer> empIdList,  @Param("upDateId") String upDateId);
  
 
 	
