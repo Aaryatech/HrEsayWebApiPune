@@ -21,8 +21,8 @@ public interface ShiftMasterRepository extends JpaRepository<ShiftMaster, Intege
 	@Query("update ShiftMaster set status=0  WHERE id=:shiftId")
 	int deleteShiftTime(@Param("shiftId") int shiftId);
 
-	@Query(value = "select * from tbl_shift_timming where location_id =:locationId and status=1 and self_group_id=:groupId", nativeQuery = true)
-	List<ShiftMaster> getShiftListByGroupIdandlocId(@Param("locationId") int locationId, @Param("groupId") int groupId);
+	@Query(value = "select * from tbl_shift_timming where  status=1 and self_group_id=:groupId", nativeQuery = true)
+	List<ShiftMaster> getShiftListByGroupIdandlocId( @Param("groupId") int groupId);
 
 	List<ShiftMaster> findByStatus( int i);
 

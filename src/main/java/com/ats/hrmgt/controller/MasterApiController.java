@@ -885,13 +885,13 @@ public class MasterApiController {
 	}
 
 	@RequestMapping(value = { "/getShiftListByGroupIdandlocId" }, method = RequestMethod.POST)
-	public @ResponseBody List<ShiftMaster> getShiftListByGroupIdandlocId(@RequestParam("locationId") int locationId,
+	public @ResponseBody List<ShiftMaster> getShiftListByGroupIdandlocId(
 			@RequestParam("groupId") int groupId) {
 
 		List<ShiftMaster> shiftList = new ArrayList<>();
 		try {
 
-			shiftList = shiftMasterRepository.getShiftListByGroupIdandlocId(locationId, groupId);
+			shiftList = shiftMasterRepository.getShiftListByGroupIdandlocId( groupId);
 
 		} catch (Exception e) {
 
