@@ -25,7 +25,7 @@ public interface GetHolidayRepo extends JpaRepository<GetHoliday, Integer> {
 			"        l.loc_name,\n" + 
 			"        cy.cal_yr_from_date,\n" + 
 			"        cy.cal_yr_to_date,\n" + 
-			"        hc.ho_cat_name\n" + 
+			"        hc.ho_cat_name,hc.ho_cat_id,h.ex_int3 as hotype\n" + 
 			"    FROM\n" + 
 			"        m_holiday h ,\n" + 
 			"        m_company c,\n" + 

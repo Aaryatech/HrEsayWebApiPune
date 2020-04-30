@@ -35,4 +35,9 @@ public interface HolidayRepo extends JpaRepository<Holiday, Integer> {
 	@Query(value = "select * from m_holiday where holiday_fromdt in (:dates) and ex_int1=:catId and del_status=1", nativeQuery = true)
 	List<Holiday> getHolidayListByDates(List<String> dates, int catId);
 
+	@Transactional
+	@Modifying
+	@Query("update Holiday set del_status=0  WHERE cal_yr_id=:yearId and ex_int1=:catid")
+	int deleteHolidayByGroup(@Param("yearId")int yearId, @Param("catid") int catid);
+
 }
