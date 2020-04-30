@@ -489,5 +489,25 @@ public class LeaveHolidayApiCon {
 		return info;
 
 	}
+	
+	//Sachin 30-04-2020
+	@RequestMapping(value = { "/getHolidayCountsByDate" }, method = RequestMethod.POST)
+	public @ResponseBody Integer getHolidayCountsByDate(@RequestParam int holidayId,@RequestParam String holidaytDate) {
+		int holidayCount=0;
+		try {
+			if(holidayId<1) {
+			holidayCount = holidayMasterRepo.getCountOfHolidayByDate(holidaytDate);
+			}
+			else {
+				holidayCount = holidayMasterRepo.getCountOfHolidayByDateForEdit(holidaytDate, holidayId);
+			}
+
+		}catch (Exception e) {
+			e.printStackTrace();
+			holidayCount=1;
+		}
+		System.err.println("holidayCount " +holidayCount);
+		return holidayCount;
+}
 
 }

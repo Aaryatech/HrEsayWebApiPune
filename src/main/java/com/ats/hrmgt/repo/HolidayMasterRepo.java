@@ -43,4 +43,13 @@ public interface HolidayMasterRepo extends JpaRepository<HolidayMaster, Integer>
 	@Query(value = "select count('') as count from m_holiday where del_status=1 and ex_int1=:catId and cal_yr_id=:yearId", nativeQuery = true)
 	String getcountofholidaybyyear(@Param("catId")int catId,@Param("yearId") int yearId);
 
+	@Query(value = "	SELECT count(*) FROM holiday_master WHERE DAY(holiday_master.holiday_date)=DAY(:holidayDate) AND MONTH(holiday_master.holiday_date)=MONTH(:holidayDate) AND  del_status=1\n" + 
+			"", nativeQuery = true)
+	Integer getCountOfHolidayByDate(@Param("holidayDate") String holidayDate);
+
+		
+	@Query(value = "	SELECT count(*) FROM holiday_master WHERE DAY(holiday_master.holiday_date)=DAY(:holidayDate) AND MONTH(holiday_master.holiday_date)=MONTH(:holidayDate) and holiday_id!=:holidayId and del_status=1\n" + 
+			"", nativeQuery = true)
+	Integer getCountOfHolidayByDateForEdit(@Param("holidayDate") String holidayDate,@Param("holidayId") int holidayId);
+
 }
