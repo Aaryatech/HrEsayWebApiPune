@@ -131,30 +131,24 @@ public class EmpShiftDetailsController {
 				int currShiftId = 0;
 				String currShiftName = null;
 
-				// DailyAttendance dailyRec =
-				// dailyAttendanceRepository.findLastMonthRecordOfEmp(empId);
-
-				currShiftId = Integer.parseInt(dailyAttendanceRepository.getShiftIdByEmpId(empId, fromDate));
-
-				for (int s = 0; s < shiftmList.size(); s++) {
-					if (shiftmList.get(s).getId() == currShiftId) {
-						currShiftName = shiftmList.get(s).getShiftname();
-						;
-						break;
+				DailyAttendance dailyRec = dailyAttendanceRepository.findLastMonthRecordOfEmp(empId);
+				
+				
+				if (dailyRec != null) {
+					currShiftId = dailyRec.getCurrentShiftid();
+					currShiftName = dailyRec.getCurrentShiftname();
+				} else {
+					currShiftId = emplist.get(i).getCurrentShiftid();
+					ShiftMaster shiftm = new ShiftMaster();
+					for (int s = 0; s < shiftmList.size(); s++) {
+						if (shiftmList.get(s).getId() == currShiftId) {
+							shiftm = shiftmList.get(s);
+							break;
+						}
 					}
+					currShiftName = shiftm.getShiftname();
 
 				}
-
-				/*
-				 * if (dailyRec != null) { currShiftId = dailyRec.getCurrentShiftid();
-				 * currShiftName = dailyRec.getCurrentShiftname(); } else { currShiftId =
-				 * emplist.get(i).getCurrentShiftid(); ShiftMaster shiftm = new ShiftMaster();
-				 * for (int s = 0; s < shiftmList.size(); s++) { if (shiftmList.get(s).getId()
-				 * == currShiftId) { shiftm = shiftmList.get(s); break; } } currShiftName =
-				 * shiftm.getShiftname();
-				 * 
-				 * }
-				 */
 
 				for (int j = 1; j <= daysToday; j++) {
 
