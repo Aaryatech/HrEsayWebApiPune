@@ -93,27 +93,11 @@ public class EmpShiftDetailsController {
 
 			String fromDate = String.valueOf(year).concat("-").concat(String.valueOf(month)).concat("-").concat("01");
 
-			/*
-			 * String toDate =
-			 * String.valueOf(year).concat("-").concat(String.valueOf(month)).concat("-")
-			 * .concat(String.valueOf(daysToday));
-			 * 
-			 * String fromDate1 =
-			 * String.valueOf(year1).concat("-").concat(String.valueOf(month1)).concat("-")
-			 * .concat("01");
-			 */
-
 			String toDate1 = String.valueOf(year1).concat("-").concat(String.valueOf(month1)).concat("-")
 					.concat(String.valueOf(daysNext));
 
 			List<ShiftMaster> shiftmList = shiftMasterRepository.findByStatus(1);
-			/*
-			 * LocalDate localDate = LocalDate.parse((today)); LocalDate oneMonthBef =
-			 * localDate.plusMonths(-1);
-			 */
-			// to get length of month
 
-			// to get all employees
 			List<EmployeeMaster> emplist = new ArrayList<EmployeeMaster>();
 
 			if (empRes.equals("-1")) {
@@ -143,37 +127,34 @@ public class EmpShiftDetailsController {
 
 				int empId = emplist.get(i).getEmpId();
 				int locId = emplist.get(i).getLocationId();
-				// System.err.println("empId " + empId);
-				// String empName = emplist.get(i).getSurname().concat("
-				// ").concat(emplist.get(i).getFirstName());
-				// String empCode = emplist.get(i).getEmpCode();
+
 				int currShiftId = 0;
 				String currShiftName = null;
 
-				/*
-				 * DailyAttendance dailyRec =
-				 * dailyAttendanceRepository.findLastMonthRecordOfEmp(empId,
-				 * oneMonthBef.getMonthValue(), oneMonthBef.getYear());
-				 * 
-				 * if (dailyRec != null) { currShiftId = dailyRec.getCurrentShiftid();
-				 * currShiftName = dailyRec.getCurrentShiftname(); } else {
-				 */
-				DailyAttendance dailyRec = dailyAttendanceRepository.findLastMonthRecordOfEmp(empId);
-				if (dailyRec != null) {
-					currShiftId = dailyRec.getCurrentShiftid();
-					currShiftName = dailyRec.getCurrentShiftname();
-				} else {
-					currShiftId = emplist.get(i).getCurrentShiftid();
-					ShiftMaster shiftm = new ShiftMaster();
-					for (int s = 0; s < shiftmList.size(); s++) {
-						if (shiftmList.get(s).getId() == currShiftId) {
-							shiftm = shiftmList.get(s);
-							break;
-						}
+				// DailyAttendance dailyRec =
+				// dailyAttendanceRepository.findLastMonthRecordOfEmp(empId);
+
+				currShiftId = Integer.parseInt(dailyAttendanceRepository.getShiftIdByEmpId(empId, fromDate));
+
+				for (int s = 0; s < shiftmList.size(); s++) {
+					if (shiftmList.get(s).getId() == currShiftId) {
+						currShiftName = shiftmList.get(s).getShiftname();
+						;
+						break;
 					}
-					currShiftName = shiftm.getShiftname();
 
 				}
+
+				/*
+				 * if (dailyRec != null) { currShiftId = dailyRec.getCurrentShiftid();
+				 * currShiftName = dailyRec.getCurrentShiftname(); } else { currShiftId =
+				 * emplist.get(i).getCurrentShiftid(); ShiftMaster shiftm = new ShiftMaster();
+				 * for (int s = 0; s < shiftmList.size(); s++) { if (shiftmList.get(s).getId()
+				 * == currShiftId) { shiftm = shiftmList.get(s); break; } } currShiftName =
+				 * shiftm.getShiftname();
+				 * 
+				 * }
+				 */
 
 				for (int j = 1; j <= daysToday; j++) {
 
@@ -190,11 +171,8 @@ public class EmpShiftDetailsController {
 
 					Date date2 = new SimpleDateFormat("yyyy-M-d").parse(dateOfMonth);
 					String dayOfWeek = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date2);
-					// System.err.println("dayOfWeek " + dayOfWeek);
-//if dayOfWeek is in holiday  or weeklyoff  then put dash  for shiftname   
+
 					if (startDay.equals(dayOfWeek)) {
-						// shift need to change
-						// System.err.println("changegable ");
 
 						ShiftMaster shiftm = new ShiftMaster();
 						for (int s = 0; s < shiftmList.size(); s++) {
@@ -226,11 +204,9 @@ public class EmpShiftDetailsController {
 					empDet.setMonth(Integer.parseInt(month));
 					empDet.setYear(Integer.parseInt(year));
 
-					// System.err.println("empDet in list" + empDet.toString());
 					empShiftList.add(empDet);
 
 				}
-				// System.err.println("1 st ends ");
 
 				for (int j = 1; j <= daysNext; j++) {
 
@@ -247,11 +223,8 @@ public class EmpShiftDetailsController {
 
 					Date date2 = new SimpleDateFormat("yyyy-M-d").parse(dateOfMonth);
 					String dayOfWeek = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date2);
-					// System.err.println("dayOfWeek " + dayOfWeek);
-//if dayOfWeek is in holiday  or weeklyoff  then put dash  for shiftname   
+
 					if (startDay.equals(dayOfWeek)) {
-						// shift need to change
-						// System.err.println("changegable ");
 
 						ShiftMaster shiftm = new ShiftMaster();
 						for (int s = 0; s < shiftmList.size(); s++) {
@@ -283,12 +256,10 @@ public class EmpShiftDetailsController {
 					empDet.setMonth(Integer.parseInt(month1));
 					empDet.setYear(Integer.parseInt(year1));
 
-					// System.err.println("empDet in list" + empDet.toString());
-
 					empShiftList.add(empDet);
 
 				}
-				// System.err.println("2 nd ends ");
+
 			}
 
 			// same ************************
@@ -301,30 +272,30 @@ public class EmpShiftDetailsController {
 			// to get holidey of that month
 			List<Holiday> holidayList = holidayRepo.getholidaybetweendate(fromDate, toDate1);
 			List<WeeklyOffShit> weeklyOffShitList = weeklyOffShitRepository.getWeeklyOffShitList(fromDate, toDate1);
-			List<WeeklyOffShit> weeklyOffShitFromList = weeklyOffShitRepository.weeklyOffShitFromList(fromDate, toDate1);
-			
+			List<WeeklyOffShit> weeklyOffShitFromList = weeklyOffShitRepository.weeklyOffShitFromList(fromDate,
+					toDate1);
+
 			for (int m = 0; m < empShiftList.size(); m++) {
-				int holidayCat=0;
-				
-				int WeekoffCat=0;
-				
+				int holidayCat = 0;
+
+				int WeekoffCat = 0;
 
 				int empIdNew = empShiftList.get(m).getEmpId();
 				String calcDate = empShiftList.get(m).getDateOfMonth();
 				int location = empShiftList.get(m).getLocationId();
 				List<LeaveApply> leavetListMain = new ArrayList<LeaveApply>();
-				 
+
 				for (int l = 0; l < emplist.size(); l++) {
-					
-					if(emplist.get(l).getEmpId()==empIdNew) {
-						holidayCat=emplist.get(l).getHolidayCategory();
-						WeekoffCat=emplist.get(l).getWeekendCategory();
+
+					if (emplist.get(l).getEmpId() == empIdNew) {
+						holidayCat = emplist.get(l).getHolidayCategory();
+						WeekoffCat = emplist.get(l).getWeekendCategory();
 						break;
-						
+
 					}
-					
+
 				}
-				 
+
 				if (leavetList != null) {
 					for (int p = 0; p < leavetList.size(); p++) {
 						if (leavetList.get(p).getEmpId() == empIdNew) {
@@ -335,9 +306,11 @@ public class EmpShiftDetailsController {
 				}
 
 				int weekEndStatus = commonFunctionService.findDateInWeekEnd(calcDate, calcDate, weeklyOfflist,
-						weeklyOffShitList, empShiftList.get(m).getLocationId(),WeekoffCat,empIdNew,weeklyOffShitFromList);
+						weeklyOffShitList, empShiftList.get(m).getLocationId(), WeekoffCat, empIdNew,
+						weeklyOffShitFromList);
 
-				int holidayStatus = commonFunctionService.findDateInHoliday(calcDate, calcDate, holidayList, location,holidayCat);
+				int holidayStatus = commonFunctionService.findDateInHoliday(calcDate, calcDate, holidayList, location,
+						holidayCat);
 
 				LeaveStsAndLeaveId stsInfo = commonFunctionService.findDateInLeave(calcDate, leavetListMain, empIdNew);
 
@@ -360,17 +333,6 @@ public class EmpShiftDetailsController {
 			}
 			// System.err.println("daysList"+empShiftList.toString());
 
-			/*
-			 * if (empShiftList != null) {
-			 * 
-			 * 
-			 * int n = empShiftDetailsRepo.deleteEmpShiftDetailsAll();
-			 * System.err.println("n" + n);
-			 * 
-			 * empShiftDetailsRepo.saveAll(empShiftList);
-			 * 
-			 * }
-			 */
 		} catch (Exception e) {
 			System.err.println("Excep in getDesignationById : " + e.getMessage());
 			e.printStackTrace();

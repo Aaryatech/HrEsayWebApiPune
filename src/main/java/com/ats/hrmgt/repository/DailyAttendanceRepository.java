@@ -70,4 +70,7 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 	@Query(value = "select * from tbl_attt_daily_daily   ORDER BY tbl_attt_daily_daily.id DESC LIMIT 1", nativeQuery = true)
 	DailyAttendance dailyAttendanceListLastRec();
 
+	@Query(value = "select  IFNULL((select shift_id from t_shift_assign_daily where shift_date=:fromDate and emp_id=:empId),(select current_shiftid from m_employees where emp_id=empId)) as shift_id", nativeQuery = true)
+	String getShiftIdByEmpId(@Param("empId")  int empId, @Param("fromDate") String fromDate);
+
 }

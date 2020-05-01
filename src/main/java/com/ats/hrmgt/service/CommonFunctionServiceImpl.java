@@ -42,8 +42,7 @@ public class CommonFunctionServiceImpl implements CommonFunctionService {
 
 				for (int i = 0; i < weeklyList.size(); i++) {
 
-					if (locationId == Integer.parseInt(weeklyList.get(i).getLocId())
-							&& weekendCatId == weeklyList.get(i).getExInt1()) {
+					if (weekendCatId == weeklyList.get(i).getExInt1()) {
 
 						if (Integer.parseInt(weeklyList.get(i).getWoType()) == 0) {
 
@@ -515,10 +514,9 @@ public class CommonFunctionServiceImpl implements CommonFunctionService {
 
 			for (int i = 0; i < holidayList.size(); i++) {
 
-				String[] locIds = holidayList.get(i).getLocId().split(",");
-				for (int j = 0; j < locIds.length; j++) {
-					if (locationId == Integer.parseInt(locIds[j])
-							&& frmdt.compareTo(yydate.parse(holidayList.get(i).getHolidayFromdt())) >= 0
+				/*String[] locIds = holidayList.get(i).getLocId().split(",");
+				for (int j = 0; j < locIds.length; j++) {*/
+					if (frmdt.compareTo(yydate.parse(holidayList.get(i).getHolidayFromdt())) >= 0
 							&& frmdt.compareTo(yydate.parse(holidayList.get(i).getHolidayTodt())) <= 0
 							&& holidayCatId == holidayList.get(i).getExInt1()) {
 
@@ -526,11 +524,11 @@ public class CommonFunctionServiceImpl implements CommonFunctionService {
 						break;
 
 					}
-				}
+				/*}
 
 				if (sts == 3) {
 					break;
-				}
+				}*/
 
 			}
 		} catch (Exception e) {
@@ -611,8 +609,7 @@ public class CommonFunctionServiceImpl implements CommonFunctionService {
 
 			for (int i = 0; i < weeklyList.size(); i++) {
 
-				if (locationId == Integer.parseInt(weeklyList.get(i).getLocId())
-						&& holidayCatId == weeklyList.get(i).getExInt1()) {
+				if (holidayCatId == weeklyList.get(i).getExInt1()) {
 
 					if (Integer.parseInt(weeklyList.get(i).getWoType()) == 0) {
 
