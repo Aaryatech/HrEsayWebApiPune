@@ -21,6 +21,7 @@ import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.DateWiseProjection;
 import com.ats.hrmgt.model.EmpInfo;
 import com.ats.hrmgt.model.EmpJsonData;
+import com.ats.hrmgt.model.EmpShiftAllocationDetail;
 import com.ats.hrmgt.model.EmpShiftDetails;
 import com.ats.hrmgt.model.EmpWithShiftDetail;
 import com.ats.hrmgt.model.EmployeeMaster;
@@ -38,6 +39,7 @@ import com.ats.hrmgt.model.WeeklyOffShit;
 import com.ats.hrmgt.repo.ShiftAssignDailyRepository;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
 import com.ats.hrmgt.repository.EmpInfoRepository;
+import com.ats.hrmgt.repository.EmpShiftAllocationDetailRepository;
 import com.ats.hrmgt.repository.EmpShiftDetailsRepo;
 import com.ats.hrmgt.repository.EmpWithShiftDetailRepository;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
@@ -95,44 +97,44 @@ public class ShiftAssignApiController {
 		Info info = new Info();
 		try {
 
+			/*
+			 * SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); Date fmdt =
+			 * df.parse(fromDate); Date todt = df.parse(toDate);
+			 * 
+			 * System.out.println(fmdt + " " + todt);
+			 * 
+			 * Calendar temp = Calendar.getInstance(); temp.setTime(fmdt); int year =
+			 * temp.get(Calendar.YEAR); int month = temp.get(Calendar.MONTH) + 1;
+			 * 
+			 * List<EmpInfo> empList = empInfoRepository.getEmpListForAssignShift(fromDate,
+			 * toDate);
+			 * 
+			 * String dailyDailyQuery =
+			 * "INSERT INTO t_shift_assign_daily (id, emp_id, emp_code, shift_id, shift_date, month,  year, extra1, extra2, var1, var2) VALUES  "
+			 * ;
+			 * 
+			 * for (int i = 0; i < empList.size(); i++) {
+			 * 
+			 * fmdt = df.parse(fromDate);
+			 * 
+			 * for (Date j = fmdt; j.compareTo(todt) <= 0;) {
+			 * 
+			 * SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd"); temp =
+			 * Calendar.getInstance(); temp.setTime(j); String attdate = sf.format(j);
+			 * 
+			 * dailyDailyQuery = dailyDailyQuery + "('0', '" + empList.get(i).getEmpId() +
+			 * "','" + empList.get(i).getEmpCode() + "','" + 0 + "','" + attdate + "','" +
+			 * month + "', '" + year + "', '0', '0', NULL, NULL),";
+			 * 
+			 * j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
+			 * 
+			 * }
+			 * 
+			 * } dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() -
+			 * 1);
+			 */
+
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-			Date fmdt = df.parse(fromDate);
-			Date todt = df.parse(toDate);
-
-			System.out.println(fmdt + " " + todt);
-
-			Calendar temp = Calendar.getInstance();
-			temp.setTime(fmdt);
-			int year = temp.get(Calendar.YEAR);
-			int month = temp.get(Calendar.MONTH) + 1;
-
-			List<EmpInfo> empList = empInfoRepository.getEmpListForAssignShift(fromDate, toDate);
-
-			String dailyDailyQuery = "INSERT INTO t_shift_assign_daily (id, emp_id, emp_code, shift_id, shift_date, month,  year, extra1, extra2, var1, var2) VALUES  ";
-
-			for (int i = 0; i < empList.size(); i++) {
-
-				fmdt = df.parse(fromDate);
-
-				for (Date j = fmdt; j.compareTo(todt) <= 0;) {
-
-					SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-					temp = Calendar.getInstance();
-					temp.setTime(j);
-					String attdate = sf.format(j);
-
-					dailyDailyQuery = dailyDailyQuery + "('0', '" + empList.get(i).getEmpId() + "','"
-							+ empList.get(i).getEmpCode() + "','" + 0 + "','" + attdate + "','" + month + "', '" + year
-							+ "', '0', '0', NULL, NULL),";
-
-					j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
-
-				}
-
-			}
-			dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);
-
-			/*SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
 
 			Date fmdt = df.parse(fromDate);
@@ -166,7 +168,7 @@ public class ShiftAssignApiController {
 				}
 
 			}
-			dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);*/
+			dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);
 
 			jdbcTemplate.batchUpdate(dailyDailyQuery);
 
@@ -250,15 +252,14 @@ public class ShiftAssignApiController {
 			Date myDate = dateFormat.parse(fromDate);
 			Date oneDayBefore = new Date(myDate.getTime() - 2);
 			String previousDate = dateFormat.format(oneDayBefore);
-			empShiftList = empWithShiftDetailRepository.updateAssignShiftByDate(previousDate,fromDate,toDate);
+			empShiftList = empWithShiftDetailRepository.updateAssignShiftByDate(previousDate, fromDate, toDate);
 
-			// to get weekoff of that month
 			List<WeeklyOff> weeklyOfflist = weeklyOffRepo.getWeeklyOffList();
-			// to get leaves of that month
-			List<LeaveApply> leavetList = leaveApplyRepository.getleavetList(fromDate, toDate);
-			// System.err.println("leavetList" + leavetList.toString());
-			// to get holidey of that month
-			List<Holiday> holidayList = holidayRepo.getholidaybetweendate(fromDate, toDate);
+			/*
+			 * List<LeaveApply> leavetList = leaveApplyRepository.getleavetList(fromDate,
+			 * toDate); List<Holiday> holidayList =
+			 * holidayRepo.getholidaybetweendate(fromDate, toDate);
+			 */
 			List<WeeklyOffShit> weeklyOffShitList = weeklyOffShitRepository.getWeeklyOffShitList(fromDate, toDate);
 			List<WeeklyOffShit> weeklyOffShitFromList = weeklyOffShitRepository.weeklyOffShitFromList(fromDate, toDate);
 
@@ -282,20 +283,39 @@ public class ShiftAssignApiController {
 							weeklyOffShitList, empShiftList.get(i).getLocationId(),
 							empShiftList.get(i).getWeekendCategory(), empShiftList.get(i).getEmpId(),
 							weeklyOffShitFromList);
-					int holidayStatus = commonFunctionService.findDateInHoliday(dt, dt, holidayList,
-							empShiftList.get(i).getLocationId(), empShiftList.get(i).getHolidayCategory());
+					/*
+					 * int holidayStatus = commonFunctionService.findDateInHoliday(dt, dt,
+					 * holidayList, empShiftList.get(i).getLocationId(),
+					 * empShiftList.get(i).getHolidayCategory());
+					 */
 
 					if (weekEndStatus == 1) {
 
-						dateWiseProjection.setShiftName("Weeklyoff");
-						dateWiseProjection.setShiftId(0);
+						/*
+						 * dateWiseProjection.setShiftName("Weeklyoff");
+						 * dateWiseProjection.setShiftId(0);
+						 */
 						findweklyoff = 1;
 
-					} else if (holidayStatus == 3) {
+						for (int m = 0; m < shiftmList.size(); m++) {
+							if (shiftmList.get(m).getId() == shiftId) {
+								dateWiseProjection.setShiftName(shiftmList.get(m).getShiftname());
+								dateWiseProjection.setShiftId(shiftId);
+								break;
+							}
+						}
 
-						dateWiseProjection.setShiftName("Holiday");
-						dateWiseProjection.setShiftId(0);
-					} else {
+					} /*
+						 * else if (holidayStatus == 3) {
+						 * 
+						 * 
+						 * dateWiseProjection.setShiftName("Holiday"); dateWiseProjection.setShiftId(0);
+						 * 
+						 * for (int m = 0; m < shiftmList.size(); m++) { if (shiftmList.get(m).getId()
+						 * == shiftId) {
+						 * dateWiseProjection.setShiftName(shiftmList.get(m).getShiftname());
+						 * dateWiseProjection.setShiftId(shiftId); break; } } }
+						 */ else {
 
 						if (findweklyoff == 1 && empShiftList.get(i).getGroupType() == 0) {
 
@@ -340,6 +360,91 @@ public class ShiftAssignApiController {
 				}
 
 				empShiftList.get(i).setDateprojectlist(dateProjectlist);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return empShiftList;
+
+	}
+
+	@Autowired
+	EmpShiftAllocationDetailRepository empShiftAllocationDetailRepository;
+
+	@RequestMapping(value = { "/getEmpProjectionMatrix" }, method = RequestMethod.POST)
+	public List<EmpWithShiftDetail> getEmpProjectionMatrix(@RequestParam String fromDate, @RequestParam String toDate) {
+
+		List<EmpWithShiftDetail> empShiftList = new ArrayList<EmpWithShiftDetail>();
+
+		try {
+
+			// List<ShiftMaster> shiftmList = shiftMasterRepository.findByStatus(1);
+
+			/*
+			 * DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); DateFormat ddfrmt
+			 * = new SimpleDateFormat("dd-MM-yyyy");
+			 */
+
+			// Date myDate = dateFormat.parse(fromDate);
+			// Date oneDayBefore = new Date(myDate.getTime() - 2);
+			// String previousDate = dateFormat.format(oneDayBefore);
+			empShiftList = empWithShiftDetailRepository.getEmpListAll();
+			List<EmpShiftAllocationDetail> shiftallocationDetailList = empShiftAllocationDetailRepository
+					.getEmpShiftAllocationDetail(fromDate, toDate);
+
+			List<WeeklyOff> weeklyOfflist = weeklyOffRepo.getWeeklyOffList();
+			List<LeaveApply> leavetList = leaveApplyRepository.getleavetList(fromDate, toDate);
+			List<Holiday> holidayList = holidayRepo.getholidaybetweendate(fromDate, toDate);
+			List<WeeklyOffShit> weeklyOffShitList = weeklyOffShitRepository.getWeeklyOffShitList(fromDate, toDate);
+			List<WeeklyOffShit> weeklyOffShitFromList = weeklyOffShitRepository.weeklyOffShitFromList(fromDate, toDate);
+
+			// Date todt = dateFormat.parse(toDate);
+
+			for (int i = 0; i < empShiftList.size(); i++) {
+
+				List<EmpShiftAllocationDetail> shiftlist = new ArrayList<>();
+
+				for (int j = 0; j < shiftallocationDetailList.size(); j++) {
+
+					String dt = shiftallocationDetailList.get(j).getShiftDate();
+
+					if (shiftallocationDetailList.get(j).getEmpId() == empShiftList.get(i).getEmpId()) {
+						int weekEndStatus = commonFunctionService.findDateInWeekEnd(dt, dt, weeklyOfflist,
+								weeklyOffShitList, empShiftList.get(i).getLocationId(),
+								empShiftList.get(i).getWeekendCategory(), empShiftList.get(i).getEmpId(),
+								weeklyOffShitFromList);
+						int holidayStatus = commonFunctionService.findDateInHoliday(dt, dt, holidayList,
+								empShiftList.get(i).getLocationId(), empShiftList.get(i).getHolidayCategory());
+						LeaveStsAndLeaveId stsInfo = commonFunctionService.findDateInLeave(dt, leavetList,
+								empShiftList.get(i).getEmpId());
+						if (stsInfo.getSts() == 5) {
+							shiftallocationDetailList.get(j).setExtra("PL");
+							shiftallocationDetailList.get(j).setExtraType(3);
+						} else if (weekEndStatus == 1) {
+
+							shiftallocationDetailList.get(j).setExtra("WO");
+							shiftallocationDetailList.get(j).setExtraType(2);
+
+						} else if (holidayStatus == 3) {
+
+							shiftallocationDetailList.get(j).setExtra("HO");
+							shiftallocationDetailList.get(j).setExtraType(1);
+
+						} else {
+							shiftallocationDetailList.get(j).setExtra("-");
+							shiftallocationDetailList.get(j).setExtraType(0);
+						}
+
+						shiftlist.add(shiftallocationDetailList.get(j));
+					}
+
+				}
+
+				empShiftList.get(i).setShiftallocationDetailList(shiftlist);
+
 			}
 
 		} catch (Exception e) {

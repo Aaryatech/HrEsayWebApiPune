@@ -45,6 +45,9 @@ public class EmpWithShiftDetail {
 	
 	@Transient
 	private List<DateWiseProjection> dateprojectlist;
+	
+	@Transient
+	List<EmpShiftAllocationDetail> shiftallocationDetailList;
 
 	public int getEmpId() {
 		return empId;
@@ -128,12 +131,20 @@ public class EmpWithShiftDetail {
 		this.weekendCategory = weekendCategory;
 	}
 
+	public List<EmpShiftAllocationDetail> getShiftallocationDetailList() {
+		return shiftallocationDetailList;
+	}
+
+	public void setShiftallocationDetailList(List<EmpShiftAllocationDetail> shiftallocationDetailList) {
+		this.shiftallocationDetailList = shiftallocationDetailList;
+	}
+
 	@Override
 	public String toString() {
 		return "EmpWithShiftDetail [empId=" + empId + ", empCode=" + empCode + ", name=" + name + ", groupId=" + groupId
 				+ ", groupType=" + groupType + ", shiftId=" + shiftId + ", locationId=" + locationId
 				+ ", holidayCategory=" + holidayCategory + ", weekendCategory=" + weekendCategory + ", dateprojectlist="
-				+ dateprojectlist + "]";
+				+ dateprojectlist + ", shiftallocationDetailList=" + shiftallocationDetailList + "]";
 	} 
 	
 	
