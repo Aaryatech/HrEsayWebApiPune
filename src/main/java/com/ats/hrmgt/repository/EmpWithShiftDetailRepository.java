@@ -61,13 +61,12 @@ public interface EmpWithShiftDetailRepository extends JpaRepository<EmpWithShift
 			"            ON     sg.selft_group_id = emp.next_shiftid\n" + 
 			"             \n" + 
 			"    WHERE\n" + 
-			"        emp.del_status = 1 \n" + 
-			"        AND(\n" + 
-			"            salinfo.cmp_leaving_date IS NULL \n" + 
+			"        emp.del_status = 1 and emp.emp_id not in ( select emp_id from t_shift_assign_daily where shift_date between :fromDate and :toDate group by emp_id ) AND "
+			+ "( salinfo.cmp_leaving_date IS NULL \n" + 
 			"            OR salinfo.cmp_leaving_date = '' \n" + 
 			"            OR salinfo.cmp_leaving_date = 1970 -00 -00 \n" + 
 			"            OR DATE_FORMAT(             salinfo.cmp_leaving_date,             '%Y-%m'         ) >= DATE_FORMAT(CURDATE(), '%Y-%m')\n" + 
 			"        )", nativeQuery = true)
-	List<EmpWithShiftDetail> updateAssignShiftByDate(@Param("previousDate") String previousDate);
+	List<EmpWithShiftDetail> updateAssignShiftByDate(@Param("previousDate") String previousDate,@Param("fromDate") String fromDate, @Param("toDate")String toDate);
 
 }

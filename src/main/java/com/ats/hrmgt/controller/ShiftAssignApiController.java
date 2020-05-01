@@ -95,47 +95,44 @@ public class ShiftAssignApiController {
 		Info info = new Info();
 		try {
 
-			/*
-			 * SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); Date fmdt =
-			 * df.parse(fromDate); Date todt = df.parse(toDate);
-			 * 
-			 * System.out.println(fmdt + " " + todt);
-			 * 
-			 * Calendar temp = Calendar.getInstance(); temp.setTime(fmdt); int year =
-			 * temp.get(Calendar.YEAR); int month = temp.get(Calendar.MONTH) + 1;
-			 * 
-			 * List<EmpInfo> empList = empInfoRepository.getEmpListForAssignShift(fromDate,
-			 * toDate);
-			 * 
-			 * 
-			 * 
-			 * String dailyDailyQuery =
-			 * "INSERT INTO t_shift_assign_daily (id, emp_id, emp_code, shift_id, shift_date, month,  year, extra1, extra2, var1, var2) VALUES  "
-			 * ;
-			 * 
-			 * for (int i = 0; i < empList.size(); i++) {
-			 * 
-			 * 
-			 * fmdt = df.parse(fromDate);
-			 * 
-			 * for (Date j = fmdt; j.compareTo(todt) <= 0;) {
-			 * 
-			 * SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd"); temp =
-			 * Calendar.getInstance(); temp.setTime(j); String attdate = sf.format(j);
-			 * 
-			 * dailyDailyQuery = dailyDailyQuery + "('0', '" + empList.get(i).getEmpId() +
-			 * "','" + empList.get(i).getEmpCode() + "','" + 0 + "','" + attdate + "','" +
-			 * month + "', '" + year + "', '0', '0', NULL, NULL),";
-			 * 
-			 * j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
-			 * 
-			 * }
-			 * 
-			 * } dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() -
-			 * 1);
-			 */
-
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			Date fmdt = df.parse(fromDate);
+			Date todt = df.parse(toDate);
+
+			System.out.println(fmdt + " " + todt);
+
+			Calendar temp = Calendar.getInstance();
+			temp.setTime(fmdt);
+			int year = temp.get(Calendar.YEAR);
+			int month = temp.get(Calendar.MONTH) + 1;
+
+			List<EmpInfo> empList = empInfoRepository.getEmpListForAssignShift(fromDate, toDate);
+
+			String dailyDailyQuery = "INSERT INTO t_shift_assign_daily (id, emp_id, emp_code, shift_id, shift_date, month,  year, extra1, extra2, var1, var2) VALUES  ";
+
+			for (int i = 0; i < empList.size(); i++) {
+
+				fmdt = df.parse(fromDate);
+
+				for (Date j = fmdt; j.compareTo(todt) <= 0;) {
+
+					SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+					temp = Calendar.getInstance();
+					temp.setTime(j);
+					String attdate = sf.format(j);
+
+					dailyDailyQuery = dailyDailyQuery + "('0', '" + empList.get(i).getEmpId() + "','"
+							+ empList.get(i).getEmpCode() + "','" + 0 + "','" + attdate + "','" + month + "', '" + year
+							+ "', '0', '0', NULL, NULL),";
+
+					j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
+
+				}
+
+			}
+			dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);
+
+			/*SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
 
 			Date fmdt = df.parse(fromDate);
@@ -169,7 +166,7 @@ public class ShiftAssignApiController {
 				}
 
 			}
-			dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);
+			dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);*/
 
 			jdbcTemplate.batchUpdate(dailyDailyQuery);
 
@@ -253,7 +250,7 @@ public class ShiftAssignApiController {
 			Date myDate = dateFormat.parse(fromDate);
 			Date oneDayBefore = new Date(myDate.getTime() - 2);
 			String previousDate = dateFormat.format(oneDayBefore);
-			empShiftList = empWithShiftDetailRepository.updateAssignShiftByDate(previousDate);
+			empShiftList = empWithShiftDetailRepository.updateAssignShiftByDate(previousDate,fromDate,toDate);
 
 			// to get weekoff of that month
 			List<WeeklyOff> weeklyOfflist = weeklyOffRepo.getWeeklyOffList();
