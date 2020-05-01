@@ -1,5 +1,6 @@
 package com.ats.hrmgt.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "holiday_master")
-public class HolidayMaster {
+public class HolidayMaster  implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

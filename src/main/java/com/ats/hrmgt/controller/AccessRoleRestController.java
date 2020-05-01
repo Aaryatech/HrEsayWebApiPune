@@ -26,7 +26,6 @@ import com.ats.hrmgt.repository.LoginResponseRepository;
 @RestController
 public class AccessRoleRestController {
 
-	
 	@Autowired
 	AccessRightModuleRepository accessRightModuleRepository;
 
@@ -55,6 +54,36 @@ public class AccessRoleRestController {
 			loginResponse = loginResponseRepository.loginProcess(username, password);
 
 			// System.out.println(loginResponse);
+			if (loginResponse == null) {
+				loginResponse = new LoginResponse();
+				loginResponse.setIsError(true);
+			} else {
+				loginResponse.setIsError(false);
+			}
+
+		} catch (Exception e) {
+			loginResponse = new LoginResponse();
+			loginResponse.setIsError(true);
+			e.printStackTrace();
+		}
+
+		return loginResponse;
+
+	}
+
+	@RequestMapping(value = { "/getUserForForgPass" }, method = RequestMethod.POST)
+	public @ResponseBody LoginResponse getUserForForPass(@RequestParam("username") String username) {
+
+		LoginResponse loginResponse = new LoginResponse();
+		try {
+			if (username.contains("@")) {
+				System.err.println("Its Email");
+				loginResponse = loginResponseRepository.CheckUserForPasswordByEmail(username);
+
+			} else {
+				System.err.println("Its Code ");
+				loginResponse = loginResponseRepository.CheckUserForPasswordByUsername(username);
+			}
 			if (loginResponse == null) {
 				loginResponse = new LoginResponse();
 				loginResponse.setIsError(true);
