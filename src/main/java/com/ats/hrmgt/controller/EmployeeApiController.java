@@ -89,7 +89,7 @@ public class EmployeeApiController {
 	public EmployeeMaster getEmpInfoByEmpCode(@RequestParam String empCode) {
 		EmployeeMaster emp = new EmployeeMaster();
 		try {
-			emp = empRepo.findByEmpCode(empCode.trim());
+			emp = empRepo.findByEmpCodeAndDelStatus(empCode.trim(),1);
 			System.err.println("---"+emp.toString());
 		} catch (Exception e) {
 			System.err.println("Excep in getEmpInfoByEmpCode : " + e.getMessage());

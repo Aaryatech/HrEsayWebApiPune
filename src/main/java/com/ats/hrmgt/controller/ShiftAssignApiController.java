@@ -186,12 +186,13 @@ public class ShiftAssignApiController {
 
 	@RequestMapping(value = { "/updateAssignShiftByDate" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateAssignShiftByDate(@RequestParam("empIdList") List<Integer> empIdList,
-			@RequestParam("assignDate") String assignDate, @RequestParam("shiftId") int shiftId) {
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
+			@RequestParam("shiftId") int shiftId) {
 
 		Info info = new Info();
 		try {
 
-			int update = shiftAssignDailyRepository.updateAssignShiftByDate(empIdList, assignDate, shiftId);
+			int update = shiftAssignDailyRepository.updateAssignShiftByDate(empIdList, fromDate,toDate, shiftId);
 			info.setError(false);
 			info.setMsg("success");
 

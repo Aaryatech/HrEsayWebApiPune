@@ -21,7 +21,7 @@ public interface ShiftAssignDailyRepository extends JpaRepository<ShiftAssignDai
 	
 	@Transactional
 	@Modifying
-	@Query(value="UPDATE t_shift_assign_daily SET shift_id=:shiftId WHERE shift_date=:assignDate and emp_id in (:empIdList)",nativeQuery=true)
-	int updateAssignShiftByDate(List<Integer> empIdList, String assignDate, int shiftId);
+	@Query(value="UPDATE t_shift_assign_daily SET shift_id=:shiftId WHERE shift_date between :fromDate and :toDate and emp_id in (:empIdList)",nativeQuery=true)
+	int updateAssignShiftByDate(List<Integer> empIdList, String fromDate, String toDate, int shiftId);
 
 }
