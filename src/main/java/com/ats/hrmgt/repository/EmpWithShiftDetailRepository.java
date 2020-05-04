@@ -125,7 +125,7 @@ public interface EmpWithShiftDetailRepository extends JpaRepository<EmpWithShift
 			"            OR salinfo.cmp_leaving_date = '' \n" + 
 			"            OR salinfo.cmp_leaving_date = 1970 -00 -00 \n" + 
 			"            OR DATE_FORMAT(             salinfo.cmp_leaving_date,             '%Y-%m'         ) >= DATE_FORMAT(CURDATE(), '%Y-%m')\n" + 
-			"        )", nativeQuery = true) 
-	List<EmpWithShiftDetail> getEmpListAll();
+			"        ) and emp.location_id=:locId", nativeQuery = true) 
+	List<EmpWithShiftDetail> getEmpListAll(@Param("locId") int locId);
 
 }

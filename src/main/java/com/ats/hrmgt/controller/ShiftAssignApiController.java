@@ -376,7 +376,8 @@ public class ShiftAssignApiController {
 	EmpShiftAllocationDetailRepository empShiftAllocationDetailRepository;
 
 	@RequestMapping(value = { "/getEmpProjectionMatrix" }, method = RequestMethod.POST)
-	public List<EmpWithShiftDetail> getEmpProjectionMatrix(@RequestParam String fromDate, @RequestParam String toDate) {
+	public List<EmpWithShiftDetail> getEmpProjectionMatrix(@RequestParam String fromDate, @RequestParam String toDate,
+			  @RequestParam int locId) {
 
 		List<EmpWithShiftDetail> empShiftList = new ArrayList<EmpWithShiftDetail>();
 
@@ -392,7 +393,7 @@ public class ShiftAssignApiController {
 			// Date myDate = dateFormat.parse(fromDate);
 			// Date oneDayBefore = new Date(myDate.getTime() - 2);
 			// String previousDate = dateFormat.format(oneDayBefore);
-			empShiftList = empWithShiftDetailRepository.getEmpListAll();
+			empShiftList = empWithShiftDetailRepository.getEmpListAll(locId);
 			List<EmpShiftAllocationDetail> shiftallocationDetailList = empShiftAllocationDetailRepository
 					.getEmpShiftAllocationDetail(fromDate, toDate);
 
