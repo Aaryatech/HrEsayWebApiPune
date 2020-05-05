@@ -46,11 +46,7 @@ public interface InfoForUploadAttendanceRepository extends JpaRepository<InfoFor
 			"            tbl_emp_salary_info          \n" + 
 			"        where\n" + 
 			"            m_employees.emp_id=tbl_emp_salary_info.emp_id              \n" + 
-			"            and m_employees.del_status=1 \n" + 
-			"            and (tbl_emp_salary_info.cmp_leaving_date IS NULL \n" + 
-			"            or tbl_emp_salary_info.cmp_leaving_date='' \n" + 
-			"            or tbl_emp_salary_info.cmp_leaving_date=1970-00-00 \n" + 
-			"            or  date_format(tbl_emp_salary_info.cmp_leaving_date,'%Y-%m')>=date_format('2020-02-01','%Y-%m')) ),\n" + 
+			"            and m_employees.del_status=1 ),\n" + 
 			"        0)  as total_emp,\n" + 
 			"         DATEDIFF(:toDate,\n" + 
 			"        :fromDate) as date_diff,\n" + 
