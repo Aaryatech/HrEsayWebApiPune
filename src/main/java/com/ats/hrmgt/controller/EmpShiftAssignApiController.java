@@ -464,4 +464,45 @@ public class EmpShiftAssignApiController {
 	/// ******************************Asiignment of emp Related
 	/// Master*****************
 
+	
+	//New to Solve conflict with Ak on 5-5-2020 5:03 pm
+	//Sachin 04-05-2020
+	@RequestMapping(value = { "/assignEmpLoginType" }, method = RequestMethod.POST)
+	public @ResponseBody Info assignEmpLoginType(@RequestParam("empIdList") List<Integer> empIdList,
+			@RequestParam("loginType") String loginType) {
+
+		Info info = new Info();
+		try {
+
+			int res = 0;
+			res=userRepo.updateUserLoginType(empIdList, loginType);
+			if(res>0) {
+				 info.setError(false);
+				 info.setMsg("success");
+			}else {
+				 info.setError(true);
+				 info.setMsg("failed");
+			}
+		}catch (Exception e) {
+			info = new Info();
+			info.setError(true);
+			 info.setMsg("exception");
+		}
+		return info;
+	}
+
+
+//Sachin 04-05-2020
+	@RequestMapping(value = { "/getAllEmployeeDetailForLoginType" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailForLoginType() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getEmpDetailForLoginType();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetail : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 }

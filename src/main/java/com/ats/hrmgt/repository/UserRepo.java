@@ -38,4 +38,16 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 	
 	@Query(value = "select e.email_id from m_employees e,m_user u where u.user_name=:inputValue and u.emp_id=e.emp_id", nativeQuery = true)
 	String getUserByEmailId(@Param("inputValue") String inputValue);
+	
+	@Transactional
+	@Modifying
+	@Query("update User set ex_var1=:loginType  WHERE emp_id IN (:empIdList)")
+	int updateUserLoginType(@Param("empIdList") List<Integer> empIdList, @Param("loginType") String loginType);
+
+	@Transactional
+	@Modifying
+	@Query("update User set user_pwd=:password,ex_int1=:isVisit  WHERE emp_id=:empId")
+	int updateUserPassAndExInt1(int empId, String password,int isVisit);
+
+	
 }

@@ -339,5 +339,34 @@ public class AdvanceApiController {
 		return info;
 
 	}
+	//Sachin 05-05-2020
+	@RequestMapping(value = { "/updateUserPassAndExInt1" }, method = RequestMethod.POST)
+	public @ResponseBody Info updateUserPassAndExInt1(@RequestParam("empId") int empId,
+			@RequestParam("password") String password,@RequestParam("isVisit") int isVisit) {
+
+		Info info = new Info();
+
+		try {
+
+			int delete = userRepo.updateUserPassAndExInt1(empId, password,isVisit);
+
+			if (delete > 0) {
+				info.setError(false);
+				info.setMsg("deleted");
+			} else {
+				info.setError(true);
+				info.setMsg("failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			info.setError(true);
+			info.setMsg("failed");
+		}
+
+		return info;
+
+	}
 
 }

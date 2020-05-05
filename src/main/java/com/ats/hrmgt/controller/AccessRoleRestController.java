@@ -51,7 +51,7 @@ public class AccessRoleRestController {
 			 * messageDigest); String hashtext = number.toString(16);
 			 */
 
-			loginResponse = loginResponseRepository.loginProcess(username, password);
+			loginResponse = loginResponseRepository.loginProcessWebAppl(username, password);
 
 			// System.out.println(loginResponse);
 			if (loginResponse == null) {

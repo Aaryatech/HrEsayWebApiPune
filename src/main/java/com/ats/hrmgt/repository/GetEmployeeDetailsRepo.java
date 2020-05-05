@@ -251,7 +251,7 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"    sht.shiftname,\n" + 
 			"    emptyp.name AS emp_type_name,\n" + 
 			"    saltype.sal_type_name,\n" + 
-			"    succomp.name_sd  AS sub_comp_name,\n" + 
+			"    COALESCE((succomp.name_sd),'Z')  AS sub_comp_name,\n" + 
 			"    wocat.wo_cat_name as wo_cat_name,\n" + 
 			"    holidaycat.ho_cat_name as ho_cat_name, salinfo.gross_salary\n" + 
 			"FROM\n" + 
@@ -283,7 +283,7 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"        salinfo.cmp_leaving_date IS NULL OR salinfo.cmp_leaving_date = '' OR salinfo.cmp_leaving_date = 1970 -00 -00 OR DATE_FORMAT(\n" + 
 			"            salinfo.cmp_leaving_date,\n" + 
 			"            '%Y-%m'\n" + 
-			"        ) >= DATE_FORMAT(CURDATE(), '%Y-%m'))", nativeQuery = true)
+			"        ) >= DATE_FORMAT(CURDATE(), '%Y-%m')) order by emp.sub_cmp_id ", nativeQuery = true)
 
 	List<GetEmployeeDetails> getEmpDetailList();
 	
@@ -920,5 +920,52 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"            OR DATE_FORMAT(             salinfo.cmp_leaving_date,             '%Y-%m'         ) >= DATE_FORMAT(CURDATE(), '%Y-%m')\n" + 
 			"        )", nativeQuery = true)
 	List<GetEmployeeDetails> getAllEmployeeDetailShiftGroup();
+
+
+	
+	@Query(value = "SELECT\n" + 
+			"    emp.*,\n" + 
+			"    dep.name_sd AS dept_name,\n" + 
+			"    dg.name_sd AS emp_desgn,\n" + 
+			"    loc.loc_name_short as  loc_name,\n" + 
+			"    con.org_name,\n" + 
+			"    usr.ex_var1 as shiftname,\n" + 
+			"    emptyp.name AS emp_type_name,\n" + 
+			"    saltype.sal_type_name,\n" + 
+			"    succomp.name_sd  AS sub_comp_name,\n" + 
+			"    wocat.wo_cat_name as wo_cat_name,\n" + 
+			"    holidaycat.ho_cat_name as ho_cat_name, salinfo.gross_salary\n" + 
+			"FROM\n" + 
+			"    m_employees emp\n" + 
+			"INNER JOIN tbl_emp_salary_info salinfo ON\n" + 
+			"    emp.emp_id = salinfo.emp_id\n" + 
+			"LEFT JOIN m_designation dg ON\n" + 
+			"    emp.designation_id = dg.desig_id\n" + 
+			"LEFT JOIN m_department dep ON\n" + 
+			"    emp.depart_id = dep.depart_id\n" + 
+			"LEFT JOIN m_contractor con ON\n" + 
+			"    emp.contractor_id = con.contractor_id\n" + 
+			"LEFT JOIN m_location loc ON\n" + 
+			"    emp.location_id = loc.loc_id\n" + 
+			"LEFT JOIN tbl_mst_emp_types emptyp ON\n" + 
+			"    emp.emp_type = emptyp.emp_type_id\n" + 
+			"LEFT JOIN  m_user usr   ON\n" + 
+			"    emp.emp_id = usr.emp_id \n" + 
+			"LEFT JOIN mst_salary_types saltype ON\n" + 
+			"    salinfo.salary_type_id = saltype.sal_type_id\n" + 
+			"LEFT JOIN tbl_mst_sub_company succomp ON\n" + 
+			"    succomp.company_id = emp.sub_cmp_id\n" + 
+			"LEFT JOIN weekoff_category wocat ON\n" + 
+			"    wocat.wo_cat_id = emp.weekend_category\n" + 
+			"LEFT JOIN holiday_category holidaycat ON\n" + 
+			"    holidaycat.ho_cat_id = emp.holiday_category\n" + 
+			"WHERE\n" + 
+			"    emp.del_status = 1 AND(\n" + 
+			"        salinfo.cmp_leaving_date IS NULL OR salinfo.cmp_leaving_date = '' OR salinfo.cmp_leaving_date = 1970 -00 -00 OR DATE_FORMAT(\n" + 
+			"            salinfo.cmp_leaving_date,\n" + 
+			"            '%Y-%m'\n" + 
+			"        ) >= DATE_FORMAT(CURDATE(), '%Y-%m'))", nativeQuery = true)
+
+	List<GetEmployeeDetails> getEmpDetailForLoginType();
    
 }
