@@ -505,4 +505,94 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
+	
+	//Sachin 05-05-2020
+	
+	// Employee Company Assignment	
+	@RequestMapping(value = { "/getAllEmployeeDetailassignSubCompany" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailassignSubCompany() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailassignSubCompany();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetailassignSubCompany : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	
+	
+	@RequestMapping(value = { "/getAllEmployeeDetailshowAssignEmpType" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailshowAssignEmpType() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailshowAssignEmpType();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetailassignSubCompany : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	// Employee Designation Assignment	
+	
+	@RequestMapping(value = { "/getAllEmployeeDetailshowAssignDesignation" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailshowAssignDesignation() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailshowAssignDesignation();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetailassignSubCompany : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	
+	
+	// Employee Department Assignment	
+	@RequestMapping(value = { "/getAllEmployeeDetailassignDept" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailassignDept() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailassignDept();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetailassignDept : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	// Employee Location Assignment	
+	@RequestMapping(value = { "/getAllEmployeeDetailshowAssignLocation" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailshowAssignLocation() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailshowAssignLocation();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetailshowAssignLocation : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	// Employee Shift Assignment	
+	
+	@RequestMapping(value = { "/getAllEmployeeDetailshowEmpListToAssignShift" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailshowEmpListToAssignShift() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailshowEmpListToAssignShift();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetailassignSubCompany : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
 }
