@@ -81,7 +81,7 @@ public class CompanyApiController {
 	public List<MstCompanySub> getAllSubCompanies() {
 		List<MstCompanySub> list = new ArrayList<MstCompanySub>();
 		try {
-			list = mstCompanySubRepo.findAll();
+			list = mstCompanySubRepo.findAllorderby();
 		} catch (Exception e) {
 			System.err.println("Excep in getAllCompanies : " + e.getMessage());
 			e.printStackTrace();

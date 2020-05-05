@@ -38,6 +38,10 @@ List<WeekoffCategory> findByDelStatus(int i);
 
 
 	List<WeekoffCategory> findByWoCatNameAndCompanyIdAndWoCatIdNot(String trim, int compId, int primaryKey);
+
+
+
+	List<WeekoffCategory> findByDelStatusOrderByWoCatIdDesc(int i);
  
 
  	

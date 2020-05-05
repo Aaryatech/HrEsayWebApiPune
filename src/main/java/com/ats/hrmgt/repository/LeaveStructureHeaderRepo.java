@@ -23,4 +23,6 @@ public interface LeaveStructureHeaderRepo extends JpaRepository<LeaveStructureHe
 	@Query("update LeaveStructureHeader set del_status=0  WHERE lvs_id=:lvsId")
 	int deleteLeaveStructure(@Param("lvsId") int lvsId);
 
+	List<LeaveStructureHeader> findByDelStatusAndCompanyIdOrderByLvsIdDesc(int i, int companyId);
+
 }

@@ -21,7 +21,7 @@ public interface GetWeeklyOffRepo extends JpaRepository<GetWeeklyOff, Integer> {
 			"    WHERE\n" + 
 			"        w.del_status=1 \n" + 
 			"        AND c.company_id=w.company_id   AND c.company_id=:companyId \n" + 
-			"        AND   wcat.wo_cat_id=w.ex_int1", nativeQuery = true)
+			"        AND   wcat.wo_cat_id=w.ex_int1 order by wcat.wo_cat_name asc,w.wo_id", nativeQuery = true)
 
 	List<GetWeeklyOff> getListByCompanyId(@Param("companyId") int companyId );
 

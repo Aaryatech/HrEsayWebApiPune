@@ -22,6 +22,8 @@ public interface SkillRatesRepo extends JpaRepository<SkillRates, Integer> {
 	@Query("update SkillRates set del_status=0  WHERE skill_id=:skillId")
 	int deleteSkillRate(@Param("skillId") int skillId);
 
+	List<SkillRates> findByDelStatusOrderBySkillIdDesc(int i);
+
 	
 	
 	

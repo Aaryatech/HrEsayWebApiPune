@@ -345,7 +345,7 @@ public class LeaveStructureApiController {
 		List<LeaveStructureHeader> list = new ArrayList<LeaveStructureHeader>();
 		try {
 
-			list = leaveStructureHeaderRepo.findByDelStatusAndCompanyId(1, companyId);
+			list = leaveStructureHeaderRepo.findByDelStatusAndCompanyIdOrderByLvsIdDesc(1, companyId);
 
 		} catch (Exception e) {
 

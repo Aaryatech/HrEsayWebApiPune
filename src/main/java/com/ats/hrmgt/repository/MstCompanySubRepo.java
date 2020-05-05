@@ -31,5 +31,9 @@ public interface MstCompanySubRepo extends JpaRepository<MstCompanySub, Integer>
 	MstCompanySub findByCompanyId(int companyId);
 
 	List<MstCompanySub> findByIsActive(int i);
+	
+
+	@Query(value = "select * from tbl_mst_sub_company order by company_id desc", nativeQuery = true)
+	List<MstCompanySub> findAllorderby();
 
 }

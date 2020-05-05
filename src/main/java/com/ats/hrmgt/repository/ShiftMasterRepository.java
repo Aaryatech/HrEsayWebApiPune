@@ -61,7 +61,7 @@ public interface ShiftMasterRepository extends JpaRepository<ShiftMaster, Intege
 			"        self_group_id,\n" + 
 			"        status,\n" + 
 			"        department_id,\n" + 
-			"        location_id\n" + 
+			"        location_id,short_name\n" + 
 			"    from\n" + 
 			"        tbl_shift_timming,m_self_grup \n" + 
 			"    where\n" + 

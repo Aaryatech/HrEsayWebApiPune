@@ -108,7 +108,7 @@ public class MasterApiController {
 		List<LeaveType> list = new ArrayList<LeaveType>();
 		try {
 
-			list = leaveTypeRepository.findByDelStatusAndIsStructuredAndCompanyId(1, 1, companyId);
+			list = leaveTypeRepository.findByDelStatusAndIsStructuredAndCompanyIdOrderByLvTypeIdDesc(1, 1, companyId);
 
 		} catch (Exception e) {
 
@@ -1039,7 +1039,7 @@ public class MasterApiController {
 		List<WeekoffCategory> list = new ArrayList<WeekoffCategory>();
 		try {
 
-			list = weekoffCategoryRepo.findByDelStatus(1);
+			list = weekoffCategoryRepo.findByDelStatusOrderByWoCatIdDesc(1);
 
 		} catch (Exception e) {
 
@@ -1116,7 +1116,7 @@ public class MasterApiController {
 		List<SkillRates> list = new ArrayList<SkillRates>();
 		try {
 
-			list = skillRatesRepo.findByDelStatus(1);
+			list = skillRatesRepo.findByDelStatusOrderBySkillIdDesc(1);
 			
 			
 			System.err.println("SkillRates---"+list.toString());

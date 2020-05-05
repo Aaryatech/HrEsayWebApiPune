@@ -25,4 +25,6 @@ public interface MstEmpTypeRepository extends JpaRepository<MstEmpType, Integer>
 	@Query(value = "select et.* from tbl_mst_emp_types et,m_employees e where e.emp_type=et.emp_type_id and emp_id=:empId", nativeQuery = true)
 	MstEmpType getTypeByempId(int empId);
 
+	List<MstEmpType> findByDelStatusAndCompanyIdOrderByEmpTypeIdDesc(int i, int companyId);
+
 }

@@ -347,7 +347,7 @@ public class EmpShiftAssignApiController {
 		List<MstEmpType> list = new ArrayList<MstEmpType>();
 		try {
 
-			list = mstEmpTypeRepository.findByDelStatusAndCompanyId(1, companyId);
+			list = mstEmpTypeRepository.findByDelStatusAndCompanyIdOrderByEmpTypeIdDesc(1, companyId);
 
 		} catch (Exception e) {
 

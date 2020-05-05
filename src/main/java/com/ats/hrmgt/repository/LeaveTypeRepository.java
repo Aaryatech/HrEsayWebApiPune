@@ -28,4 +28,6 @@ public interface LeaveTypeRepository extends JpaRepository<LeaveType, Integer> {
 
 	LeaveType findByCompanyIdAndLvTitleShort(int compId, String valueType);
 
+	List<LeaveType> findByDelStatusAndIsStructuredAndCompanyIdOrderByLvTypeIdDesc(int i, int j, int companyId);
+
 }
