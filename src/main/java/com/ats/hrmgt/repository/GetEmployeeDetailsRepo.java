@@ -965,7 +965,7 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"        salinfo.cmp_leaving_date IS NULL OR salinfo.cmp_leaving_date = '' OR salinfo.cmp_leaving_date = 1970 -00 -00 OR DATE_FORMAT(\n" + 
 			"            salinfo.cmp_leaving_date,\n" + 
 			"            '%Y-%m'\n" + 
-			"        ) >= DATE_FORMAT(CURDATE(), '%Y-%m'))", nativeQuery = true)
+			"        ) >= DATE_FORMAT(CURDATE(), '%Y-%m')) ORDER BY usr.ex_var1 ", nativeQuery = true)
 
 	List<GetEmployeeDetails> getEmpDetailForLoginType();
 	
