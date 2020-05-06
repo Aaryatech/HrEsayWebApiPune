@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,8 +33,11 @@ import com.ats.hrmgt.model.LeaveApply;
 import com.ats.hrmgt.model.LeaveStsAndLeaveId;
 import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.ShiftAssignDaily;
+import com.ats.hrmgt.model.ShiftCurrentMonth;
 import com.ats.hrmgt.model.ShiftMaster;
 import com.ats.hrmgt.model.SummaryDailyAttendance;
+import com.ats.hrmgt.model.TempFistDayAssignList;
+import com.ats.hrmgt.model.TempFistTimeAssign;
 import com.ats.hrmgt.model.WeeklyOff;
 import com.ats.hrmgt.model.WeeklyOffShit;
 import com.ats.hrmgt.repo.ShiftAssignDailyRepository;
@@ -47,7 +51,10 @@ import com.ats.hrmgt.repository.HolidayRepo;
 import com.ats.hrmgt.repository.InfoForUploadAttendanceRepository;
 import com.ats.hrmgt.repository.LeaveApplyRepository;
 import com.ats.hrmgt.repository.SettingRepo;
+import com.ats.hrmgt.repository.ShiftCurrentMonthRepository;
 import com.ats.hrmgt.repository.ShiftMasterRepository;
+import com.ats.hrmgt.repository.TempFistDayAssignListRepository;
+import com.ats.hrmgt.repository.TempFistTimeAssignRepository;
 import com.ats.hrmgt.repository.WeeklyOffRepo;
 import com.ats.hrmgt.repository.WeeklyOffShitRepository;
 import com.ats.hrmgt.service.CommonFunctionService;
@@ -71,6 +78,9 @@ public class ShiftAssignApiController {
 	@Autowired
 	ShiftAssignDailyRepository shiftAssignDailyRepository;
 
+	@Autowired
+	TempFistTimeAssignRepository tempFistTimeAssignRepository;
+
 	@RequestMapping(value = { "/getInformationOfUploadedShift" }, method = RequestMethod.POST)
 	public @ResponseBody InfoForUploadAttendance getInformationOfUploadedShift(
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
@@ -92,7 +102,8 @@ public class ShiftAssignApiController {
 
 	@RequestMapping(value = { "/initiallyInsertDailyShiftAssignRecord" }, method = RequestMethod.POST)
 	public @ResponseBody Info initiallyInsertDailyShiftAssignRecord(@RequestParam("fromDate") String fromDate,
-			@RequestParam("toDate") String toDate, @RequestParam("userId") int userId) {
+			@RequestParam("toDate") String toDate, @RequestParam("userId") int userId,
+			@RequestParam("locId") int locId) {
 
 		Info info = new Info();
 		try {
@@ -147,7 +158,7 @@ public class ShiftAssignApiController {
 			int year = temp.get(Calendar.YEAR);
 			int month = temp.get(Calendar.MONTH) + 1;
 
-			List<EmpWithShiftDetail> empList = getshiftProject(fromDate, toDate);
+			List<EmpWithShiftDetail> empList = getshiftProject(fromDate, toDate, locId);
 
 			String dailyDailyQuery = "INSERT INTO t_shift_assign_daily (id, emp_id, emp_code, shift_id, shift_date, month,  year, extra1, extra2, var1, var2) VALUES  ";
 
@@ -192,7 +203,7 @@ public class ShiftAssignApiController {
 		Info info = new Info();
 		try {
 
-			int update = shiftAssignDailyRepository.updateAssignShiftByDate(empIdList, fromDate,toDate, shiftId);
+			int update = shiftAssignDailyRepository.updateAssignShiftByDate(empIdList, fromDate, toDate, shiftId);
 			info.setError(false);
 			info.setMsg("success");
 
@@ -238,8 +249,15 @@ public class ShiftAssignApiController {
 	@Autowired
 	EmpWithShiftDetailRepository empWithShiftDetailRepository;
 
+	@Autowired
+	TempFistDayAssignListRepository tempFistDayAssignListRepository;
+
+	@Autowired
+	ShiftCurrentMonthRepository shiftCurrentMonthRepository;
+
 	@RequestMapping(value = { "/getshiftProject" }, method = RequestMethod.POST)
-	public List<EmpWithShiftDetail> getshiftProject(@RequestParam String fromDate, @RequestParam String toDate) {
+	public List<EmpWithShiftDetail> getshiftProject(@RequestParam String fromDate, @RequestParam String toDate,
+			int locId) {
 
 		List<EmpWithShiftDetail> empShiftList = new ArrayList<EmpWithShiftDetail>();
 
@@ -253,7 +271,7 @@ public class ShiftAssignApiController {
 			Date myDate = dateFormat.parse(fromDate);
 			Date oneDayBefore = new Date(myDate.getTime() - 2);
 			String previousDate = dateFormat.format(oneDayBefore);
-			empShiftList = empWithShiftDetailRepository.updateAssignShiftByDate(previousDate, fromDate, toDate);
+			empShiftList = empWithShiftDetailRepository.updateAssignShiftByDate(previousDate, fromDate, toDate, locId);
 
 			List<WeeklyOff> weeklyOfflist = weeklyOffRepo.getWeeklyOffList();
 			/*
@@ -377,7 +395,7 @@ public class ShiftAssignApiController {
 
 	@RequestMapping(value = { "/getEmpProjectionMatrix" }, method = RequestMethod.POST)
 	public List<EmpWithShiftDetail> getEmpProjectionMatrix(@RequestParam String fromDate, @RequestParam String toDate,
-			  @RequestParam int locId) {
+			@RequestParam int locId) {
 
 		List<EmpWithShiftDetail> empShiftList = new ArrayList<EmpWithShiftDetail>();
 
@@ -455,6 +473,212 @@ public class ShiftAssignApiController {
 		}
 
 		return empShiftList;
+
+	}
+
+	@RequestMapping(value = { "/getFistDayAssignShiftFromTemp" }, method = RequestMethod.POST)
+	public List<TempFistDayAssignList> getFistDayAssignShiftFromTemp(@RequestParam String date,
+			@RequestParam int locId) {
+
+		List<TempFistDayAssignList> empShiftList = new ArrayList<TempFistDayAssignList>();
+
+		try {
+
+			Info info = initiallyInsertTempAssign(date, locId);
+			empShiftList = tempFistDayAssignListRepository.getFistDayAssignShiftFromTemp(date, locId);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return empShiftList;
+
+	}
+
+	@RequestMapping(value = { "/initiallyInsertTempAssign" }, method = RequestMethod.POST)
+	public @ResponseBody Info initiallyInsertTempAssign(@RequestParam("fromDate") String fromDate,
+			@RequestParam int locId) {
+
+		Info info = new Info();
+		try {
+
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+			Date myDate = dateFormat.parse(fromDate);
+			Date oneDayBefore = new Date(myDate.getTime() - 2);
+			String previousDate = dateFormat.format(oneDayBefore);
+
+			List<EmpWithShiftDetail> empShiftList = empWithShiftDetailRepository.getempList(previousDate, fromDate,
+					locId);
+
+			if (empShiftList.size() > 0) {
+
+				String dailyDailyQuery = "INSERT INTO t_temp_assign_first_day_shift (id, emp_id, date, extra1, extra2, shift_id) VALUES  ";
+
+				for (int i = 0; i < empShiftList.size(); i++) {
+
+					dailyDailyQuery = dailyDailyQuery + "('0', '" + empShiftList.get(i).getEmpId() + "','" + fromDate
+							+ "','" + locId + "','" + 0 + "','" + empShiftList.get(i).getShiftId() + "'),";
+
+				}
+				dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);
+
+				jdbcTemplate.batchUpdate(dailyDailyQuery);
+			}
+			info.setError(false);
+			info.setMsg("success");
+
+		} catch (Exception e) {
+			info.setError(true);
+			info.setMsg("failed");
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
+	@RequestMapping(value = { "/getDateFromIsCurrentMonth" }, method = RequestMethod.POST)
+	public @ResponseBody ShiftCurrentMonth getDateFromIsCurrentMonth(@RequestParam int locId,
+			@RequestParam int userId) {
+
+		ShiftCurrentMonth shiftCurrentMonth = new ShiftCurrentMonth();
+		try {
+
+			shiftCurrentMonth = shiftCurrentMonthRepository.findByIsCurrentAndLocId(1, locId);
+
+			if (shiftCurrentMonth == null) {
+
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date dt = new Date();
+				Calendar temp = Calendar.getInstance();
+				temp.setTime(dt);
+				int year = temp.get(Calendar.YEAR);
+				int month1 = temp.get(Calendar.MONTH) + 1;
+
+				shiftCurrentMonth = new ShiftCurrentMonth();
+				shiftCurrentMonth.setCompanyId(1);
+				shiftCurrentMonth.setDate(year + "-" + month1 + "-" + "01");
+				shiftCurrentMonth.setIsCurrent(1);
+				shiftCurrentMonth.setLocId(locId);
+				shiftCurrentMonth.setLastUpdatedBy(userId);
+				shiftCurrentMonth.setLastUpdateDatetime(df.format(dt));
+				shiftCurrentMonthRepository.save(shiftCurrentMonth);
+				shiftCurrentMonth = shiftCurrentMonthRepository.findByIsCurrentAndLocId(1, locId);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return shiftCurrentMonth;
+
+	}
+
+	@RequestMapping(value = { "/updateShiftIdInTempAllocation" }, method = RequestMethod.POST)
+	public Info updateShiftIdInTempAllocation(@RequestParam int id, @RequestParam int shiftId) {
+
+		Info info = new Info();
+
+		try {
+
+			int update = tempFistTimeAssignRepository.updateshift(id, shiftId);
+
+			info.setError(false);
+			info.setMsg("success");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
+	@RequestMapping(value = { "/autoshiftAllocation" }, method = RequestMethod.POST)
+	public @ResponseBody Info autoshiftAllocation(@RequestParam("locId") int locId,
+			@RequestParam("userId") int userId) {
+
+		Info info = new Info();
+		try {
+
+			ShiftCurrentMonth shiftCurrentMonth = shiftCurrentMonthRepository.findByIsCurrentAndLocId(1, locId);
+
+			List<TempFistDayAssignList> empShiftList = new ArrayList<TempFistDayAssignList>();
+
+			empShiftList = tempFistDayAssignListRepository.getFistDayAssignShiftFromTemp(shiftCurrentMonth.getDate(),
+					locId);
+
+			String dailyDailyQuery = "INSERT INTO t_shift_assign_daily (id, emp_id, emp_code, shift_id, shift_date, month,  year, extra1, extra2, var1, var2) VALUES  ";
+
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+			Date dt = df.parse(shiftCurrentMonth.getDate());
+			Calendar temp = Calendar.getInstance();
+			temp.setTime(dt);
+			int year = temp.get(Calendar.YEAR);
+			int month1 = temp.get(Calendar.MONTH) + 1;
+
+			if (empShiftList.size() > 0) {
+
+				for (int i = 0; i < empShiftList.size(); i++) {
+
+					dailyDailyQuery = dailyDailyQuery + "('0', '" + empShiftList.get(i).getEmpId() + "','"
+							+ empShiftList.get(i).getEmpCode() + "','" + empShiftList.get(i).getShiftId() + "','"
+							+ shiftCurrentMonth.getDate() + "','" + month1 + "', '" + year + "', '0', '0','"
+							+ empShiftList.get(i).getShiftName() + "', NULL),";
+
+				}
+
+				dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);
+				jdbcTemplate.batchUpdate(dailyDailyQuery);
+
+				Date firstDay = new GregorianCalendar(year, month1 - 1, 2).getTime();
+				Date lastDay = new GregorianCalendar(year, month1, 0).getTime();
+
+				Info info1 = initiallyInsertDailyShiftAssignRecord(df.format(firstDay), df.format(lastDay), userId,
+						locId);
+
+				if (info1.isError() == false) {
+
+					int update = shiftCurrentMonthRepository.updateIsCurrent(shiftCurrentMonth.getId());
+					//tempFistTimeAssignRepository.deleterecord(locId, df.parse(shiftCurrentMonth.getDate()));
+
+					df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					dt = lastDay;
+					Calendar c = Calendar.getInstance();
+					c.setTime(dt);
+					c.add(Calendar.DATE, 1);
+					dt = c.getTime();
+					temp = Calendar.getInstance();
+					temp.setTime(dt);
+					year = temp.get(Calendar.YEAR);
+					month1 = temp.get(Calendar.MONTH) + 1;
+
+					Date newdat = new Date();
+					
+					shiftCurrentMonth = new ShiftCurrentMonth();
+					shiftCurrentMonth.setCompanyId(1);
+					shiftCurrentMonth.setDate(year + "-" + month1 + "-" + "01");
+					shiftCurrentMonth.setIsCurrent(1);
+					shiftCurrentMonth.setLocId(locId);
+					shiftCurrentMonth.setLastUpdatedBy(userId);
+					shiftCurrentMonth.setLastUpdateDatetime(df.format(newdat));
+					shiftCurrentMonthRepository.save(shiftCurrentMonth);
+				}
+			}
+
+			info.setError(false);
+			info.setMsg("success");
+		} catch (Exception e) {
+			info.setError(true);
+			info.setMsg("failed");
+			e.printStackTrace();
+		}
+
+		return info;
 
 	}
 
