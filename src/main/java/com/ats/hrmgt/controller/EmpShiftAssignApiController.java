@@ -580,6 +580,55 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
+	
+	
+	
+	// Employee Holiday Category Assignment	
+	@RequestMapping(value = { "/getAllEmployeeDetailassignHolidayCategory" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailassignHolidayCategory() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailassignHolidayCategory();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetailassignHolidayCategory : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	// Employee Weekly Off Category Assignment	
+	
+	
+	@RequestMapping(value = { "/getAllEmployeeDetailassignWeekoffCategory" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailassignWeekoffCategory() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailassignWeekoffCategory();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetailassignWeekoffCategory : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	
+	
+	// Employee Salary Structure Assignment	
+	@RequestMapping(value = { "/getAllEmployeeDetailshowEmpListToAssignSalStruct" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getAllEmployeeDetailshowEmpListToAssignSalStruct() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailshowEmpListToAssignSalStruct();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetailshowEmpListToAssignSalStruct : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	
 	// Employee Shift Assignment	
 	
 	@RequestMapping(value = { "/getAllEmployeeDetailshowEmpListToAssignShift" }, method = RequestMethod.GET)
