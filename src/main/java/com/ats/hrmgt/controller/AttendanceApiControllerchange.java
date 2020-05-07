@@ -465,13 +465,12 @@ public class AttendanceApiControllerchange {
 
 					for (int j = 0; j < shiftAssignDailyList.size(); j++) {
 
-						 
 						Date date = sf.parse(shiftAssignDailyList.get(j).getShiftDate());
-						
+
 						if (date.compareTo(defaultDate) == 0
 								&& employee.getEmpId() == shiftAssignDailyList.get(j).getEmpId()) {
-							
-							shiftId = shiftAssignDailyList.get(j).getShiftId(); 
+
+							shiftId = shiftAssignDailyList.get(j).getShiftId();
 							break;
 						}
 
@@ -506,8 +505,7 @@ public class AttendanceApiControllerchange {
 					// get possible timeShifting records List by same deptId of employee
 					for (int j = 0; j < shiftList.size(); j++) {
 
-						if (shiftList.get(j).getSelfGroupId() == shiftMaster.getSelfGroupId()
-								&& employee.getLocationId() == shiftList.get(j).getLocationId()) {
+						if (shiftList.get(j).getSelfGroupId() == shiftMaster.getSelfGroupId()) {
 							possibleShiftList.add(shiftList.get(j));
 						}
 
