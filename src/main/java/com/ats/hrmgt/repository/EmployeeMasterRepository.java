@@ -165,6 +165,29 @@ public interface EmployeeMasterRepository extends JpaRepository<EmployeeMaster, 
 
 
 	EmployeeMaster findByEmpCodeAndDelStatus(String empcode, int del);
+
+
+	@Query(value = "select\n" + 
+			"        * \n" + 
+			"    from\n" + 
+			"        m_employees \n" + 
+			"    where\n" + 
+			"        emp_id not in (\n" + 
+			"            select\n" + 
+			"                emp_id \n" + 
+			"            from\n" + 
+			"                leave_balance_cal \n" + 
+			"            where\n" + 
+			"                cal_yr_id=(\n" + 
+			"                    select\n" + 
+			"                        cal_yr_id \n" + 
+			"                    from\n" + 
+			"                        dm_cal_year \n" + 
+			"                    where\n" + 
+			"                        is_current=1\n" + 
+			"                )\n" + 
+			"            ) and  del_status=1 and location_id=:locId", nativeQuery = true)
+	List<EmployeeMaster> getemplistwhichisnotyearendByEmpId(@Param("locId") int locId);
  
 
 	

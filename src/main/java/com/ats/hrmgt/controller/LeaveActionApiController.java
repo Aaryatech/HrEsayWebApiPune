@@ -33,6 +33,7 @@ import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.InfoForCompOffList;
 import com.ats.hrmgt.model.LeaveApply;
 import com.ats.hrmgt.model.LeaveHistory;
+import com.ats.hrmgt.model.LeaveHistoryDetailForCarry;
 import com.ats.hrmgt.model.LeaveTrail;
 import com.ats.hrmgt.model.LeaveTypeWithLimit;
 import com.ats.hrmgt.model.MstEmpType;
@@ -48,6 +49,7 @@ import com.ats.hrmgt.repository.GetAuthorityIdsRepo;
 import com.ats.hrmgt.repository.GetDetailForGraduatyRepo;
 import com.ats.hrmgt.repository.GetLeaveApplyAuthwiseRepo;
 import com.ats.hrmgt.repository.LeaveApplyRepository;
+import com.ats.hrmgt.repository.LeaveHistoryDetailForCarryRepo;
 import com.ats.hrmgt.repository.LeaveHistoryRepo;
 import com.ats.hrmgt.repository.LeaveTrailRepository;
 import com.ats.hrmgt.repository.LeaveTypeWithLimitRepository;
@@ -102,6 +104,9 @@ public class LeaveActionApiController {
 	
 	@Autowired
 	GetDetailForGraduatyRepo getDetailForGraduatyRepo;
+	
+	@Autowired
+	LeaveHistoryDetailForCarryRepo leaveHistoryDetailForCarryRepo;
 
 	@RequestMapping(value = { "/updateLeaveStatus" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateLeaveStatus(@RequestParam("leaveId") int leaveId,
@@ -478,6 +483,24 @@ public class LeaveActionApiController {
 		return employeeInfo;
 
 	}
+	
+	@RequestMapping(value = { "getemplistwhichisnotyearendByEmpId" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmployeeMaster> getemplistwhichisnotyearendByEmpId(@RequestParam("locId") int locId) {
+
+		List<EmployeeMaster> employeeInfo = new ArrayList<EmployeeMaster>();
+
+		try {
+
+			employeeInfo = employeeMasterRepository.getemplistwhichisnotyearendByEmpId(locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return employeeInfo;
+
+	}
 
 	@RequestMapping(value = { "/getPreviousleaveHistory" }, method = RequestMethod.POST)
 	public @ResponseBody List<LeaveHistory> getPreviousleaveHistory(@RequestParam("empId") int empId) {
@@ -706,6 +729,25 @@ public class LeaveActionApiController {
 		}
 
 		return mstEmpType;
+
+	}
+	
+	@RequestMapping(value = { "/getPreviousleaveHistoryForCarryFrwd" }, method = RequestMethod.POST)
+	public @ResponseBody List<LeaveHistoryDetailForCarry> getPreviousleaveHistoryForCarryFrwd(@RequestParam("locId") int locId) {
+
+		List<LeaveHistoryDetailForCarry> list = new ArrayList<LeaveHistoryDetailForCarry>();
+		try {
+
+			list = leaveHistoryDetailForCarryRepo.getPreviousleaveHistoryForCarryFrwd(locId);
+
+			// System.err.println("LeaveHistory" + list.toString());
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
 
 	}
 }

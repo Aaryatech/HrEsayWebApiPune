@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.hrmgt.model.CountOfAssignPending;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.GetEmployeeDetails;
+import com.ats.hrmgt.model.GetEmployeeDetailsForCarryFrwdLeave;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.LeaveType;
 import com.ats.hrmgt.model.MstEmpType;
@@ -24,6 +25,7 @@ import com.ats.hrmgt.model.ShiftMaster;
 import com.ats.hrmgt.repo.CountOfAssignPendingRepository;
 import com.ats.hrmgt.repository.EmpSalaryInfoRepo;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
+import com.ats.hrmgt.repository.GetEmployeeDetailsForCarryFrwdLeaveRepo;
 import com.ats.hrmgt.repository.GetEmployeeDetailsRepo;
 import com.ats.hrmgt.repository.MstEmpTypeRepository;
 import com.ats.hrmgt.repository.SalaryTypesMasterRepo;
@@ -38,6 +40,9 @@ public class EmpShiftAssignApiController {
 
 	@Autowired
 	CountOfAssignPendingRepository countOfAssignPendingRepository;
+
+	@Autowired
+	GetEmployeeDetailsForCarryFrwdLeaveRepo getEmployeeDetailsForCarryFrwdLeaveRepo;
 
 	@RequestMapping(value = { "/getAllEmployeeDetail" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetail() {
@@ -79,7 +84,7 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
+
 	@RequestMapping(value = { "/getAllEmployeeDetailShiftGroup" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailShiftGroup() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -256,7 +261,7 @@ public class EmpShiftAssignApiController {
 				res = employeeMasterRepository.empSkillUpdate(empIdList, upDateId);
 			} else if (flag == 11) {
 				res = employeeMasterRepository.empEmpCategoryUpdate(empIdList, upDateId);
-			}else if (flag == 12) {
+			} else if (flag == 12) {
 				res = employeeMasterRepository.empEmpShiftGroupUpdate(empIdList, upDateId);
 			} else {
 				res = 0;
@@ -464,9 +469,8 @@ public class EmpShiftAssignApiController {
 	/// ******************************Asiignment of emp Related
 	/// Master*****************
 
-	
-	//New to Solve conflict with Ak on 5-5-2020 5:03 pm
-	//Sachin 04-05-2020
+	// New to Solve conflict with Ak on 5-5-2020 5:03 pm
+	// Sachin 04-05-2020
 	@RequestMapping(value = { "/assignEmpLoginType" }, method = RequestMethod.POST)
 	public @ResponseBody Info assignEmpLoginType(@RequestParam("empIdList") List<Integer> empIdList,
 			@RequestParam("loginType") String loginType) {
@@ -475,22 +479,21 @@ public class EmpShiftAssignApiController {
 		try {
 
 			int res = 0;
-			res=userRepo.updateUserLoginType(empIdList, loginType);
-			if(res>0) {
-				 info.setError(false);
-				 info.setMsg("success");
-			}else {
-				 info.setError(true);
-				 info.setMsg("failed");
+			res = userRepo.updateUserLoginType(empIdList, loginType);
+			if (res > 0) {
+				info.setError(false);
+				info.setMsg("success");
+			} else {
+				info.setError(true);
+				info.setMsg("failed");
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			info = new Info();
 			info.setError(true);
-			 info.setMsg("exception");
+			info.setMsg("exception");
 		}
 		return info;
 	}
-
 
 //Sachin 04-05-2020
 	@RequestMapping(value = { "/getAllEmployeeDetailForLoginType" }, method = RequestMethod.GET)
@@ -505,10 +508,10 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
-	//Sachin 05-05-2020
-	
-	// Employee Company Assignment	
+
+	// Sachin 05-05-2020
+
+	// Employee Company Assignment
 	@RequestMapping(value = { "/getAllEmployeeDetailassignSubCompany" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailassignSubCompany() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -521,9 +524,7 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
-	
-	
+
 	@RequestMapping(value = { "/getAllEmployeeDetailshowAssignEmpType" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailshowAssignEmpType() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -536,8 +537,8 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	// Employee Designation Assignment	
-	
+	// Employee Designation Assignment
+
 	@RequestMapping(value = { "/getAllEmployeeDetailshowAssignDesignation" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailshowAssignDesignation() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -550,10 +551,8 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
-	
-	
-	// Employee Department Assignment	
+
+	// Employee Department Assignment
 	@RequestMapping(value = { "/getAllEmployeeDetailassignDept" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailassignDept() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -566,8 +565,8 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
-	// Employee Location Assignment	
+
+	// Employee Location Assignment
 	@RequestMapping(value = { "/getAllEmployeeDetailshowAssignLocation" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailshowAssignLocation() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -580,10 +579,8 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
-	
-	
-	// Employee Holiday Category Assignment	
+
+	// Employee Holiday Category Assignment
 	@RequestMapping(value = { "/getAllEmployeeDetailassignHolidayCategory" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailassignHolidayCategory() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -596,9 +593,8 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	// Employee Weekly Off Category Assignment	
-	
-	
+	// Employee Weekly Off Category Assignment
+
 	@RequestMapping(value = { "/getAllEmployeeDetailassignWeekoffCategory" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailassignWeekoffCategory() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -611,10 +607,8 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
-	
-	
-	// Employee Salary Structure Assignment	
+
+	// Employee Salary Structure Assignment
 	@RequestMapping(value = { "/getAllEmployeeDetailshowEmpListToAssignSalStruct" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailshowEmpListToAssignSalStruct() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -627,10 +621,9 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
-	
-	// Employee Shift Assignment	
-	
+
+	// Employee Shift Assignment
+
 	@RequestMapping(value = { "/getAllEmployeeDetailshowEmpListToAssignShift" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailshowEmpListToAssignShift() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -643,5 +636,20 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
+
+	@RequestMapping(value = { "/getAllEmployeeDetailForCarryForwordLeave" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetailsForCarryFrwdLeave> getAllEmployeeDetailForCarryForwordLeave(
+			@RequestParam("locId") int locId) {
+
+		List<GetEmployeeDetailsForCarryFrwdLeave> list = new ArrayList<>();
+		try {
+			list = getEmployeeDetailsForCarryFrwdLeaveRepo.getEmpDetailListForCarryForwardLeave(locId);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
 }
