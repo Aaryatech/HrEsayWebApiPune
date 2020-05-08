@@ -56,6 +56,9 @@ public class LoginResponse {
 	private String empPhoto; 
 	
 	
+	@Column(name="access_role_id")
+	private int accessRoleId; 
+	
 	public String getUserPwd() {
 		return userPwd;
 	}
@@ -183,13 +186,21 @@ public class LoginResponse {
 		this.empPhoto = empPhoto;
 	}
 
+	public int getAccessRoleId() {
+		return accessRoleId;
+	}
+
+	public void setAccessRoleId(int accessRoleId) {
+		this.accessRoleId = accessRoleId;
+	}
+
 	@Override
 	public String toString() {
 		return "LoginResponse [empId=" + empId + ", empCode=" + empCode + ", firstName=" + firstName + ", middleName="
 				+ middleName + ", surname=" + surname + ", motherName=" + motherName + ", emailId=" + emailId
 				+ ", userId=" + userId + ", locationIds=" + locationIds + ", userPwd=" + userPwd + ", designType="
 				+ designType + ", hodDeptIds=" + hodDeptIds + ", isVisit=" + isVisit + ", empPhoto=" + empPhoto
-				+ ", isError=" + isError + "]";
+				+ ", accessRoleId=" + accessRoleId + ", isError=" + isError + "]";
 	}
 
 	 

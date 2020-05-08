@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.ats.hrmgt.model.LoginResponse;
+import com.ats.hrmgt.model.LoginResponse; 
 
 public interface LoginResponseRepository extends JpaRepository<LoginResponse, Integer>{
 
@@ -51,7 +51,7 @@ public interface LoginResponseRepository extends JpaRepository<LoginResponse, In
 			"        e.ex_int1 as design_type,\n" + 
 			"        e.ex_var1 as hod_dept_ids,\n" + 
 			"        u.ex_int1 as is_visit,\n" + 
-			"        i.ex_var1 as emp_photo\n" + 
+			"        i.ex_var1 as emp_photo,e.emp_category as access_role_id\n" + 
 			"    from\n" + 
 			"        m_employees e,\n" + 
 			"        m_user u,\n" + 
