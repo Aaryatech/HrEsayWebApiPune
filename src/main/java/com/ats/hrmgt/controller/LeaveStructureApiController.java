@@ -531,6 +531,23 @@ public class LeaveStructureApiController {
 		return save;
 	}
 
+	@RequestMapping(value = { "/saveNewLeaveAllotmentAll" }, method = RequestMethod.POST)
+	public @ResponseBody List<LeavesAllotment> saveNewLeaveAllotmentAll(
+			@RequestBody List<LeavesAllotment> leavesAllotment) {
+
+		List<LeavesAllotment> save = new ArrayList<>();
+
+		try {
+
+			save = leaveAllotmentRepository.saveAll(leavesAllotment);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		return save;
+	}
+
 	@RequestMapping(value = { "/getPendingListOfleaveCash" }, method = RequestMethod.POST)
 	public @ResponseBody List<LeaveCashReport> getPendingListOfleaveCash(@RequestParam("yearId") int yearId) {
 
