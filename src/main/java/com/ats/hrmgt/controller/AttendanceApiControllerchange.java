@@ -1808,6 +1808,7 @@ public class AttendanceApiControllerchange {
 					int othrs = (Integer.parseInt(othrsarry[0]) * 60) + Integer.parseInt(othrsarry[1]);
 					dailyRecordById.setOtHr(String.valueOf(othrs));
 					dailyRecordById.setLoginName(userId + ":manualchange");
+					dailyRecordById.setCurrentShiftid(selectShift);
 					DailyAttendance updateRes = dailyAttendanceRepository.save(dailyRecordById);
 
 					info = finalUpdateDailySumaryRecord(fromDate, toDate, userId, month, year,
