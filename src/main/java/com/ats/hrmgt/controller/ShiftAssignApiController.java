@@ -31,6 +31,7 @@ import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.InfoForUploadAttendance;
 import com.ats.hrmgt.model.LeaveApply;
 import com.ats.hrmgt.model.LeaveStsAndLeaveId;
+import com.ats.hrmgt.model.RemainingEmpForAllocation;
 import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.ShiftAssignDaily;
 import com.ats.hrmgt.model.ShiftCurrentMonth;
@@ -50,6 +51,7 @@ import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.HolidayRepo;
 import com.ats.hrmgt.repository.InfoForUploadAttendanceRepository;
 import com.ats.hrmgt.repository.LeaveApplyRepository;
+import com.ats.hrmgt.repository.RemainingEmpForAllocationRepository;
 import com.ats.hrmgt.repository.SettingRepo;
 import com.ats.hrmgt.repository.ShiftCurrentMonthRepository;
 import com.ats.hrmgt.repository.ShiftMasterRepository;
@@ -254,6 +256,9 @@ public class ShiftAssignApiController {
 
 	@Autowired
 	ShiftCurrentMonthRepository shiftCurrentMonthRepository;
+
+	@Autowired
+	RemainingEmpForAllocationRepository remainingEmpForAllocationRepository;
 
 	@RequestMapping(value = { "/getshiftProject" }, method = RequestMethod.POST)
 	public List<EmpWithShiftDetail> getshiftProject(@RequestParam String fromDate, @RequestParam String toDate,
@@ -644,7 +649,8 @@ public class ShiftAssignApiController {
 				if (info1.isError() == false) {
 
 					int update = shiftCurrentMonthRepository.updateIsCurrent(shiftCurrentMonth.getId());
-					//tempFistTimeAssignRepository.deleterecord(locId, df.parse(shiftCurrentMonth.getDate()));
+					// tempFistTimeAssignRepository.deleterecord(locId,
+					// df.parse(shiftCurrentMonth.getDate()));
 
 					df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					dt = lastDay;
@@ -658,7 +664,7 @@ public class ShiftAssignApiController {
 					month1 = temp.get(Calendar.MONTH) + 1;
 
 					Date newdat = new Date();
-					
+
 					shiftCurrentMonth = new ShiftCurrentMonth();
 					shiftCurrentMonth.setCompanyId(1);
 					shiftCurrentMonth.setDate(year + "-" + month1 + "-" + "01");
@@ -676,6 +682,114 @@ public class ShiftAssignApiController {
 			info.setError(true);
 			info.setMsg("failed");
 			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
+	@RequestMapping(value = { "/checkRemainingEmployeeForProjection" }, method = RequestMethod.POST)
+	public Info checkRemainingEmployeeForProjection(@RequestParam String fromDate, @RequestParam String toDate,
+			@RequestParam int locId, @RequestParam int userId) {
+
+		Info info = new Info();
+
+		try {
+
+			/*
+			 * DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			 * 
+			 * Date myDate = dateFormat.parse(fromDate); Date oneDayBefore = new
+			 * Date(myDate.getTime() - 2); String previousDate =
+			 * dateFormat.format(oneDayBefore); List<EmpWithShiftDetail> empShiftList =
+			 * empWithShiftDetailRepository.updateAssignShiftByDate(previousDate, fromDate,
+			 * toDate, locId);
+			 */
+
+			/*
+			 * if (empShiftList.size() > 0) { info =
+			 * initiallyInsertDailyShiftAssignRecord(fromDate, toDate, userId, locId); }
+			 */
+
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			/*
+			 * Date fmdt = dateFormat.parse(toDate); Date todt = dateFormat.parse(toDate);
+			 */
+			List<RemainingEmpForAllocation> empShiftList = remainingEmpForAllocationRepository
+					.checkRemainingEmployeeForProjection(locId);
+
+			String dailyDailyQuery = "INSERT INTO t_shift_assign_daily (id, emp_id, emp_code, shift_id, shift_date, month,  year, extra1, extra2, var1, var2) VALUES  ";
+
+			int flag = 0;
+
+			for (int i = 0; i < empShiftList.size(); i++) {
+
+				Date fmdt = dateFormat.parse(fromDate);
+				Date todt = dateFormat.parse(toDate);
+
+				if (empShiftList.get(i).getMaxDate().equals("0")) {
+					flag = 1;
+
+					for (Date j = fmdt; j.compareTo(todt) <= 0;) {
+
+						Calendar temp = Calendar.getInstance();
+						temp.setTime(j);
+						int year = temp.get(Calendar.YEAR);
+						int month = temp.get(Calendar.MONTH) + 1;
+
+						String attdate = dateFormat.format(j);
+
+						dailyDailyQuery = dailyDailyQuery + "('0', '" + empShiftList.get(i).getEmpId() + "','"
+								+ empShiftList.get(i).getEmpCode() + "','" + empShiftList.get(i).getShiftId() + "','"
+								+ attdate + "','" + month + "', '" + year + "', '0', '0',NULL, NULL),";
+						j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
+					}
+				} else {
+
+					Date maxDate = dateFormat.parse(empShiftList.get(i).getMaxDate());
+					
+					if (maxDate.compareTo(todt) < 0) {
+						
+						flag = 1;
+						
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(maxDate);
+						calendar.add(Calendar.DAY_OF_YEAR, 1); 
+						String stdt = dateFormat.format(calendar.getTime());  
+						fmdt = dateFormat.parse(stdt);
+						
+						for (Date j = fmdt; j.compareTo(todt) <= 0;) {
+
+							Calendar temp = Calendar.getInstance();
+							temp.setTime(j);
+							int year = temp.get(Calendar.YEAR);
+							int month = temp.get(Calendar.MONTH) + 1;
+
+							String attdate = dateFormat.format(j);
+
+							dailyDailyQuery = dailyDailyQuery + "('0', '" + empShiftList.get(i).getEmpId() + "','"
+									+ empShiftList.get(i).getEmpCode() + "','" + empShiftList.get(i).getShiftId() + "','"
+									+ attdate + "','" + month + "', '" + year + "', '0', '0',NULL, NULL),";
+							j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
+						}
+						
+					}
+				}
+
+			}
+
+			if(flag==1) {
+				
+				dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1); 
+				jdbcTemplate.batchUpdate(dailyDailyQuery);
+			}
+			
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			info.setError(true);
+			info.setMsg("failed");
 		}
 
 		return info;
