@@ -1775,7 +1775,7 @@ public class AttendanceApiControllerchange {
 			@RequestParam("outTime") String outTime, @RequestParam("inTime") String inTime,
 			@RequestParam("selectStatusText") String selectStatusText, @RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("userId") int userId, @RequestParam("month") int month,
-			@RequestParam("year") int year) {
+			@RequestParam("year") int year,@RequestParam("selectShift") int selectShift) {
 
 		Info info = new Info();
 		try {
@@ -1784,6 +1784,14 @@ public class AttendanceApiControllerchange {
 
 			if (dailyRecordById.getIsFixed() == 0) {
 
+				List<Integer> empIdList = new ArrayList<>();
+				
+				empIdList.add(dailyRecordById.getEmpId());
+				
+				String dt = dailyRecordById.getAttDate();
+				
+				int update = shiftAssignDailyRepository.updateAssignShiftByDate(empIdList, dt, dt, selectShift);
+				
 				if (byStatus == 1) {
 
 					if (selectStatus != 0) {
