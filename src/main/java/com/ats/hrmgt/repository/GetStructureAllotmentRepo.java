@@ -23,7 +23,7 @@ public interface GetStructureAllotmentRepo extends JpaRepository<GetStructureAll
 			"FROM\n" + 
 			"    m_employees e\n" + 
 			"LEFT JOIN leave_structure_allotment lsa ON\n" + 
-			"    e.emp_id = lsa.emp_id AND lsa.cal_yr_id = 2\n" + 
+			"    e.emp_id = lsa.emp_id AND lsa.cal_yr_id = :companyId\n" + 
 			"LEFT JOIN leave_structure_header l ON\n" + 
 			"    lsa.lvs_id = l.lvs_id AND l.del_status = 1\n" + 
 			"LEFT JOIN m_designation dg ON\n" + 
