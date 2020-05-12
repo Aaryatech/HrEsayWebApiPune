@@ -71,15 +71,15 @@ public interface LoginResponseRepository extends JpaRepository<LoginResponse, In
 			"        e.middle_name,\n" + 
 			"        e.surname,\n" + 
 			"        e.mother_name,\n" + 
-			"        e.email_id,\n" + 
+			"        i.email AS email_id," + 
 			"        u.loc_id,\n" + 
 			"        u.user_id,\n" + 
 			"        u.user_pwd,\n" + 
 			"        e.ex_int1 as design_type,\n" + 
 			"        e.ex_var1 as hod_dept_ids,\n" + 
 			"        u.ex_int1 as is_visit,\n" + 
-			"        i.ex_var1 as emp_photo\n" + 
-			"    from\n" + 
+			"        i.ex_var1 as emp_photo, 0 as access_role_id \n" + 
+			"    from \n" + 
 			"        m_employees e,\n" + 
 			"        m_user u,\n" + 
 			"        tbl_emp_info i\n" + 
@@ -97,14 +97,14 @@ public interface LoginResponseRepository extends JpaRepository<LoginResponse, In
 			"        e.middle_name,\n" + 
 			"        e.surname,\n" + 
 			"        e.mother_name,\n" + 
-			"        e.email_id,\n" + 
+			"        i.email AS email_id,\n" + 
 			"        u.loc_id,\n" + 
 			"        u.user_id,\n" + 
 			"        u.user_pwd,\n" + 
 			"        e.ex_int1 as design_type,\n" + 
 			"        e.ex_var1 as hod_dept_ids,\n" + 
 			"        u.ex_int1 as is_visit,\n" + 
-			"        i.ex_var1 as emp_photo\n" + 
+			"        i.ex_var1 as emp_photo, 0 as access_role_id \n" + 
 			"    from\n" + 
 			"        m_employees e,\n" + 
 			"        m_user u,\n" + 
