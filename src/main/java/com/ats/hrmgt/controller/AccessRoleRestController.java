@@ -169,9 +169,9 @@ public class AccessRoleRestController {
 		try {
 
 			if (compId != 0) {
-				list = empTypeRepository.findByDelStatusAndCompanyId(1, compId);
+				list = empTypeRepository.findByDelStatusAndCompanyIdOrderByEmpTypeIdDesc(1, compId);
 			} else {
-				list = empTypeRepository.findByDelStatus(1);
+				list = empTypeRepository.findByDelStatusOrderByEmpTypeIdDesc(1);
 			}
 
 		} catch (Exception e) {

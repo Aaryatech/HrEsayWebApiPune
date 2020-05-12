@@ -294,7 +294,7 @@ public class EmployeeApiController {
 			}
 
 		} catch (Exception e) {
-			System.err.println("Excep in getEmpRelatedInfo : " + e.getMessage());
+			resp1 = null;
 			e.printStackTrace();
 		}
 

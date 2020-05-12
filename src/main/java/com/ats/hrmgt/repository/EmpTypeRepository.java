@@ -25,4 +25,8 @@ public interface EmpTypeRepository extends JpaRepository<EmpType, Integer>{
 
 	List<EmpType> findByDelStatusAndCompanyId(int i, int compId);
 
+	List<EmpType> findByDelStatusAndCompanyIdOrderByEmpTypeIdDesc(int i, int compId);
+
+	List<EmpType> findByDelStatusOrderByEmpTypeIdDesc(int i);
+
 }

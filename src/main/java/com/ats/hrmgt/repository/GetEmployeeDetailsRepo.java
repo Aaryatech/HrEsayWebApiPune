@@ -559,7 +559,7 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"        salinfo.cmp_leaving_date IS NULL OR salinfo.cmp_leaving_date = '' OR salinfo.cmp_leaving_date = 1970 -00 -00 OR DATE_FORMAT(\n" + 
 			"            salinfo.cmp_leaving_date,\n" + 
 			"            '%Y-%m'\n" + 
-			"        ) >= DATE_FORMAT(CURDATE(), '%Y-%m')) 	order by u.loc_id ", nativeQuery = true)
+			"        ) >= DATE_FORMAT(CURDATE(), '%Y-%m')) 	order by loc_name ", nativeQuery = true)
 
 	List<GetEmployeeDetails> getEmpDetailListForAccessibleLoc();
 	
