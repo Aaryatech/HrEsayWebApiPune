@@ -934,7 +934,7 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"    emptyp.name AS emp_type_name,\n" + 
 			"    saltype.sal_type_name,\n" + 
 			"    succomp.name_sd  AS sub_comp_name,\n" + 
-			"    wocat.wo_cat_name as wo_cat_name,\n" + 
+			"    e_info.email as wo_cat_name,\n" + 
 			"    holidaycat.ho_cat_name as ho_cat_name, salinfo.gross_salary\n" + 
 			"FROM\n" + 
 			"    m_employees emp\n" + 
@@ -960,6 +960,13 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"    wocat.wo_cat_id = emp.weekend_category\n" + 
 			"LEFT JOIN holiday_category holidaycat ON\n" + 
 			"    holidaycat.ho_cat_id = emp.holiday_category\n" + 
+			
+
+"LEFT JOIN tbl_emp_info e_info ON\n" + 
+"    e_info.emp_id = emp.emp_id \n" + 
+
+			
+			
 			"WHERE\n" + 
 			"    emp.del_status = 1 AND(\n" + 
 			"        salinfo.cmp_leaving_date IS NULL OR salinfo.cmp_leaving_date = '' OR salinfo.cmp_leaving_date = 1970 -00 -00 OR DATE_FORMAT(\n" + 
