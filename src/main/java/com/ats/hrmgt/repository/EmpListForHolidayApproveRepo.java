@@ -1,0 +1,18 @@
+package com.ats.hrmgt.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.ats.hrmgt.model.EmpListForHolidayApprove;
+
+public interface EmpListForHolidayApproveRepo extends JpaRepository<EmpListForHolidayApprove, Integer>{
+
+	
+	@Query(value = "select oh.id,oh.emp_id,oh.holidate,oh.del_status,oh.holiday_id,oh.status,oh.remark,e.emp_code,concat(e.first_name,' ',e.surname) as "
+			+ "emp_name,h.ex_var2 as holiday_name from t_optional_holiday oh,m_employees e,m_holiday h where oh.status in (:sts) and e.emp_id=oh.emp_id and "
+			+ "e.location_id=:locId and h.holiday_id=oh.holiday_id", nativeQuery = true)
+	List<EmpListForHolidayApprove> getOptionalHolidayApprovalList(int locId, List<Integer> sts);
+
+}
