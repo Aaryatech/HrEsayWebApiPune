@@ -89,8 +89,8 @@ public class EmployeeApiController {
 	public EmployeeMaster getEmpInfoByEmpCode(@RequestParam String empCode) {
 		EmployeeMaster emp = new EmployeeMaster();
 		try {
-			emp = empRepo.findByEmpCodeAndDelStatus(empCode.trim(),1);
-			System.err.println("---"+emp.toString());
+			emp = empRepo.findByEmpCodeAndDelStatus(empCode.trim(), 1);
+			System.err.println("---" + emp.toString());
 		} catch (Exception e) {
 			System.err.println("Excep in getEmpInfoByEmpCode : " + e.getMessage());
 			e.printStackTrace();
@@ -277,21 +277,39 @@ public class EmployeeApiController {
 		try {
 
 			resp1 = empRelatedRepo.getAllEmpRelatedInfo(empCode);
-			if (resp1.getAllowanceId() == null) {
 
-				resp1.setAllowanceId("0");
+			if (resp1.getEmpId() != 0) {
+				try {
+					if (resp1.getAllowanceId() == null) {
 
+						resp1.setAllowanceId("0");
+
+					}
+
+				} catch (Exception e) {
+					resp1.setAllowanceId("0");
+				}
+				try {
+					if (resp1.getEmpSalAllowanceId() == null) {
+
+						resp1.setEmpSalAllowanceId("0");
+
+					}
+				} catch (Exception e) {
+					resp1.setEmpSalAllowanceId("0");
+				}
+
+				try {
+					if (resp1.getDocId() == null) {
+
+						resp1.setDocId("0");
+
+					}
+				} catch (Exception e) {
+					resp1.setDocId("0");
+				}
 			}
-			if (resp1.getEmpSalAllowanceId() == null) {
-
-				resp1.setEmpSalAllowanceId("0");
-
-			}
-			if (resp1.getDocId() ==null) {
-
-				resp1.setDocId("0");
-
-			}
+			
 
 		} catch (Exception e) {
 			resp1 = null;
@@ -592,8 +610,10 @@ public class EmployeeApiController {
 
 		return docs;
 	}
-	 
-	@Autowired ViewEmployeeRepo empProfileRepo;
+
+	@Autowired
+	ViewEmployeeRepo empProfileRepo;
+
 	@RequestMapping(value = { "/getEmployeeAllInfo" }, method = RequestMethod.POST)
 	public @ResponseBody ViewEmployee getEmployeeAllInfo(@RequestParam int empId) {
 

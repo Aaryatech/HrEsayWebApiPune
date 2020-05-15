@@ -23,7 +23,7 @@ public interface LoginResponseRepository extends JpaRepository<LoginResponse, In
 			"        e.ex_int1 as design_type,\n" + 
 			"        e.ex_var1 as hod_dept_ids,\n" + 
 			"        u.ex_int1 as is_visit,\n" + 
-			"        i.ex_var1 as emp_photo\n" + 
+			"        i.ex_var1 as emp_photo,0 as access_role_id \n" + 
 			"    from\n" + 
 			"        m_employees e,\n" + 
 			"        m_user u,\n" + 
