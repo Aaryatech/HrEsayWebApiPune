@@ -133,5 +133,24 @@ public class OptionalHolidayApiController {
 		return info;
 
 	}
+	
+	@RequestMapping(value = { "/getHistoryOptionalHoliday" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmpListForHolidayApprove> getHistoryOptionalHoliday(@RequestParam("empId") int empId,
+			@RequestParam("yearId") int yearId,@RequestParam("sts") List<Integer> sts) {
+
+		List<EmpListForHolidayApprove> list = new ArrayList<>();
+
+		try {
+
+			list = empListForHolidayApproveRepo.getHistoryOptionalHoliday(empId,yearId, sts);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+		return list;
+
+	}
 
 }
