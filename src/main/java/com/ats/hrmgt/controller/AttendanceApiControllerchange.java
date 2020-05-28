@@ -671,10 +671,12 @@ public class AttendanceApiControllerchange {
 							dailyAttendanceList.get(i).setOtHr(String.valueOf(actualotmin));
 						} else {
 							dailyAttendanceList.get(i).setOtHr("0");
+							dailyAttendanceList.get(i).setFreezeBySupervisor(2);
 						}
 
 					} else {
 						dailyAttendanceList.get(i).setOtHr("0");
+						dailyAttendanceList.get(i).setFreezeBySupervisor(2);
 					}
 
 				} catch (Exception e) {
@@ -1750,15 +1752,16 @@ public class AttendanceApiControllerchange {
 		return summaryDailyAttendanceList;
 
 	}
-	
+
 	@RequestMapping(value = { "/getDailyDailyRecordForFinalOtApproval" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetDailyDailyRecord> getDailyDailyRecordForFinalOtApproval(@RequestParam("date") String date,
-			@RequestParam("empId") int empId) {
+	public @ResponseBody List<GetDailyDailyRecord> getDailyDailyRecordForFinalOtApproval(
+			@RequestParam("date") String date, @RequestParam("empId") int empId) {
 
 		List<GetDailyDailyRecord> summaryDailyAttendanceList = new ArrayList<>();
 		try {
 
-			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForFinalOtApproval(date, empId);
+			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForFinalOtApproval(date,
+					empId);
 
 		} catch (Exception e) {
 
@@ -1896,6 +1899,28 @@ public class AttendanceApiControllerchange {
 
 				}
 			}
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
+	@RequestMapping(value = { "/updateAttendaceFinalRecordByempId" }, method = RequestMethod.POST)
+	public @ResponseBody Info updateAttendaceFinalRecordByempId(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("userId") int userId, @RequestParam("month") int month,
+			@RequestParam("year") int year, @RequestParam("empIds") List<Integer> empIds) {
+
+		Info info = new Info();
+		try {
+
+			for (int i = 0; i < empIds.size(); i++) {
+				info = finalUpdateDailySumaryRecord(fromDate, toDate, userId, month, year, empIds.get(i));
+			}
+			
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
