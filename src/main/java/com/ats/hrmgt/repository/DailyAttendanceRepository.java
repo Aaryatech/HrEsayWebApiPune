@@ -73,4 +73,9 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 	@Query(value = "select  IFNULL((select shift_id from t_shift_assign_daily where shift_date=:fromDate and emp_id=:empId),(select current_shiftid from m_employees where emp_id=:empId)) as shift_id", nativeQuery = true)
 	String getShiftIdByEmpId(@Param("empId")  int empId, @Param("fromDate") String fromDate);
 
+	@Transactional
+	@Modifying
+	@Query("update DailyAttendance set freeze_by_supervisor=:status  WHERE id in (:ids) ")
+	int updateOtApproveStatus(@Param("ids") List<Integer> ids,@Param("status") int status);
+
 }

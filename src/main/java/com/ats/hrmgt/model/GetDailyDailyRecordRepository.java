@@ -36,4 +36,132 @@ public interface GetDailyDailyRecordRepository extends JpaRepository<GetDailyDai
 	List<GetDailyDailyRecord> summaryDailyAttendanceListAll1(@Param("fromDate") String fromDate,
 			@Param("toDate") String toDate, @Param("companyId") int companyId);
 
+	
+	@Query(value = "SELECT\n" + 
+			"        id ,\n" + 
+			"        company_id ,\n" + 
+			"        emp_code ,\n" + 
+			"        emp_name ,\n" + 
+			"        att_date ,\n" + 
+			"        att_status ,\n" + 
+			"        lv_sumup_id ,\n" + 
+			"        CONCAT(FLOOR(working_hrs/60),\n" + 
+			"        '.',\n" + 
+			"        LPAD(MOD(working_hrs,\n" + 
+			"        60),\n" + 
+			"        2,\n" + 
+			"        '0')) as working_hrs ,\n" + 
+			"        in_time ,\n" + 
+			"        rec_status ,\n" + 
+			"        login_name ,\n" + 
+			"        login_time ,\n" + 
+			"        import_date ,\n" + 
+			"        cmp_code ,\n" + 
+			"        emp_id ,\n" + 
+			"        CONCAT(FLOOR(ot_hr/60),\n" + 
+			"        '.',\n" + 
+			"        LPAD(MOD(ot_hr,\n" + 
+			"        60),\n" + 
+			"        2,\n" + 
+			"        '0')) as ot_hr ,\n" + 
+			"        current_shiftid ,\n" + 
+			"        late_mark ,\n" + 
+			"        late_min ,\n" + 
+			"        reason ,\n" + 
+			"        current_shiftname ,\n" + 
+			"        freeze_by_supervisor ,\n" + 
+			"        comments_supervisor ,\n" + 
+			"        get_pass_used_count ,\n" + 
+			"        get_pass_used_hour ,\n" + 
+			"        get_pass_used_hour_reason ,\n" + 
+			"        raw_data_inout ,\n" + 
+			"        manual_ot_hr ,\n" + 
+			"        full_night ,\n" + 
+			"        half_night ,\n" + 
+			"        out_time ,\n" + 
+			"        early_going_mark ,\n" + 
+			"        early_going_min ,\n" + 
+			"        multiple_entries ,\n" + 
+			"        casetype ,\n" + 
+			"        is_fixed ,\n" + 
+			"        by_file_updated ,\n" + 
+			"        location_id ,\n" + 
+			"        emp_type ,\n" + 
+			"        emp_json ,\n" + 
+			"        atsumm_uid ,\n" + 
+			"        file_name ,\n" + 
+			"        row_id       \n" + 
+			"    FROM\n" + 
+			"        tbl_attt_daily_daily       \n" + 
+			"    WHERE\n" + 
+			"        is_fixed=0          \n" + 
+			"        and rec_status='o'         \n" + 
+			"        and freeze_by_supervisor=0         \n" + 
+			"        and by_file_updated=1 and att_date=:date and emp_id in (select emp_id from leave_authority where ini_auth_emp_id =:empId)", nativeQuery = true)
+	List<GetDailyDailyRecord> getDailyDailyRecordForOtApproval(@Param("date") String date,@Param("empId") int empId);
+
+	
+	@Query(value = "SELECT\n" + 
+			"        id ,\n" + 
+			"        company_id ,\n" + 
+			"        emp_code ,\n" + 
+			"        emp_name ,\n" + 
+			"        att_date ,\n" + 
+			"        att_status ,\n" + 
+			"        lv_sumup_id ,\n" + 
+			"        CONCAT(FLOOR(working_hrs/60),\n" + 
+			"        '.',\n" + 
+			"        LPAD(MOD(working_hrs,\n" + 
+			"        60),\n" + 
+			"        2,\n" + 
+			"        '0')) as working_hrs ,\n" + 
+			"        in_time ,\n" + 
+			"        rec_status ,\n" + 
+			"        login_name ,\n" + 
+			"        login_time ,\n" + 
+			"        import_date ,\n" + 
+			"        cmp_code ,\n" + 
+			"        emp_id ,\n" + 
+			"        CONCAT(FLOOR(ot_hr/60),\n" + 
+			"        '.',\n" + 
+			"        LPAD(MOD(ot_hr,\n" + 
+			"        60),\n" + 
+			"        2,\n" + 
+			"        '0')) as ot_hr ,\n" + 
+			"        current_shiftid ,\n" + 
+			"        late_mark ,\n" + 
+			"        late_min ,\n" + 
+			"        reason ,\n" + 
+			"        current_shiftname ,\n" + 
+			"        freeze_by_supervisor ,\n" + 
+			"        comments_supervisor ,\n" + 
+			"        get_pass_used_count ,\n" + 
+			"        get_pass_used_hour ,\n" + 
+			"        get_pass_used_hour_reason ,\n" + 
+			"        raw_data_inout ,\n" + 
+			"        manual_ot_hr ,\n" + 
+			"        full_night ,\n" + 
+			"        half_night ,\n" + 
+			"        out_time ,\n" + 
+			"        early_going_mark ,\n" + 
+			"        early_going_min ,\n" + 
+			"        multiple_entries ,\n" + 
+			"        casetype ,\n" + 
+			"        is_fixed ,\n" + 
+			"        by_file_updated ,\n" + 
+			"        location_id ,\n" + 
+			"        emp_type ,\n" + 
+			"        emp_json ,\n" + 
+			"        atsumm_uid ,\n" + 
+			"        file_name ,\n" + 
+			"        row_id       \n" + 
+			"    FROM\n" + 
+			"        tbl_attt_daily_daily       \n" + 
+			"    WHERE\n" + 
+			"        is_fixed=0          \n" + 
+			"        and rec_status='o'         \n" + 
+			"        and freeze_by_supervisor=1         \n" + 
+			"        and by_file_updated=1 and att_date=:date and emp_id in (select emp_id from leave_authority where fin_auth_emp_id =:empId)", nativeQuery = true)
+	List<GetDailyDailyRecord> getDailyDailyRecordForFinalOtApproval(@Param("date") String date,@Param("empId") int empId);
+
 }

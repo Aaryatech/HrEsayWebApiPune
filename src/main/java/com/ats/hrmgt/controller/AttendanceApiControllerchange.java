@@ -1733,6 +1733,63 @@ public class AttendanceApiControllerchange {
 
 	}
 
+	@RequestMapping(value = { "/getDailyDailyRecordForOtApproval" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetDailyDailyRecord> getDailyDailyRecordForOtApproval(@RequestParam("date") String date,
+			@RequestParam("empId") int empId) {
+
+		List<GetDailyDailyRecord> summaryDailyAttendanceList = new ArrayList<>();
+		try {
+
+			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForOtApproval(date, empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return summaryDailyAttendanceList;
+
+	}
+	
+	@RequestMapping(value = { "/getDailyDailyRecordForFinalOtApproval" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetDailyDailyRecord> getDailyDailyRecordForFinalOtApproval(@RequestParam("date") String date,
+			@RequestParam("empId") int empId) {
+
+		List<GetDailyDailyRecord> summaryDailyAttendanceList = new ArrayList<>();
+		try {
+
+			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForFinalOtApproval(date, empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return summaryDailyAttendanceList;
+
+	}
+
+	@RequestMapping(value = { "/updateOtApproveStatus" }, method = RequestMethod.POST)
+	public @ResponseBody Info updateOtApproveStatus(@RequestParam("ids") List<Integer> ids,
+			@RequestParam("status") int status) {
+
+		Info info = new Info();
+		try {
+
+			int update = dailyAttendanceRepository.updateOtApproveStatus(ids, status);
+			info.setError(false);
+			info.setMsg("success");
+
+		} catch (Exception e) {
+			info.setError(true);
+			info.setMsg("failed");
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
 	@RequestMapping(value = { "/getDailyDailyRecordByDailyId" }, method = RequestMethod.POST)
 	public @ResponseBody GetDailyDailyRecord getDailyDailyRecordByDailyId(@RequestParam("dailyId") int dailyId) {
 
@@ -1775,7 +1832,7 @@ public class AttendanceApiControllerchange {
 			@RequestParam("outTime") String outTime, @RequestParam("inTime") String inTime,
 			@RequestParam("selectStatusText") String selectStatusText, @RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("userId") int userId, @RequestParam("month") int month,
-			@RequestParam("year") int year,@RequestParam("selectShift") int selectShift) {
+			@RequestParam("year") int year, @RequestParam("selectShift") int selectShift) {
 
 		Info info = new Info();
 		try {
@@ -1785,13 +1842,13 @@ public class AttendanceApiControllerchange {
 			if (dailyRecordById.getIsFixed() == 0) {
 
 				List<Integer> empIdList = new ArrayList<>();
-				
+
 				empIdList.add(dailyRecordById.getEmpId());
-				
+
 				String dt = dailyRecordById.getAttDate();
-				
+
 				int update = shiftAssignDailyRepository.updateAssignShiftByDate(empIdList, dt, dt, selectShift);
-				
+
 				if (byStatus == 1) {
 
 					if (selectStatus != 0) {
