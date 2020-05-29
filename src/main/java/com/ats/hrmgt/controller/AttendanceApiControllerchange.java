@@ -671,12 +671,12 @@ public class AttendanceApiControllerchange {
 							dailyAttendanceList.get(i).setOtHr(String.valueOf(actualotmin));
 						} else {
 							dailyAttendanceList.get(i).setOtHr("0");
-							//dailyAttendanceList.get(i).setFreezeBySupervisor(2);
+							// dailyAttendanceList.get(i).setFreezeBySupervisor(2);
 						}
 
 					} else {
 						dailyAttendanceList.get(i).setOtHr("0");
-						//dailyAttendanceList.get(i).setFreezeBySupervisor(2);
+						// dailyAttendanceList.get(i).setFreezeBySupervisor(2);
 					}
 
 				} catch (Exception e) {
@@ -1835,7 +1835,8 @@ public class AttendanceApiControllerchange {
 			@RequestParam("outTime") String outTime, @RequestParam("inTime") String inTime,
 			@RequestParam("selectStatusText") String selectStatusText, @RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("userId") int userId, @RequestParam("month") int month,
-			@RequestParam("year") int year, @RequestParam("selectShift") int selectShift) {
+			@RequestParam("year") int year, @RequestParam("selectShift") int selectShift,
+			@RequestParam("otApproval") int otApproval) {
 
 		Info info = new Info();
 		try {
@@ -1869,6 +1870,10 @@ public class AttendanceApiControllerchange {
 					dailyRecordById.setOtHr(String.valueOf(othrs));
 					dailyRecordById.setLoginName(userId + ":manualchange");
 					dailyRecordById.setCurrentShiftid(selectShift);
+					if (otApproval == 1) {
+						dailyRecordById.setFreezeBySupervisor(2);
+					}
+
 					DailyAttendance updateRes = dailyAttendanceRepository.save(dailyRecordById);
 
 					info = finalUpdateDailySumaryRecord(fromDate, toDate, userId, month, year,
@@ -1919,7 +1924,6 @@ public class AttendanceApiControllerchange {
 			for (int i = 0; i < empIds.size(); i++) {
 				info = finalUpdateDailySumaryRecord(fromDate, toDate, userId, month, year, empIds.get(i));
 			}
-			
 
 		} catch (Exception e) {
 
