@@ -97,7 +97,7 @@ public interface GetDailyDailyRecordRepository extends JpaRepository<GetDailyDai
 			"        is_fixed=0          \n" + 
 			"        and rec_status='o'         \n" + 
 			"        and freeze_by_supervisor=0         \n" + 
-			"        and by_file_updated=1 and att_date=:date and emp_id in (select emp_id from leave_authority where ini_auth_emp_id =:empId)", nativeQuery = true)
+			"        and by_file_updated=1 and att_date=:date and emp_id in (select emp_id from leave_authority where ini_auth_emp_id =:empId) and ot_hr>0", nativeQuery = true)
 	List<GetDailyDailyRecord> getDailyDailyRecordForOtApproval(@Param("date") String date,@Param("empId") int empId);
 
 	
@@ -161,7 +161,7 @@ public interface GetDailyDailyRecordRepository extends JpaRepository<GetDailyDai
 			"        is_fixed=0          \n" + 
 			"        and rec_status='o'         \n" + 
 			"        and freeze_by_supervisor=1         \n" + 
-			"        and by_file_updated=1 and att_date=:date and emp_id in (select emp_id from leave_authority where fin_auth_emp_id =:empId)", nativeQuery = true)
+			"        and by_file_updated=1 and att_date=:date and emp_id in (select emp_id from leave_authority where fin_auth_emp_id =:empId) and ot_hr>0", nativeQuery = true)
 	List<GetDailyDailyRecord> getDailyDailyRecordForFinalOtApproval(@Param("date") String date,@Param("empId") int empId);
 
 }

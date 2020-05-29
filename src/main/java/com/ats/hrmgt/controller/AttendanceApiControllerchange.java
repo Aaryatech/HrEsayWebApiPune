@@ -671,12 +671,12 @@ public class AttendanceApiControllerchange {
 							dailyAttendanceList.get(i).setOtHr(String.valueOf(actualotmin));
 						} else {
 							dailyAttendanceList.get(i).setOtHr("0");
-							dailyAttendanceList.get(i).setFreezeBySupervisor(2);
+							//dailyAttendanceList.get(i).setFreezeBySupervisor(2);
 						}
 
 					} else {
 						dailyAttendanceList.get(i).setOtHr("0");
-						dailyAttendanceList.get(i).setFreezeBySupervisor(2);
+						//dailyAttendanceList.get(i).setFreezeBySupervisor(2);
 					}
 
 				} catch (Exception e) {
