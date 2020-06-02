@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.hrmgt.claim.repository.ClaimApplyRepo;
 import com.ats.hrmgt.claim.repository.ClaimDetailRepo;
 import com.ats.hrmgt.claim.repository.ClaimHeaderRepo;
+import com.ats.hrmgt.claim.repository.ClaimStructureDetailRepo;
 import com.ats.hrmgt.claim.repository.ClaimTrailRepo;
 import com.ats.hrmgt.claim.repository.GetClaimApplyAuthwiseRepo;
 import com.ats.hrmgt.claim.repository.GetClaimHeadRepo;
@@ -30,7 +31,7 @@ import com.ats.hrmgt.claim.repository.GetEmployeeAuthorityWiseRepo;
 import com.ats.hrmgt.claim.repository.GetEmployeeClaimStrudtRepo;
 import com.ats.hrmgt.common.EmailUtility;
 import com.ats.hrmgt.common.Firebase;
-import com.ats.hrmgt.model.AuthorityInformation;
+import com.ats.hrmgt.model.AuthorityInformation; 
 import com.ats.hrmgt.model.EmployeeInfo;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.GetAuthorityIds;
@@ -39,6 +40,7 @@ import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.claim.ClaimApply;
 import com.ats.hrmgt.model.claim.ClaimApplyHeader;
 import com.ats.hrmgt.model.claim.ClaimDetail;
+import com.ats.hrmgt.model.claim.ClaimStructureDetail;
 import com.ats.hrmgt.model.claim.ClaimTrail;
 import com.ats.hrmgt.model.claim.GetClaimApplyAuthwise;
 import com.ats.hrmgt.model.claim.GetClaimHead;
@@ -80,6 +82,9 @@ public class ClaimApplicationApiController {
 
 	@Autowired
 	ClaimHeaderRepo claimHeaderRepo;
+	
+	@Autowired
+	ClaimStructureDetailRepo claimStructureDetailRepo;
 
 	static String senderEmail = "atsinfosoft@gmail.com";
 	static String senderPassword = "atsinfosoft@123";
@@ -103,6 +108,24 @@ public class ClaimApplicationApiController {
 
 	}
 
+	@RequestMapping(value = { "/getClaimStructureDetailByEmpId" }, method = RequestMethod.POST)
+	public @ResponseBody List<ClaimStructureDetail> getClaimStructureDetailByEmpId(@RequestParam("empId") int empId) {
+
+		List<ClaimStructureDetail> detailList = new ArrayList<>();
+		try {
+
+			  
+			 detailList = claimStructureDetailRepo.getClaimStructureDetailByEmpId(empId);
+			 
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return detailList;
+
+	}
 	@RequestMapping(value = { "/getEmpInfoAuthWise" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetEmployeeInfo> getEmpInfoAuthWise(@RequestParam("companyId") int companyId,
 			@RequestParam("locIdList") List<Integer> locIdList, @RequestParam("empId") int empId) {
