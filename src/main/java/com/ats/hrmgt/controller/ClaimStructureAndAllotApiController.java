@@ -160,7 +160,7 @@ public class ClaimStructureAndAllotApiController {
 
 		List<GetClaimStructureAllotment> list = new ArrayList<GetClaimStructureAllotment>();
 		try {
-			list = getClaimStructureAllotment.getStructureAllotment(companyId, locIdList);
+			list = getClaimStructureAllotment.getStructureAllotment(companyId);
 
 			System.out.println(list.toString());
 
@@ -173,6 +173,7 @@ public class ClaimStructureAndAllotApiController {
 
 	}
 
+	
 	
 	@RequestMapping(value = { "/saveClaimStructAllotment" }, method = RequestMethod.POST)
 	public @ResponseBody ClaimStructureAllotment saveClaimStructAllotment(

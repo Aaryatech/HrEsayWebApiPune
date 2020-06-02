@@ -33,9 +33,8 @@ public interface GetClaimStructureAllotmentRepo extends JpaRepository<GetClaimSt
 			"LEFT JOIN claim_structure_header l ON\n" + 
 			"    lsa.clms_id = l.clm_struct_head_id AND l.del_status = 1\n" + 
 			"WHERE\n" + 
-			"    e.del_status = 1   AND e.cmp_code =:companyId AND e.location_id IN(:locIdList)", nativeQuery = true)
+			"    e.del_status = 1   AND e.cmp_code =:companyId  order by lsa.clms_id", nativeQuery = true)
 
-	List<GetClaimStructureAllotment> getStructureAllotment(@Param("companyId") int companyId,
-			@Param("locIdList") List<Integer> locIdList );
+	List<GetClaimStructureAllotment> getStructureAllotment(@Param("companyId") int companyId );
 	
 }
