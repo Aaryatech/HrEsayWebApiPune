@@ -92,7 +92,7 @@ public class ClaimApplicationApiController {
 		List<GetEmployeeInfo> list = new ArrayList<GetEmployeeInfo>();
 		try {
 
-			list = getEmpInfo.getEmpListByCompanyId(companyId, locIdList);
+			list = getEmpInfo.getEmpListByCompanyId(companyId);
 
 		} catch (Exception e) {
 
@@ -155,7 +155,7 @@ public class ClaimApplicationApiController {
 		List<GetEmployeeInfo> list = new ArrayList<GetEmployeeInfo>();
 		try {
 
-			list = getEmpInfo.getEmpListByCompanyIdForAuthClaim(companyId, locIdList);
+			list = getEmpInfo.getEmpListByCompanyIdForAuthClaim(companyId);
 
 		} catch (Exception e) {
 

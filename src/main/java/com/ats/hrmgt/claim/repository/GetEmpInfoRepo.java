@@ -48,15 +48,13 @@ public interface GetEmpInfoRepo extends JpaRepository<GetEmployeeInfo, Integer> 
 			"        and emp_info.emp_type=tbl_mst_emp_types.emp_type_id \n" + 
 			"        and emp_info.del_status=1    \n" + 
 			"         and emp_info.cmp_code=:companyId \n" + 
-			"        and emp_info.location_id IN(\n" + 
-			"        :locIdList \n" + 
-			"        ) \n" + 
-			"        and emp_info.cmp_code=m_company.company_id   AND m_designation.desig_id=  emp_info.designation_id\n" + 
+			"         and emp_info.cmp_code=m_company.company_id   AND m_designation.desig_id=  emp_info.designation_id AND emp_info.ex_int1 in(\n" + 
+			"            1,2\n" + 
+			"        )\n" + 
 			"     order by\n" + 
 			"        emp_info.emp_id desc ", nativeQuery = true)
 
-	List<GetEmployeeInfo> getEmpListByCompanyId(@Param("companyId") int companyId,
-			@Param("locIdList") List<Integer> locIdList);
+	List<GetEmployeeInfo> getEmpListByCompanyId(@Param("companyId") int companyId);
 	
 	
 	
@@ -230,11 +228,7 @@ public interface GetEmpInfoRepo extends JpaRepository<GetEmployeeInfo, Integer> 
 			"        emp_info.depart_id=m_department.depart_id          \n" + 
 			"        and emp_info.designation_id= m_designation.desig_id           \n" + 
 			"        and emp_info.emp_type=tbl_mst_emp_types.emp_type_id          \n" + 
-			"        and emp_info.del_status=1             \n" + 
-			"         and emp_info.location_id IN(\n" + 
-			"         :locIdList \n" + 
-			"        )          \n" + 
-			"        and emp_info.cmp_code=:companyId               \n" + 
+			"        and emp_info.del_status=1  and emp_info.cmp_code=:companyId               \n" + 
 			"        and emp_info.cmp_code=m_company.company_id          \n" + 
 			"        AND emp_info.emp_id NOT IN(\n" + 
 			"            SELECT\n" + 
@@ -245,7 +239,7 @@ public interface GetEmpInfoRepo extends JpaRepository<GetEmployeeInfo, Integer> 
 			"                claim.del_status=1 \n" + 
 			"        ) ", nativeQuery = true)
 
-	List<GetEmployeeInfo> getEmpListByCompanyIdForAuthClaim(@Param("companyId") int companyId,@Param("locIdList") List<Integer> locIdList);
+	List<GetEmployeeInfo> getEmpListByCompanyIdForAuthClaim(@Param("companyId") int companyId);
 	 
 	@Query(value = " SELECT\n" + 
 			"    emp_info.emp_code,\n" + 
