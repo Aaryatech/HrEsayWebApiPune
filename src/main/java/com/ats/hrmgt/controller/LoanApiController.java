@@ -176,7 +176,7 @@ public class LoanApiController {
 			float period = Float.parseFloat(tenure);
 			float si = 0;
 			float emi = 0;
-
+float totalPayble=0;
 			LocalDate localDate = LocalDate.parse(startDate);
 
 		//	System.out.println("bef" + localDate);
@@ -196,7 +196,9 @@ public class LoanApiController {
 			}
 			if (type == 1) {
 				si = (principle * (period / 12) * rate) / 100;
+				System.err.println("si " +si);
  				si = si + principle;
+ 				
  				si=(float) NumberFormatting.castNumber(si, 1);
  				
 				// System.err.println("rounded "+emi);
@@ -213,7 +215,17 @@ public class LoanApiController {
 
 			list.setEmiAmt(emi);
 			list.setRepayAmt(si);
-
+			/*
+			 * //Sachin COde 05-06-2020 System.err.println("rate "+ rate);
+			 * System.err.println("period "+ period); totalPayble=principle*(1+
+			 * (rate*period)/(100*period)); System.err.println("totalPayble "+ totalPayble);
+			 * totalPayble=(float) NumberFormatting.castNumber(totalPayble, 1);
+			 * list.setRepayAmt(totalPayble);
+			 * 
+			 * float myEmi = Math.round(totalPayble / period); System.err.println("myEmi "+
+			 * myEmi); myEmi=(float) NumberFormatting.castNumber(myEmi, 1);
+			 * list.setEmiAmt(myEmi);
+			 */
 		} catch (Exception e) {
 
 			e.printStackTrace();

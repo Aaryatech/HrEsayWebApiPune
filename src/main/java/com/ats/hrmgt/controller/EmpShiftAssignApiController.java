@@ -651,5 +651,18 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
+	//Sachin 05-06-2020
+	//Get Employees Eligible for Loan/Guarantor
+	@RequestMapping(value = { "/getEmpsForLoanOrGuarantor" }, method = RequestMethod.GET)
+	public List<GetEmployeeDetails> getEmpsForLoanOrGuarantor() {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getEmpsForLoanOrGuarantor();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetail : " + e.getMessage());
+			e.printStackTrace();
+		}
 
+		return list;
+	}
 }
