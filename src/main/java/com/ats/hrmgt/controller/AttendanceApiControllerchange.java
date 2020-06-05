@@ -1249,6 +1249,7 @@ public class AttendanceApiControllerchange {
 
 			Setting setting = settingRepo.findByKey("ab_deduction");
 			Setting max_late_day_allowed = settingRepo.findByKey("max_late_day_allowed");
+			Setting leave_working_hr = settingRepo.findByKey("leave_working_hr");
 
 			List<DailyDailyInformation> dailyDailyInformationList = new ArrayList<>();
 
@@ -1414,7 +1415,8 @@ public class AttendanceApiControllerchange {
 				summaryDailyAttendanceList.get(i).setTotlateMins(lateMin);
 
 				summaryDailyAttendanceList.get(i).setTotLate(lateMark);
-				summaryDailyAttendanceList.get(i).setTotworkingHrs(totalWorkingHr);
+				summaryDailyAttendanceList.get(i)
+						.setTotworkingHrs(totalWorkingHr + (paidLeave * Integer.parseInt(leave_working_hr.getValue())));
 				summaryDailyAttendanceList.get(i).setTotOthr(totalOtHr);
 				summaryDailyAttendanceList.get(i).setPresentDays(presentDays);
 				summaryDailyAttendanceList.get(i).setHdpresentHdleave(holidayPresentHalf);
