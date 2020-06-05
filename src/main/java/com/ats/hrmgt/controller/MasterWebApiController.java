@@ -697,8 +697,12 @@ public class MasterWebApiController {
 		return info;
 	}
 
-	private static String DOC_URL=	"/opt/apache-tomcat-8.5.6/webapps/media/hr/";
+	/*private static String DOC_URL=	"/opt/apache-tomcat-8.5.6/webapps/media/hr/";
+	public static final String leaveDocSaveUrl = "/home/lenovo/Downloads/old/apache-tomcat-8.5.37/webapps/media/";*/
+	
+	private static String DOC_URL=	"/opt/apache-tomcat-8.5.47/webapps/hrdocument/mixDoc/";
 	public static final String leaveDocSaveUrl = "/home/lenovo/Downloads/old/apache-tomcat-8.5.37/webapps/media/";
+	
 	private void saveUploadedFiles(MultipartFile[] files, List<String> imageName, String type) throws IOException {
 
 		try {
