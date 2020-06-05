@@ -328,7 +328,7 @@ public class AttendanceApiControllerchange {
 		SimpleDateFormat yyDtTm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		try {
-
+			Setting leave_working_hr = settingRepo.findByKey("leave_working_hr");
 			Setting setting = settingRepo.findByKey("fix_shift");
 			int fixShiftValue = Integer.parseInt(setting.getValue());
 
@@ -977,7 +977,6 @@ public class AttendanceApiControllerchange {
 							}
 						} else if (atteanceCase.equals("1358") || atteanceCase.equals("1458")
 								|| atteanceCase.equals("2358") || atteanceCase.equals("2458")) {
-
 							// Apply leave
 
 							/*
@@ -992,6 +991,10 @@ public class AttendanceApiControllerchange {
 							 * dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
 							 * break; } } }
 							 */
+							if(leave_working_hr.getValue().equals("1")) {
+								dailyAttendanceList.get(i).setWorkingHrs(Float.parseFloat(shiftMaster.getShiftHr()));
+							}
+							
 							dailyAttendanceList.get(i).setAttStatus(stsInfo.getStsshortname());
 							dailyAttendanceList.get(i).setLvSumupId(stsInfo.getLvTypeId());
 
@@ -1249,7 +1252,6 @@ public class AttendanceApiControllerchange {
 
 			Setting setting = settingRepo.findByKey("ab_deduction");
 			Setting max_late_day_allowed = settingRepo.findByKey("max_late_day_allowed");
-			Setting leave_working_hr = settingRepo.findByKey("leave_working_hr");
 
 			List<DailyDailyInformation> dailyDailyInformationList = new ArrayList<>();
 
@@ -1415,8 +1417,7 @@ public class AttendanceApiControllerchange {
 				summaryDailyAttendanceList.get(i).setTotlateMins(lateMin);
 
 				summaryDailyAttendanceList.get(i).setTotLate(lateMark);
-				summaryDailyAttendanceList.get(i)
-						.setTotworkingHrs(totalWorkingHr + (paidLeave * Integer.parseInt(leave_working_hr.getValue())));
+				summaryDailyAttendanceList.get(i).setTotworkingHrs(totalWorkingHr);
 				summaryDailyAttendanceList.get(i).setTotOthr(totalOtHr);
 				summaryDailyAttendanceList.get(i).setPresentDays(presentDays);
 				summaryDailyAttendanceList.get(i).setHdpresentHdleave(holidayPresentHalf);
