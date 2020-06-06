@@ -2,6 +2,7 @@ package com.ats.hrmgt.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -28,6 +29,7 @@ import com.ats.hrmgt.model.DateAndDay;
 import com.ats.hrmgt.model.EmpInfo;
 import com.ats.hrmgt.model.EmpInfoWithDateInfoList;
 import com.ats.hrmgt.model.EmpJsonData;
+import com.ats.hrmgt.model.EmpSalType;
 import com.ats.hrmgt.model.EmpSalaryInfoForPayroll;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.FileUploadedData;
@@ -58,6 +60,7 @@ import com.ats.hrmgt.repository.AccessRightModuleRepository;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
 import com.ats.hrmgt.repository.DailyDailyInformationRepository;
 import com.ats.hrmgt.repository.EmpInfoRepository;
+import com.ats.hrmgt.repository.EmpSalTypeRepository;
 import com.ats.hrmgt.repository.EmpSalaryInfoForPayrollRepository;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.GetWeeklyOffRepo;
@@ -154,6 +157,9 @@ public class AttendanceApiControllerchange {
 
 	@Autowired
 	ShiftAssignDailyRepository shiftAssignDailyRepository;
+
+	@Autowired
+	EmpSalTypeRepository empSalTypeRepository;
 
 	@RequestMapping(value = { "/initiallyInsertDailyRecord" }, method = RequestMethod.POST)
 	public @ResponseBody Info initiallyInsertDailyRecord(@RequestParam("fromDate") String fromDate,
@@ -328,6 +334,7 @@ public class AttendanceApiControllerchange {
 		SimpleDateFormat yyDtTm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		try {
+
 			Setting leave_working_hr = settingRepo.findByKey("leave_working_hr");
 			Setting setting = settingRepo.findByKey("fix_shift");
 			int fixShiftValue = Integer.parseInt(setting.getValue());
@@ -427,6 +434,7 @@ public class AttendanceApiControllerchange {
 
 			for (int i = 0; i < dailyAttendanceList.size(); i++) {
 
+				int groupType = 0;
 				int flagLatemarkHd = 0;
 				possibleShiftList = new ArrayList<>();
 
@@ -471,6 +479,7 @@ public class AttendanceApiControllerchange {
 								&& employee.getEmpId() == shiftAssignDailyList.get(j).getEmpId()) {
 
 							shiftId = shiftAssignDailyList.get(j).getShiftId();
+							groupType = shiftAssignDailyList.get(j).getExtra1();
 							break;
 						}
 
@@ -643,6 +652,7 @@ public class AttendanceApiControllerchange {
 					 */
 
 					// identify night work
+
 					if (shiftMaster.getDepartmentId() == 1) {
 
 						dailyAttendanceList.get(i).setFullNight(1);
@@ -655,28 +665,35 @@ public class AttendanceApiControllerchange {
 						dailyAttendanceList.get(i).setFullNight(0);
 					}
 
-					if (diffMinutesBetweenInOut > shiftMaster.getShiftOtHour()) {
-						int otHr = (int) (diffMinutesBetweenInOut - shiftMaster.getShiftOtHour());
-						int otintHrs = otHr / 60;
-						int otintmin = otHr % 60;
+					if (groupType == 2) {
 
-						if (otintHrs >= 1) {
+						dailyAttendanceList.get(i).setOtHr("0");
 
-							int actualotmin = otintHrs * 60;
+					} else {
 
-							if (otintmin > 30 && otintmin < 60) {
-								actualotmin = actualotmin + 30;
+						if (diffMinutesBetweenInOut > shiftMaster.getShiftOtHour()) {
+							int otHr = (int) (diffMinutesBetweenInOut - shiftMaster.getShiftOtHour());
+							int otintHrs = otHr / 60;
+							int otintmin = otHr % 60;
+
+							if (otintHrs >= 1) {
+
+								int actualotmin = otintHrs * 60;
+
+								if (otintmin > 30 && otintmin < 60) {
+									actualotmin = actualotmin + 30;
+								}
+
+								dailyAttendanceList.get(i).setOtHr(String.valueOf(actualotmin));
+							} else {
+								dailyAttendanceList.get(i).setOtHr("0");
+								// dailyAttendanceList.get(i).setFreezeBySupervisor(2);
 							}
 
-							dailyAttendanceList.get(i).setOtHr(String.valueOf(actualotmin));
 						} else {
 							dailyAttendanceList.get(i).setOtHr("0");
 							// dailyAttendanceList.get(i).setFreezeBySupervisor(2);
 						}
-
-					} else {
-						dailyAttendanceList.get(i).setOtHr("0");
-						// dailyAttendanceList.get(i).setFreezeBySupervisor(2);
 					}
 
 				} catch (Exception e) {
@@ -686,45 +703,52 @@ public class AttendanceApiControllerchange {
 				// calculate late time
 				try {
 
-					int allowdLateTime = 0;
-					shiftTime = dailyAttendanceList.get(i).getAttDate() + " " + shiftMaster.getFromtime();
-					if (mstEmpType.getMaxLateTimeAllowed() > shiftMaster.getMaxLateTimeAllowed()) {
-						allowdLateTime = mstEmpType.getMaxLateTimeAllowed();
-					} else {
-						allowdLateTime = shiftMaster.getMaxLateTimeAllowed();
-					}
+					if (groupType == 2) {
 
-					Date inDateTime = yyDtTm.parse(inDttime);
-					Date shiftDatetime = yyDtTm.parse(shiftTime);// Set end date
-
-					if (inDateTime.compareTo(shiftDatetime) > 0) {
-						long durationBetweenInOut = inDateTime.getTime() - shiftDatetime.getTime();
-						long diffHoursBetweenInOut = durationBetweenInOut / (60 * 60 * 1000);
-						long diffMinutesBetweenInOut = (durationBetweenInOut / (60 * 1000) % 60)
-								+ (diffHoursBetweenInOut * 60);
-						dailyAttendanceList.get(i).setLateMin((int) diffMinutesBetweenInOut);
-
-						if (diffMinutesBetweenInOut > allowdLateTime) {
-							dailyAttendanceList.get(i).setLateMark("1");
-						} else {
-							dailyAttendanceList.get(i).setLateMark("0");
-						}
-					} else {
 						dailyAttendanceList.get(i).setLateMin(0);
 						dailyAttendanceList.get(i).setLateMark("0");
-					}
+					} else {
 
-					if (Float.parseFloat(shiftMaster.getShiftHr()) > dailyAttendanceList.get(i).getWorkingHrs()) {
-						// dailyAttendanceList.get(i).setLateMark("0");
-					}
+						int allowdLateTime = 0;
+						shiftTime = dailyAttendanceList.get(i).getAttDate() + " " + shiftMaster.getFromtime();
+						if (mstEmpType.getMaxLateTimeAllowed() > shiftMaster.getMaxLateTimeAllowed()) {
+							allowdLateTime = mstEmpType.getMaxLateTimeAllowed();
+						} else {
+							allowdLateTime = shiftMaster.getMaxLateTimeAllowed();
+						}
 
-					if (dailyAttendanceList.get(i).getLateMin() > 0) {
-						dailyAttendanceList.get(i).setLateMark("1");
-					}
+						Date inDateTime = yyDtTm.parse(inDttime);
+						Date shiftDatetime = yyDtTm.parse(shiftTime);// Set end date
 
-					if (dailyAttendanceList.get(i).getLateMin() > allowdLateTime) {
-						dailyAttendanceList.get(i).setLateMark("0");
-						flagLatemarkHd = 1;
+						if (inDateTime.compareTo(shiftDatetime) > 0) {
+							long durationBetweenInOut = inDateTime.getTime() - shiftDatetime.getTime();
+							long diffHoursBetweenInOut = durationBetweenInOut / (60 * 60 * 1000);
+							long diffMinutesBetweenInOut = (durationBetweenInOut / (60 * 1000) % 60)
+									+ (diffHoursBetweenInOut * 60);
+							dailyAttendanceList.get(i).setLateMin((int) diffMinutesBetweenInOut);
+
+							if (diffMinutesBetweenInOut > allowdLateTime) {
+								dailyAttendanceList.get(i).setLateMark("1");
+							} else {
+								dailyAttendanceList.get(i).setLateMark("0");
+							}
+						} else {
+							dailyAttendanceList.get(i).setLateMin(0);
+							dailyAttendanceList.get(i).setLateMark("0");
+						}
+
+						if (Float.parseFloat(shiftMaster.getShiftHr()) > dailyAttendanceList.get(i).getWorkingHrs()) {
+							// dailyAttendanceList.get(i).setLateMark("0");
+						}
+
+						if (dailyAttendanceList.get(i).getLateMin() > 0) {
+							dailyAttendanceList.get(i).setLateMark("1");
+						}
+
+						if (dailyAttendanceList.get(i).getLateMin() > allowdLateTime) {
+							dailyAttendanceList.get(i).setLateMark("0");
+							flagLatemarkHd = 1;
+						}
 					}
 
 				} catch (Exception e) {
@@ -991,10 +1015,10 @@ public class AttendanceApiControllerchange {
 							 * dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
 							 * break; } } }
 							 */
-							if(leave_working_hr.getValue().equals("1")) {
+							if (leave_working_hr.getValue().equals("1")) {
 								dailyAttendanceList.get(i).setWorkingHrs(Float.parseFloat(shiftMaster.getShiftHr()));
 							}
-							
+
 							dailyAttendanceList.get(i).setAttStatus(stsInfo.getStsshortname());
 							dailyAttendanceList.get(i).setLvSumupId(stsInfo.getLvTypeId());
 
@@ -1257,21 +1281,34 @@ public class AttendanceApiControllerchange {
 
 			List<SummaryDailyAttendance> summaryDailyAttendanceList = new ArrayList<>();
 
+			List<EmpSalType> empSalTypeList = new ArrayList<>();
+
 			if (empId != 0) {
 
 				dailyDailyInformationList = dailyDailyInformationRepository.dailyDailyInformationList(fromDate, toDate,
 						empId);
 				summaryDailyAttendanceList = summaryDailyAttendanceRepository.summaryDailyAttendanceList(month, year,
 						empId);
-
+				empSalTypeList = empSalTypeRepository.empSalTypeList(month, year, empId);
 			} else {
 
 				dailyDailyInformationList = dailyDailyInformationRepository.dailyDailyInformationList(fromDate, toDate);
 				summaryDailyAttendanceList = summaryDailyAttendanceRepository.summaryDailyAttendanceListAll(month,
 						year);
+				empSalTypeList = empSalTypeRepository.empSalTypeList(month, year);
 			}
 
 			for (int i = 0; i < summaryDailyAttendanceList.size(); i++) {
+
+				EmpSalType empSalType = new EmpSalType();
+
+				for (int j = 0; j < empSalTypeList.size(); j++) {
+
+					if (empSalTypeList.get(j).getEmpId() == summaryDailyAttendanceList.get(i).getEmpId()) {
+						empSalType = empSalTypeList.get(j);
+						break;
+					}
+				}
 
 				int totalDaysInmonth = difffun(fromDate, toDate);
 				float workingDays = 0;
@@ -1414,11 +1451,47 @@ public class AttendanceApiControllerchange {
 						}
 					}
 				}
-				summaryDailyAttendanceList.get(i).setTotlateMins(lateMin);
 
-				summaryDailyAttendanceList.get(i).setTotLate(lateMark);
-				summaryDailyAttendanceList.get(i).setTotworkingHrs(totalWorkingHr);
-				summaryDailyAttendanceList.get(i).setTotOthr(totalOtHr);
+				try {
+
+					System.out.println(empSalType.getSalBasis());
+					if (empSalType.getSalBasis().equalsIgnoreCase("hour")) {
+
+						summaryDailyAttendanceList.get(i).setTotlateMins(0);
+						summaryDailyAttendanceList.get(i).setTotLate(0);
+						summaryDailyAttendanceList.get(i).setTotworkingHrs(totalWorkingHr);
+
+						String[] otarr = empSalType.getMonthlyOtHr().split("\\.");
+						System.out.println(Arrays.asList(otarr) + " " + otarr.length);
+						int monthlyOtMin = 0;
+
+						if (otarr.length > 1) {
+
+							monthlyOtMin = (Integer.parseInt(otarr[0]) * 60) + Integer.parseInt(otarr[1]);
+
+						} else {
+							monthlyOtMin = (Integer.parseInt(otarr[0]) * 60);
+						}
+
+						if (totalWorkingHr > monthlyOtMin) {
+							summaryDailyAttendanceList.get(i).setTotOthr(totalWorkingHr - monthlyOtMin);
+						} else {
+							summaryDailyAttendanceList.get(i).setTotOthr(0);
+						}
+						//System.out.println("************************ in if" + monthlyOtMin + " " + totalWorkingHr);
+					} else {
+						summaryDailyAttendanceList.get(i).setTotlateMins(lateMin);
+						summaryDailyAttendanceList.get(i).setTotLate(lateMark);
+						summaryDailyAttendanceList.get(i).setTotworkingHrs(totalWorkingHr);
+						summaryDailyAttendanceList.get(i).setTotOthr(totalOtHr);
+					}
+				} catch (Exception e) {
+					summaryDailyAttendanceList.get(i).setTotlateMins(lateMin);
+					summaryDailyAttendanceList.get(i).setTotLate(lateMark);
+					summaryDailyAttendanceList.get(i).setTotworkingHrs(totalWorkingHr);
+					summaryDailyAttendanceList.get(i).setTotOthr(totalOtHr);
+				}
+
 				summaryDailyAttendanceList.get(i).setPresentDays(presentDays);
 				summaryDailyAttendanceList.get(i).setHdpresentHdleave(holidayPresentHalf);
 				summaryDailyAttendanceList.get(i).setPaidLeave(paidLeave);

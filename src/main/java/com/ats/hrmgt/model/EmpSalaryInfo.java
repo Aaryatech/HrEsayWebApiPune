@@ -17,110 +17,122 @@ public class EmpSalaryInfo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name="salary_info_id")
+	@Column(name = "salary_info_id")
 	private int salaryInfoId;
-	
-	@Column(name="emp_id")
+
+	@Column(name = "emp_id")
 	private int empId;
-	
-	@Column(name="salary_type_id")
+
+	@Column(name = "salary_type_id")
 	private int salaryTypeId;
-	
-	@Column(name="basic")
+
+	@Column(name = "basic")
 	private double basic;
-	
-	@Column(name="da")
+
+	@Column(name = "da")
 	private double da;
-	
-	@Column(name="hra")
+
+	@Column(name = "hra")
 	private double hra;
-	
-	@Column(name="spa")
+
+	@Column(name = "spa")
 	private double spa;
-	
-	@Column(name="pf_applicable")
+
+	@Column(name = "pf_applicable")
 	private String pfApplicable;
-	
-	@Column(name="pf_type")
+
+	@Column(name = "pf_type")
 	private String pfType;
-	
-	@Column(name="pf_emp_per")
+
+	@Column(name = "pf_emp_per")
 	private double pfEmpPer;
-	
-	@Column(name="pf_emplr_per")
+
+	@Column(name = "pf_emplr_per")
 	private double pfEmplrPer;
-	
-	@Column(name="esic_applicable")
+
+	@Column(name = "esic_applicable")
 	private String esicApplicable;
-	
-	@Column(name="cmp_joining_date")
+
+	@Column(name = "cmp_joining_date")
 	private Date cmpJoiningDate;
-	
-	@Column(name="cmp_leaving_date")
+
+	@Column(name = "cmp_leaving_date")
 	private Date cmpLeavingDate;
-	
-	@Column(name="epf_joining_date")
+
+	@Column(name = "epf_joining_date")
 	private Date epfJoiningDate;
-	
-	@Column(name="leaving_reason")
+
+	@Column(name = "leaving_reason")
 	private String leavingReason;
-	
-	@Column(name="salBasis")
+
+	@Column(name = "salBasis")
 	private String salBasis;
-	
-	@Column(name="ceiling_limit_emp_applicable")
+
+	@Column(name = "ceiling_limit_emp_applicable")
 	private String ceilingLimitEmpApplicable;
-	
-	@Column(name="ceiling_limit_employer_applicable")
+
+	@Column(name = "ceiling_limit_employer_applicable")
 	private String ceilingLimitEmployerApplicable;
-	
-	@Column(name="leaving_reason_esic")
+
+	@Column(name = "leaving_reason_esic")
 	private String leavingReasonEsic;
-	
-	@Column(name="leaving_reason_pf")
+
+	@Column(name = "leaving_reason_pf")
 	private String leavingReasonPf;
-	
-	@Column(name="mlwf_applicable")
+
+	@Column(name = "mlwf_applicable")
 	private String mlwfApplicable;
-	
-	@Column(name="pt_applicable")
+
+	@Column(name = "pt_applicable")
 	private String ptApplicable;
-	
-	@Column(name="gross_salary")
+
+	@Column(name = "gross_salary")
 	private double grossSalary;
-	
-	@Column(name="society_contribution")
+
+	@Column(name = "society_contribution")
 	private double societyContribution;
-	
-	@Column(name="basic_company")
+
+	@Column(name = "basic_company")
 	private double basicCompany;
-	
-	@Column(name="hra_company")
+
+	@Column(name = "hra_company")
 	private double hraCompany;
-	
-	@Column(name="da_company")	
+
+	@Column(name = "da_company")
 	private double daCompany;
-	
-	@Column(name="employee_esic_percentage")
+
+	@Column(name = "employee_esic_percentage")
 	private double employeeEsicPercentage;
-	
-	@Column(name="employer_esic_percentage")
+
+	@Column(name = "employer_esic_percentage")
 	private double employerEsicPercentage;
-	
-	@Column(name="del_status")
+
+	@Column(name = "del_status")
 	private int delStatus;
-	
-	@Column(name="ex_int1")
+
+	@Column(name = "ex_int1")
 	private int exInt1;
-	
-	@Column(name="ex_int2")
+
+	@Column(name = "ex_int2")
 	private int exInt2;
-	
-	@Column(name="ex_var1")
+
+	@Column(name = "ex_var1")
 	private String exVar1;
-	
-	@Column(name="ex_var2")	
-	private String exVar2;	
+
+	@Column(name = "ex_var2")
+	private String exVar2;
+
+	@Column(name = "daily_hr")
+	private String dailyHr;
+
+	@Column(name = "monthly_hr_target")
+	private String monthlyHrTarget;
+
+	@Column(name = "monthly_minimum_target")
+	private String monthlyMinimumTarget;
+
+	@Column(name = "monthly_ot_hr")
+	private String monthlyOtHr;
 
 	public int getSalaryInfoId() {
 		return salaryInfoId;
@@ -218,7 +230,7 @@ public class EmpSalaryInfo {
 		this.esicApplicable = esicApplicable;
 	}
 
-	@JsonFormat(locale = "hi",timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
 	public Date getCmpJoiningDate() {
 		return cmpJoiningDate;
 	}
@@ -226,7 +238,8 @@ public class EmpSalaryInfo {
 	public void setCmpJoiningDate(Date cmpJoiningDate) {
 		this.cmpJoiningDate = cmpJoiningDate;
 	}
-	@JsonFormat(locale = "hi",timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
 	public Date getCmpLeavingDate() {
 		return cmpLeavingDate;
 	}
@@ -234,7 +247,8 @@ public class EmpSalaryInfo {
 	public void setCmpLeavingDate(Date cmpLeavingDate) {
 		this.cmpLeavingDate = cmpLeavingDate;
 	}
-	@JsonFormat(locale = "hi",timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
 	public Date getEpfJoiningDate() {
 		return epfJoiningDate;
 	}
@@ -250,7 +264,6 @@ public class EmpSalaryInfo {
 	public void setLeavingReason(String leavingReason) {
 		this.leavingReason = leavingReason;
 	}
-
 
 	public String getCeilingLimitEmpApplicable() {
 		return ceilingLimitEmpApplicable;
@@ -404,6 +417,38 @@ public class EmpSalaryInfo {
 		this.exVar2 = exVar2;
 	}
 
+	public String getDailyHr() {
+		return dailyHr;
+	}
+
+	public void setDailyHr(String dailyHr) {
+		this.dailyHr = dailyHr;
+	}
+
+	public String getMonthlyHrTarget() {
+		return monthlyHrTarget;
+	}
+
+	public void setMonthlyHrTarget(String monthlyHrTarget) {
+		this.monthlyHrTarget = monthlyHrTarget;
+	}
+
+	public String getMonthlyMinimumTarget() {
+		return monthlyMinimumTarget;
+	}
+
+	public void setMonthlyMinimumTarget(String monthlyMinimumTarget) {
+		this.monthlyMinimumTarget = monthlyMinimumTarget;
+	}
+
+	public String getMonthlyOtHr() {
+		return monthlyOtHr;
+	}
+
+	public void setMonthlyOtHr(String monthlyOtHr) {
+		this.monthlyOtHr = monthlyOtHr;
+	}
+
 	@Override
 	public String toString() {
 		return "EmpSalaryInfo [salaryInfoId=" + salaryInfoId + ", empId=" + empId + ", salaryTypeId=" + salaryTypeId
@@ -418,7 +463,8 @@ public class EmpSalaryInfo {
 				+ basicCompany + ", hraCompany=" + hraCompany + ", daCompany=" + daCompany + ", employeeEsicPercentage="
 				+ employeeEsicPercentage + ", employerEsicPercentage=" + employerEsicPercentage + ", delStatus="
 				+ delStatus + ", exInt1=" + exInt1 + ", exInt2=" + exInt2 + ", exVar1=" + exVar1 + ", exVar2=" + exVar2
-				+ "]";
+				+ ", dailyHr=" + dailyHr + ", monthlyHrTarget=" + monthlyHrTarget + ", monthlyMinimumTarget="
+				+ monthlyMinimumTarget + ", monthlyOtHr=" + monthlyOtHr + "]";
 	}
 
 }

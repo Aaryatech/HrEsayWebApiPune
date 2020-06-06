@@ -12,10 +12,22 @@ import com.ats.hrmgt.model.ShiftAssignDaily;
 
 public interface ShiftAssignDailyRepository extends JpaRepository<ShiftAssignDaily, Integer> {
 
-	@Query(value = "select * from t_shift_assign_daily where shift_date between :fromDate and :toDate", nativeQuery = true)
+	/*@Query(value = "select * from t_shift_assign_daily where shift_date between :fromDate and :toDate", nativeQuery = true)*/
+	@Query(value = "select\n" + 
+			"        ds.id,ds.emp_id,ds.shift_id,ds.shift_date,ds.month,ds.year,gp.ex_int1 as extra1,ds.extra2,ds.var1,ds.var2,ds.emp_code\n" + 
+			"    from\n" + 
+			"        t_shift_assign_daily  ds,tbl_shift_timming st,m_self_grup gp\n" + 
+			"    where\n" + 
+			"        shift_date between :fromDate and :toDate and st.id=ds.shift_id and st.self_group_id=gp.selft_group_id", nativeQuery = true)
 	List<ShiftAssignDaily> shiftAssignDailyList(String fromDate, String toDate);
 
-	@Query(value = "select * from t_shift_assign_daily where shift_date between :fromDate and :toDate and emp_id=:empId", nativeQuery = true)
+	/*@Query(value = "select * from t_shift_assign_daily where shift_date between :fromDate and :toDate and emp_id=:empId", nativeQuery = true)*/
+	@Query(value = "select\n" + 
+			"        ds.id,ds.emp_id,ds.shift_id,ds.shift_date,ds.month,ds.year,gp.ex_int1 as extra1,ds.extra2,ds.var1,ds.var2,ds.emp_code\n" + 
+			"    from\n" + 
+			"        t_shift_assign_daily  ds,tbl_shift_timming st,m_self_grup gp\n" + 
+			"    where\n" + 
+			"        shift_date between :fromDate and :toDate and st.id=ds.shift_id and st.self_group_id=gp.selft_group_id and ds.emp_id=:empId", nativeQuery = true)
 	List<ShiftAssignDaily> shiftAssignDailyListById(String fromDate, String toDate, int empId);
 
 	
