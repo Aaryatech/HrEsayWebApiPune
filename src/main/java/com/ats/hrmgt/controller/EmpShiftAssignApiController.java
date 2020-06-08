@@ -153,6 +153,19 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
+	//Sachin 7-06-2020 get multiple emp detail by comma sepe empIds
+	@RequestMapping(value = { "/getEmpDetailByEmpIds" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getEmpDetailByEmpIds(@RequestParam("empIds") List<String> empIds) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getEmpDetailListByCsEmpIds(empIds);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 
 	@Autowired
 	ShiftMasterRepository shiftMasterRepository;

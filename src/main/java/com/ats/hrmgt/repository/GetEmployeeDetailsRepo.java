@@ -1504,6 +1504,41 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"                and emp.emp_id not in (SELECT tbl_loan_main.ex_int2 FROM tbl_loan_main WHERE tbl_loan_main.current_outstanding!=0)  ", nativeQuery = true)
 
 	List<GetEmployeeDetails> getEmpsForLoanOrGuarantor();
+
+
+	@Query(value = "SELECT\n" + 
+			"    emp.*,\n" + 
+			"    dep.name AS dept_name,\n" + 
+			"    dg.name AS emp_desgn,\n" + 
+			"    loc.loc_name,\n" + 
+			"    con.org_name,\n" + 
+			"    sht.shiftname,\n" + 
+			"    emptyp.name AS emp_type_name,\n" + 
+			"    saltype.sal_type_name,\n" + 
+			"    'NA' AS  sub_comp_name,'NA' AS  wo_cat_name, 'NA'  as ho_cat_name,salinfo.gross_salary \n" + 
+			"FROM\n" + 
+			"    m_employees emp\n" + 
+			"INNER JOIN tbl_emp_salary_info salinfo ON\n" + 
+			"    emp.emp_id = salinfo.emp_id\n" + 
+			"LEFT JOIN m_designation dg ON\n" + 
+			"    emp.designation_id = dg.desig_id\n" + 
+			"LEFT JOIN m_department dep ON\n" + 
+			"    emp.depart_id = dep.depart_id\n" + 
+			"LEFT JOIN m_contractor con ON\n" + 
+			"    emp.contractor_id = con.contractor_id\n" + 
+			"LEFT JOIN m_location loc ON\n" + 
+			"    emp.location_id = loc.loc_id\n" + 
+			"LEFT JOIN tbl_mst_emp_types emptyp ON\n" + 
+			"    emp.emp_type = emptyp.emp_type_id\n" + 
+			"LEFT JOIN tbl_shift_timming sht ON\n" + 
+			"    emp.current_shiftid = sht.id\n" + 
+			"LEFT JOIN mst_salary_types saltype ON\n" + 
+			"    salinfo.salary_type_id = saltype.sal_type_id\n" + 
+			"WHERE\n" + 
+			"    emp.del_status = 1   \n" + 
+			" AND (salinfo.cmp_leaving_date IS NULL or salinfo.cmp_leaving_date='' or salinfo.cmp_leaving_date=1970-00-00 or  date_format(salinfo.cmp_leaving_date,'%Y-%m')>=date_format(CURDATE(),'%Y-%m')) AND emp.emp_id IN (:empIds) ", nativeQuery = true)
+
+	List<GetEmployeeDetails> getEmpDetailListByCsEmpIds(@Param("empIds")List<String> empIds);
 	
    
 }

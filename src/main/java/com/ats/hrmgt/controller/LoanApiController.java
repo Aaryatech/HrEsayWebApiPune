@@ -199,15 +199,15 @@ float totalPayble=0;
 				System.err.println("si " +si);
  				si = si + principle;
  				
- 				si=(float) NumberFormatting.castNumber(si, 1);
- 				
+ 				// Sac si=(float) NumberFormatting.castNumber(si, 1);
+ 				si=Math.round(si);
 				// System.err.println("rounded "+emi);
 				emi = Math.round(si / period);
-				emi=(float) NumberFormatting.castNumber(emi, 1);
+				//emi=(float) NumberFormatting.castNumber(emi, 1);
 				// System.err.println("rounded off "+emi);
-				si = emi * period;
+				//Sac si = emi * period;
 
-				si=(float) NumberFormatting.castNumber(si, 1);
+				//Sac si=(float) NumberFormatting.castNumber(si, 1);
 			} else {
 				si = 0;
 				emi = 0;
@@ -215,17 +215,7 @@ float totalPayble=0;
 
 			list.setEmiAmt(emi);
 			list.setRepayAmt(si);
-			/*
-			 * //Sachin COde 05-06-2020 System.err.println("rate "+ rate);
-			 * System.err.println("period "+ period); totalPayble=principle*(1+
-			 * (rate*period)/(100*period)); System.err.println("totalPayble "+ totalPayble);
-			 * totalPayble=(float) NumberFormatting.castNumber(totalPayble, 1);
-			 * list.setRepayAmt(totalPayble);
-			 * 
-			 * float myEmi = Math.round(totalPayble / period); System.err.println("myEmi "+
-			 * myEmi); myEmi=(float) NumberFormatting.castNumber(myEmi, 1);
-			 * list.setEmiAmt(myEmi);
-			 */
+			
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -471,5 +461,16 @@ float totalPayble=0;
 
 		return info;
 
+	}
+	//Sachin 07-06-2020 5:25 PM 
+	//updateGuarantor
+	@RequestMapping(value = { "/updateGuarantor" }, method = RequestMethod.POST)
+	public @ResponseBody Info updateGuarantor(@RequestParam("currentOutstanding") String currentOutstanding,
+			@RequestParam("loanEmi") String loanEmi, @RequestParam("partialAmt") String partialAmt,
+			@RequestParam("endDate") String endDate, @RequestParam("loanId") int loanId) {
+
+		Info info = new Info();
+		return info;
+		
 	}
 }
