@@ -61,11 +61,11 @@ public interface ShiftMasterRepository extends JpaRepository<ShiftMaster, Intege
 			"        self_group_id,\n" + 
 			"        status,\n" + 
 			"        department_id,\n" + 
-			"        location_id,short_name\n" + 
+			"        m_self_grup.ex_int1 as location_id,short_name\n" + 
 			"    from\n" + 
 			"        tbl_shift_timming,m_self_grup \n" + 
 			"    where\n" + 
-			"          status=1 and m_self_grup.selft_group_id=tbl_shift_timming.self_group_id", nativeQuery = true)
+			"          status=1 and m_self_grup.selft_group_id=tbl_shift_timming.self_group_id order by id desc", nativeQuery = true)
 	List<ShiftMaster> getShiftListByLpad();
 
 	@Query(value = "select\n" + 

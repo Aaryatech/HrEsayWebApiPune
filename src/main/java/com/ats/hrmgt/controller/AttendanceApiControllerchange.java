@@ -336,6 +336,7 @@ public class AttendanceApiControllerchange {
 		try {
 
 			Setting leave_working_hr = settingRepo.findByKey("leave_working_hr");
+			Setting auto_approve_ot_hr = settingRepo.findByKey("auto_approve_ot_hr");
 			Setting setting = settingRepo.findByKey("fix_shift");
 			int fixShiftValue = Integer.parseInt(setting.getValue());
 
@@ -685,6 +686,11 @@ public class AttendanceApiControllerchange {
 								}
 
 								dailyAttendanceList.get(i).setOtHr(String.valueOf(actualotmin));
+								
+								if(Integer.parseInt(auto_approve_ot_hr.getValue())==1) {
+									dailyAttendanceList.get(i).setFreezeBySupervisor(2);
+								}
+								
 							} else {
 								dailyAttendanceList.get(i).setOtHr("0");
 								// dailyAttendanceList.get(i).setFreezeBySupervisor(2);
