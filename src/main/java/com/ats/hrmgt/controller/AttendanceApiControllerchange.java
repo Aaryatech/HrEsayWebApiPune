@@ -364,8 +364,7 @@ public class AttendanceApiControllerchange {
 						dataForUpdateAttendance.getEmpId());
 				leavetList = leaveApplyRepository.getleavetListForAttndace(fromDate, toDate,
 						dataForUpdateAttendance.getEmpId());
-				jsonDataList = empJsonDataRepository.jsonDataList(dataForUpdateAttendance.getEmpId());
-
+				jsonDataList = empJsonDataRepository.jsonDataList(dataForUpdateAttendance.getEmpId()); 
 				optionalHolidayList = empListForHolidayApproveRepo
 						.getOptionalHolidayApprovalList(dataForUpdateAttendance.getEmpId(), 1);
 
@@ -785,6 +784,10 @@ public class AttendanceApiControllerchange {
 					int holidayStatus = commonFunctionService.findDateInHoliday(sf.format(defaultDate),
 							sf.format(defaultDate), holidayList, dailyAttendanceList.get(i).getLocationId(),
 							employee.getHolidayCatId());
+					
+					if(holidayStatus==4) {
+						holidayStatus = commonFunctionService.findDateInOptionalHoliday(sf.format(defaultDate), optionalHolidayList,dailyAttendanceList.get(i).getEmpId());
+					}
 
 					LeaveStsAndLeaveId stsInfo = commonFunctionService.findDateInLeave(sf.format(defaultDate),
 							leavetList, dailyAttendanceList.get(i).getEmpId());

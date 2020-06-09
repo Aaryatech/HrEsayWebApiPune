@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ats.hrmgt.model.EmpListForHolidayApprove;
 import com.ats.hrmgt.model.Holiday;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.LeaveApply;
@@ -514,21 +515,23 @@ public class CommonFunctionServiceImpl implements CommonFunctionService {
 
 			for (int i = 0; i < holidayList.size(); i++) {
 
-				/*String[] locIds = holidayList.get(i).getLocId().split(",");
-				for (int j = 0; j < locIds.length; j++) {*/
-					if (frmdt.compareTo(yydate.parse(holidayList.get(i).getHolidayFromdt())) >= 0
-							&& frmdt.compareTo(yydate.parse(holidayList.get(i).getHolidayTodt())) <= 0
-							&& holidayCatId == holidayList.get(i).getExInt1()) {
+				/*
+				 * String[] locIds = holidayList.get(i).getLocId().split(","); for (int j = 0; j
+				 * < locIds.length; j++) {
+				 */
+				if (frmdt.compareTo(yydate.parse(holidayList.get(i).getHolidayFromdt())) >= 0
+						&& frmdt.compareTo(yydate.parse(holidayList.get(i).getHolidayTodt())) <= 0
+						&& holidayCatId == holidayList.get(i).getExInt1()) {
 
-						sts = 3;
-						break;
-
-					}
-				/*}
-
-				if (sts == 3) {
+					sts = 3;
 					break;
-				}*/
+
+				}
+				/*
+				 * }
+				 * 
+				 * if (sts == 3) { break; }
+				 */
 
 			}
 		} catch (Exception e) {
@@ -1083,6 +1086,33 @@ public class CommonFunctionServiceImpl implements CommonFunctionService {
 			e.printStackTrace();
 		}
 		return dates;
+	}
+
+	@Override
+	public int findDateInOptionalHoliday(String fromDate, List<EmpListForHolidayApprove> optionalHolidayList,
+			int empId) {
+		int sts = 4;
+		try {
+
+			SimpleDateFormat yydate = new SimpleDateFormat("yyyy-MM-dd");
+			Date frmdt = yydate.parse(fromDate);
+
+			for (int i = 0; i < optionalHolidayList.size(); i++) {
+
+				Date holdte = optionalHolidayList.get(i).getHolidate();
+
+				if (frmdt.compareTo(holdte) == 0 && empId == optionalHolidayList.get(i).getEmpId()) {
+					sts = 3;
+					break;
+
+				}
+
+			}
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		return sts;
 	}
 
 }
