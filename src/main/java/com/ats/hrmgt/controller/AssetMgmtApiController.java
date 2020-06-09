@@ -10,12 +10,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ats.hrmgt.model.AssetAmc;
 import com.ats.hrmgt.model.AssetCategory;
 import com.ats.hrmgt.model.AssetVendor;
+import com.ats.hrmgt.model.Assets;
+import com.ats.hrmgt.model.AssetsDetailsList;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.Info;
+import com.ats.hrmgt.repository.AssetAmcRepo;
 import com.ats.hrmgt.repository.AssetCategoryRepo;
 import com.ats.hrmgt.repository.AssetVendorRepo;
+import com.ats.hrmgt.repository.AssetsDetailsListRepo;
+import com.ats.hrmgt.repository.AssetsRepo;
 
 @RestController
 public class AssetMgmtApiController {
@@ -24,8 +30,14 @@ public class AssetMgmtApiController {
 	
 	@Autowired AssetVendorRepo assetVendorRepo;
 	
+	@Autowired AssetAmcRepo assetAmcRepo;
+	
+	@Autowired AssetsRepo assetsRepo;
+	
+	@Autowired AssetsDetailsListRepo assetsListRepo; 
+	
 	@RequestMapping(value = { "/getAllAssetCategory" }, method = RequestMethod.GET)
-	public List<AssetCategory> getAllEmployee() {
+	public List<AssetCategory> getAllAssetCategory() {
 		List<AssetCategory> list = new ArrayList<AssetCategory>();
 		try {
 			list = assetCatRepo.findByDelStatusOrderByAssetCatIdDesc(1);
@@ -188,4 +200,133 @@ public class AssetMgmtApiController {
 
 		return info;
 	}
+	
+	/***********************************************************************************/
+	
+	
+	@RequestMapping(value = { "/getAllAssetAmc" }, method = RequestMethod.GET)
+	public List<AssetAmc> getAllAssetAmc() {
+		List<AssetAmc> list = new ArrayList<AssetAmc>();
+		try {
+			list = assetAmcRepo.findByDelStatusOrderByAmcIdDesc(1);
+		} catch (Exception e) {
+			System.err.println("Excep in getAllAssetAmc : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	@RequestMapping(value = { "/getAssetAmcById" }, method = RequestMethod.POST)
+	public AssetAmc getAssetAmcById(@RequestParam int assetAmcId) {
+		AssetAmc assetAmc = new AssetAmc();
+		
+		try {
+			assetAmc = assetAmcRepo.findByAmcId(assetAmcId);
+		} catch (Exception e) {
+			System.err.println("Excep in getAssetAmcById : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return assetAmc;
+	}
+	
+	@RequestMapping(value = { "/saveAssetAmc" }, method = RequestMethod.POST)
+	public AssetAmc getAssetAmcById(@RequestBody  AssetAmc assetAmc) {
+		AssetAmc amc = new AssetAmc();
+		
+		try {
+			amc = assetAmcRepo.save(assetAmc);
+		} catch (Exception e) {
+			System.err.println("Excep in saveAssetAmc : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return amc;
+	}
+	
+	@RequestMapping(value = { "/deleteAssetAmcById" }, method = RequestMethod.POST)
+	public Info deleteAssetAmcById(@RequestParam int assetAmcId) {
+		Info info = new Info();
+		
+		try {
+			int i = assetAmcRepo.deleteAssetAmc(assetAmcId);
+			
+			if(i>0) {
+				info.setError(false);
+				info.setMsg("Asset Amc Deleted Successfully");
+			}else {
+				info.setError(true);
+				info.setMsg("Failed to Delete Asset Amc");
+			}
+		} catch (Exception e) {
+			System.err.println("Excep in deleteAssetAmcById : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return info;
+	}
+	/********************************************************************/
+	@RequestMapping(value = { "/getAllAssets" }, method = RequestMethod.GET)
+	public List<AssetsDetailsList> getAllAssets() {
+		List<AssetsDetailsList> list = new ArrayList<AssetsDetailsList>();
+		try {
+			list = assetsListRepo.getAllAssetList();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllAssets : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	@RequestMapping(value = { "/saveAssets" }, method = RequestMethod.POST)
+	public Assets saveAssets(@RequestBody Assets assets) {
+		Assets aset = new Assets();
+		try {
+			aset = assetsRepo.save(assets);
+		} catch (Exception e) {
+			System.err.println("Excep in getAllAssets : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return aset;
+	}
+	
+	@RequestMapping(value = { "/getAssetById" }, method = RequestMethod.POST)
+	public Assets getAssetById(@RequestParam int assetId) {
+		Assets aset = new Assets();
+		try {
+			aset = assetsRepo.findByAssetId(assetId);
+		} catch (Exception e) {
+			System.err.println("Excep in getAssetById : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return aset;
+	}
+	
+	
+	@RequestMapping(value = { "/deleteAssetById" }, method = RequestMethod.POST)
+	public Info deleteAssetById(@RequestParam int assetId) {
+		Info info = new Info();
+		
+		try {
+			int i = assetsRepo.deleteAsset(assetId);
+			
+			if(i>0) {
+				info.setError(false);
+				info.setMsg("Asset Deleted Successfully");
+			}else {
+				info.setError(true);
+				info.setMsg("Failed to Delete Asset");
+			}
+		} catch (Exception e) {
+			System.err.println("Excep in deleteAssetById : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return info;
+	}
+	
 }
