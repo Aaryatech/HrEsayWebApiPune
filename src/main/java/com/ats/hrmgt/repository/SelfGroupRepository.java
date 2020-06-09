@@ -24,4 +24,7 @@ public interface SelfGroupRepository extends JpaRepository<SelfGroup, Integer> {
 
 	SelfGroup findBySelftGroupIdAndDelStatus(int selftGroupId, int i);
 
+	@Query(value = "select * from m_self_grup where del_status=1 and ex_int1=0", nativeQuery = true)
+	List<SelfGroup> getSelftGroupListForAddShift();
+
 }

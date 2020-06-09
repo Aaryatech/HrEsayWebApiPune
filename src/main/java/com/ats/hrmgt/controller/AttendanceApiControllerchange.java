@@ -29,6 +29,7 @@ import com.ats.hrmgt.model.DateAndDay;
 import com.ats.hrmgt.model.EmpInfo;
 import com.ats.hrmgt.model.EmpInfoWithDateInfoList;
 import com.ats.hrmgt.model.EmpJsonData;
+import com.ats.hrmgt.model.EmpListForHolidayApprove;
 import com.ats.hrmgt.model.EmpSalType;
 import com.ats.hrmgt.model.EmpSalaryInfoForPayroll;
 import com.ats.hrmgt.model.EmployeeMaster;
@@ -60,6 +61,7 @@ import com.ats.hrmgt.repository.AccessRightModuleRepository;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
 import com.ats.hrmgt.repository.DailyDailyInformationRepository;
 import com.ats.hrmgt.repository.EmpInfoRepository;
+import com.ats.hrmgt.repository.EmpListForHolidayApproveRepo;
 import com.ats.hrmgt.repository.EmpSalTypeRepository;
 import com.ats.hrmgt.repository.EmpSalaryInfoForPayrollRepository;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
@@ -160,6 +162,9 @@ public class AttendanceApiControllerchange {
 
 	@Autowired
 	EmpSalTypeRepository empSalTypeRepository;
+
+	@Autowired
+	EmpListForHolidayApproveRepo empListForHolidayApproveRepo;
 
 	@RequestMapping(value = { "/initiallyInsertDailyRecord" }, method = RequestMethod.POST)
 	public @ResponseBody Info initiallyInsertDailyRecord(@RequestParam("fromDate") String fromDate,
@@ -349,6 +354,7 @@ public class AttendanceApiControllerchange {
 			List<DailyAttendance> dailyAttendanceList = new ArrayList<>();
 			List<LeaveApply> leavetList = new ArrayList<>();
 			List<EmpJsonData> jsonDataList = new ArrayList<>();
+			List<EmpListForHolidayApprove> optionalHolidayList = new ArrayList<>();
 
 			if (dataForUpdateAttendance.getEmpId() != 0) {
 
@@ -360,11 +366,15 @@ public class AttendanceApiControllerchange {
 						dataForUpdateAttendance.getEmpId());
 				jsonDataList = empJsonDataRepository.jsonDataList(dataForUpdateAttendance.getEmpId());
 
+				optionalHolidayList = empListForHolidayApproveRepo
+						.getOptionalHolidayApprovalList(dataForUpdateAttendance.getEmpId(), 1);
+
 			} else {
 				leaveListAddeBySystem = leaveApplyRepository.leaveListAddeBySystem(fromDate, toDate);
 				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceList(fromDate, toDate);
 				leavetList = leaveApplyRepository.getleavetListForAttndace(fromDate, toDate);
 				jsonDataList = empJsonDataRepository.jsonDataList();
+				optionalHolidayList = empListForHolidayApproveRepo.getOptionalHolidayApprovalList(1);
 			}
 
 			List<ShiftAssignDaily> shiftAssignDailyList = new ArrayList<>();
@@ -686,11 +696,11 @@ public class AttendanceApiControllerchange {
 								}
 
 								dailyAttendanceList.get(i).setOtHr(String.valueOf(actualotmin));
-								
-								if(Integer.parseInt(auto_approve_ot_hr.getValue())==1) {
+
+								if (Integer.parseInt(auto_approve_ot_hr.getValue()) == 1) {
 									dailyAttendanceList.get(i).setFreezeBySupervisor(2);
 								}
-								
+
 							} else {
 								dailyAttendanceList.get(i).setOtHr("0");
 								// dailyAttendanceList.get(i).setFreezeBySupervisor(2);
@@ -1484,7 +1494,8 @@ public class AttendanceApiControllerchange {
 						} else {
 							summaryDailyAttendanceList.get(i).setTotOthr(0);
 						}
-						//System.out.println("************************ in if" + monthlyOtMin + " " + totalWorkingHr);
+						// System.out.println("************************ in if" + monthlyOtMin + " " +
+						// totalWorkingHr);
 					} else {
 						summaryDailyAttendanceList.get(i).setTotlateMins(lateMin);
 						summaryDailyAttendanceList.get(i).setTotLate(lateMark);

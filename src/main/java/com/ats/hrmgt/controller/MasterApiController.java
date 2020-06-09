@@ -820,6 +820,23 @@ public class MasterApiController {
 		return selfGrouptList;
 
 	}
+	
+	@RequestMapping(value = { "/getSelftGroupListForAddShift" }, method = RequestMethod.GET)
+	public @ResponseBody List<SelfGroup> getSelftGroupListForAddShift() {
+
+		List<SelfGroup> selfGrouptList = new ArrayList<>();
+		try {
+
+			selfGrouptList = selfGroupRepository.getSelftGroupListForAddShift();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return selfGrouptList;
+
+	}
 
 	@Autowired
 	ShiftMasterRepository ShiftMasterRepository;
