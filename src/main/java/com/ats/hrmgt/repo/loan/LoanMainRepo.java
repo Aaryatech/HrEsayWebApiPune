@@ -84,5 +84,19 @@ public interface LoanMainRepo  extends JpaRepository<LoanMain, Integer>{
 	@Query(value="select * from tbl_loan_main  where   del_status=1 and current_outstanding>0 and emp_id=:empIds  ",nativeQuery=true)
 	List<LoanMain> getLoanList(int empIds);
 	
+	//Sachin 08-06-2020
+	@Transactional
+	@Modifying
+	@Query("update LoanMain set login_name =:loginName,login_time=:loginTime ,ex_int1=:newGuarantor WHERE id=:loanId and ex_int1=:oldGuarantor")
+	int updateGuarantor1(@Param("loanId")  int loanId,@Param("loginName")  int loginName,@Param("loginTime")  String loginTime,
+			@Param("oldGuarantor")  int oldGuarantor,@Param("newGuarantor")  int newGuarantor);
+
+	@Transactional
+	@Modifying
+	@Query("update LoanMain set login_name =:loginName,login_time=:loginTime ,ex_int2=:newGuarantor WHERE id=:loanId and ex_int2=:oldGuarantor")
+	int updateGuarantor2(@Param("loanId")  int loanId,@Param("loginName")  int loginName,@Param("loginTime")  String loginTime,
+			@Param("oldGuarantor")  int oldGuarantor,@Param("newGuarantor")  int newGuarantor);
+
+
 
 }

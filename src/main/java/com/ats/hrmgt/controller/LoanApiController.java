@@ -465,12 +465,36 @@ float totalPayble=0;
 	//Sachin 07-06-2020 5:25 PM 
 	//updateGuarantor
 	@RequestMapping(value = { "/updateGuarantor" }, method = RequestMethod.POST)
-	public @ResponseBody Info updateGuarantor(@RequestParam("currentOutstanding") String currentOutstanding,
-			@RequestParam("loanEmi") String loanEmi, @RequestParam("partialAmt") String partialAmt,
-			@RequestParam("endDate") String endDate, @RequestParam("loanId") int loanId) {
+	public @ResponseBody Info updateGuarantor(@RequestParam("oldGuarantor") int oldGuarantor,
+			@RequestParam("newGuarantor") int newGuarantor, @RequestParam("loginName") int loginName,
+			@RequestParam("loginTime") String loginTime, @RequestParam("loanId") int loanId) {
 
 		Info info = new Info();
-		return info;
 		
+		int result=0;
+		try {
+		result = loanMainRepo.updateGuarantor1(loanId, loginName, loginTime, oldGuarantor, newGuarantor);
+		System.err.println("G1 Updated" +result);
+		}catch (Exception e) {
+			result=0;
+		}
+		
+		if(result>0) {
+			info.setError(false);
+			info.setMsg("Success");
+		}else {
+			result = loanMainRepo.updateGuarantor2(loanId, loginName, loginTime, oldGuarantor, newGuarantor);
+			System.err.println("G2 Updated " +result);
+		}
+		
+		if(result>0) {
+			info.setError(false);
+			info.setMsg("Success");
+		}else {
+			info.setError(true);
+			info.setMsg("Failed");
+		}
+		
+		return info;
 	}
 }
