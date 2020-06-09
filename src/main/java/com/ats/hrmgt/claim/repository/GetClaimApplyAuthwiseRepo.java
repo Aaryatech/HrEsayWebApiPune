@@ -204,6 +204,37 @@ public interface GetClaimApplyAuthwiseRepo   extends JpaRepository<GetClaimApply
 			 , nativeQuery = true)
 
 	GetClaimApplyAuthwise getClaimApplyDetails(@Param("claimId") int claimId);
+
+
+	@Query(value = "  SELECT\n" + 
+			"        la.ca_head_id,\n" + 
+			"        '0' as proj_id,\n" + 
+			"        la.emp_id,\n" + 
+			"        la.claim_title,\n" + 
+			"        la.claim_amount,\n" + 
+			"        la.ca_from_dt,\n" + 
+			"        la.ca_to_dt,\n" + 
+			"        la.claim_status,\n" + 
+			"        la.circulated_to,\n" + 
+			"        e.emp_code,\n" + 
+			"        '-' as emp_photo,\n" + 
+			"        CONCAT(e.surname,\n" + 
+			"        \" \",\n" + 
+			"        e.first_name) AS emp_name,\n" + 
+			"        le.ca_ini_auth_emp_id,\n" + 
+			"        le.ca_fin_auth_emp_id,\n" + 
+			"        la.ex_var1 ,\n" + 
+			"        '-' as project_title \n" + 
+			"    FROM\n" + 
+			"        claim_apply_header la,\n" + 
+			"        claim_authority le,\n" + 
+			"        m_employees  e\n" + 
+			"     WHERE\n" + 
+			"        le.emp_id = la.emp_id \n" + 
+			"        AND e.emp_id = le.emp_id \n" + 
+			"        AND la.claim_status in (1,2) and la.emp_id =:empId\n" + 
+			"      ", nativeQuery = true)
+	List<GetClaimApplyAuthwise> getClaimStatusList(@Param("empId") int empId);
 	
 
 }

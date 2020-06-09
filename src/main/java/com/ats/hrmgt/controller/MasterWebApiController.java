@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ats.hrmgt.claim.repository.GetClaimApplyAuthwiseRepo;
 import com.ats.hrmgt.common.EmailUtility;
 import com.ats.hrmgt.common.RandomString;
 import com.ats.hrmgt.model.CalenderYear;
@@ -41,6 +42,7 @@ import com.ats.hrmgt.model.Location;
 import com.ats.hrmgt.model.LoginResponse;
 import com.ats.hrmgt.model.MailByUsername;
 import com.ats.hrmgt.model.User;
+import com.ats.hrmgt.model.claim.GetClaimApplyAuthwise;
 import com.ats.hrmgt.repository.CalculateYearRepository;
 import com.ats.hrmgt.repository.DashboardRepo;
 import com.ats.hrmgt.repository.EmpTypeRepository;
@@ -101,6 +103,9 @@ public class MasterWebApiController {
 
 	@Autowired
 	MailByUsernameRepo mailByUsernameRepo;
+	
+	@Autowired
+	GetClaimApplyAuthwiseRepo getClaimApplyAuthwiseRepo;
 	/*
 	 * <dependency> <groupId>javax.mail</groupId> <artifactId>mail</artifactId>
 	 * <version>1.4</version> </dependency>
@@ -325,6 +330,49 @@ public class MasterWebApiController {
 		}
 
 		return resList;
+
+	}
+
+	/*
+	 * @RequestMapping(value = { "/getClaimStatusList" }, method =
+	 * RequestMethod.POST) public @ResponseBody List<ClaimDetail>
+	 * getClaimStatusList(@RequestParam("empId") int empId,
+	 * 
+	 * @RequestParam("status") List<Integer> status) {
+	 * 
+	 * List<ClaimDetail> list = new ArrayList<ClaimDetail>();
+	 * 
+	 * try {
+	 * 
+	 * list = claimDetailRepo.getClaimStatus(empId, status); if (list != null) { for
+	 * (int i = 0; i < list.size(); i++) { List<GetClaimTrailStatus> leaveStatus =
+	 * new ArrayList<GetClaimTrailStatus>(); leaveStatus =
+	 * getClaimTrailStatusRepo.getClaimTrailByClaimId(list.get(i).getClaimId());
+	 * list.get(i).setGetClaimTrailStatus(leaveStatus); } }
+	 * 
+	 * } catch (Exception e) {
+	 * 
+	 * e.printStackTrace(); }
+	 * 
+	 * return list;
+	 * 
+	 * }
+	 */
+
+	@RequestMapping(value = { "/getClaimStatusList" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetClaimApplyAuthwise> getClaimStatusList(@RequestParam("empId") int empId) {
+		List<GetClaimApplyAuthwise> list = new ArrayList<GetClaimApplyAuthwise>();
+
+		try {
+
+			list = getClaimApplyAuthwiseRepo.getClaimStatusList(empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
 
 	}
 
@@ -697,12 +745,15 @@ public class MasterWebApiController {
 		return info;
 	}
 
-	/*private static String DOC_URL=	"/opt/apache-tomcat-8.5.6/webapps/media/hr/";
-	public static final String leaveDocSaveUrl = "/home/lenovo/Downloads/old/apache-tomcat-8.5.37/webapps/media/";*/
-	
-	private static String DOC_URL=	"/opt/apache-tomcat-8.5.47/webapps/hrdocument/mixDoc/";
+	/*
+	 * private static String DOC_URL= "/opt/apache-tomcat-8.5.6/webapps/media/hr/";
+	 * public static final String leaveDocSaveUrl =
+	 * "/home/lenovo/Downloads/old/apache-tomcat-8.5.37/webapps/media/";
+	 */
+
+	private static String DOC_URL = "/opt/apache-tomcat-8.5.47/webapps/hrdocument/mixDoc/";
 	public static final String leaveDocSaveUrl = "/home/lenovo/Downloads/old/apache-tomcat-8.5.37/webapps/media/";
-	
+
 	private void saveUploadedFiles(MultipartFile[] files, List<String> imageName, String type) throws IOException {
 
 		try {

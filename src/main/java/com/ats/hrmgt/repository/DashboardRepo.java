@@ -358,7 +358,7 @@ public interface DashboardRepo extends JpaRepository<DashboardCount, Integer> {
 			"                OR la.fin_auth_emp_id = :empId                    )             ),\n" + 
 			"            0             ) > 0         ) THEN 1 \n" + 
 			"            ELSE 0     \n" + 
-			"        END ) AS is_authorized, 0 AS pending_claim,"
+			"        END ) AS is_authorized,"
 			+ "COALESCE(         (         SELECT\n" + 
 			"            COUNT(DISTINCT(le.ca_head_id))                  \n" + 
 			"        FROM\n" + 
