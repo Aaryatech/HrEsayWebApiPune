@@ -17,6 +17,7 @@ import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.model.CalenderYear;
 import com.ats.hrmgt.model.Department;
 import com.ats.hrmgt.model.Designation;
+import com.ats.hrmgt.model.EmployeeInfo;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.GetEmployeeDetails;
 import com.ats.hrmgt.model.Holiday;
@@ -662,6 +663,23 @@ public class MasterApiController {
 		try {
 
 			list = getEmployeeDetailsRepo.getAuthorityWiseEmpListByEmpId(empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+	
+	@RequestMapping(value = { "/getEmpListForClaimAuthByEmpId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetEmployeeDetails> getEmpListForClaimAuthByEmpId(@RequestParam("empId") int empId) {
+
+		List<GetEmployeeDetails>  list = new ArrayList<GetEmployeeDetails>();
+		try {
+
+			list = getEmployeeDetailsRepo.getEmpListForClaimAuthByEmpId(empId);
 
 		} catch (Exception e) {
 

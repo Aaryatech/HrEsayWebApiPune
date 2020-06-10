@@ -376,7 +376,7 @@ public class MasterWebApiController {
 
 	}
 
-	@RequestMapping(value = { "/getEmpListForClaimAuthByEmpId" }, method = RequestMethod.POST)
+	/*@RequestMapping(value = { "/getEmpListForClaimAuthByEmpId" }, method = RequestMethod.POST)
 	public @ResponseBody List<EmployeeInfo> getEmpListForClaimAuthByEmpId(@RequestParam("empId") int empId) {
 
 		List<EmployeeInfo> list = new ArrayList<EmployeeInfo>();
@@ -391,7 +391,7 @@ public class MasterWebApiController {
 
 		return list;
 
-	}
+	}*/
 	/*
 	 * @RequestMapping(value = { "/checkUniqueEmail" }, method = RequestMethod.POST)
 	 * public @ResponseBody Info checkUniqueEmail(@RequestParam("email") String
