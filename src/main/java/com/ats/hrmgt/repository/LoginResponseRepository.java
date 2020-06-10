@@ -111,7 +111,7 @@ public interface LoginResponseRepository extends JpaRepository<LoginResponse, In
 			"        tbl_emp_info i\n" + 
 			"    where\n" + 
 			"        e.emp_id=u.emp_id \n" + 
-			"        and BINARY e.email_id =:username \n" + 
+			"        and BINARY i.email =:username \n" + 
 			"        and e.del_status=1\n" + 
 			"        and i.emp_id=e.emp_id", nativeQuery = true)
 	LoginResponse CheckUserForPasswordByEmail(@Param("username") String username);

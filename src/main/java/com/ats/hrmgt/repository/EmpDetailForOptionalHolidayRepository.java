@@ -13,7 +13,7 @@ public interface EmpDetailForOptionalHolidayRepository extends JpaRepository<Emp
 	@Query(value="SELECT\n" + 
 			"        emp.emp_id,\n" + 
 			"        emp.emp_code,\n" + 
-			"        concat(emp.first_name,'',emp.surname) as emp_name,\n" + 
+			"        concat(emp.first_name,' ',emp.surname) as emp_name,\n" + 
 			"        emp.holiday_category,\n" + 
 			"        emp.weekend_category,\n" + 
 			"        dep.name_sd AS dept_name,\n" + 
