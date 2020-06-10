@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.model.AssetAmc;
 import com.ats.hrmgt.model.AssetCategory;
+import com.ats.hrmgt.model.AssetTrans;
 import com.ats.hrmgt.model.AssetVendor;
 import com.ats.hrmgt.model.Assets;
 import com.ats.hrmgt.model.AssetsDetailsList;
@@ -19,6 +20,7 @@ import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.repository.AssetAmcRepo;
 import com.ats.hrmgt.repository.AssetCategoryRepo;
+import com.ats.hrmgt.repository.AssetTransRepo;
 import com.ats.hrmgt.repository.AssetVendorRepo;
 import com.ats.hrmgt.repository.AssetsDetailsListRepo;
 import com.ats.hrmgt.repository.AssetsRepo;
@@ -35,6 +37,10 @@ public class AssetMgmtApiController {
 	@Autowired AssetsRepo assetsRepo;
 	
 	@Autowired AssetsDetailsListRepo assetsListRepo; 
+	
+	@Autowired AssetTransRepo assetTransRepo;
+	
+	/*****************************************************************************/
 	
 	@RequestMapping(value = { "/getAllAssetCategory" }, method = RequestMethod.GET)
 	public List<AssetCategory> getAllAssetCategory() {
@@ -266,6 +272,7 @@ public class AssetMgmtApiController {
 
 		return info;
 	}
+	
 	/********************************************************************/
 	@RequestMapping(value = { "/getAllAssets" }, method = RequestMethod.GET)
 	public List<AssetsDetailsList> getAllAssets() {
@@ -329,4 +336,31 @@ public class AssetMgmtApiController {
 		return info;
 	}
 	
+	/*********************************************************************************/
+	
+	@RequestMapping(value = { "/getAllAssetsTransactions" }, method = RequestMethod.GET)
+	public List<AssetTrans> getAllAssetsTransactions() {
+		List<AssetTrans> list = new ArrayList<AssetTrans>();
+		try {
+			list = assetTransRepo.findByDelStatusOrderByAssetTransIdDesc(1);
+		} catch (Exception e) {
+			System.err.println("Excep in getAllAssetsTransactions : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	@RequestMapping(value = { "/getAssetTransactionById" }, method = RequestMethod.POST)
+	public AssetTrans getAssetTransactionById(@RequestParam int assetTransId) {
+		AssetTrans aset = new AssetTrans();
+		try {
+			aset = assetTransRepo.findByAssetTransIdAndDelStatus(assetTransId, 1);
+		} catch (Exception e) {
+			System.err.println("Excep in getAssetTransactionById : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return aset;
+	}
 }
