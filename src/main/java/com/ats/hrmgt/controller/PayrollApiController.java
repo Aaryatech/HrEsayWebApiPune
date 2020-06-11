@@ -253,6 +253,22 @@ public class PayrollApiController {
 		return info;
 	}
 
+	@RequestMapping(value = { "/getSettingListByGroup" }, method = RequestMethod.POST)
+	public List<Setting> getSettingListByGroup(@RequestParam("group") String group) {
+
+		List<Setting> settingList = new ArrayList<>();
+
+		try {
+			settingList = settingRepo.findByGroup("PAYROLLHIDESHOW");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return settingList;
+	}
+
 	@RequestMapping(value = { "/insertPayrollIntempTable" }, method = RequestMethod.POST)
 	public Info insertPayrollIntempTable(@RequestParam("month") int month, @RequestParam("year") int year,
 			@RequestParam("empIds") List<Integer> empIds, @RequestParam("userId") int userId) {
@@ -263,6 +279,34 @@ public class PayrollApiController {
 			Date date = new Date();
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd");
+
+			List<Setting> settingList = settingRepo.findByGroup("PAYROLLHIDESHOW");
+
+			int payroll_claim_show = 0;
+			int payroll_advance_show = 0;
+			int payroll_loan_show = 0;
+			int payroll_payded_show = 0;
+			int payroll_reward_show = 0;
+			int payroll_tds_show = 0;
+			int payroll_performancebonus_show = 0;
+
+			for (int k = 0; k < settingList.size(); k++) {
+				if (settingList.get(k).getKey().equalsIgnoreCase("payroll_claim_show")) {
+					payroll_claim_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_advance_show")) {
+					payroll_advance_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_loan_show")) {
+					payroll_loan_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_payded_show")) {
+					payroll_payded_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_reward_show")) {
+					payroll_reward_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_tds_show")) {
+					payroll_tds_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_performancebonus_show")) {
+					payroll_performancebonus_show = Integer.parseInt(settingList.get(k).getValue());
+				}
+			}
 
 			// insertadvance for late mark deduct
 
@@ -367,11 +411,32 @@ public class PayrollApiController {
 
 			// update record if some ammount insert after insert temp record
 			List<SalaryCalcTemp> listForUpdatedValue = salaryCalcTempRepo.listForUpdatedValue(month, year, empIds);
-			List<GetAdvanceList> getAdvanceList = getAdvanceListRepo.getAdvanceList(month, year, empIds);
-			List<GetClaimList> getClaimList = getClaimListRepo.getClaimList(month, year, empIds);
-			List<GetPayDedList> getPayDedList = getPayDedListRepo.getPayDedList(month, year, empIds);
-			List<GetPayDedList> getRewardList = getPayDedListRepo.getBonusList(month, year, empIds);
-			List<GetPayDedList> getLoanList = getPayDedListRepo.getLoanList(year + "-" + month + "-01", empIds);
+
+			List<GetAdvanceList> getAdvanceList = new ArrayList<>();
+			List<GetClaimList> getClaimList = new ArrayList<>();
+			List<GetPayDedList> getPayDedList = new ArrayList<>();
+			List<GetPayDedList> getRewardList = new ArrayList<>();
+			List<GetPayDedList> getLoanList = new ArrayList<>();
+
+			if (payroll_advance_show == 1) {
+				getAdvanceList = getAdvanceListRepo.getAdvanceList(month, year, empIds);
+			}
+
+			if (payroll_claim_show == 1) {
+				getClaimList = getClaimListRepo.getClaimList(month, year, empIds);
+			}
+			if (payroll_payded_show == 1) {
+				getPayDedList = getPayDedListRepo.getPayDedList(month, year, empIds);
+			}
+
+			if (payroll_reward_show == 1) {
+				getRewardList = getPayDedListRepo.getBonusList(month, year, empIds);
+			}
+
+			if (payroll_loan_show == 1) {
+				getLoanList = getPayDedListRepo.getLoanList(year + "-" + month + "-01", empIds);
+			}
+
 			/*
 			 * List<GetPayDedList> getBonusList = getPayDedListRepo.getBonusList(year + "-"
 			 * + month + "-01", empIds); List<GetPayDedList> getExgretiaList =
@@ -850,6 +915,7 @@ public class PayrollApiController {
 
 							if (salaryTermList.get(j).getFieldName().equals("gross_salary")) {
 								getSalaryTempList.get(i).setGrossSalaryDytemp(temp);
+								System.out.println(temp);
 								salaryTermList.get(j).setValue(temp);
 							} else if (salaryTermList.get(j).getFieldName().equals("epf_wages")) {
 								// System.out.println(temp);
@@ -981,6 +1047,7 @@ public class PayrollApiController {
 
 				}
 
+				System.out.println("gross" + getSalaryTempList.get(i).getGrossSalaryDytemp());
 				if (getSalaryTempList.get(i).getMlwfApplicable().equalsIgnoreCase("yes")) {
 					if (month == 6 || month == 12) {
 						getSalaryTempList.get(i).setMlwf(employee_mlwf);
@@ -1145,20 +1212,23 @@ public class PayrollApiController {
 				getSalaryTempList.get(i).setPfAdminChPercentage(tot_pf_admin_ch_percentage);
 				getSalaryTempList.get(i).setEdliPercentage(tot_edli_ch_percentage);
 				getSalaryTempList.get(i).setEdliAdminPercentage(tot_edli_admin_ch_percentage);
-				getSalaryTempList.get(i).setGrossSalaryDytemp(castNumber(getSalaryTempList.get(i).getGrossSalaryDytemp()
-						+ getSalaryTempList.get(i).getOtWages() + getSalaryTempList.get(i).getProductionInsentive()
-						+ getSalaryTempList.get(i).getNightAllow(), amount_round));
+				/*
+				 * getSalaryTempList.get(i).setGrossSalaryDytemp(castNumber(getSalaryTempList.
+				 * get(i).getGrossSalaryDytemp() + getSalaryTempList.get(i).getOtWages() +
+				 * getSalaryTempList.get(i).getProductionInsentive() +
+				 * getSalaryTempList.get(i).getNightAllow(), amount_round));
+				 */
 				getSalaryTempList.get(i).setStatusDytemp(1);
-				getSalaryTempList.get(i)
-						.setNetSalary(castNumber((getSalaryTempList.get(i).getGrossSalaryDytemp()
-								+ getSalaryTempList.get(i).getPerformanceBonus()
-								+ getSalaryTempList.get(i).getMiscExpAdd() + getSalaryTempList.get(i).getReward())
-								- (getSalaryTempList.get(i).getAdvanceDed() + getSalaryTempList.get(i).getLoanDed()
-										+ getSalaryTempList.get(i).getPayDed() + getSalaryTempList.get(i).getEsic()
-										+ getSalaryTempList.get(i).getEmployeePf() + getSalaryTempList.get(i).getPtDed()
-										+ getSalaryTempList.get(i).getItded() + getSalaryTempList.get(i).getTds()
-										+ getSalaryTempList.get(i).getSocietyContributionDytemp()),
-								amount_round));
+				getSalaryTempList.get(i).setNetSalary(castNumber((getSalaryTempList.get(i).getGrossSalaryDytemp()
+						+ getSalaryTempList.get(i).getPerformanceBonus() + getSalaryTempList.get(i).getMiscExpAdd()
+						+ getSalaryTempList.get(i).getReward() + getSalaryTempList.get(i).getOtWages()
+						+ getSalaryTempList.get(i).getProductionInsentive() + getSalaryTempList.get(i).getNightAllow())
+						- (getSalaryTempList.get(i).getAdvanceDed() + getSalaryTempList.get(i).getLoanDed()
+								+ getSalaryTempList.get(i).getPayDed() + getSalaryTempList.get(i).getEsic()
+								+ getSalaryTempList.get(i).getEmployeePf() + getSalaryTempList.get(i).getPtDed()
+								+ getSalaryTempList.get(i).getItded() + getSalaryTempList.get(i).getTds()
+								+ getSalaryTempList.get(i).getSocietyContributionDytemp()),
+						amount_round));
 
 				getSalaryTempList.get(i).setLoginName(String.valueOf(userId));
 				// System.out.println(salaryTermList);
@@ -1565,57 +1635,94 @@ public class PayrollApiController {
 
 		try {
 
-			int updateAdv = advanceRepo.updateAdv(month, year, empIds);
-			int updateClaim = claimHeaderRepo.updateClaim(month, year, empIds);
-			int updatePayde = payDeductionDetailsRepo.updatePayde(month, year, empIds);
-			int updateBonus = payBonusDetailsRepo.updateBonus(month, year, empIds);
+			List<Setting> settingList = settingRepo.findByGroup("PAYROLLHIDESHOW");
+
+			int payroll_claim_show = 0;
+			int payroll_advance_show = 0;
+			int payroll_loan_show = 0;
+			int payroll_payded_show = 0;
+			int payroll_reward_show = 0;
+
+			for (int k = 0; k < settingList.size(); k++) {
+				if (settingList.get(k).getKey().equalsIgnoreCase("payroll_claim_show")) {
+					payroll_claim_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_advance_show")) {
+					payroll_advance_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_loan_show")) {
+					payroll_loan_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_payded_show")) {
+					payroll_payded_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_reward_show")) {
+					payroll_reward_show = Integer.parseInt(settingList.get(k).getValue());
+				}
+			}
+
+			if (payroll_advance_show == 1) {
+				int updateAdv = advanceRepo.updateAdv(month, year, empIds);
+			}
+
+			if (payroll_claim_show == 1) {
+				int updateClaim = claimHeaderRepo.updateClaim(month, year, empIds);
+			}
+
+			if (payroll_payded_show == 1) {
+				int updatePayde = payDeductionDetailsRepo.updatePayde(month, year, empIds);
+			}
+
+			if (payroll_reward_show == 1) {
+				int updateBonus = payBonusDetailsRepo.updateBonus(month, year, empIds);
+			}
+
 			// List<GetPayDedList> getLoanList = getPayDedListRepo.getLoanList(year + "-" +
 			// month + "-01", empIds);
-			List<LoanMain> getLoanList = loanMainRepo.getLoanList(year + "-" + month + "-01", empIds);
-			Date date = new Date();
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-			List<LoanDetails> loandetaillist = new ArrayList<>();
-			for (int i = 0; i < getLoanList.size(); i++) {
-				LoanDetails loanDetails = new LoanDetails();
-				loanDetails.setLoanMainId(getLoanList.get(i).getId());
-				loanDetails.setMonths(month);
-				loanDetails.setYears(year);
-				loanDetails.setPayType("SP");
-				loanDetails.setLoginName(String.valueOf(userId));
-				loanDetails.setLoginTime(sf.format(date));
+			if (payroll_loan_show == 1) {
 
-				int amt = 0;
+				List<LoanMain> getLoanList = loanMainRepo.getLoanList(year + "-" + month + "-01", empIds);
+				Date date = new Date();
+				SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-				if (getLoanList.get(i).getCurrentOutstanding() < getLoanList.get(i).getLoanEmiIntrest()) {
-					amt = getLoanList.get(i).getCurrentOutstanding();
-				} else {
-					amt = getLoanList.get(i).getLoanEmiIntrest();
+				List<LoanDetails> loandetaillist = new ArrayList<>();
+				for (int i = 0; i < getLoanList.size(); i++) {
+					LoanDetails loanDetails = new LoanDetails();
+					loanDetails.setLoanMainId(getLoanList.get(i).getId());
+					loanDetails.setMonths(month);
+					loanDetails.setYears(year);
+					loanDetails.setPayType("SP");
+					loanDetails.setLoginName(String.valueOf(userId));
+					loanDetails.setLoginTime(sf.format(date));
+
+					int amt = 0;
+
+					if (getLoanList.get(i).getCurrentOutstanding() < getLoanList.get(i).getLoanEmiIntrest()) {
+						amt = getLoanList.get(i).getCurrentOutstanding();
+					} else {
+						amt = getLoanList.get(i).getLoanEmiIntrest();
+					}
+
+					if (getLoanList.get(i).getSkipId() == 0) {
+						loanDetails.setAmountEmi(amt);
+						loanDetails.setRemarks("Auto Deducted :Salary Deduction");
+						getLoanList.get(i).setCurrentOutstanding(getLoanList.get(i).getCurrentOutstanding() - amt);
+						getLoanList.get(i).setCurrentTotpaid(getLoanList.get(i).getCurrentTotpaid() + amt);
+					} else {
+						getLoanList.get(i).setSkipId(0);
+						loanDetails.setAmountEmi(0);
+						loanDetails.setSkippAmoount(amt);
+						loanDetails.setSkippMonthYear(month + "-" + year);
+					}
+
+					if (getLoanList.get(i).getCurrentOutstanding() == 0) {
+						getLoanList.get(i).setLoanStatus("Paid");
+					}
+					loandetaillist.add(loanDetails);
 				}
 
-				if (getLoanList.get(i).getSkipId() == 0) {
-					loanDetails.setAmountEmi(amt);
-					loanDetails.setRemarks("Auto Deducted :Salary Deduction");
-					getLoanList.get(i).setCurrentOutstanding(getLoanList.get(i).getCurrentOutstanding() - amt);
-					getLoanList.get(i).setCurrentTotpaid(getLoanList.get(i).getCurrentTotpaid() + amt);
-				} else {
-					getLoanList.get(i).setSkipId(0);
-					loanDetails.setAmountEmi(0);
-					loanDetails.setSkippAmoount(amt);
-					loanDetails.setSkippMonthYear(month + "-" + year);
+				if (loandetaillist.size() > 0) {
+					List<LoanDetails> res = loanDetailsRepo.saveAll(loandetaillist);
+					List<LoanMain> updateRes = loanMainRepo.saveAll(getLoanList);
 				}
-
-				if (getLoanList.get(i).getCurrentOutstanding() == 0) {
-					getLoanList.get(i).setLoanStatus("Paid");
-				}
-				loandetaillist.add(loanDetails);
 			}
-
-			if (loandetaillist.size() > 0) {
-				List<LoanDetails> res = loanDetailsRepo.saveAll(loandetaillist);
-				List<LoanMain> updateRes = loanMainRepo.saveAll(getLoanList);
-			}
-
 			info.setError(false);
 			info.setMsg("success");
 
@@ -1774,8 +1881,7 @@ public class PayrollApiController {
 	@RequestMapping(value = { "/updateIsPaidInPaydeClaimAdvLoanInFullFinal" }, method = RequestMethod.POST)
 	@ResponseBody
 	public Info updateIsPaidInPaydeClaimAdvLoanInFullFinal(@RequestParam("month") int month,
-			@RequestParam("year") int year, @RequestParam("userId") int userId,
-			@RequestParam("empIds") int empIds) {
+			@RequestParam("year") int year, @RequestParam("userId") int userId, @RequestParam("empIds") int empIds) {
 
 		Info info = new Info();
 
@@ -1805,7 +1911,7 @@ public class PayrollApiController {
 				getLoanList.get(i).setCurrentOutstanding(getLoanList.get(i).getCurrentOutstanding() - amt);
 				getLoanList.get(i).setCurrentTotpaid(getLoanList.get(i).getCurrentTotpaid() + amt);
 				getLoanList.get(i).setLoanStatus("Paid");
-				 
+
 				loandetaillist.add(loanDetails);
 			}
 
