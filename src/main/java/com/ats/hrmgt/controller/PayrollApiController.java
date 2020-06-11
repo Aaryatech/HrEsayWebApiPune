@@ -1801,6 +1801,47 @@ public class PayrollApiController {
 		return payRollDataForProcessing;
 	}
 
+	@RequestMapping(value = { "/getPayrollGenratedListByAuthority" }, method = RequestMethod.POST)
+	@ResponseBody
+	public PayRollDataForProcessing getPayrollGenratedListByAuthority(@RequestParam("month") int month,
+			@RequestParam("year") int year, @RequestParam("empId") int empId) {
+
+		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
+
+		try {
+
+			List<GetPayrollGeneratedList> list = new ArrayList<>();
+
+			list = getPayrollGeneratedListRepo.getPayrollGenratedListByAuthority(month, year,empId);
+
+			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
+			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceList(month, year);
+
+			for (int i = 0; i < list.size(); i++) {
+
+				List<SalAllownceCal> assignAllownceList = new ArrayList<>();
+
+				for (int k = 0; k < getPayrollAllownceList.size(); k++) {
+
+					if (list.get(i).getId() == getPayrollAllownceList.get(k).getSalaryCalcId()) {
+						assignAllownceList.add(getPayrollAllownceList.get(k));
+
+					}
+				}
+
+				list.get(i).setPayrollAllownceList(assignAllownceList);
+			}
+
+			payRollDataForProcessing.setPayrollGeneratedList(list);
+			payRollDataForProcessing.setAllowancelist(allowancelist);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return payRollDataForProcessing;
+	}
+
 	@RequestMapping(value = { "/getPayrollGenratedListByEmpIds" }, method = RequestMethod.POST)
 	@ResponseBody
 	public PayRollDataForProcessing getPayrollGenratedListByEmpIds(@RequestParam("month") int month,
