@@ -23,21 +23,21 @@ public interface GetPayrollGeneratedListRepo extends JpaRepository<GetPayrollGen
 			"        dd.weekly_off,\n" + 
 			"        dd.paid_holiday,\n" + 
 			"        dd.paid_leave,\n" + 
-			"        dd.unpaid_leave,dd.absent_days\n" + 
+			"        dd.unpaid_leave,dd.absent_days,ei.email\n" + 
 			"    from\n" + 
 			"        tbl_salary_calc sc,\n" + 
 			"        m_employees e,\n" + 
 			"        tbl_mst_emp_types et,\n" + 
 			"        m_department d,\n" + 
 			"        m_designation dg,\n" + 
-			"        tbl_attt_summary_daily dd\n" + 
+			"        tbl_attt_summary_daily dd,tbl_emp_info ei\n" + 
 			"    where\n" + 
 			"        sc.calc_month=:month \n" + 
 			"        and calc_year=:year \n" + 
 			"        and e.emp_id=sc.emp_id \n" + 
 			"        and et.emp_type_id=sc.emp_type \n" + 
 			"        and d.depart_id=sc.depart_id \n" + 
-			"        and dg.desig_id=e.designation_id\n" + 
+			"        and dg.desig_id=e.designation_id and ei.emp_id=e.emp_id\n" + 
 			"        and dd.id=sc.att_sum_id order by e.emp_id asc", nativeQuery = true)
 	List<GetPayrollGeneratedList> getPayrollGenratedList(@Param("month") int month, @Param("year") int year);
 	
@@ -55,21 +55,21 @@ public interface GetPayrollGeneratedListRepo extends JpaRepository<GetPayrollGen
 			"        dd.weekly_off,\n" + 
 			"        dd.paid_holiday,\n" + 
 			"        dd.paid_leave,\n" + 
-			"        dd.unpaid_leave,dd.absent_days\n" + 
+			"        dd.unpaid_leave,dd.absent_days,ei.email\n" + 
 			"    from\n" + 
 			"        tbl_salary_calc sc,\n" + 
 			"        m_employees e,\n" + 
 			"        tbl_mst_emp_types et,\n" + 
 			"        m_department d,\n" + 
 			"        m_designation dg,\n" + 
-			"        tbl_attt_summary_daily dd\n" + 
+			"        tbl_attt_summary_daily dd,tbl_emp_info ei\n" + 
 			"    where\n" + 
 			"        sc.calc_month=:month \n" + 
 			"        and calc_year=:year \n" + 
 			"        and e.emp_id=sc.emp_id \n" + 
 			"        and et.emp_type_id=sc.emp_type \n" + 
 			"        and d.depart_id=sc.depart_id \n" + 
-			"        and dg.desig_id=e.designation_id\n" + 
+			"        and dg.desig_id=e.designation_id and ei.emp_id=e.emp_id\n" + 
 			"        and dd.id=sc.att_sum_id and e.emp_id in(:empIds) order by e.emp_id asc", nativeQuery = true)
 	List<GetPayrollGeneratedList> getPayrollGenratedList(@Param("month") int month, @Param("year") int year,@Param("empIds") List<Integer> empIds);
 
@@ -86,21 +86,21 @@ public interface GetPayrollGeneratedListRepo extends JpaRepository<GetPayrollGen
 			"        dd.weekly_off,\n" + 
 			"        dd.paid_holiday,\n" + 
 			"        dd.paid_leave,\n" + 
-			"        dd.unpaid_leave,dd.absent_days\n" + 
+			"        dd.unpaid_leave,dd.absent_days,ei.email\n" + 
 			"    from\n" + 
 			"        tbl_salary_calc sc,\n" + 
 			"        m_employees e,\n" + 
 			"        tbl_mst_emp_types et,\n" + 
 			"        m_department d,\n" + 
 			"        m_designation dg,\n" + 
-			"        tbl_attt_summary_daily dd\n" + 
+			"        tbl_attt_summary_daily dd,tbl_emp_info ei\n" + 
 			"    where\n" + 
 			"        sc.calc_month=:month \n" + 
 			"        and calc_year=:year \n" + 
 			"        and e.emp_id=sc.emp_id \n" + 
 			"        and et.emp_type_id=sc.emp_type \n" + 
 			"        and d.depart_id=sc.depart_id \n" + 
-			"        and dg.desig_id=e.designation_id\n" + 
+			"        and dg.desig_id=e.designation_id and ei.emp_id=e.emp_id\n" + 
 			"        and dd.id=sc.att_sum_id and e.sub_cmp_id=:companyId order by e.emp_id asc", nativeQuery = true) 
 	List<GetPayrollGeneratedList> getPayrollGenratedList(@Param("month") int month, @Param("year") int year,@Param("companyId") int companyId);
 
@@ -120,7 +120,7 @@ public interface GetPayrollGeneratedListRepo extends JpaRepository<GetPayrollGen
 			"        dd.paid_holiday,\n" + 
 			"        dd.paid_leave,\n" + 
 			"        dd.unpaid_leave,\n" + 
-			"        dd.absent_days     \n" + 
+			"        dd.absent_days,ei.email     \n" + 
 			"    from\n" + 
 			"        tbl_salary_calc sc,\n" + 
 			"        m_employees e,\n" + 
@@ -128,7 +128,7 @@ public interface GetPayrollGeneratedListRepo extends JpaRepository<GetPayrollGen
 			"        m_department d,\n" + 
 			"        m_designation dg,\n" + 
 			"        tbl_attt_summary_daily dd,\n" + 
-			"        leave_authority la\n" + 
+			"        leave_authority la,tbl_emp_info ei\n" + 
 			"    where\n" + 
 			"        sc.calc_month=:month          \n" + 
 			"        and calc_year=:year          \n" + 
@@ -137,7 +137,7 @@ public interface GetPayrollGeneratedListRepo extends JpaRepository<GetPayrollGen
 			"        and d.depart_id=sc.depart_id          \n" + 
 			"        and dg.desig_id=e.designation_id         \n" + 
 			"        and dd.id=sc.att_sum_id\n" + 
-			"        and la.emp_id=e.emp_id\n" + 
+			"        and la.emp_id=e.emp_id and ei.emp_id=e.emp_id\n" + 
 			"        and (la.ini_auth_emp_id=:empId or la.fin_auth_emp_id=:empId or la.emp_id=:empId)\n" + 
 			"    order by\n" + 
 			"        e.emp_id asc", nativeQuery = true) 

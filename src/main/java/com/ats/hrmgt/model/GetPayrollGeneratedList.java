@@ -108,6 +108,8 @@ public class GetPayrollGeneratedList {
 	private float unpaidLeave;
 	private float absentDays;
 	
+	private String email;
+	
 	@Transient
 	List<SalAllownceCal> payrollAllownceList;
 
@@ -866,6 +868,14 @@ public class GetPayrollGeneratedList {
 		this.absentDays = absentDays;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	@Override
 	public String toString() {
 		return "GetPayrollGeneratedList [id=" + id + ", cmpId=" + cmpId + ", empId=" + empId + ", empCode=" + empCode
@@ -900,7 +910,8 @@ public class GetPayrollGeneratedList {
 				+ ", departName=" + departName + ", designName=" + designName + ", payableDays=" + payableDays
 				+ ", presentDays=" + presentDays + ", weeklyOff=" + weeklyOff + ", paidHoliday=" + paidHoliday
 				+ ", paidLeave=" + paidLeave + ", unpaidLeave=" + unpaidLeave + ", absentDays=" + absentDays
-				+ ", payrollAllownceList=" + payrollAllownceList + ", moneyInword=" + moneyInword + "]";
+				+ ", email=" + email + ", payrollAllownceList=" + payrollAllownceList + ", moneyInword=" + moneyInword
+				+ "]";
 	}
 
 }
