@@ -38,7 +38,7 @@ public interface GetClaimHeadRepo extends JpaRepository<GetClaimHead, Integer>{
 			"        AND claim_apply_header.del_status=1 \n" + 
 			"        AND claim_apply_header.is_active=1 \n" + 
 			"        AND claim_apply_header.emp_id=:empId \n" + 
-			"        AND m_department.depart_id=emp_info.depart_id"  , nativeQuery = true)
+			"        AND m_department.depart_id=emp_info.depart_id order by claim_apply_header.ca_head_id desc"  , nativeQuery = true)
 	List<GetClaimHead> getClaimHeadByEmpId(@Param("empId") int empId);
 	
 
