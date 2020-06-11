@@ -57,7 +57,7 @@ public interface GetClaimApplyAuthwiseRepo   extends JpaRepository<GetClaimApply
 	
 	//Info
 	
-	@Query(value = " SELECT\n" + 
+	/*@Query(value = " SELECT\n" + 
 			"        la.ca_head_id,\n" + 
 			"        '0' as proj_id,\n" + 
 			"        la.emp_id,\n" + 
@@ -103,8 +103,45 @@ public interface GetClaimApplyAuthwiseRepo   extends JpaRepository<GetClaimApply
 			"        )          \n" + 
 			"       \n" + 
 			"      \n" + 
-			"       ", nativeQuery = true)
+			"       ", nativeQuery = true)*/
 
+	@Query(value = " SELECT\n" + 
+			"        la.ca_head_id,\n" + 
+			"        '0' as proj_id,\n" + 
+			"        la.emp_id,\n" + 
+			"        la.claim_title,\n" + 
+			"        la.claim_amount,\n" + 
+			"        la.ca_from_dt,\n" + 
+			"        la.ca_to_dt,\n" + 
+			"        la.claim_status,\n" + 
+			"        la.circulated_to,\n" + 
+			"        e.emp_code,\n" + 
+			"        '-' as emp_photo,\n" + 
+			"        CONCAT(e.surname,\n" + 
+			"        \" \",\n" + 
+			"        e.first_name) AS emp_name,\n" + 
+			"        le.ca_ini_auth_emp_id,\n" + 
+			"        le.ca_fin_auth_emp_id,\n" + 
+			"        la.ex_var1 ,\n" + 
+			"        '-' as project_title \n" + 
+			"    FROM\n" + 
+			"        claim_apply_header la,\n" + 
+			"        claim_authority le,\n" + 
+			"        m_employees  e\n" + 
+			"     WHERE\n" + 
+			"         le.emp_id = la.emp_id          \n" + 
+			"        AND e.emp_id = le.emp_id          \n" + 
+			"        AND(\n" + 
+			"            (\n" + 
+			"                le.ca_ini_auth_emp_id=:empId                  \n" + 
+			"                AND la.claim_status = 2                   \n" + 
+			"                AND le.ca_fin_auth_emp_id != le.ca_ini_auth_emp_id                       \n" + 
+			"            )              \n" + 
+			"            OR(\n" + 
+			"                le.ca_fin_auth_emp_id=:empId                  \n" + 
+			"                AND la.claim_status = 1                   \n" + 
+			"                AND le.ca_fin_auth_emp_id != le.ca_ini_auth_emp_id                       \n" + 
+			"            ) ) ", nativeQuery = true)
 	List<GetClaimApplyAuthwise> getClaimApplyList2(@Param("empId") int empId);
 
 
