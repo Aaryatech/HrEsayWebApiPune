@@ -421,7 +421,7 @@ public class ShiftAssignApiController {
 					.getEmpShiftAllocationDetail(fromDate, toDate);
 
 			List<WeeklyOff> weeklyOfflist = weeklyOffRepo.getWeeklyOffList();
-			List<LeaveApply> leavetList = leaveApplyRepository.getleavetList(fromDate, toDate);
+			List<LeaveApply> leavetList = leaveApplyRepository.getleavetListForAttndace(fromDate, toDate);
 			List<Holiday> holidayList = holidayRepo.getholidaybetweendate(fromDate, toDate);
 			List<WeeklyOffShit> weeklyOffShitList = weeklyOffShitRepository.getWeeklyOffShitList(fromDate, toDate);
 			List<WeeklyOffShit> weeklyOffShitFromList = weeklyOffShitRepository.weeklyOffShitFromList(fromDate, toDate);
@@ -747,17 +747,17 @@ public class ShiftAssignApiController {
 				} else {
 
 					Date maxDate = dateFormat.parse(empShiftList.get(i).getMaxDate());
-					
+
 					if (maxDate.compareTo(todt) < 0) {
-						
+
 						flag = 1;
-						
+
 						Calendar calendar = Calendar.getInstance();
 						calendar.setTime(maxDate);
-						calendar.add(Calendar.DAY_OF_YEAR, 1); 
-						String stdt = dateFormat.format(calendar.getTime());  
+						calendar.add(Calendar.DAY_OF_YEAR, 1);
+						String stdt = dateFormat.format(calendar.getTime());
 						fmdt = dateFormat.parse(stdt);
-						
+
 						for (Date j = fmdt; j.compareTo(todt) <= 0;) {
 
 							Calendar temp = Calendar.getInstance();
@@ -768,22 +768,21 @@ public class ShiftAssignApiController {
 							String attdate = dateFormat.format(j);
 
 							dailyDailyQuery = dailyDailyQuery + "('0', '" + empShiftList.get(i).getEmpId() + "','"
-									+ empShiftList.get(i).getEmpCode() + "','" + empShiftList.get(i).getShiftId() + "','"
-									+ attdate + "','" + month + "', '" + year + "', '0', '0',NULL, NULL),";
+									+ empShiftList.get(i).getEmpCode() + "','" + empShiftList.get(i).getShiftId()
+									+ "','" + attdate + "','" + month + "', '" + year + "', '0', '0',NULL, NULL),";
 							j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
 						}
-						
+
 					}
 				}
 
 			}
 
-			if(flag==1) {
-				
-				dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1); 
+			if (flag == 1) {
+
+				dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);
 				jdbcTemplate.batchUpdate(dailyDailyQuery);
 			}
-			
 
 		} catch (Exception e) {
 
