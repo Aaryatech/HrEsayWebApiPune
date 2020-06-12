@@ -26,6 +26,11 @@ public class EmpJsonData {
 	private int holidayCatId;
 	private int weekEndCatId;
 	
+	private String dailyHr;
+	private String monthlyHrTarget;
+	private String monthlyMinimumTarget;
+	private String monthlyOtHr;
+	
 	public int getEmpId() {
 		return empId;
 	}
@@ -134,6 +139,30 @@ public class EmpJsonData {
 	public void setWeekEndCatId(int weekEndCatId) {
 		this.weekEndCatId = weekEndCatId;
 	}
+	public String getDailyHr() {
+		return dailyHr;
+	}
+	public void setDailyHr(String dailyHr) {
+		this.dailyHr = dailyHr;
+	}
+	public String getMonthlyHrTarget() {
+		return monthlyHrTarget;
+	}
+	public void setMonthlyHrTarget(String monthlyHrTarget) {
+		this.monthlyHrTarget = monthlyHrTarget;
+	}
+	public String getMonthlyMinimumTarget() {
+		return monthlyMinimumTarget;
+	}
+	public void setMonthlyMinimumTarget(String monthlyMinimumTarget) {
+		this.monthlyMinimumTarget = monthlyMinimumTarget;
+	}
+	public String getMonthlyOtHr() {
+		return monthlyOtHr;
+	}
+	public void setMonthlyOtHr(String monthlyOtHr) {
+		this.monthlyOtHr = monthlyOtHr;
+	}
 	@Override
 	public String toString() {
 		return "EmpJsonData [empId=" + empId + ", empCode=" + empCode + ", cmpCode=" + cmpCode + ", empType=" + empType
@@ -141,7 +170,9 @@ public class EmpJsonData {
 				+ ", firstName=" + firstName + ", middleName=" + middleName + ", surname=" + surname + ", isEmp="
 				+ isEmp + ", currentShiftid=" + currentShiftid + ", empCategory=" + empCategory + ", salaryTypeId="
 				+ salaryTypeId + ", salBasis=" + salBasis + ", cmpJoiningDate=" + cmpJoiningDate + ", holidayCatId="
-				+ holidayCatId + ", weekEndCatId=" + weekEndCatId + "]";
+				+ holidayCatId + ", weekEndCatId=" + weekEndCatId + ", dailyHr=" + dailyHr + ", monthlyHrTarget="
+				+ monthlyHrTarget + ", monthlyMinimumTarget=" + monthlyMinimumTarget + ", monthlyOtHr=" + monthlyOtHr
+				+ "]";
 	}
 	
 	

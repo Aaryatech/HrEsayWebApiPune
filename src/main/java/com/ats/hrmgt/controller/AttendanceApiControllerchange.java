@@ -364,7 +364,7 @@ public class AttendanceApiControllerchange {
 						dataForUpdateAttendance.getEmpId());
 				leavetList = leaveApplyRepository.getleavetListForAttndace(fromDate, toDate,
 						dataForUpdateAttendance.getEmpId());
-				jsonDataList = empJsonDataRepository.jsonDataList(dataForUpdateAttendance.getEmpId()); 
+				jsonDataList = empJsonDataRepository.jsonDataList(dataForUpdateAttendance.getEmpId());
 				optionalHolidayList = empListForHolidayApproveRepo
 						.getOptionalHolidayApprovalList(dataForUpdateAttendance.getEmpId(), 1);
 
@@ -784,9 +784,10 @@ public class AttendanceApiControllerchange {
 					int holidayStatus = commonFunctionService.findDateInHoliday(sf.format(defaultDate),
 							sf.format(defaultDate), holidayList, dailyAttendanceList.get(i).getLocationId(),
 							employee.getHolidayCatId());
-					
-					if(holidayStatus==4) {
-						holidayStatus = commonFunctionService.findDateInOptionalHoliday(sf.format(defaultDate), optionalHolidayList,dailyAttendanceList.get(i).getEmpId());
+
+					if (holidayStatus == 4) {
+						holidayStatus = commonFunctionService.findDateInOptionalHoliday(sf.format(defaultDate),
+								optionalHolidayList, dailyAttendanceList.get(i).getEmpId());
 					}
 
 					LeaveStsAndLeaveId stsInfo = commonFunctionService.findDateInLeave(sf.format(defaultDate),
@@ -1035,7 +1036,28 @@ public class AttendanceApiControllerchange {
 							 * break; } } }
 							 */
 							if (leave_working_hr.getValue().equals("1")) {
-								dailyAttendanceList.get(i).setWorkingHrs(Float.parseFloat(shiftMaster.getShiftHr()));
+
+								if (employee.getSalBasis().equalsIgnoreCase("hour")) {
+
+									String[] otarr = employee.getDailyHr().split("\\.");
+									// System.out.println(Arrays.asList(otarr) + " " + otarr.length);
+									int monthlyOtMin = 0;
+
+									if (otarr.length > 1) {
+
+										monthlyOtMin = (Integer.parseInt(otarr[0]) * 60) + Integer.parseInt(otarr[1]);
+
+									} else {
+										monthlyOtMin = (Integer.parseInt(otarr[0]) * 60);
+									}
+
+									dailyAttendanceList.get(i).setWorkingHrs(monthlyOtMin);
+
+								} else {
+									dailyAttendanceList.get(i)
+											.setWorkingHrs(Float.parseFloat(shiftMaster.getShiftHr()));
+								}
+
 							}
 
 							dailyAttendanceList.get(i).setAttStatus(stsInfo.getStsshortname());
@@ -1059,6 +1081,34 @@ public class AttendanceApiControllerchange {
 									if (lvTypeList.get(j).getNameSd().equals(newStts)) {
 										dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
 										break;
+									}
+								}
+
+								if (newStts.equalsIgnoreCase("WO")) {
+									if (leave_working_hr.getValue().equals("1")) {
+
+										if (employee.getSalBasis().equalsIgnoreCase("hour")) {
+
+											String[] otarr = employee.getDailyHr().split("\\.");
+											// System.out.println(Arrays.asList(otarr) + " " + otarr.length);
+											int monthlyOtMin = 0;
+
+											if (otarr.length > 1) {
+
+												monthlyOtMin = (Integer.parseInt(otarr[0]) * 60)
+														+ Integer.parseInt(otarr[1]);
+
+											} else {
+												monthlyOtMin = (Integer.parseInt(otarr[0]) * 60);
+											}
+
+											dailyAttendanceList.get(i).setWorkingHrs(monthlyOtMin);
+
+										} else {
+											dailyAttendanceList.get(i)
+													.setWorkingHrs(Float.parseFloat(shiftMaster.getShiftHr()));
+										}
+
 									}
 								}
 							}
@@ -1473,7 +1523,7 @@ public class AttendanceApiControllerchange {
 
 				try {
 
-					System.out.println(empSalType.getSalBasis());
+					// System.out.println(empSalType.getSalBasis());
 					if (empSalType.getSalBasis().equalsIgnoreCase("hour")) {
 
 						summaryDailyAttendanceList.get(i).setTotlateMins(0);
@@ -1481,7 +1531,7 @@ public class AttendanceApiControllerchange {
 						summaryDailyAttendanceList.get(i).setTotworkingHrs(totalWorkingHr);
 
 						String[] otarr = empSalType.getMonthlyOtHr().split("\\.");
-						System.out.println(Arrays.asList(otarr) + " " + otarr.length);
+						// System.out.println(Arrays.asList(otarr) + " " + otarr.length);
 						int monthlyOtMin = 0;
 
 						if (otarr.length > 1) {

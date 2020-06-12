@@ -27,7 +27,7 @@ public interface EmpJsonDataRepository extends JpaRepository<EmpJsonData,Integer
 			"  si.sal_basis,\n" + 
 			"  si.cmp_joining_date,\n" + 
 			"  e.holiday_category as holiday_cat_id,\n" + 
-			"  e.weekend_category as week_end_cat_id from m_employees e,tbl_emp_salary_info si where e.emp_id=si.emp_id and e.del_status=1 and e.emp_id=:empId", nativeQuery = true)
+			"  e.weekend_category as week_end_cat_id,si.monthly_hr_target,si.monthly_minimum_target,si.monthly_ot_hr,si.daily_hr from m_employees e,tbl_emp_salary_info si where e.emp_id=si.emp_id and e.del_status=1 and e.emp_id=:empId", nativeQuery = true)
 	List<EmpJsonData> jsonDataList(int empId);
 	
 	@Query(value = "  select \n" + 
@@ -48,7 +48,7 @@ public interface EmpJsonDataRepository extends JpaRepository<EmpJsonData,Integer
 			"  si.sal_basis,\n" + 
 			"  si.cmp_joining_date,\n" + 
 			"  e.holiday_category as holiday_cat_id,\n" + 
-			"  e.weekend_category as week_end_cat_id from m_employees e,tbl_emp_salary_info si where e.emp_id=si.emp_id and e.del_status=1", nativeQuery = true)
+			"  e.weekend_category as week_end_cat_id,si.monthly_hr_target,si.monthly_minimum_target,si.monthly_ot_hr,si.daily_hr from m_employees e,tbl_emp_salary_info si where e.emp_id=si.emp_id and e.del_status=1", nativeQuery = true)
 	List<EmpJsonData> jsonDataList();
 
 }
