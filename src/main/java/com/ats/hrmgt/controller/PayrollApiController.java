@@ -814,7 +814,10 @@ public class PayrollApiController {
 									getSalaryTempList.get(i).getTotalDaysInmonth(),
 									getSalaryTempList.get(i).getPayableDays(),
 									getSalaryTempList.get(i).getWorkingDays(), ammt,
-									getSalaryTempList.get(i).getPresentDays(), amount_round);
+									getSalaryTempList.get(i).getPresentDays(),
+									getSalaryTempList.get(i).getMonthlyMinimumTarget(),
+									getSalaryTempList.get(i).getMonthlyHrTarget(),
+									getSalaryTempList.get(i).getTotworkingHrs(), amount_round);
 							getSalaryTempList.get(i).setBasicCal(calculatedValue);
 							salaryTermList.get(j).setValue(calculatedValue);
 
@@ -828,7 +831,10 @@ public class PayrollApiController {
 										getSalaryTempList.get(i).getTotalDaysInmonth(),
 										getSalaryTempList.get(i).getPayableDays(),
 										getSalaryTempList.get(i).getWorkingDays(), ammt,
-										getSalaryTempList.get(i).getPresentDays(), amount_round);
+										getSalaryTempList.get(i).getPresentDays(),
+										getSalaryTempList.get(i).getMonthlyMinimumTarget(),
+										getSalaryTempList.get(i).getMonthlyHrTarget(),
+										getSalaryTempList.get(i).getTotworkingHrs(), amount_round);
 								getSalaryTempList.get(i).getGetAllowanceTempList().get(index)
 										.setAllowanceValueCal(tempVal);
 								salaryTermList.get(j).setValue(tempVal);
@@ -1245,9 +1251,39 @@ public class PayrollApiController {
 	}
 
 	public double calculateFdata(float percentage, String salBasis, int totalDaysInMonth, float payableDays,
-			float workingDays, double ammt, float presentDays, int amount_round) {
+			float workingDays, double ammt, float presentDays, String monthlyMinimumHr, String monthlyTargetHr,
+			float workingHrs, int amount_round) {
 
 		double val = 0;
+
+		String[] monthlyMinimumHrarr = monthlyMinimumHr.split("\\.");
+		int monthlyMiniMin = 0;
+		try {
+			if (monthlyMinimumHrarr.length > 1) {
+
+				monthlyMiniMin = (Integer.parseInt(monthlyMinimumHrarr[0]) * 60)
+						+ Integer.parseInt(monthlyMinimumHrarr[1]);
+
+			} else {
+				monthlyMiniMin = (Integer.parseInt(monthlyMinimumHrarr[0]) * 60);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String[] monthlyTargetHrarr = monthlyTargetHr.split("\\.");
+		int monthlyTargetMin = 0;
+		try {
+			if (monthlyTargetHrarr.length > 1) {
+
+				monthlyTargetMin = (Integer.parseInt(monthlyTargetHrarr[0]) * 60)
+						+ Integer.parseInt(monthlyTargetHrarr[1]);
+
+			} else {
+				monthlyTargetMin = (Integer.parseInt(monthlyTargetHrarr[0]) * 60);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		if (percentage == 1) {
 			float totalPayableDaysTemp = Math.min(payableDays, totalDaysInMonth);
@@ -1255,7 +1291,14 @@ public class PayrollApiController {
 			if (salBasis.equalsIgnoreCase("monthly")) {
 				val = (ammt / totalDaysInMonth) * totalPayableDaysTemp;
 			} // $sal_basis == "monthly"
-			else {
+			else if (salBasis.equalsIgnoreCase("hour")) {
+				if (workingHrs >= monthlyMiniMin) {
+					val = ammt;
+				} else {
+					ammt = ammt / monthlyTargetMin;
+					val = ammt * workingHrs;
+				}
+			} else {
 				// $val = ($amount / $working_days ) * $total_payable_days;
 				val = (ammt) * totalPayableDaysTemp;
 			}
@@ -1265,23 +1308,73 @@ public class PayrollApiController {
 			if (salBasis.equalsIgnoreCase("monthly")) {
 				val = (ammt / totalDaysInMonth) * totalPayableDaysTemp;
 			} // $sal_basis == "monthly"
-			else {
+			else if (salBasis.equalsIgnoreCase("hour")) {
+				if (workingHrs >= monthlyMiniMin) {
+					val = ammt;
+				} else {
+					ammt = ammt / monthlyTargetMin;
+					val = ammt * workingHrs;
+				}
+			} else {
 				// $val = ($amount / $working_days ) * $total_payable_days;
 				val = (ammt / workingDays) * totalPayableDaysTemp;
 			}
 		} // $percentage == 2
 		else if (percentage == 3) {
 			float totalPayableDaysTemp = Math.min(payableDays, totalDaysInMonth);
-			val = (ammt / totalDaysInMonth) * totalPayableDaysTemp;
+
+			if (salBasis.equalsIgnoreCase("hour")) {
+				if (workingHrs >= monthlyMiniMin) {
+					val = ammt;
+				} else {
+					ammt = ammt / monthlyTargetMin;
+					val = ammt * workingHrs;
+				}
+			} else {
+				val = (ammt / totalDaysInMonth) * totalPayableDaysTemp;
+			}
+
 		} // $percentage == 2
 		val = castNumber(val, amount_round);
 		return val;
 	}
 
 	public double calculateAllowancedata(float percentage, String salBasis, int totalDays, float totalPayableDays,
-			float workingDays, double amount, float presentDays, int amount_round) {
+			float workingDays, double amount, float presentDays, String monthlyMinimumHr, String monthlyTargetHr,
+			float workingHrs, int amount_round) {
 
 		double val = 0;
+
+		String[] monthlyMinimumHrarr = monthlyMinimumHr.split("\\.");
+		int monthlyMiniMin = 0;
+		try {
+			if (monthlyMinimumHrarr.length > 1) {
+
+				monthlyMiniMin = (Integer.parseInt(monthlyMinimumHrarr[0]) * 60)
+						+ Integer.parseInt(monthlyMinimumHrarr[1]);
+
+			} else {
+				monthlyMiniMin = (Integer.parseInt(monthlyMinimumHrarr[0]) * 60);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		String[] monthlyTargetHrarr = monthlyTargetHr.split("\\.");
+		int monthlyTargetMin = 0;
+		try {
+			if (monthlyTargetHrarr.length > 1) {
+
+				monthlyTargetMin = (Integer.parseInt(monthlyTargetHrarr[0]) * 60)
+						+ Integer.parseInt(monthlyTargetHrarr[1]);
+
+			} else {
+				monthlyTargetMin = (Integer.parseInt(monthlyTargetHrarr[0]) * 60);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		if (percentage == 0) {
 			val = castNumber(amount, amount_round);
 			// val = castNumber(amount);
@@ -1290,7 +1383,14 @@ public class PayrollApiController {
 			if (salBasis.equalsIgnoreCase("monthly")) {
 				val = (amount / totalDays) * totalPayableDays;
 			} // $sal_basis == "monthly"
-			else {
+			else if (salBasis.equalsIgnoreCase("hour")) {
+				if (workingHrs >= monthlyMiniMin) {
+					val = amount;
+				} else {
+					amount = amount / monthlyTargetMin;
+					val = amount * workingHrs;
+				}
+			} else {
 				val = amount * totalPayableDays;
 			}
 
@@ -1300,7 +1400,14 @@ public class PayrollApiController {
 			if (salBasis.equalsIgnoreCase("monthly")) {
 				val = (amount / totalDays) * presentDays;
 			} // $sal_basis == "monthly"
-			else {
+			else if (salBasis.equalsIgnoreCase("hour")) {
+				if (workingHrs >= monthlyMiniMin) {
+					val = amount;
+				} else {
+					amount = amount / monthlyTargetMin;
+					val = amount * workingHrs;
+				}
+			} else {
 				// $val = ($amount / $working_days ) * $total_payable_days;
 				val = amount * totalPayableDays;
 			}
@@ -1311,7 +1418,14 @@ public class PayrollApiController {
 			if (salBasis.equalsIgnoreCase("monthly")) {
 				val = (amount / totalDays) * totalPayableDaysTemp;
 			} // $sal_basis == "monthly"
-			else {
+			else if (salBasis.equalsIgnoreCase("hour")) {
+				if (workingHrs >= monthlyMiniMin) {
+					val = amount;
+				} else {
+					amount = amount / monthlyTargetMin;
+					val = amount * workingHrs;
+				}
+			} else {
 				// $val = ($amount / $working_days ) * $total_payable_days;
 				val = (amount) * totalPayableDaysTemp;
 			}
@@ -1322,7 +1436,14 @@ public class PayrollApiController {
 			if (salBasis.equalsIgnoreCase("monthly")) {
 				val = (amount / totalDays) * totalPayableDaysTemp;
 			} // $sal_basis == "monthly"
-			else {
+			else if (salBasis.equalsIgnoreCase("hour")) {
+				if (workingHrs >= monthlyMiniMin) {
+					val = amount;
+				} else {
+					amount = amount / monthlyTargetMin;
+					val = amount * workingHrs;
+				}
+			} else {
 				// $val = ($amount / $working_days ) * $total_payable_days;
 				val = (amount / totalDays) * totalPayableDaysTemp;
 			}
@@ -1405,25 +1526,31 @@ public class PayrollApiController {
 	public double otwages(float percentage, String salBasis, int totalDays, float totalPayableDays, float workingDays,
 			double workingHour, float otHr, double ammt, MstEmpType mstEmpType, double rate, int amount_round) {
 
-		workingHour = workingHour / 60;
+		/*
+		 * workingHour = workingHour / 60;
+		 * 
+		 * otHr = otHr / 60;
+		 */
 
-		otHr = otHr / 60;
+		double rateofmin = (rate / 60);
+
 		// basic+DAy
 		// metaf: amount / month_day
 		double val = 0;
 
 		double otMultiplication = 0;
 
+		// System.out.println("otHr"+otHr);
 		if (mstEmpType.getOtApplicable().equalsIgnoreCase("yes")) {
 			// otMultiplication = Integer.parseInt(mstEmpType.getOtType());
 
 			if (salBasis.equalsIgnoreCase("monthly")) {
 				// val = (((ammt / totalDays) / workingHour) * otHr) * otMultiplication;
-				val = otHr * rate;
+				val = otHr * rateofmin;
 			} // $sal_basis == "monthly"
 			else {
 				// val = ((ammt / workingHour) * otHr) * otMultiplication;
-				val = otHr * rate;
+				val = otHr * rateofmin;
 			}
 			val = castNumber(val, amount_round);
 		}
@@ -1812,7 +1939,7 @@ public class PayrollApiController {
 
 			List<GetPayrollGeneratedList> list = new ArrayList<>();
 
-			list = getPayrollGeneratedListRepo.getPayrollGenratedListByAuthority(month, year,empId);
+			list = getPayrollGeneratedListRepo.getPayrollGenratedListByAuthority(month, year, empId);
 
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
 			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceList(month, year);

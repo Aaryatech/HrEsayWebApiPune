@@ -158,7 +158,7 @@ public interface EmpSalInfoDaiyInfoTempInfoRepo extends JpaRepository<EmpSalInfo
 			"        sd.calculation_done,\n" + 
 			"        ef.dob,\n" + 
 			"        sr.skill_id,\n" + 
-			"        sr.rate\n" + 
+			"        sr.rate,si.monthly_hr_target,si.monthly_minimum_target,si.monthly_ot_hr,si.daily_hr\n" + 
 			"    from\n" + 
 			"        tbl_salary_dynamic_temp sdt,\n" + 
 			"        tbl_emp_salary_info si,\n" + 
