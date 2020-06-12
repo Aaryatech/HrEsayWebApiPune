@@ -2100,4 +2100,34 @@ public class PayrollApiController {
 		return info;
 	}
 
+	@RequestMapping(value = { "/checkPayslipisgenerated" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Info checkPayslipisgenerated(@RequestParam("month") int month, @RequestParam("year") int year,
+			@RequestParam("empId") int empId) {
+
+		Info info = new Info();
+
+		try {
+			List<Integer> empIds = new ArrayList<>();
+			empIds.add(empId);
+
+			List<GetPayrollGeneratedList> list = getPayrollGeneratedListRepo.getPayrollGenratedList(month, year,
+					empIds);
+
+			if (list.size() > 0) {
+				info.setError(false);
+				info.setMsg("Payslip is generated");
+			} else {
+				info.setError(true);
+				info.setMsg("Payslip is not generated of selected month");
+			}
+		} catch (Exception e) {
+			info.setError(true);
+			info.setMsg("Payslip is not generated of selected month");
+			e.printStackTrace();
+		}
+
+		return info;
+	}
+
 }
