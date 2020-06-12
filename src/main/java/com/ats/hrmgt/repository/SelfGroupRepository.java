@@ -12,7 +12,7 @@ import com.ats.hrmgt.model.SelfGroup;
 
 public interface SelfGroupRepository extends JpaRepository<SelfGroup, Integer> {
 
-	@Query(value = "select * from m_self_grup where del_status=1", nativeQuery = true)
+	@Query(value = "select * from m_self_grup where del_status=1 order by selft_group_id desc", nativeQuery = true)
 	List<SelfGroup> selfGrouptList();
 
 	

@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -2430,6 +2431,81 @@ public class AttendanceApiControllerchange {
 			info.setError(true);
 			info.setMsg("failed");
 			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
+	@RequestMapping(value = { "/changeInDailyDailyAfterLeaveTransactionByApp" }, method = RequestMethod.POST)
+	public @ResponseBody Info changeInDailyDailyAfterLeaveTransactionByApp(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("empId") int empId,
+			@RequestParam("userId") int userId) {
+
+		Info info = new Info();
+		try {
+
+			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
+			Date fmdt = dd.parse(fromDate);
+			Date todt = dd.parse(toDate);
+			List<DailyAttendance> dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceList(fromDate, toDate,
+					empId);
+
+			List<FileUploadedData> fileUploadedDataList = new ArrayList<>();
+
+			for (int i = 0; i < dailyAttendanceList.size(); i++) {
+
+				FileUploadedData fileUploadedData = new FileUploadedData();
+				fileUploadedData.setEmpCode(dailyAttendanceList.get(i).getEmpCode());
+				fileUploadedData.setEmpName(dailyAttendanceList.get(i).getEmpName());
+				fileUploadedData.setLogDate(DateConvertor.convertToDMY(dailyAttendanceList.get(i).getAttDate()));
+				fileUploadedData.setInTime(dailyAttendanceList.get(i).getInTime().substring(0, 5));
+				fileUploadedData.setOutTime(dailyAttendanceList.get(i).getOutTime().substring(0, 5));
+				fileUploadedDataList.add(fileUploadedData);
+			}
+
+			DataForUpdateAttendance dataForUpdateAttendance = new DataForUpdateAttendance();
+			dataForUpdateAttendance.setFromDate(DateConvertor.convertToYMD(fromDate));
+			dataForUpdateAttendance.setToDate(DateConvertor.convertToYMD(toDate));
+			dataForUpdateAttendance.setMonth(0);
+			dataForUpdateAttendance.setYear(0);
+			dataForUpdateAttendance.setUserId(userId);
+			dataForUpdateAttendance.setFileUploadedDataList(fileUploadedDataList);
+			dataForUpdateAttendance.setEmpId(empId);
+			Info dailydailyinfo = getVariousListForUploadAttendace(dataForUpdateAttendance);
+
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+
+			if (dailydailyinfo.isError() == false) {
+
+				for (Date m = fmdt; m.compareTo(todt) <= 0;) {
+
+					Calendar a = Calendar.getInstance();
+					a.setTime(m);
+					int year = a.get(Calendar.YEAR);
+					int month = a.get(Calendar.MONTH) + 1;
+					// System.out.println(m + " " + year + " " + k);
+
+					Date firstDay = new GregorianCalendar(year, month - 1, 1).getTime();
+					Date lastDay = new GregorianCalendar(year, month, 0).getTime();
+
+					Info sumryinfo = finalUpdateDailySumaryRecord(sf.format(firstDay), sf.format(lastDay), userId,
+							month, year, empId);
+
+					String dt = "0" + "-" + (month + 1) + "-" + year;
+					m = dd.parse(dt);
+					m.setTime(m.getTime() + 1000 * 60 * 60 * 24);
+
+				}
+			}
+
+			info.setError(false);
+			info.setMsg("success");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			info.setError(true);
+			info.setMsg("failed");
 		}
 
 		return info;

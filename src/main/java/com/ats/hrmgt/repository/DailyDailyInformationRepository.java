@@ -51,7 +51,7 @@ public interface DailyDailyInformationRepository extends JpaRepository<DailyDail
 			"    where\n" + 
 			"        dl.att_date between :fromDate and :toDate \n" + 
 			"        and dl.lv_sumup_id=sp.id\n" + 
-			"        and es.emp_id=dl.emp_id\n" + 
+			"        and es.emp_id=dl.emp_id and dl.is_fixed=0 and dl.rec_status='o'\n" + 
 			"    group by\n" + 
 			"        dl.emp_id,\n" + 
 			"        dl.lv_sumup_id ", nativeQuery = true)
@@ -99,7 +99,7 @@ public interface DailyDailyInformationRepository extends JpaRepository<DailyDail
 			"    where\n" + 
 			"        dl.att_date between :fromDate and :toDate \n" + 
 			"        and dl.lv_sumup_id=sp.id\n" + 
-			"        and es.emp_id=dl.emp_id and dl.emp_id=:empId\n" + 
+			"        and es.emp_id=dl.emp_id and dl.emp_id=:empId and dl.is_fixed=0 and dl.rec_status='o'\n" + 
 			"    group by\n" + 
 			"        dl.emp_id,\n" + 
 			"        dl.lv_sumup_id ", nativeQuery = true)
