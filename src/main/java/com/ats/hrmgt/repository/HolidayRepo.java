@@ -27,7 +27,7 @@ public interface HolidayRepo extends JpaRepository<Holiday, Integer> {
 			@Param("toDate") String toDate);
 
 	@Query(value = "select * from m_holiday where holiday_fromdt between :fromDate and :toDate and m_holiday.cal_yr_id=(select cal_yr_id from dm_cal_year where is_current=1) "
-			+ "and del_status=1", nativeQuery = true)
+			+ "and del_status=1 and ex_int3=1", nativeQuery = true)
 	List<Holiday> getholidaybetweendate(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 
 	List<Holiday> findByExInt1AndDelStatus(int hoCatId, int i);

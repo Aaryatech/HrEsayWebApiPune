@@ -785,11 +785,6 @@ public class AttendanceApiControllerchange {
 							sf.format(defaultDate), holidayList, dailyAttendanceList.get(i).getLocationId(),
 							employee.getHolidayCatId());
 
-					if (holidayStatus == 4) {
-						holidayStatus = commonFunctionService.findDateInOptionalHoliday(sf.format(defaultDate),
-								optionalHolidayList, dailyAttendanceList.get(i).getEmpId());
-					}
-
 					LeaveStsAndLeaveId stsInfo = commonFunctionService.findDateInLeave(sf.format(defaultDate),
 							leavetList, dailyAttendanceList.get(i).getEmpId());
 
@@ -804,6 +799,11 @@ public class AttendanceApiControllerchange {
 							|| dailyAttendanceList.get(i).getOutTime().equals("00:00:00")) {
 						presentStatus = 8;
 						dailyAttendanceList.get(i).setFullNight(0);
+					}
+
+					if (holidayStatus == 4 && presentStatus == 8) {
+						holidayStatus = commonFunctionService.findDateInOptionalHoliday(sf.format(defaultDate),
+								optionalHolidayList, dailyAttendanceList.get(i).getEmpId());
 					}
 
 					/*
@@ -1084,7 +1084,7 @@ public class AttendanceApiControllerchange {
 									}
 								}
 
-								if (newStts.equalsIgnoreCase("WO")) {
+								if (newStts.equalsIgnoreCase("PH")) {
 									if (leave_working_hr.getValue().equals("1")) {
 
 										if (employee.getSalBasis().equalsIgnoreCase("hour")) {
