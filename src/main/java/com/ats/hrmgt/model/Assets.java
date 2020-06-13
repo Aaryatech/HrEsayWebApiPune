@@ -27,6 +27,17 @@ public class Assets {
 	private String assetPurDate	;
 	private int vendorId;
 	private String assetRemark;
+	
+	private int assetStatus;
+	private String scrapDate;
+	private String scrapRemark;
+	private String scrapAuthoriyDetails;
+	private int scrapLoginUserid;
+	private String scrapDatetime;
+	private String assetPurImage;
+	private String assetScrapImage;
+	private int locId;
+	
 	private int makerUserId;
 	private String updateDatetime;
 	private int delStatus;
@@ -101,6 +112,61 @@ public class Assets {
 	public void setAssetRemark(String assetRemark) {
 		this.assetRemark = assetRemark;
 	}
+	
+	public int getAssetStatus() {
+		return assetStatus;
+	}
+	public void setAssetStatus(int assetStatus) {
+		this.assetStatus = assetStatus;
+	}
+	public String getScrapDate() {
+		return scrapDate;
+	}
+	public void setScrapDate(String scrapDate) {
+		this.scrapDate = scrapDate;
+	}
+	public String getScrapRemark() {
+		return scrapRemark;
+	}
+	public void setScrapRemark(String scrapRemark) {
+		this.scrapRemark = scrapRemark;
+	}
+	public String getScrapAuthoriyDetails() {
+		return scrapAuthoriyDetails;
+	}
+	public void setScrapAuthoriyDetails(String scrapAuthoriyDetails) {
+		this.scrapAuthoriyDetails = scrapAuthoriyDetails;
+	}
+	public int getScrapLoginUserid() {
+		return scrapLoginUserid;
+	}
+	public void setScrapLoginUserid(int scrapLoginUserid) {
+		this.scrapLoginUserid = scrapLoginUserid;
+	}
+	public String getScrapDatetime() {
+		return scrapDatetime;
+	}
+	public void setScrapDatetime(String scrapDatetime) {
+		this.scrapDatetime = scrapDatetime;
+	}
+	public String getAssetPurImage() {
+		return assetPurImage;
+	}
+	public void setAssetPurImage(String assetPurImage) {
+		this.assetPurImage = assetPurImage;
+	}
+	public String getAssetScrapImage() {
+		return assetScrapImage;
+	}
+	public void setAssetScrapImage(String assetScrapImage) {
+		this.assetScrapImage = assetScrapImage;
+	}
+	public int getLocId() {
+		return locId;
+	}
+	public void setLocId(int locId) {
+		this.locId = locId;
+	}
 	public int getMakerUserId() {
 		return makerUserId;
 	}
@@ -148,9 +214,12 @@ public class Assets {
 		return "Assets [assetId=" + assetId + ", assetCode=" + assetCode + ", assetName=" + assetName + ", assetDesc="
 				+ assetDesc + ", assetCatId=" + assetCatId + ", assetMake=" + assetMake + ", assetModel=" + assetModel
 				+ ", assetSrno=" + assetSrno + ", assetPurDate=" + assetPurDate + ", vendorId=" + vendorId
-				+ ", assetRemark=" + assetRemark + ", makerUserId=" + makerUserId + ", updateDatetime=" + updateDatetime
-				+ ", delStatus=" + delStatus + ", exInt1=" + exInt1 + ", exInt2=" + exInt2 + ", exVar1=" + exVar1
-				+ ", exVar2=" + exVar2 + "]";
+				+ ", assetRemark=" + assetRemark + ", assetStatus=" + assetStatus + ", scrapDate=" + scrapDate
+				+ ", scrapRemark=" + scrapRemark + ", scrapAuthoriyDetails=" + scrapAuthoriyDetails
+				+ ", scrapLoginUserid=" + scrapLoginUserid + ", scrapDatetime=" + scrapDatetime + ", assetPurImage="
+				+ assetPurImage + ", assetScrapImage=" + assetScrapImage + ", locId=" + locId + ", makerUserId="
+				+ makerUserId + ", updateDatetime=" + updateDatetime + ", delStatus=" + delStatus + ", exInt1=" + exInt1
+				+ ", exInt2=" + exInt2 + ", exVar1=" + exVar1 + ", exVar2=" + exVar2 + "]";
 	}
-	
+
 }

@@ -55,7 +55,7 @@ public class AssetMgmtApiController {
 		return list;
 	}
 	
-	@RequestMapping(value = { "/saveAssetCat" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/saveAssetCat"}, method = RequestMethod.POST)
 	public AssetCategory saveAssetCat(@RequestBody AssetCategory asset) {
 		AssetCategory assetCat = new AssetCategory();
 		try {
@@ -223,6 +223,19 @@ public class AssetMgmtApiController {
 		return list;
 	}
 	
+	@RequestMapping(value = { "/getAllAssetAMCDetails" }, method = RequestMethod.GET)
+	public List<AssetAmc> getAllAssetAMCDetails() {
+		List<AssetAmc> list = new ArrayList<AssetAmc>();
+		try {
+			list = assetAmcRepo.getAllAssetAMC();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllAssetAMCDetails : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
 	@RequestMapping(value = { "/getAssetAmcById" }, method = RequestMethod.POST)
 	public AssetAmc getAssetAmcById(@RequestParam int assetAmcId) {
 		AssetAmc assetAmc = new AssetAmc();
@@ -274,6 +287,19 @@ public class AssetMgmtApiController {
 	}
 	
 	/********************************************************************/
+	@RequestMapping(value = { "/getAssetsList" }, method = RequestMethod.GET)
+	public List<Assets> getAssetsList() {
+		List<Assets> list = new ArrayList<Assets>();
+		try {
+			list = assetsRepo.findByDelStatusOrderByAssetIdDesc(1);
+		} catch (Exception e) {
+			System.err.println("Excep in getAllAssets : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
 	@RequestMapping(value = { "/getAllAssets" }, method = RequestMethod.GET)
 	public List<AssetsDetailsList> getAllAssets() {
 		List<AssetsDetailsList> list = new ArrayList<AssetsDetailsList>();
@@ -336,6 +362,37 @@ public class AssetMgmtApiController {
 		return info;
 	}
 	
+	
+	@RequestMapping(value = { "/getAllAssetsByLocation" }, method = RequestMethod.POST)
+	public List<AssetsDetailsList> getAllAssetsByLocation(@RequestParam int locId) {
+		List<AssetsDetailsList> list = new ArrayList<AssetsDetailsList>();
+		try {
+			if(locId>0) {
+				list = assetsListRepo.getAllAssetByLoc(locId);
+			}else {
+				list = assetsListRepo.getAllAssetList();
+			}
+		} catch (Exception e) {
+			System.err.println("Excep in getAllAssetsByLocation : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	@RequestMapping(value = { "/getAssetInfoById" }, method = RequestMethod.POST)
+	public AssetsDetailsList getAssetInfoById(@RequestParam int assetId) {
+		AssetsDetailsList assetCat = new AssetsDetailsList();
+		
+		try {
+			assetCat = assetsListRepo.getAssetDetailById(assetId);
+		} catch (Exception e) {
+			System.err.println("Excep in getAssetInfoById : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return assetCat;
+	}
 	/*********************************************************************************/
 	
 	@RequestMapping(value = { "/getAllAssetsTransactions" }, method = RequestMethod.GET)

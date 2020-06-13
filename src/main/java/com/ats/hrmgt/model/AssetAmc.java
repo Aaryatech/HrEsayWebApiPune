@@ -1,14 +1,10 @@
 package com.ats.hrmgt.model;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "t_asset_amc")
@@ -18,12 +14,17 @@ public class AssetAmc {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int amcId;
 	private int assetId;
-	private Date amcFrDate;
-	private Date amcToDate;
+	private String amcFrDate;
+	private String amcToDate;
 	private float amcAmt;
 	private String positiveRemark;
 	private String negativeRemark;
 	private int vendorId;
+	
+	private int amcStatus;
+	private String termAndCondi;
+	private String amcDocFile;
+	
 	private int makerUserId;
 	private String updateDatetime;
 	private int delStatus;
@@ -43,20 +44,16 @@ public class AssetAmc {
 	public void setAssetId(int assetId) {
 		this.assetId = assetId;
 	}
-	
-	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
-	public Date getAmcFrDate() {
+	public String getAmcFrDate() {
 		return amcFrDate;
 	}
-	public void setAmcFrDate(Date amcFrDate) {
+	public void setAmcFrDate(String amcFrDate) {
 		this.amcFrDate = amcFrDate;
 	}
-	
-	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
-	public Date getAmcToDate() {
+	public String getAmcToDate() {
 		return amcToDate;
 	}
-	public void setAmcToDate(Date amcToDate) {
+	public void setAmcToDate(String amcToDate) {
 		this.amcToDate = amcToDate;
 	}
 	public float getAmcAmt() {
@@ -82,6 +79,25 @@ public class AssetAmc {
 	}
 	public void setVendorId(int vendorId) {
 		this.vendorId = vendorId;
+	}
+		
+	public int getAmcStatus() {
+		return amcStatus;
+	}
+	public void setAmcStatus(int amcStatus) {
+		this.amcStatus = amcStatus;
+	}
+	public String getTermAndCondi() {
+		return termAndCondi;
+	}
+	public void setTermAndCondi(String termAndCondi) {
+		this.termAndCondi = termAndCondi;
+	}
+	public String getAmcDocFile() {
+		return amcDocFile;
+	}
+	public void setAmcDocFile(String amcDocFile) {
+		this.amcDocFile = amcDocFile;
 	}
 	public int getMakerUserId() {
 		return makerUserId;
@@ -129,7 +145,8 @@ public class AssetAmc {
 	public String toString() {
 		return "AssetAmc [amcId=" + amcId + ", assetId=" + assetId + ", amcFrDate=" + amcFrDate + ", amcToDate="
 				+ amcToDate + ", amcAmt=" + amcAmt + ", positiveRemark=" + positiveRemark + ", negativeRemark="
-				+ negativeRemark + ", vendorId=" + vendorId + ", makerUserId=" + makerUserId + ", updateDatetime="
+				+ negativeRemark + ", vendorId=" + vendorId + ", amcStatus=" + amcStatus + ", termAndCondi="
+				+ termAndCondi + ", amcDocFile=" + amcDocFile + ", makerUserId=" + makerUserId + ", updateDatetime="
 				+ updateDatetime + ", delStatus=" + delStatus + ", exInt1=" + exInt1 + ", exVar1=" + exVar1
 				+ ", exInt2=" + exInt2 + ", exVar2=" + exVar2 + "]";
 	}
