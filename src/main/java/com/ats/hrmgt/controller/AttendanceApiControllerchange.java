@@ -482,6 +482,7 @@ public class AttendanceApiControllerchange {
 
 					int shiftId = dailyAttendanceList.get(i).getCurrentShiftid();
 
+					int findshiftId = 0;
 					for (int j = 0; j < shiftAssignDailyList.size(); j++) {
 
 						Date date = sf.parse(shiftAssignDailyList.get(j).getShiftDate());
@@ -491,9 +492,15 @@ public class AttendanceApiControllerchange {
 
 							shiftId = shiftAssignDailyList.get(j).getShiftId();
 							groupType = shiftAssignDailyList.get(j).getExtra1();
+							findshiftId = 1;
 							break;
 						}
 
+					}
+
+					if (findshiftId == 0) {
+						shiftId = 3;
+						groupType = 2;
 					}
 
 					for (int j = 0; j < shiftList.size(); j++) {
