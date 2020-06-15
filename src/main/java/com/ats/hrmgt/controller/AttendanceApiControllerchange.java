@@ -2421,6 +2421,11 @@ public class AttendanceApiControllerchange {
 					// System.out.println("In if");
 				} else {
 					// System.out.println("In else");
+					if (selectStatus != 0) {
+						dailyRecordById.setLvSumupId(selectStatus);
+						dailyRecordById.setAttStatus(selectStatusText);
+					}
+					dailyRecordById.setLateMark(lateMark);
 					String[] othrsarry = otHours.split(":");
 					int othrs = (Integer.parseInt(othrsarry[0]) * 60) + Integer.parseInt(othrsarry[1]);
 					dailyRecordById.setOtHr(String.valueOf(othrs));
@@ -2537,7 +2542,7 @@ public class AttendanceApiControllerchange {
 
 	}
 
-	@Scheduled(cron = "1 * * * * ? ")
+	// @Scheduled(cron = "1 * * * * ? ")
 	public void callAttendancFuntion() {
 
 		try {
