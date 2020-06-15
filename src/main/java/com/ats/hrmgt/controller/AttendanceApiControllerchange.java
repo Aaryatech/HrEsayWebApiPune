@@ -12,6 +12,8 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,6 +87,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 @RestController
+@Component
 public class AttendanceApiControllerchange {
 
 	@Autowired
@@ -177,8 +180,9 @@ public class AttendanceApiControllerchange {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			Date fmdt = df.parse(fromDate);
 			Date todt = df.parse(toDate);
+			int totalDaysInmonth = difffun(fromDate, toDate);
 
-			System.out.println(fmdt + " " + todt);
+			// System.out.println(fmdt + " " + todt);
 
 			Calendar temp = Calendar.getInstance();
 			temp.setTime(fmdt);
@@ -213,8 +217,8 @@ public class AttendanceApiControllerchange {
 				dailyDailySummryQuery = dailyDailySummryQuery + "('0', '1', '" + empList.get(i).getEmpId() + "', '"
 						+ empList.get(i).getEmpCode() + "', '" + empName + "', '" + month + "', '" + year
 						+ "', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 'O', '"
-						+ userId
-						+ "', NULL, '0', NULL, NULL, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),";
+						+ userId + "', NULL, '0', NULL, NULL, '0', '" + totalDaysInmonth
+						+ "', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),";
 
 				EmpJsonData empJsonData = new EmpJsonData();
 				empJsonData.setCmpCode(empList.get(i).getCmpCode());
@@ -1240,16 +1244,29 @@ public class AttendanceApiControllerchange {
 								}
 							} else if (atteanceCase.equals("2468")) {
 
-								if (defaultDate.compareTo(sf.parse(employee.getCmpJoiningDate())) >= 0) {
-									dailyAttendanceList.get(i).setAttStatus("AB");
-									for (int j = 0; j < lvTypeList.size(); j++) {
-										if (lvTypeList.get(j).getNameSd().equals("AB")) {
-											dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
-											break;
+								try {
+									if (defaultDate.compareTo(sf.parse(employee.getCmpJoiningDate())) >= 0) {
+										dailyAttendanceList.get(i).setAttStatus("AB");
+										for (int j = 0; j < lvTypeList.size(); j++) {
+											if (lvTypeList.get(j).getNameSd().equals("AB")) {
+												dailyAttendanceList.get(i)
+														.setLvSumupId(lvTypeList.get(j).getLvSumupId());
+												break;
+											}
 										}
-									}
 
-								} else {
+									} else {
+										dailyAttendanceList.get(i).setAttStatus("NA");
+										for (int j = 0; j < lvTypeList.size(); j++) {
+											if (lvTypeList.get(j).getNameSd().equals("NA")) {
+												dailyAttendanceList.get(i)
+														.setLvSumupId(lvTypeList.get(j).getLvSumupId());
+												break;
+											}
+										}
+
+									}
+								} catch (Exception e) {
 									dailyAttendanceList.get(i).setAttStatus("NA");
 									for (int j = 0; j < lvTypeList.size(); j++) {
 										if (lvTypeList.get(j).getNameSd().equals("NA")) {
@@ -1257,8 +1274,9 @@ public class AttendanceApiControllerchange {
 											break;
 										}
 									}
-
 								}
+
+								// System.out.println(dailyAttendanceList.get(i).getAttStatus());
 							}
 						}
 
@@ -2516,6 +2534,63 @@ public class AttendanceApiControllerchange {
 		}
 
 		return info;
+
+	}
+
+	@Scheduled(cron = "1 * * * * ? ")
+	public void callAttendancFuntion() {
+
+		try {
+
+			Date dt = new Date();
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
+
+			String dateyy = sf.format(dt);
+			String datedd = dd.format(dt);
+
+			/*
+			 * String dateyy = "2020-05-03"; String datedd = "03-05-2020";
+			 */
+
+			List<DailyAttendance> dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAll(dateyy,
+					dateyy);
+
+			Calendar a = Calendar.getInstance();
+			a.setTime(dt);
+			int year = a.get(Calendar.YEAR);
+			int month = a.get(Calendar.MONTH) + 1;
+
+			DataForUpdateAttendance dataForUpdateAttendance = new DataForUpdateAttendance();
+			dataForUpdateAttendance.setFromDate(dateyy);
+			dataForUpdateAttendance.setToDate(dateyy);
+			dataForUpdateAttendance.setEmpId(0);
+			dataForUpdateAttendance.setUserId(1);
+			dataForUpdateAttendance.setMonth(month);
+			dataForUpdateAttendance.setYear(year);
+			List<FileUploadedData> fileUploadedDataList = new ArrayList<>();
+
+			for (int i = 0; i < dailyAttendanceList.size(); i++) {
+				FileUploadedData fileUploadedData = new FileUploadedData();
+				fileUploadedData.setEmpCode(dailyAttendanceList.get(i).getEmpCode());
+				fileUploadedData.setEmpName(dailyAttendanceList.get(i).getEmpName());
+				fileUploadedData.setLogDate(datedd);
+				fileUploadedData.setInTime("00:00:00");
+				fileUploadedData.setOutTime("00:00:00");
+				fileUploadedDataList.add(fileUploadedData);
+			}
+			dataForUpdateAttendance.setFileUploadedDataList(fileUploadedDataList);
+
+			Info info = getVariousListForUploadAttendace(dataForUpdateAttendance);
+
+			Date firstDay = new GregorianCalendar(year, month - 1, 1).getTime();
+			Date lastDay = new GregorianCalendar(year, month, 0).getTime();
+
+			info = finalUpdateDailySumaryRecord(sf.format(firstDay), sf.format(lastDay), 1, month, year, 0);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
