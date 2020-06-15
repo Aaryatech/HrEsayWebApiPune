@@ -12,15 +12,23 @@ public class AssetTrans {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int assetTransId;
-	private int ahId;
 	private int empId;
 	private int assetId;
 	private String useFromDate;
 	private String useToDate;
-	private int transRemark;
+	private String returnDate;
+	private String assignRemark;
 	private int assetTransStatus;
+	
+	private String assignImgFile;
+	private String returnImgFile;
+	private int isLost;
+	private String lostRemark;
+	private String returnRemark;
+	
+	
 	private int makerUserId;
-	private String updateDtetime;
+	private String updateDatetime;
 	private int delStatus;
 	private int exInt1;
 	private int exInt2;
@@ -31,12 +39,6 @@ public class AssetTrans {
 	}
 	public void setAssetTransId(int assetTransId) {
 		this.assetTransId = assetTransId;
-	}
-	public int getAhId() {
-		return ahId;
-	}
-	public void setAhId(int ahId) {
-		this.ahId = ahId;
 	}
 	public int getEmpId() {
 		return empId;
@@ -62,11 +64,11 @@ public class AssetTrans {
 	public void setUseToDate(String useToDate) {
 		this.useToDate = useToDate;
 	}
-	public int getTransRemark() {
-		return transRemark;
+	public String getAssignRemark() {
+		return assignRemark;
 	}
-	public void setTransRemark(int transRemark) {
-		this.transRemark = transRemark;
+	public void setAssignRemark(String assignRemark) {
+		this.assignRemark = assignRemark;
 	}
 	public int getAssetTransStatus() {
 		return assetTransStatus;
@@ -80,11 +82,11 @@ public class AssetTrans {
 	public void setMakerUserId(int makerUserId) {
 		this.makerUserId = makerUserId;
 	}
-	public String getUpdateDtetime() {
-		return updateDtetime;
+	public String getUpdateDatetime() {
+		return updateDatetime;
 	}
-	public void setUpdateDtetime(String updateDtetime) {
-		this.updateDtetime = updateDtetime;
+	public void setUpdateDatetime(String updateDatetime) {
+		this.updateDatetime = updateDatetime;
 	}
 	public int getDelStatus() {
 		return delStatus;
@@ -116,14 +118,51 @@ public class AssetTrans {
 	public void setExVar2(String exVar2) {
 		this.exVar2 = exVar2;
 	}
+	public String getAssignImgFile() {
+		return assignImgFile;
+	}
+	public void setAssignImgFile(String assignImgFile) {
+		this.assignImgFile = assignImgFile;
+	}
+	public String getReturnImgFile() {
+		return returnImgFile;
+	}
+	public void setReturnImgFile(String returnImgFile) {
+		this.returnImgFile = returnImgFile;
+	}
+	public int getIsLost() {
+		return isLost;
+	}
+	public void setIsLost(int isLost) {
+		this.isLost = isLost;
+	}
+	public String getLostRemark() {
+		return lostRemark;
+	}
+	public void setLostRemark(String lostRemark) {
+		this.lostRemark = lostRemark;
+	}
+	public String getReturnRemark() {
+		return returnRemark;
+	}
+	public void setReturnRemark(String returnRemark) {
+		this.returnRemark = returnRemark;
+	}
+	public String getReturnDate() {
+		return returnDate;
+	}
+	public void setReturnDate(String returnDate) {
+		this.returnDate = returnDate;
+	}
 	@Override
 	public String toString() {
-		return "AssetTrans [assetTransId=" + assetTransId + ", ahId=" + ahId + ", empId=" + empId + ", assetId="
-				+ assetId + ", useFromDate=" + useFromDate + ", useToDate=" + useToDate + ", transRemark=" + transRemark
-				+ ", assetTransStatus=" + assetTransStatus + ", makerUserId=" + makerUserId + ", updateDtetime="
-				+ updateDtetime + ", delStatus=" + delStatus + ", exInt1=" + exInt1 + ", exInt2=" + exInt2 + ", exVar1="
-				+ exVar1 + ", exVar2=" + exVar2 + "]";
+		return "AssetTrans [assetTransId=" + assetTransId + ", empId=" + empId + ", assetId=" + assetId
+				+ ", useFromDate=" + useFromDate + ", useToDate=" + useToDate + ", returnDate=" + returnDate
+				+ ", assignRemark=" + assignRemark + ", assetTransStatus=" + assetTransStatus + ", assignImgFile="
+				+ assignImgFile + ", returnImgFile=" + returnImgFile + ", isLost=" + isLost + ", lostRemark="
+				+ lostRemark + ", returnRemark=" + returnRemark + ", makerUserId=" + makerUserId + ", updateDatetime="
+				+ updateDatetime + ", delStatus=" + delStatus + ", exInt1=" + exInt1 + ", exInt2=" + exInt2
+				+ ", exVar1=" + exVar1 + ", exVar2=" + exVar2 + "]";
 	}
-	
-	
+		
 }

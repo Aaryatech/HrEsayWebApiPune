@@ -12,18 +12,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.model.AssetAmc;
 import com.ats.hrmgt.model.AssetCategory;
+import com.ats.hrmgt.model.AssetEmployee;
 import com.ats.hrmgt.model.AssetTrans;
 import com.ats.hrmgt.model.AssetVendor;
 import com.ats.hrmgt.model.Assets;
 import com.ats.hrmgt.model.AssetsDetailsList;
+import com.ats.hrmgt.model.AssignedAssetsList;
+import com.ats.hrmgt.model.EmpSalAllowance;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.repository.AssetAmcRepo;
 import com.ats.hrmgt.repository.AssetCategoryRepo;
+import com.ats.hrmgt.repository.AssetEmployeeRepo;
 import com.ats.hrmgt.repository.AssetTransRepo;
 import com.ats.hrmgt.repository.AssetVendorRepo;
 import com.ats.hrmgt.repository.AssetsDetailsListRepo;
 import com.ats.hrmgt.repository.AssetsRepo;
+import com.ats.hrmgt.repository.AssignedAssetsListRepo;
 
 @RestController
 public class AssetMgmtApiController {
@@ -39,6 +44,10 @@ public class AssetMgmtApiController {
 	@Autowired AssetsDetailsListRepo assetsListRepo; 
 	
 	@Autowired AssetTransRepo assetTransRepo;
+	
+	@Autowired AssetEmployeeRepo assetEmpRepo;
+	
+	@Autowired AssignedAssetsListRepo assignedAssetListRepo;
 	
 	/*****************************************************************************/
 	
@@ -313,6 +322,19 @@ public class AssetMgmtApiController {
 		return list;
 	}
 	
+	@RequestMapping(value = { "/getAllUnassignAssets" }, method = RequestMethod.GET)
+	public List<AssetsDetailsList> getAllUnassignAssets() {
+		List<AssetsDetailsList> list = new ArrayList<AssetsDetailsList>();
+		try {
+			list = assetsListRepo.getAllUnassignAssetList();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllUnassignAssets : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
 	@RequestMapping(value = { "/saveAssets" }, method = RequestMethod.POST)
 	public Assets saveAssets(@RequestBody Assets assets) {
 		Assets aset = new Assets();
@@ -419,5 +441,91 @@ public class AssetMgmtApiController {
 		}
 
 		return aset;
+	}
+	
+	@RequestMapping(value = { "/saveAssetsTrans" }, method = RequestMethod.POST)
+	public List<AssetTrans> saveAssetsTrans(@RequestBody List<AssetTrans> assetTransList) {
+		List<AssetTrans> assetTrans = new ArrayList<AssetTrans>();
+		System.out.println("Save AssetTransList--------" + assetTransList);
+		try {
+			assetTrans = assetTransRepo.saveAll(assetTransList);
+			System.err.println(assetTransList);
+			
+			for (int i = 0; i < assetTrans.size(); i++) {
+				int assetId = assetTrans.get(i).getAssetId();
+				int updtAsset = assetsRepo.changeAssetStatus(assetId, 1);
+			}
+		} catch (Exception e) {
+			System.err.println("Excep in saveAssetsTrans : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return assetTrans;
+	}
+	
+	@RequestMapping(value = { "/returnAssetByIds" }, method = RequestMethod.POST)
+	public Info returnAssetByIds(@RequestParam int assetTransId, @RequestParam int assetTransStatus, 
+			@RequestParam String returnDate, int assetId, String returnRemark) {
+		Info info = new Info();
+		
+		try {
+			int i = assetTransRepo.updateAssetsStatus(assetTransId, assetTransStatus, returnDate, returnRemark);
+			
+			if(i>0) {
+				int updtAsset = assetsRepo.changeAssetStatus(assetId, 0);
+				info.setError(false);
+				info.setMsg("Asset Deleted Successfully");
+			}else {
+				info.setError(true);
+				info.setMsg("Failed to Delete Asset");
+			}
+		} catch (Exception e) {
+			System.err.println("Excep in deleteAssetById : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return info;
+	}
+	
+	/**************************************************************************************/
+
+	@RequestMapping(value = { "/getAllAssetEmployees" }, method = RequestMethod.POST)
+	public List<AssetEmployee> getAllAssetEmployees(@RequestParam int locId) {
+		List<AssetEmployee> list = new ArrayList<AssetEmployee>();
+		try {
+			list = assetEmpRepo.getAllAssetsEmpByLocation(locId);
+		} catch (Exception e) {
+			System.err.println("Excep in getAllAssetEmployees : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	@RequestMapping(value = { "/getAssetEmployee" }, method = RequestMethod.POST)
+	public AssetEmployee getAssetEmployee(@RequestParam int locId, @RequestParam int empId) {
+		AssetEmployee emp = new AssetEmployee();
+		try {
+			emp = assetEmpRepo.getAssetsEmpByLocationAndEmpId(locId, empId);
+		} catch (Exception e) {
+			System.err.println("Excep in getAssetEmployee : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return emp;
+	}
+	
+	/**********************************************************************************/
+	@RequestMapping(value = { "/getAllAssignedAssets" }, method = RequestMethod.POST)
+	public List<AssignedAssetsList> getAllAssignedAssets(@RequestParam int empId) {
+		List<AssignedAssetsList> list = new ArrayList<AssignedAssetsList>();
+		try {
+			list = assignedAssetListRepo.getAllAssignedAssetsToEmp(empId);
+		} catch (Exception e) {
+			System.err.println("Excep in getAllAssetCategory : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 }

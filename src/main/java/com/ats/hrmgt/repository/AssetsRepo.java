@@ -21,4 +21,9 @@ public interface AssetsRepo extends JpaRepository<Assets, Integer> {
 	@Modifying
 	@Query(value="UPDATE m_assets SET del_status=0 WHERE asset_id=:assetId",nativeQuery=true)
 	int deleteAsset(@Param("assetId") int assetId);
+
+	@Transactional
+	@Modifying
+	@Query(value="UPDATE m_assets SET asset_status=:stat WHERE asset_id=:assetId",nativeQuery=true)
+	int changeAssetStatus(@Param("assetId") int assetId, @Param("stat") int stat);
 }
