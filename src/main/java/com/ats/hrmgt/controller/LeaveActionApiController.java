@@ -101,10 +101,10 @@ public class LeaveActionApiController {
 
 	@Autowired
 	DailyRecordForCompOffRepository dailyRecordForCompOffRepository;
-	
+
 	@Autowired
 	GetDetailForGraduatyRepo getDetailForGraduatyRepo;
-	
+
 	@Autowired
 	LeaveHistoryDetailForCarryRepo leaveHistoryDetailForCarryRepo;
 
@@ -354,28 +354,29 @@ public class LeaveActionApiController {
 		return list;
 
 	}
-	
+
 	@RequestMapping(value = { "/checkUniqueCalDates" }, method = RequestMethod.POST)
-	public @ResponseBody Info checkUniqueCalDates(@RequestParam("inputValue") String inputValue, @RequestParam("valueType") int valueType, 
-	@RequestParam("isEdit") int isEdit, @RequestParam("primaryKey") int primaryKey) {
+	public @ResponseBody Info checkUniqueCalDates(@RequestParam("inputValue") String inputValue,
+			@RequestParam("valueType") int valueType, @RequestParam("isEdit") int isEdit,
+			@RequestParam("primaryKey") int primaryKey) {
 		Info info = new Info();
 		List<CalenderYear> list = new ArrayList<CalenderYear>();
 		try {
-			System.out.println("isEdit-------------"+isEdit);
-			if(valueType==1) {
-				if(isEdit==0) {
+			System.out.println("isEdit-------------" + isEdit);
+			if (valueType == 1) {
+				if (isEdit == 0) {
 					list = calculateYearRepository.findByCalYrFromDate(inputValue);
-				}else {
+				} else {
 					list = calculateYearRepository.findByCalYrFromDateAndCalYrIdNot(inputValue, primaryKey);
 				}
-			}else if(valueType==2) {
-				if(isEdit==0) {
+			} else if (valueType == 2) {
+				if (isEdit == 0) {
 					list = calculateYearRepository.findByCalYrToDate(inputValue);
-				}else {
+				} else {
 					list = calculateYearRepository.findByCalYrToDateAndCalYrIdNot(inputValue, primaryKey);
 				}
 			}
-			
+
 			for (int i = 0; i < list.size(); i++) {
 				list.get(i).setCalYrFromDate(DateConvertor.convertToDMY(list.get(i).getCalYrFromDate()));
 				list.get(i).setCalYrToDate(DateConvertor.convertToDMY(list.get(i).getCalYrToDate()));
@@ -400,48 +401,47 @@ public class LeaveActionApiController {
 
 	@RequestMapping(value = { "/saveCalYear" }, method = RequestMethod.POST)
 	public @ResponseBody CalenderYear checkUniqueCalDates(@RequestBody CalenderYear year) {
-		CalenderYear  calYear = new CalenderYear();
+		CalenderYear calYear = new CalenderYear();
 		try {
 			calYear = calculateYearRepository.save(year);
-			if(calYear.getIsCurrent()==1) {
+			if (calYear.getIsCurrent() == 1) {
 				int a = calculateYearRepository.updateOtherIds(calYear.getCalYrId());
-					
-				
+
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
-		
+
 		return calYear;
-		
+
 	}
-	
+
 	@RequestMapping(value = { "/getCalYearById" }, method = RequestMethod.POST)
 	public @ResponseBody CalenderYear getCalYearById(@RequestParam int calYearId) {
-		CalenderYear  calYear = new CalenderYear();
+		CalenderYear calYear = new CalenderYear();
 		try {
 			calYear = calculateYearRepository.findByCalYrId(calYearId);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
-		
+
 		return calYear;
-		
+
 	}
+
 	@RequestMapping(value = { "/getCountCalYear" }, method = RequestMethod.GET)
 	public @ResponseBody Integer getCountCalYear() {
 		int cntCalYear = 0;
 		try {
 			cntCalYear = calculateYearRepository.countCalyear();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
-		
+
 		return cntCalYear;
-		
+
 	}
-	
-	
+
 	@Autowired
 	EmpLeaveHistoryRepRepo empLeaveHistoryRepRepo;
 
@@ -483,7 +483,7 @@ public class LeaveActionApiController {
 		return employeeInfo;
 
 	}
-	
+
 	@RequestMapping(value = { "getemplistwhichisnotyearendByEmpId" }, method = RequestMethod.POST)
 	public @ResponseBody List<EmployeeMaster> getemplistwhichisnotyearendByEmpId(@RequestParam("locId") int locId) {
 
@@ -587,16 +587,29 @@ public class LeaveActionApiController {
 
 				if (Integer.parseInt(setting.getValue()) == 1) {
 
-					if (shortName.equalsIgnoreCase("LWP") || shortName.equalsIgnoreCase("SL")) {
+					/*
+					 * if (shortName.equalsIgnoreCase("LWP") || shortName.equalsIgnoreCase("SL")) {
+					 * 
+					 * info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays);
+					 * 
+					 * } else if (shortName.equalsIgnoreCase("Compoff")) {
+					 * 
+					 * info = checkCompOff(empId, fromDate, toDate);
+					 * 
+					 * } else {
+					 * 
+					 * list = leaveApplyRepository.checkContinueDateLeave(fromDate, toDate, empId,
+					 * leaveTypeId); if (list.size() > 0) {
+					 * 
+					 * info.setError(true);
+					 * info.setMsg("You Cannot Apply Continue Leave As Diffrent Type. ");
+					 * 
+					 * } else {
+					 * 
+					 * info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays); } }
+					 */
 
-						info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays);
-
-					} else if (shortName.equalsIgnoreCase("Compoff")) {
-						// match compoffApplicabale in emptype
-
-						info = checkCompOff(empId, fromDate, toDate);
-
-					} else {
+					if (shortName.equalsIgnoreCase("CL") || shortName.equalsIgnoreCase("PL")) {
 
 						list = leaveApplyRepository.checkContinueDateLeave(fromDate, toDate, empId, leaveTypeId);
 						if (list.size() > 0) {
@@ -605,20 +618,24 @@ public class LeaveActionApiController {
 							info.setMsg("You Cannot Apply Continue Leave As Diffrent Type. ");
 
 						} else {
-							/*
-							 * info.setError(false); info.setMsg("you can apply");
-							 */
+
 							info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays);
 						}
+
+					} else if (shortName.equalsIgnoreCase("Compoff")) {
+						// match compoffApplicabale in emptype
+
+						info = checkCompOff(empId, fromDate, toDate);
+
+					} else {
+
+						info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays);
 					}
 
 				} else {
-					/*
-					 * info.setError(false); info.setMsg("you can apply");
-					 */
 
 					if (shortName.equalsIgnoreCase("Compoff")) {
-						// match compoffApplicabale in emptype
+
 						info = checkCompOff(empId, fromDate, toDate);
 					} else {
 						info = LeaveTypeValidation(empId, leaveTypeId, shortName, noOfDays);
@@ -731,9 +748,10 @@ public class LeaveActionApiController {
 		return mstEmpType;
 
 	}
-	
+
 	@RequestMapping(value = { "/getPreviousleaveHistoryForCarryFrwd" }, method = RequestMethod.POST)
-	public @ResponseBody List<LeaveHistoryDetailForCarry> getPreviousleaveHistoryForCarryFrwd(@RequestParam("locId") int locId) {
+	public @ResponseBody List<LeaveHistoryDetailForCarry> getPreviousleaveHistoryForCarryFrwd(
+			@RequestParam("locId") int locId) {
 
 		List<LeaveHistoryDetailForCarry> list = new ArrayList<LeaveHistoryDetailForCarry>();
 		try {
