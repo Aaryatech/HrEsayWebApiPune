@@ -50,7 +50,59 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 			+ "    tbl_attt_daily_daily.id\n" + "DESC\n" + "LIMIT 1", nativeQuery = true)
 	DailyAttendance findLastMonthRecordOfEmp(int empId);
 
-	@Query(value = "select d.* from tbl_attt_daily_daily d,m_employees e where d.att_date = :date and d.emp_id=e.emp_id and e.depart_id in (:departIds)", nativeQuery = true)
+	@Query(value = "select id ,\n" + 
+			"         d.company_id ,\n" + 
+			"         d.emp_code ,\n" + 
+			"         d.emp_name ,\n" + 
+			"         d.att_date ,\n" + 
+			"         d.att_status ,\n" + 
+			"         d.lv_sumup_id ,\n" + 
+			"        CONCAT(FLOOR( d.working_hrs/60),\n" + 
+			"        '.',\n" + 
+			"        LPAD(MOD( d.working_hrs,\n" + 
+			"        60),\n" + 
+			"        2,\n" + 
+			"        '0')) as working_hrs ,\n" + 
+			"         d.in_time ,\n" + 
+			"         d.rec_status ,\n" + 
+			"         d.login_name ,\n" + 
+			"         d.login_time ,\n" + 
+			"         d.import_date ,\n" + 
+			"         d.cmp_code ,\n" + 
+			"         d.emp_id ,\n" + 
+			"        CONCAT(FLOOR( d.ot_hr/60),\n" + 
+			"        '.',\n" + 
+			"        LPAD(MOD( d.ot_hr,\n" + 
+			"        60),\n" + 
+			"        2,\n" + 
+			"        '0')) as ot_hr ,\n" + 
+			"         d.current_shiftid ,\n" + 
+			"         d.late_mark ,\n" + 
+			"         d.late_min ,\n" + 
+			"         d.reason ,\n" + 
+			"         d.current_shiftname ,\n" + 
+			"         d.freeze_by_supervisor ,\n" + 
+			"         d.comments_supervisor ,\n" + 
+			"         d.get_pass_used_count ,\n" + 
+			"         d.get_pass_used_hour ,\n" + 
+			"         d.get_pass_used_hour_reason ,\n" + 
+			"         d.raw_data_inout ,\n" + 
+			"         d.manual_ot_hr ,\n" + 
+			"         d.full_night ,\n" + 
+			"         d.half_night ,\n" + 
+			"         d.out_time ,\n" + 
+			"         d.early_going_mark ,\n" + 
+			"         d.early_going_min ,\n" + 
+			"         d.multiple_entries ,\n" + 
+			"         d.casetype ,\n" + 
+			"         d.is_fixed ,\n" + 
+			"         d.by_file_updated ,\n" + 
+			"         d.location_id ,\n" + 
+			"         d.emp_type ,\n" + 
+			"         d.emp_json ,\n" + 
+			"         d.atsumm_uid ,\n" + 
+			"         d.file_name ,\n" + 
+			"        d.row_id from tbl_attt_daily_daily d,m_employees e where d.att_date = :date and d.emp_id=e.emp_id and e.depart_id in (:departIds) and comments_supervisor=8", nativeQuery = true)
 	List<DailyAttendance> dailyAttendanceByDeptId(@Param("date") String date,
 			@Param("departIds") List<Integer> departIds);
 
@@ -77,5 +129,65 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 	@Modifying
 	@Query("update DailyAttendance set freeze_by_supervisor=:status  WHERE id in (:ids) ")
 	int updateOtApproveStatus(@Param("ids") List<Integer> ids,@Param("status") int status);
+
+	@Transactional
+	@Modifying
+	@Query("update DailyAttendance set comments_supervisor=:status  WHERE id in (:ids) ")
+	int updateAttendaceApproveStatus(@Param("ids") List<Integer> ids,@Param("status") int status);
+	
+	@Query(value = "select id ,\n" + 
+			"        company_id ,\n" + 
+			"        emp_code ,\n" + 
+			"        emp_name ,\n" + 
+			"        att_date ,\n" + 
+			"        att_status ,\n" + 
+			"        lv_sumup_id ,\n" + 
+			"        CONCAT(FLOOR(working_hrs/60),\n" + 
+			"        '.',\n" + 
+			"        LPAD(MOD(working_hrs,\n" + 
+			"        60),\n" + 
+			"        2,\n" + 
+			"        '0')) as working_hrs ,\n" + 
+			"        in_time ,\n" + 
+			"        rec_status ,\n" + 
+			"        login_name ,\n" + 
+			"        login_time ,\n" + 
+			"        import_date ,\n" + 
+			"        cmp_code ,\n" + 
+			"        emp_id ,\n" + 
+			"        CONCAT(FLOOR(ot_hr/60),\n" + 
+			"        '.',\n" + 
+			"        LPAD(MOD(ot_hr,\n" + 
+			"        60),\n" + 
+			"        2,\n" + 
+			"        '0')) as ot_hr ,\n" + 
+			"        current_shiftid ,\n" + 
+			"        late_mark ,\n" + 
+			"        late_min ,\n" + 
+			"        reason ,\n" + 
+			"        current_shiftname ,\n" + 
+			"        freeze_by_supervisor ,\n" + 
+			"        comments_supervisor ,\n" + 
+			"        get_pass_used_count ,\n" + 
+			"        get_pass_used_hour ,\n" + 
+			"        get_pass_used_hour_reason ,\n" + 
+			"        raw_data_inout ,\n" + 
+			"        manual_ot_hr ,\n" + 
+			"        full_night ,\n" + 
+			"        half_night ,\n" + 
+			"        out_time ,\n" + 
+			"        early_going_mark ,\n" + 
+			"        early_going_min ,\n" + 
+			"        multiple_entries ,\n" + 
+			"        casetype ,\n" + 
+			"        is_fixed ,\n" + 
+			"        by_file_updated ,\n" + 
+			"        location_id ,\n" + 
+			"        emp_type ,\n" + 
+			"        emp_json ,\n" + 
+			"        atsumm_uid ,\n" + 
+			"        file_name ,\n" + 
+			"        row_id from tbl_attt_daily_daily where att_date between :fromDate and :toDate  and comments_supervisor=0", nativeQuery = true)
+	List<DailyAttendance> dailyAttendanceListForSecurityApprove(String fromDate, String toDate);
 
 }

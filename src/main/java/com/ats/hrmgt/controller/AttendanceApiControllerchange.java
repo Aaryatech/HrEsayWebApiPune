@@ -270,7 +270,7 @@ public class AttendanceApiControllerchange {
 
 					dailyDailyQuery = dailyDailyQuery + "('0', '1','" + empList.get(i).getEmpCode() + "','" + empName
 							+ "','" + attdate + "', 'NA', '0', '0', NULL, 'O', \n '" + userId + "', NULL, NULL, NULL, '"
-							+ empList.get(i).getEmpId() + "', NULL, '0', '0', '0', NULL, NULL, '0', NULL, '0', '0' \n "
+							+ empList.get(i).getEmpId() + "', NULL, '0', '0', '0', NULL, NULL, '0', '0', '0', '0' \n "
 							+ ", NULL, NULL, '0', '0', '0', NULL, '0', '0.00', '0', NULL, '0', '0', '"
 							+ empList.get(i).getLocationId() + "', '0', \n '" + json + "', '0', NULL, '0'),";
 
@@ -708,10 +708,6 @@ public class AttendanceApiControllerchange {
 
 								dailyAttendanceList.get(i).setOtHr(String.valueOf(actualotmin));
 
-								if (Integer.parseInt(auto_approve_ot_hr.getValue()) == 1) {
-									dailyAttendanceList.get(i).setFreezeBySupervisor(2);
-								}
-
 							} else {
 								dailyAttendanceList.get(i).setOtHr("0");
 								// dailyAttendanceList.get(i).setFreezeBySupervisor(2);
@@ -722,7 +718,9 @@ public class AttendanceApiControllerchange {
 							// dailyAttendanceList.get(i).setFreezeBySupervisor(2);
 						}
 					}
-
+					if (Integer.parseInt(auto_approve_ot_hr.getValue()) == 1) {
+						dailyAttendanceList.get(i).setFreezeBySupervisor(2);
+					}
 				} catch (Exception e) {
 					// e.printStackTrace();
 				}
@@ -1299,13 +1297,14 @@ public class AttendanceApiControllerchange {
 							+ dailyAttendanceList.get(i).getAttDate() + "'," + "        att_status='"
 							+ dailyAttendanceList.get(i).getAttStatus() + "'," + "        by_file_updated='"
 							+ dailyAttendanceList.get(i).getByFileUpdated() + "'," + "        casetype='"
-							+ dailyAttendanceList.get(i).getCasetype() + "'," + "        comments_supervisor=NULL,"
-							+ "        company_id='" + dailyAttendanceList.get(i).getCompanyId() + "',"
-							+ "        current_shiftid='" + dailyAttendanceList.get(i).getCurrentShiftid() + "',"
-							+ "        current_shiftname='" + dailyAttendanceList.get(i).getCurrentShiftname() + "',"
-							+ "        early_going_mark='" + dailyAttendanceList.get(i).getEarlyGoingMark() + "',"
-							+ "        early_going_min='" + dailyAttendanceList.get(i).getEarlyGoingMin() + "',"
-							+ "        emp_code='" + dailyAttendanceList.get(i).getEmpCode() + "'," + "        emp_id='"
+							+ dailyAttendanceList.get(i).getCasetype() + "'," + "        comments_supervisor='"
+							+ dailyAttendanceList.get(i).getCommentsSupervisor() + "'," + "        company_id='"
+							+ dailyAttendanceList.get(i).getCompanyId() + "'," + "        current_shiftid='"
+							+ dailyAttendanceList.get(i).getCurrentShiftid() + "'," + "        current_shiftname='"
+							+ dailyAttendanceList.get(i).getCurrentShiftname() + "'," + "        early_going_mark='"
+							+ dailyAttendanceList.get(i).getEarlyGoingMark() + "'," + "        early_going_min='"
+							+ dailyAttendanceList.get(i).getEarlyGoingMin() + "'," + "        emp_code='"
+							+ dailyAttendanceList.get(i).getEmpCode() + "'," + "        emp_id='"
 							+ dailyAttendanceList.get(i).getEmpId() + "'," + "        emp_json='"
 							+ dailyAttendanceList.get(i).getEmpJson() + "'," + "        emp_name='"
 							+ dailyAttendanceList.get(i).getEmpName() + "'," + "        emp_type='"
@@ -2361,7 +2360,7 @@ public class AttendanceApiControllerchange {
 			if (desgType == 1) {
 				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceByDeptId(date, departIds);
 			} else if (desgType == 2) {
-				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAll(date, date);
+				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForSecurityApprove(date, date);
 			}
 
 		} catch (Exception e) {
@@ -2380,7 +2379,7 @@ public class AttendanceApiControllerchange {
 		List<DailyAttendance> dailyAttendanceList = new ArrayList<>();
 		try {
 
-			dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAll(date, date);
+			dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForSecurityApprove(date, date);
 
 		} catch (Exception e) {
 
@@ -2544,7 +2543,7 @@ public class AttendanceApiControllerchange {
 
 	}
 
-	// @Scheduled(cron = "1 * * * * ? ")
+	//@Scheduled(cron = "0/20 * * * * ? ")
 	public void callAttendancFuntion() {
 
 		try {
@@ -2598,6 +2597,27 @@ public class AttendanceApiControllerchange {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	@RequestMapping(value = { "/approveAttendanceStatusById" }, method = RequestMethod.POST)
+	public @ResponseBody Info approveAttendanceStatusById(@RequestParam("ids") List<Integer> ids,
+			@RequestParam("status") int status) {
+
+		Info info = new Info();
+		try {
+
+			int updateStatusById = dailyAttendanceRepository.updateAttendaceApproveStatus(ids, status);
+			info.setError(false);
+			info.setMsg("success");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			info.setError(true);
+			info.setMsg("failed");
+		}
+
+		return info;
 
 	}
 
