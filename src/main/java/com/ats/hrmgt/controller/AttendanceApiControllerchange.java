@@ -270,7 +270,7 @@ public class AttendanceApiControllerchange {
 
 					dailyDailyQuery = dailyDailyQuery + "('0', '1','" + empList.get(i).getEmpCode() + "','" + empName
 							+ "','" + attdate + "', 'NA', '0', '0', NULL, 'O', \n '" + userId + "', NULL, NULL, NULL, '"
-							+ empList.get(i).getEmpId() + "', NULL, '0', '0', '0', NULL, NULL, '0', '0', '0', '0' \n "
+							+ empList.get(i).getEmpId() + "', '0', '0', '0', '0', NULL, NULL, '0', '0', '0', '0' \n "
 							+ ", NULL, NULL, '0', '0', '0', NULL, '0', '0.00', '0', NULL, '0', '0', '"
 							+ empList.get(i).getLocationId() + "', '0', \n '" + json + "', '0', NULL, '0'),";
 
@@ -2419,6 +2419,8 @@ public class AttendanceApiControllerchange {
 					}
 					dailyRecordById.setLateMark(lateMark);
 					dailyRecordById.setLateMin(lateMin);
+					dailyRecordById.setCommentsSupervisor("8");
+					
 				} else {
 					// System.out.println("In else");
 					if (selectStatus != 0) {
