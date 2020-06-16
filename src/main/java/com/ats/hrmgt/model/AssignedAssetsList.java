@@ -1,9 +1,13 @@
 package com.ats.hrmgt.model;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class AssignedAssetsList {
@@ -14,9 +18,10 @@ public class AssignedAssetsList {
 	private String assetCode;
 	private String assetName;
 	private String catName;
-	private String useFromDate;
-	private String useToDate;
+	private Date useFromDate;
+	private Date useToDate;
 	private String assignRemark;
+	
 	public int getAssetTransId() {
 		return assetTransId;
 	}
@@ -47,16 +52,18 @@ public class AssignedAssetsList {
 	public void setCatName(String catName) {
 		this.catName = catName;
 	}
-	public String getUseFromDate() {
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getUseFromDate() {
 		return useFromDate;
 	}
-	public void setUseFromDate(String useFromDate) {
+	public void setUseFromDate(Date useFromDate) {
 		this.useFromDate = useFromDate;
 	}
-	public String getUseToDate() {
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getUseToDate() {
 		return useToDate;
 	}
-	public void setUseToDate(String useToDate) {
+	public void setUseToDate(Date useToDate) {
 		this.useToDate = useToDate;
 	}
 	public String getAssignRemark() {

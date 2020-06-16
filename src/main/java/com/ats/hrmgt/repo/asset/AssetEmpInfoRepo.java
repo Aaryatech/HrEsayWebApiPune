@@ -25,7 +25,7 @@ public interface AssetEmpInfoRepo extends JpaRepository<AssetEmpInfo, Integer> {
 			" WHERE  m_employees.del_status = 1 and t_asset_trans.emp_id=m_employees.emp_id "
 			+ "AND t_asset_trans.del_status=1 AND t_asset_trans.asset_id=m_assets.asset_id AND "
 			+ "m_assets.asset_status=1 "
-			+ "and t_asset_trans.is_lost=0 and m_employees.emp_id=:empId", nativeQuery = true)
+			+ "AND t_asset_trans.is_lost=0 AND t_asset_trans.asset_trans_status=1 AND m_employees.emp_id=:empId", nativeQuery = true)
 	List<AssetEmpInfo> getAssignedAssetByEmpId(@Param("empId") int empId);
 	
 	/*
