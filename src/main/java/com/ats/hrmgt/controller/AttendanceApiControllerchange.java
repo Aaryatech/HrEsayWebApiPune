@@ -2395,7 +2395,8 @@ public class AttendanceApiControllerchange {
 	public @ResponseBody Info updateAttendaceRecordSingleByHod(@RequestParam("dailyId") int dailyId,
 			@RequestParam("selectStatus") int selectStatus, @RequestParam("lateMark") String lateMark,
 			@RequestParam("selectStatusText") String selectStatusText, @RequestParam("userId") int userId,
-			@RequestParam("flag") int flag, @RequestParam("otHours") String otHours) {
+			@RequestParam("flag") int flag, @RequestParam("otHours") String otHours,
+			@RequestParam("lateMin") int lateMin) {
 
 		Info info = new Info();
 		try {
@@ -2418,7 +2419,7 @@ public class AttendanceApiControllerchange {
 						dailyRecordById.setAttStatus(selectStatusText);
 					}
 					dailyRecordById.setLateMark(lateMark);
-					// System.out.println("In if");
+					dailyRecordById.setLateMin(lateMin);
 				} else {
 					// System.out.println("In else");
 					if (selectStatus != 0) {
@@ -2426,6 +2427,7 @@ public class AttendanceApiControllerchange {
 						dailyRecordById.setAttStatus(selectStatusText);
 					}
 					dailyRecordById.setLateMark(lateMark);
+					dailyRecordById.setLateMin(lateMin);
 					String[] othrsarry = otHours.split(":");
 					int othrs = (Integer.parseInt(othrsarry[0]) * 60) + Integer.parseInt(othrsarry[1]);
 					dailyRecordById.setOtHr(String.valueOf(othrs));
