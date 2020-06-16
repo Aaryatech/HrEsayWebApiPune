@@ -21,7 +21,7 @@ import com.ats.hrmgt.repo.asset.AssetEmpInfoRepo;
 import com.ats.hrmgt.repo.asset.AssetInfoRepo;
 import com.ats.hrmgt.repository.GetEmployeeDetailsRepo;
 
-//Sachin 13-06-2020 10:35
+//Sachin 13-06-2020 10:35 
 
 @RestController
 public class AssetTxApiController {
