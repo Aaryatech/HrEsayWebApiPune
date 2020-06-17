@@ -22,8 +22,8 @@ public class AMCInfo {
 	private int vendorId;
 	private String compName;
 	
-	private int amcStatus;
-	private String statusText;
+	private int amcStatus; //Integer Value of text 11-Live 12-Renewed 13-Terminated 10-Pending
+	private String statusText; //Status Text to be displayed.
 	
 	private String exVar1;
 	private String exVar2;

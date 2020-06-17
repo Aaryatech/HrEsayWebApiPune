@@ -1,4 +1,6 @@
-package com.ats.hrmgt.model;
+package com.ats.hrmgt.model.assets;
+
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,8 +16,8 @@ public class AssetLog {
 	private int assetLogId;
 	private int assetId;
 	private int assetTransId;
-	private int assetLogDesc;
-	private String assetLogDate;
+	private String assetLogDesc;
+	private Date assetLogDate;
 	private int makerUserId;
 	private String updateDateTime;
 	private int delStatus;
@@ -41,16 +43,16 @@ public class AssetLog {
 	public void setAssetTransId(int assetTransId) {
 		this.assetTransId = assetTransId;
 	}
-	public int getAssetLogDesc() {
+	public String getAssetLogDesc() {
 		return assetLogDesc;
 	}
-	public void setAssetLogDesc(int assetLogDesc) {
+	public void setAssetLogDesc(String assetLogDesc) {
 		this.assetLogDesc = assetLogDesc;
 	}
-	public String getAssetLogDate() {
+	public Date getAssetLogDate() {
 		return assetLogDate;
 	}
-	public void setAssetLogDate(String assetLogDate) {
+	public void setAssetLogDate(Date assetLogDate) {
 		this.assetLogDate = assetLogDate;
 	}
 	public int getMakerUserId() {
