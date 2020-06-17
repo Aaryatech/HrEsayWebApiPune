@@ -574,6 +574,9 @@ public class LeaveActionApiController {
 		try {
 
 			Setting setting = settingRepo.findByKey("CONTILEAVE");
+			Setting CL_ID = settingRepo.findByKey("CL_ID");
+			Setting PL_ID = settingRepo.findByKey("PL_ID");
+
 			// Setting COMPOFFCONDITION = settingRepo.findByKey("COMPOFFCONDITION");
 
 			List<LeaveApply> list = leaveApplyRepository.checkDateForRepetedLeaveValidation(fromDate, toDate, empId);
@@ -611,11 +614,18 @@ public class LeaveActionApiController {
 
 					if (shortName.equalsIgnoreCase("CL") || shortName.equalsIgnoreCase("PL")) {
 
-						list = leaveApplyRepository.checkContinueDateLeave(fromDate, toDate, empId, leaveTypeId);
+						if (shortName.equalsIgnoreCase("CL")) {
+							list = leaveApplyRepository.checkContinueDateLeave(fromDate, toDate, empId,
+									Integer.parseInt(PL_ID.getValue()));
+						} else {
+							list = leaveApplyRepository.checkContinueDateLeave(fromDate, toDate, empId,
+									Integer.parseInt(CL_ID.getValue()));
+						}
+
 						if (list.size() > 0) {
 
 							info.setError(true);
-							info.setMsg("You Cannot Apply Continue Leave As Diffrent Type. ");
+							info.setMsg("You Cannot Apply Continue Leave CL and PL");
 
 						} else {
 
