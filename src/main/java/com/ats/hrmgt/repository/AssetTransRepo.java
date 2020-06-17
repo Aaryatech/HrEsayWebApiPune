@@ -19,8 +19,10 @@ public interface AssetTransRepo extends JpaRepository<AssetTrans, Integer> {
 
 	@Transactional
 	@Modifying
-	@Query(value="UPDATE t_asset_trans SET return_date=:returnDate, asset_trans_status=:assetTransStatus, return_remark=:returnRemark  WHERE asset_trans_id=:assetTransId",nativeQuery=true)
+	@Query(value="UPDATE t_asset_trans SET return_date=:returnDate, asset_trans_status=:assetTransStatus, return_remark=:returnRemark,"
+			+ " return_img_file=:assetReturnImg, update_datetime=:updateDateTime, maker_user_id=:updateUserId  WHERE asset_trans_id=:assetTransId",nativeQuery=true)
 	int updateAssetsStatus(@Param("assetTransId") int assetTransId, @Param("assetTransStatus") int assetTransStatus,
-			@Param("returnDate") String returnDate, @Param("returnRemark") String returnRemark);
+			@Param("returnDate") String returnDate, @Param("returnRemark") String returnRemark, 
+			@Param("assetReturnImg") String assetReturnImg, @Param("updateDateTime") String updateDateTime, @Param("updateUserId") int updateUserId);
 
 }

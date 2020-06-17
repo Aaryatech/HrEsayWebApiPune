@@ -465,11 +465,11 @@ public class AssetMgmtApiController {
 	
 	@RequestMapping(value = { "/returnAssetByIds" }, method = RequestMethod.POST)
 	public Info returnAssetByIds(@RequestParam int assetTransId, @RequestParam int assetTransStatus, 
-			@RequestParam String returnDate, int assetId, String returnRemark) {
+			@RequestParam String returnDate, int assetId, String returnRemark, String assetReturnImg, String updateDateTime, int updateUserId) {
 		Info info = new Info();
 		
 		try {
-			int i = assetTransRepo.updateAssetsStatus(assetTransId, assetTransStatus, returnDate, returnRemark);
+			int i = assetTransRepo.updateAssetsStatus(assetTransId, assetTransStatus, returnDate, returnRemark, assetReturnImg, updateDateTime, updateUserId);
 			
 			if(i>0) {
 				int updtAsset = assetsRepo.changeAssetStatus(assetId, 0);
