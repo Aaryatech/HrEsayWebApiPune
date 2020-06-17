@@ -18,7 +18,8 @@ public interface AssignedAssetsListRepo extends JpaRepository<AssignedAssetsList
 			"   cat.cat_name,\n" + 
 			"   tassets.use_from_date,\n" + 
 			"   tassets.use_to_date,\n" + 
-			"   tassets.assign_remark,\n" + 
+			"   tassets.assign_remark,\n" +
+			"   tassets.assign_img_file,\n" +
 			"   emp.emp_id\n" + 
 			"    \n" + 
 			"FROM\n" + 
