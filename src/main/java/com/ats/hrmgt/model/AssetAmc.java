@@ -1,10 +1,14 @@
 package com.ats.hrmgt.model;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "t_asset_amc")
@@ -14,8 +18,8 @@ public class AssetAmc {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int amcId;
 	private int assetId;
-	private String amcFrDate;
-	private String amcToDate;
+	private Date amcFrDate;
+	private Date amcToDate;
 	private float amcAmt;
 	private String positiveRemark;
 	private String negativeRemark;
@@ -44,16 +48,18 @@ public class AssetAmc {
 	public void setAssetId(int assetId) {
 		this.assetId = assetId;
 	}
-	public String getAmcFrDate() {
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getAmcFrDate() {
 		return amcFrDate;
 	}
-	public void setAmcFrDate(String amcFrDate) {
+	public void setAmcFrDate(Date amcFrDate) {
 		this.amcFrDate = amcFrDate;
 	}
-	public String getAmcToDate() {
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getAmcToDate() {
 		return amcToDate;
 	}
-	public void setAmcToDate(String amcToDate) {
+	public void setAmcToDate(Date amcToDate) {
 		this.amcToDate = amcToDate;
 	}
 	public float getAmcAmt() {

@@ -452,6 +452,7 @@ public class AssetMgmtApiController {
 			System.err.println(assetTransList);
 			
 			for (int i = 0; i < assetTrans.size(); i++) {
+				System.err.println(assetTrans.get(i).getAssetTransId());
 				int assetId = assetTrans.get(i).getAssetId();
 				int updtAsset = assetsRepo.changeAssetStatus(assetId, 1);
 			}

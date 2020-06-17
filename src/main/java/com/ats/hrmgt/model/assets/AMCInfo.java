@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 public class AMCInfo {
 
@@ -40,12 +42,14 @@ public class AMCInfo {
 	public void setAssetId(int assetId) {
 		this.assetId = assetId;
 	}
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
 	public Date getAmcFrDate() {
 		return amcFrDate;
 	}
 	public void setAmcFrDate(Date amcFrDate) {
 		this.amcFrDate = amcFrDate;
 	}
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
 	public Date getAmcToDate() {
 		return amcToDate;
 	}
