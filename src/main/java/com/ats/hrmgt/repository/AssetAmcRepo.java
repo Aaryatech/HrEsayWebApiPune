@@ -47,4 +47,16 @@ public interface AssetAmcRepo extends JpaRepository<AssetAmc, Integer> {
 			"    amc.del_status=1 AND\n" + 
 			"    astvendor.vendor_id=amc.vendor_id",nativeQuery=true)
 	List<AssetAmc> getAllAssetAMC();
+
+	
+	@Transactional
+	@Modifying
+	@Query(value="UPDATE t_asset_amc SET amc_status=:status WHERE amc_id=:assetAmcId",nativeQuery=true)
+	int updtAmcStatus(@Param("assetAmcId") int assetAmcId, @Param("status") int status);
+
+	@Transactional
+	@Modifying
+	@Query(value="UPDATE t_asset_amc SET amc_status=:status,  maker_user_id=:userUpdateId, update_datetime=:updateTime WHERE amc_id=:assetAMCId",nativeQuery=true)
+	int terminateAMC(@Param("assetAMCId") int assetAMCId, @Param("status") int status,
+			@Param("userUpdateId") int userUpdateId, @Param("updateTime") String updateTime);
 }

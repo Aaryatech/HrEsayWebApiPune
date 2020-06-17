@@ -295,6 +295,72 @@ public class AssetMgmtApiController {
 		return info;
 	}
 	
+	@RequestMapping(value = { "/saveRenewAssetAmc" }, method = RequestMethod.POST)
+	public AssetAmc renewAssetAmc(@RequestBody  AssetAmc assetAmc) {
+		AssetAmc amc = new AssetAmc();
+		Info info = new Info();
+		try {			
+			amc = assetAmcRepo.save(assetAmc);
+			
+			
+		} catch (Exception e) {
+			System.err.println("Excep in saveAssetAmc : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return amc;
+	}
+	
+	@RequestMapping(value = { "/updtAssetAMCStatus" }, method = RequestMethod.POST)
+	public Info updtAssetAMCStatus(@RequestParam int assetAmcId, @RequestParam int status) {
+		Info info = new Info();
+		
+		try {
+			
+				int i = assetAmcRepo.updtAmcStatus(assetAmcId, status);
+				if(i>0) {
+					info.setError(false);
+					info.setMsg("Asset AMC Renewed Successfully");
+				}else {
+					info.setError(true);
+					info.setMsg("Failed to Renewed Asset AMC");
+				}
+			
+		} catch (Exception e) {
+			System.err.println("Excep in deleteAssetAmcById : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return info;
+	}
+	
+	@RequestMapping(value = { "/terminateAssetAMC" }, method = RequestMethod.POST)
+	public Info terminateAssetAMC(@RequestParam int assetAMCId, @RequestParam int status, 
+			@RequestParam int userUpdateId,@RequestParam String updateTime) {
+		
+		Info info = new Info();
+		
+		try {
+			
+				int i = assetAmcRepo.terminateAMC(assetAMCId, status, userUpdateId, updateTime);
+				if(i>0) {
+					info.setError(false);
+					info.setMsg("Asset AMC Terminated Successfully");
+				}else {
+					info.setError(true);
+					info.setMsg("Failed to Terminated Asset AMC");
+				}
+			
+		} catch (Exception e) {
+			System.err.println("Excep in terminateAssetAMC : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return info;
+	}
+	
+	
+	
 	/********************************************************************/
 	@RequestMapping(value = { "/getAssetsList" }, method = RequestMethod.GET)
 	public List<Assets> getAssetsList() {
