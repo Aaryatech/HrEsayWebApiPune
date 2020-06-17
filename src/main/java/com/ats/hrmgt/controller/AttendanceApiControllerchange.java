@@ -2360,7 +2360,7 @@ public class AttendanceApiControllerchange {
 			if (desgType == 1) {
 				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceByDeptId(date, departIds);
 			} else if (desgType == 2) {
-				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForSecurityApprove(date, date);
+				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForSecurityApprove(date);
 			}
 
 		} catch (Exception e) {
@@ -2379,7 +2379,7 @@ public class AttendanceApiControllerchange {
 		List<DailyAttendance> dailyAttendanceList = new ArrayList<>();
 		try {
 
-			dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForSecurityApprove(date, date);
+			dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForSecurityApprove(date);
 
 		} catch (Exception e) {
 
@@ -2420,7 +2420,7 @@ public class AttendanceApiControllerchange {
 					dailyRecordById.setLateMark(lateMark);
 					dailyRecordById.setLateMin(lateMin);
 					dailyRecordById.setCommentsSupervisor("8");
-					
+
 				} else {
 					// System.out.println("In else");
 					if (selectStatus != 0) {
