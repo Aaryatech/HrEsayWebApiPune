@@ -698,7 +698,8 @@ public class PayrollApiController {
 			double employee_mlwf = 0;
 			double employer_mlwf = 0;
 			double night_allo_rate = 0;
-
+			double ot_per_min = 0;
+			int ot_rate = 0;
 			for (int k = 0; k < settingList.size(); k++) {
 				if (settingList.get(k).getKey().equalsIgnoreCase("ceiling_limit_eps_wages")) {
 					cealing_limit_eps_wages = Float.parseFloat(settingList.get(k).getValue());
@@ -738,6 +739,10 @@ public class PayrollApiController {
 					employee_mlwf = Float.parseFloat(settingList.get(k).getValue());
 				} else if (settingList.get(k).getKey().equalsIgnoreCase("night_allo_rate")) {
 					night_allo_rate = Float.parseFloat(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("ot_rate")) {
+					ot_rate = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("ot_per_min")) {
+					ot_per_min = Integer.parseInt(settingList.get(k).getValue());
 				}
 			}
 
@@ -921,7 +926,7 @@ public class PayrollApiController {
 
 							if (salaryTermList.get(j).getFieldName().equals("gross_salary")) {
 								getSalaryTempList.get(i).setGrossSalaryDytemp(temp);
-								System.out.println(temp);
+
 								salaryTermList.get(j).setValue(temp);
 							} else if (salaryTermList.get(j).getFieldName().equals("epf_wages")) {
 								// System.out.println(temp);
@@ -979,9 +984,10 @@ public class PayrollApiController {
 										getSalaryTempList.get(i).getSalBasis(),
 										getSalaryTempList.get(i).getTotalDaysInmonth(),
 										getSalaryTempList.get(i).getPayableDays(),
-										getSalaryTempList.get(i).getWorkingDays(), salaryType.getWorkinghr(),
+										getSalaryTempList.get(i).getWorkingDays(), ot_per_min,
 										getSalaryTempList.get(i).getTotOthr(), ammt, mstEmpType,
-										getSalaryTempList.get(i).getRate(), amount_round);
+										getSalaryTempList.get(i).getRate(), ot_rate,
+										getSalaryTempList.get(i).getMonthlyHrTarget(), amount_round);
 								getSalaryTempList.get(i).setOtWages(tempVal);
 								salaryTermList.get(j).setValue(tempVal);
 
@@ -1032,7 +1038,7 @@ public class PayrollApiController {
 							double deductValue = castNumber(
 									(tempVal * getSalaryTempList.get(i).getAbsentDays() * ab_deduction * 2),
 									amount_round);
-							System.out.println(ammt + "oTTTTT" + tempVal + " " + deductValue);
+
 							getSalaryTempList.get(i).setAbDeduction(deductValue);
 							// assign to table Filed
 							salaryTermList.get(j).setValue(deductValue);
@@ -1053,7 +1059,6 @@ public class PayrollApiController {
 
 				}
 
-				System.out.println("gross" + getSalaryTempList.get(i).getGrossSalaryDytemp());
 				if (getSalaryTempList.get(i).getMlwfApplicable().equalsIgnoreCase("yes")) {
 					if (month == 6 || month == 12) {
 						getSalaryTempList.get(i).setMlwf(employee_mlwf);
@@ -1427,7 +1432,7 @@ public class PayrollApiController {
 				}
 			} else {
 				// $val = ($amount / $working_days ) * $total_payable_days;
-				val = (amount) * totalPayableDaysTemp;
+				val = (amount / totalDays) * totalPayableDaysTemp;
 			}
 			// val = castNumber(val);
 		} // $percentage == 3
@@ -1445,7 +1450,7 @@ public class PayrollApiController {
 				}
 			} else {
 				// $val = ($amount / $working_days ) * $total_payable_days;
-				val = (amount / totalDays) * totalPayableDaysTemp;
+				val = (amount / workingDays) * totalPayableDaysTemp;
 			}
 			// val = castNumber(val);
 		} // $percentage == 4
@@ -1524,37 +1529,49 @@ public class PayrollApiController {
 	}
 
 	public double otwages(float percentage, String salBasis, int totalDays, float totalPayableDays, float workingDays,
-			double workingHour, float otHr, double ammt, MstEmpType mstEmpType, double rate, int amount_round) {
+			double workingHour, float otHr, double ammt, MstEmpType mstEmpType, double rate, int ot_rate,
+			String monthlyTargetHr, int amount_round) {
 
-		/*
-		 * workingHour = workingHour / 60;
-		 * 
-		 * otHr = otHr / 60;
-		 */
+		String[] monthlyTargetHrarr = monthlyTargetHr.split("\\.");
+		int monthlyTargetMin = 0;
+		try {
+			if (monthlyTargetHrarr.length > 1) {
 
-		double rateofmin = (rate / 60);
+				monthlyTargetMin = (Integer.parseInt(monthlyTargetHrarr[0]) * 60)
+						+ Integer.parseInt(monthlyTargetHrarr[1]);
 
-		// basic+DAy
-		// metaf: amount / month_day
-		double val = 0;
-
-		double otMultiplication = 0;
-
-		// System.out.println("otHr"+otHr);
-		if (mstEmpType.getOtApplicable().equalsIgnoreCase("yes")) {
-			// otMultiplication = Integer.parseInt(mstEmpType.getOtType());
-
-			if (salBasis.equalsIgnoreCase("monthly")) {
-				// val = (((ammt / totalDays) / workingHour) * otHr) * otMultiplication;
-				val = otHr * rateofmin;
-			} // $sal_basis == "monthly"
-			else {
-				// val = ((ammt / workingHour) * otHr) * otMultiplication;
-				val = otHr * rateofmin;
+			} else {
+				monthlyTargetMin = (Integer.parseInt(monthlyTargetHrarr[0]) * 60);
 			}
-			val = castNumber(val, amount_round);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
+		double val = 0;
+
+		if (mstEmpType.getOtApplicable().equalsIgnoreCase("yes")) {
+
+			if (ot_rate == 0) {
+
+				val = ((ammt / workingHour) * otHr);
+
+				if (salBasis.equalsIgnoreCase("monthly")) {
+					val = (((ammt / totalDays) / workingHour) * otHr);
+				} else if (salBasis.equalsIgnoreCase("hour")) {
+
+					val = (((ammt / monthlyTargetMin)) * otHr);
+
+				} else {
+					val = (((ammt / workingDays) / workingHour) * otHr);
+				}
+
+			} else {
+
+				double rateofmin = (rate / 60);
+				val = otHr * rateofmin;
+			}
+		}
+		val = castNumber(val, amount_round);
 		return val;
 	}
 
@@ -1562,20 +1579,21 @@ public class PayrollApiController {
 			float woHoPresent, String markCompoffCount, float workingDays, double ammt, MstEmpType mstEmpType,
 			int amount_round) {
 
-		double perDayGrossSal = (ammt / totalDays)
-				* (woPresent + phPresent + woHoPresent - Integer.parseInt(markCompoffCount));
+		double perDayGrossSal = 0;
 
-		// basic+DAy
-		// metaf: amount / month_day
-		double val = 0;
+		if (salBasis.equalsIgnoreCase("monthly")) {
 
-		// if (mstEmpType.getWhWork().equalsIgnoreCase("OT")) {
+			perDayGrossSal = (ammt / totalDays)
+					* (woPresent + phPresent + woHoPresent - Integer.parseInt(markCompoffCount));
+		} else {
 
-		val = perDayGrossSal;
-		val = castNumber(val, amount_round);
-		// }
+			perDayGrossSal = (ammt / workingDays)
+					* (woPresent + phPresent + woHoPresent - Integer.parseInt(markCompoffCount));
+		}
 
-		return val;
+		perDayGrossSal = castNumber(perDayGrossSal, amount_round);
+
+		return perDayGrossSal;
 	}
 
 	public double fundwages(float percentage, String salBasis, double ammt, int amount_round) {
