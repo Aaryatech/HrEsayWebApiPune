@@ -2443,7 +2443,7 @@ public class AttendanceApiControllerchange {
 			@RequestParam("selectStatus") int selectStatus, @RequestParam("lateMark") String lateMark,
 			@RequestParam("selectStatusText") String selectStatusText, @RequestParam("userId") int userId,
 			@RequestParam("flag") int flag, @RequestParam("otHours") String otHours,
-			@RequestParam("lateMin") int lateMin) {
+			@RequestParam("lateMin") int lateMin, @RequestParam("nameSd") String nameSd) {
 
 		Info info = new Info();
 		try {
@@ -2464,6 +2464,7 @@ public class AttendanceApiControllerchange {
 					if (selectStatus != 0) {
 						dailyRecordById.setLvSumupId(selectStatus);
 						dailyRecordById.setAttStatus(selectStatusText);
+						dailyRecordById.setAttsSdShow(nameSd);
 					}
 					dailyRecordById.setLateMark(lateMark);
 					dailyRecordById.setLateMin(lateMin);
@@ -2474,6 +2475,7 @@ public class AttendanceApiControllerchange {
 					if (selectStatus != 0) {
 						dailyRecordById.setLvSumupId(selectStatus);
 						dailyRecordById.setAttStatus(selectStatusText);
+						dailyRecordById.setAttsSdShow(nameSd);
 					}
 					dailyRecordById.setLateMark(lateMark);
 					dailyRecordById.setLateMin(lateMin);
