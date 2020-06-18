@@ -558,7 +558,8 @@ public class AssetMgmtApiController {
 	
 	@RequestMapping(value = { "/returnAssetByIds" }, method = RequestMethod.POST)
 	public Info returnAssetByIds(@RequestParam int assetTransId, @RequestParam int assetTransStatus, 
-			@RequestParam String returnDate, int assetId, String returnRemark, String assetReturnImg, String updateDateTime, int updateUserId) {
+			@RequestParam String returnDate,@RequestParam int assetId, @RequestParam String returnRemark, 
+			@RequestParam String assetReturnImg, @RequestParam String updateDateTime, @RequestParam int updateUserId) {
 		Info info = new Info();
 		
 		try {
@@ -579,7 +580,46 @@ public class AssetMgmtApiController {
 
 		return info;
 	}
+		
+	@RequestMapping(value = { "/getAssetTransactnById" }, method = RequestMethod.POST)
+	public AssetTrans getAssetTransactnById(@RequestParam int assetId) {
+		AssetTrans aset = new AssetTrans();
+		try {
+			aset = assetTransRepo.findByAssetTransId(assetId);
+		} catch (Exception e) {
+			System.err.println("Excep in getAssetTransactionById : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return aset;
+	}
 	
+	
+	
+	@RequestMapping(value = { "/updateAssetStatusLost" }, method = RequestMethod.POST)
+	public Info updateAssetStatusLost(@RequestParam int transactnId, @RequestParam int assetId, 
+			@RequestParam String lostAssetRemark, @RequestParam int userUpdateId, @RequestParam String updateTime, @RequestParam int status,
+			@RequestParam int assetStatus) {
+		Info info = new Info();
+		
+		try {
+			int i = assetTransRepo.updateStatusAssetsLost(transactnId, status, userUpdateId, updateTime, assetStatus, lostAssetRemark);
+			
+			if(i>0) {
+				int updtAsset = assetsRepo.changeAssetStatusToLost(assetId, assetStatus, userUpdateId, updateTime);
+				info.setError(false);
+				info.setMsg("Asset Lost Updated Succesfully");
+			}else {
+				info.setError(true);
+				info.setMsg("Failed to Updated Asset Lost");
+			}
+		} catch (Exception e) {
+			System.err.println("Excep in updateAssetStatusLost : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return info;
+	}
 	/**************************************************************************************/
 
 	@RequestMapping(value = { "/getAllAssetEmployees" }, method = RequestMethod.POST)

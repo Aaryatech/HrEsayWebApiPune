@@ -25,4 +25,22 @@ public interface AssetTransRepo extends JpaRepository<AssetTrans, Integer> {
 			@Param("returnDate") String returnDate, @Param("returnRemark") String returnRemark, 
 			@Param("assetReturnImg") String assetReturnImg, @Param("updateDateTime") String updateDateTime, @Param("updateUserId") int updateUserId);
 
+	@Query(value="SELECT * FROM t_asset_trans WHERE t_asset_trans.asset_id=:assetId and t_asset_trans.asset_trans_status=1 and t_asset_trans.del_status=1 AND is_lost=0",nativeQuery=true)
+	AssetTrans findByAssetTransId(@Param("assetId") int assetId);
+	
+	@Transactional
+	@Modifying
+	@Query(value="UPDATE\n" + 
+			"    t_asset_trans\n" + 
+			"SET\n" + 
+			"    is_lost = :status,\n" + 
+			"    asset_trans_status = :assetStatus,\n" + 
+			"    lost_remark =:lostAssetRemark,\n" + 
+			"    maker_user_id =:userUpdateId,\n" + 
+			"    update_datetime =:updateTime\n" + 
+			"WHERE\n" + 
+			"    asset_trans_id =:transactnId",nativeQuery=true)
+	int updateStatusAssetsLost(@Param("transactnId") int transactnId, @Param("status")  int status, @Param("userUpdateId") int userUpdateId, 
+			@Param("updateTime") String updateTime, @Param("assetStatus") int assetStatus, @Param("lostAssetRemark") String lostAssetRemark);
+
 }
