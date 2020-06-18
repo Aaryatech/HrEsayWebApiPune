@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.hrmgt.model.AssetAmc;
 import com.ats.hrmgt.model.AssetCategory;
 import com.ats.hrmgt.model.AssetEmployee;
+import com.ats.hrmgt.model.AssetServicing;
 import com.ats.hrmgt.model.AssetTrans;
 import com.ats.hrmgt.model.AssetVendor;
 import com.ats.hrmgt.model.Assets;
@@ -21,6 +22,7 @@ import com.ats.hrmgt.model.AssignedAssetsList;
 import com.ats.hrmgt.model.EmpSalAllowance;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.Info;
+import com.ats.hrmgt.repo.asset.AssetServicingRepo;
 import com.ats.hrmgt.repository.AssetAmcRepo;
 import com.ats.hrmgt.repository.AssetCategoryRepo;
 import com.ats.hrmgt.repository.AssetEmployeeRepo;
@@ -48,6 +50,8 @@ public class AssetMgmtApiController {
 	@Autowired AssetEmployeeRepo assetEmpRepo;
 	
 	@Autowired AssignedAssetsListRepo assignedAssetListRepo;
+	
+	@Autowired AssetServicingRepo assetServiceRepo;
 	
 	/*****************************************************************************/
 	
@@ -660,5 +664,56 @@ public class AssetMgmtApiController {
 		}
 
 		return list;
+	}
+	
+	/********************************************************************************/
+	
+	@RequestMapping(value = { "/saveAssetsService" }, method = RequestMethod.POST)
+	public AssetServicing saveAssetsService(@RequestBody AssetServicing assetService) {
+		AssetServicing service = new AssetServicing();
+		try {
+			service = assetServiceRepo.save(assetService);
+		} catch (Exception e) {
+			System.err.println("Excep in saveAssetsService : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return service;
+	}
+	
+	@RequestMapping(value = { "/getAssetServicingById" }, method = RequestMethod.POST)
+	public AssetServicing getAssetServicingById(@RequestParam int serviceId) {
+		AssetServicing service = new AssetServicing();
+		try {
+			service = assetServiceRepo.findByTServicingId(serviceId);
+		} catch (Exception e) {
+			System.err.println("Excep in getAssetTransactionById : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return service;
+	}
+	
+
+	@RequestMapping(value = { "/deleteAssetServiceById" }, method = RequestMethod.POST)
+	public Info deleteAssetServiceById(@RequestParam int serviceId) {
+		Info info = new Info();
+		
+		try {
+			int i = assetServiceRepo.deleteAssetServiceInfo(serviceId);
+			
+			if(i>0) {
+				info.setError(false);
+				info.setMsg("Asset Service Deleted Successfully");
+			}else {
+				info.setError(true);
+				info.setMsg("Failed to Delete Asset Service");
+			}
+		} catch (Exception e) {
+			System.err.println("Excep in deleteAssetById : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return info;
 	}
 }

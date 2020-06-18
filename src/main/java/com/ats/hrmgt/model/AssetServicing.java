@@ -1,10 +1,14 @@
 package com.ats.hrmgt.model;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "t_asset_servicing")
@@ -14,12 +18,12 @@ public class AssetServicing {
 	private int tServicingId;
 	private int assetId;
 	private int serviceType;
-	private String serviceDate;
-	private String nextServiceDate;
+	private Date serviceDate;
+	private Date nextServiceDate;
 	private int vendorId;
 	private String serviceDesc;
 	private float billAmt;
-	private int billDocFile;
+	private String billDocFile;
 	private String serviceRemark;
 	private int makerUserId;
 	private String updateDatetime;
@@ -46,16 +50,18 @@ public class AssetServicing {
 	public void setServiceType(int serviceType) {
 		this.serviceType = serviceType;
 	}
-	public String getServiceDate() {
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getServiceDate() {
 		return serviceDate;
 	}
-	public void setServiceDate(String serviceDate) {
+	public void setServiceDate(Date serviceDate) {
 		this.serviceDate = serviceDate;
 	}
-	public String getNextServiceDate() {
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getNextServiceDate() {
 		return nextServiceDate;
 	}
-	public void setNextServiceDate(String nextServiceDate) {
+	public void setNextServiceDate(Date nextServiceDate) {
 		this.nextServiceDate = nextServiceDate;
 	}
 	public int getVendorId() {
@@ -76,10 +82,10 @@ public class AssetServicing {
 	public void setBillAmt(float billAmt) {
 		this.billAmt = billAmt;
 	}
-	public int getBillDocFile() {
+	public String getBillDocFile() {
 		return billDocFile;
 	}
-	public void setBillDocFile(int billDocFile) {
+	public void setBillDocFile(String billDocFile) {
 		this.billDocFile = billDocFile;
 	}
 	public String getServiceRemark() {
