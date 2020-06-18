@@ -1953,6 +1953,23 @@ public class AttendanceApiControllerchange {
 
 	}
 
+	/*@RequestMapping(value = { "/getDailyDailyRecordForHrByDate" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetDailyDailyRecord> getDailyDailyRecordForHrByDate(@RequestParam("date") String date) {
+
+		List<GetDailyDailyRecord> summaryDailyAttendanceList = new ArrayList<>();
+		try {
+
+			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForHrByDate(date);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return summaryDailyAttendanceList;
+
+	}*/
+
 	@RequestMapping(value = { "/getDailyDailyRecordForOtApproval" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetDailyDailyRecord> getDailyDailyRecordForOtApproval(@RequestParam("date") String date,
 			@RequestParam("empId") int empId) {
