@@ -361,6 +361,32 @@ public class AssetMgmtApiController {
 	
 	
 	
+	@RequestMapping(value = { "/updtAssetToScrap" }, method = RequestMethod.POST)
+	public Info updtAssetToScrap(@RequestParam int assetId, @RequestParam int status, @RequestParam String scrapDate,
+			@RequestParam String remark, @RequestParam String scrapAuthority, @RequestParam int scrapUserLogInId, @RequestParam String scrapDateTime) {
+		
+		Info info = new Info();
+		
+		try {
+			
+				int i = assetsRepo.makeAssetScrap(assetId, status, scrapDate, remark, scrapAuthority, scrapUserLogInId, scrapDateTime);
+				if(i>0) {
+					info.setError(false);
+					info.setMsg("Asset Status Updated Successfully");
+				}else {
+					info.setError(true);
+					info.setMsg("Failed to Updated Asset Status");
+				}
+			
+		} catch (Exception e) {
+			System.err.println("Excep in updtAssetToScrap : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return info;
+	}
+	
+	
 	/********************************************************************/
 	@RequestMapping(value = { "/getAssetsList" }, method = RequestMethod.GET)
 	public List<Assets> getAssetsList() {

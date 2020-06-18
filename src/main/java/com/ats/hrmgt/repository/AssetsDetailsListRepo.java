@@ -18,7 +18,7 @@ public interface AssetsDetailsListRepo extends JpaRepository<AssetsDetailsList, 
 			"        assets.asset_make,\n" + 
 			"        assets.asset_model,\n" + 
 			"        assets.asset_name,\n" + 
-			"        DATE_FORMAT(assets.asset_pur_date, '%d-%m-%Y')  as asset_pur_date ,\n" + 
+			"        assets.asset_pur_date,\n" + 
 			"        assets.asset_remark,\n" + 
 			"        assets.asset_srno,\n" + 
 			"        assets.del_status,\n" + 
@@ -50,7 +50,7 @@ public interface AssetsDetailsListRepo extends JpaRepository<AssetsDetailsList, 
 			"        assets.asset_make,\n" + 
 			"        assets.asset_model,\n" + 
 			"        assets.asset_name,\n" + 
-			"        DATE_FORMAT(assets.asset_pur_date, '%d-%m-%Y')  as asset_pur_date ,\n" + 
+			"        assets.asset_pur_date,\n" + 
 			"        assets.asset_remark,\n" + 
 			"        assets.asset_srno,\n" + 
 			"        assets.del_status,\n" + 
@@ -114,8 +114,7 @@ public interface AssetsDetailsListRepo extends JpaRepository<AssetsDetailsList, 
 			"        assets.asset_make,\n" + 
 			"        assets.asset_model,\n" + 
 			"        assets.asset_name,\n" + 
-			"        DATE_FORMAT(assets.asset_pur_date,\n" + 
-			"        '%d-%m-%Y')  as asset_pur_date ,\n" + 
+			"        assets.asset_pur_date,\n" + 
 			"        assets.asset_remark,\n" + 
 			"        assets.asset_srno,\n" + 
 			"        assets.del_status,\n" + 

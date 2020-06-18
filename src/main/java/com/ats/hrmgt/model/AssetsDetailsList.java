@@ -23,7 +23,7 @@ public class AssetsDetailsList {
 	private String assetMake;
 	private String assetModel;	
 	private String assetSrno;
-	private String assetPurDate	;
+	private Date assetPurDate	;
 	private String vendor;
 	private String assetRemark;
 	private int makerUserId;
@@ -77,10 +77,11 @@ public class AssetsDetailsList {
 	public void setAssetSrno(String assetSrno) {
 		this.assetSrno = assetSrno;
 	}
-	public String getAssetPurDate() {
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getAssetPurDate() {
 		return assetPurDate;
 	}
-	public void setAssetPurDate(String assetPurDate) {
+	public void setAssetPurDate(Date assetPurDate) {
 		this.assetPurDate = assetPurDate;
 	}
 	public String getAssetRemark() {
