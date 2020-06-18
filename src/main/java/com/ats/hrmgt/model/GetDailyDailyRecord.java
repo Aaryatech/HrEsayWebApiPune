@@ -140,7 +140,10 @@ public class GetDailyDailyRecord {
 	
 	@Column(name="row_id")
 	private int rowId;
-
+	
+	@Column(name="atts_sd_show")
+	private String attsSdShow;
+	
 	public int getId() {
 		return id;
 	}
@@ -478,6 +481,14 @@ public class GetDailyDailyRecord {
 		this.rowId = rowId;
 	}
 
+	public String getAttsSdShow() {
+		return attsSdShow;
+	}
+
+	public void setAttsSdShow(String attsSdShow) {
+		this.attsSdShow = attsSdShow;
+	}
+
 	@Override
 	public String toString() {
 		return "GetDailyDailyRecord [id=" + id + ", companyId=" + companyId + ", empCode=" + empCode + ", empName="
@@ -493,7 +504,7 @@ public class GetDailyDailyRecord {
 				+ earlyGoingMark + ", earlyGoingMin=" + earlyGoingMin + ", multipleEntries=" + multipleEntries
 				+ ", casetype=" + casetype + ", isFixed=" + isFixed + ", byFileUpdated=" + byFileUpdated
 				+ ", locationId=" + locationId + ", empType=" + empType + ", empJson=" + empJson + ", atsummUid="
-				+ atsummUid + ", fileName=" + fileName + ", rowId=" + rowId + "]";
+				+ atsummUid + ", fileName=" + fileName + ", rowId=" + rowId + ", attsSdShow=" + attsSdShow + "]";
 	}
 	
 	

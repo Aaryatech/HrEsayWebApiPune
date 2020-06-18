@@ -103,7 +103,7 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 			"        dep.name as emp_json ,\n" + 
 			"        d.atsumm_uid ,\n" + 
 			"        d.file_name ,\n" + 
-			"        d.row_id \n" + 
+			"        d.row_id,d.atts_sd_show \n" + 
 			"    from\n" + 
 			"        tbl_attt_daily_daily d,\n" + 
 			"        m_employees e,m_department dep \n" + 
@@ -198,7 +198,7 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 			"        dep.name as emp_json ,\n" + 
 			"        d.atsumm_uid ,\n" + 
 			"        d.file_name ,\n" + 
-			"        d.row_id \n" + 
+			"        d.row_id,d.atts_sd_show \n" + 
 			"    from\n" + 
 			"        tbl_attt_daily_daily d,\n" + 
 			"        m_employees e,m_department dep \n" + 
