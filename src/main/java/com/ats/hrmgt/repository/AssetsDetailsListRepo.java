@@ -19,7 +19,8 @@ public interface AssetsDetailsListRepo extends JpaRepository<AssetsDetailsList, 
 			"        assets.asset_model,\n" + 
 			"        assets.asset_name,\n" + 
 			"        assets.asset_pur_date,\n" + 
-			"        assets.asset_remark,\n" + 
+			"        assets.asset_remark,\n" +
+			"        assets.asset_status,\n" +
 			"        assets.asset_srno,\n" + 
 			"        assets.del_status,\n" + 
 			"        assets.ex_int1,\n" + 
@@ -51,7 +52,8 @@ public interface AssetsDetailsListRepo extends JpaRepository<AssetsDetailsList, 
 			"        assets.asset_model,\n" + 
 			"        assets.asset_name,\n" + 
 			"        assets.asset_pur_date,\n" + 
-			"        assets.asset_remark,\n" + 
+			"        assets.asset_remark,\n" +
+			"        assets.asset_status,\n" +
 			"        assets.asset_srno,\n" + 
 			"        assets.del_status,\n" + 
 			"        assets.ex_int1,\n" + 
@@ -84,6 +86,7 @@ public interface AssetsDetailsListRepo extends JpaRepository<AssetsDetailsList, 
 			"        assets.asset_name,\n" + 
 			"        assets.asset_pur_date ,\n" + 
 			"        assets.asset_remark,\n" + 
+			"        assets.asset_status,\n" +
 			"        assets.asset_srno,\n" + 
 			"        assets.del_status,\n" + 
 			"        assets.ex_int1,\n" + 
@@ -116,6 +119,7 @@ public interface AssetsDetailsListRepo extends JpaRepository<AssetsDetailsList, 
 			"        assets.asset_name,\n" + 
 			"        assets.asset_pur_date,\n" + 
 			"        assets.asset_remark,\n" + 
+			"        assets.asset_status,\n" +
 			"        assets.asset_srno,\n" + 
 			"        assets.del_status,\n" + 
 			"        assets.ex_int1,\n" + 

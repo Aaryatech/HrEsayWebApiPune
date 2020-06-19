@@ -23,6 +23,7 @@ public class AssetsDetailsList {
 	private String assetMake;
 	private String assetModel;	
 	private String assetSrno;
+	private String assetStatus;
 	private Date assetPurDate	;
 	private String vendor;
 	private String assetRemark;
@@ -150,6 +151,12 @@ public class AssetsDetailsList {
 	}
 	public void setLocation(String location) {
 		this.location = location;
+	}
+	public String getAssetStatus() {
+		return assetStatus;
+	}
+	public void setAssetStatus(String assetStatus) {
+		this.assetStatus = assetStatus;
 	}
 	@Override
 	public String toString() {
