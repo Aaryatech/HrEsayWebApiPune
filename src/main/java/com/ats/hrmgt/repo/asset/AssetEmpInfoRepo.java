@@ -18,10 +18,10 @@ public interface AssetEmpInfoRepo extends JpaRepository<AssetEmpInfo, Integer> {
 			" m_employees.emp_code,m_employees.first_name,m_employees.surname, " + 
 			" dep.name_sd AS dept_name, dg.name_sd AS emp_desgn, m_assets.asset_code,m_assets.asset_name " + 
 			" FROM t_asset_trans,m_assets,m_employees " + 
-			" LEFT JOIN m_department dep ON  " + 
-			" m_employees.depart_id = dep.depart_id " + 
-			" LEFT JOIN m_designation dg ON " + 
-			" m_employees.designation_id = dg.desig_id " + 
+				" LEFT JOIN m_department dep ON  " + 
+				" m_employees.depart_id = dep.depart_id " + 
+				" LEFT JOIN m_designation dg ON " + 
+				" m_employees.designation_id = dg.desig_id " + 
 			" WHERE  m_employees.del_status = 1 and t_asset_trans.emp_id=m_employees.emp_id "
 			+ "AND t_asset_trans.del_status=1 AND t_asset_trans.asset_id=m_assets.asset_id AND "
 			+ "m_assets.asset_status=1 "
