@@ -2071,7 +2071,8 @@ public class AttendanceApiControllerchange {
 			@RequestParam("selectStatusText") String selectStatusText, @RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("userId") int userId, @RequestParam("month") int month,
 			@RequestParam("year") int year, @RequestParam("selectShift") int selectShift,
-			@RequestParam("otApproval") int otApproval, @RequestParam("namesd") String namesd) {
+			@RequestParam("otApproval") int otApproval, @RequestParam("namesd") String namesd,
+			@RequestParam("lateMin") int lateMin) {
 
 		Info info = new Info();
 		try {
@@ -2100,6 +2101,7 @@ public class AttendanceApiControllerchange {
 						 * dailyRecordById.setAtsummUid("1"); }
 						 */
 					}
+					dailyRecordById.setLateMin(lateMin);
 					dailyRecordById.setLateMark(lateMark);
 					String[] othrsarry = otHours.split(":");
 					int othrs = (Integer.parseInt(othrsarry[0]) * 60) + Integer.parseInt(othrsarry[1]);
