@@ -148,32 +148,32 @@ public class AssetTxApiController {
 			
 		} catch (Exception e) {
 			info = new Info();
-			System.err.println("Excep in getAssetAMCInfoByAssetId : AssetTxApiController " + e.getMessage());
+			System.err.println("Excep in saveAssetLog : AssetTxApiController " + e.getMessage());
 			e.printStackTrace();
 		}
 
 		return info;
 	}
 	@RequestMapping(value = { "/validateNewAMCAdd" }, method = RequestMethod.POST)
-	public Info  validateNewAMCAdd(@RequestParam int assetId) {
+	public Info  validateNewAMCAdd(@RequestParam int assetId, @RequestParam int amcId) {
 		Info info = new Info();
 		Integer result=0;
 		try {
-			result=aLogRepo.getAMCRecordCount(assetId);
+			result=aLogRepo.getAMCRecordCount(assetId, amcId);
 			if(result.equals(0)) {
 				info.setError(false);
 				info.setMsg("Allow to add");
 				result=0;
 			}else {
 				
-				result=aLogRepo.getAMCRecordCountForLive(assetId);
+				result=aLogRepo.getAMCRecordCountForLive(assetId, amcId);
 				
 				if(result>0) {
 					info.setError(true);
 					info.setMsg("A Live AMC record for this asset already exist");
 					result=0;
 				}else {
-					result=aLogRepo.getAMCRecordCountForLivePending(assetId);
+					result=aLogRepo.getAMCRecordCountForLivePending(assetId, amcId);
 					
 					if(result.equals(0)) {
 						info.setError(false);
