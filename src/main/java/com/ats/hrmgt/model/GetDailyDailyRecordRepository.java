@@ -184,4 +184,71 @@ public interface GetDailyDailyRecordRepository extends JpaRepository<GetDailyDai
 			"        and ot_hr>0 and e.emp_id=dl.emp_id and e.emp_type=et.emp_type_id and et.ot_applicable='Yes'", nativeQuery = true)
 	List<GetDailyDailyRecord> getDailyDailyRecordForFinalOtApproval(@Param("date") String date,@Param("empId") int empId);
 
+	@Query(value = " SELECT\n" + 
+			"        d.id ,\n" + 
+			"        d.company_id ,\n" + 
+			"        d.emp_code ,\n" + 
+			"        d.emp_name ,\n" + 
+			"        d.att_date ,\n" + 
+			"        d.att_status ,\n" + 
+			"        d.lv_sumup_id ,\n" + 
+			"        CONCAT(FLOOR(d.working_hrs/60),\n" + 
+			"        '.',\n" + 
+			"        LPAD(MOD(d.working_hrs,\n" + 
+			"        60),\n" + 
+			"        2,\n" + 
+			"        '0')) as working_hrs ,\n" + 
+			"        d.in_time ,\n" + 
+			"        d.rec_status ,\n" + 
+			"        d.login_name ,\n" + 
+			"        d.login_time ,\n" + 
+			"        d.import_date ,\n" + 
+			"        d.cmp_code ,\n" + 
+			"        d.emp_id ,\n" + 
+			"        CONCAT(FLOOR(d.ot_hr/60),\n" + 
+			"        '.',\n" + 
+			"        LPAD(MOD(d.ot_hr,\n" + 
+			"        60),\n" + 
+			"        2,\n" + 
+			"        '0')) as ot_hr ,\n" + 
+			"        d.current_shiftid ,\n" + 
+			"        d.late_mark ,\n" + 
+			"        d.late_min ,\n" + 
+			"        d.reason ,\n" + 
+			"        d.current_shiftname ,\n" + 
+			"        d.freeze_by_supervisor ,\n" + 
+			"        d.comments_supervisor ,\n" + 
+			"        d.get_pass_used_count ,\n" + 
+			"        d.get_pass_used_hour ,\n" + 
+			"        d.get_pass_used_hour_reason ,\n" + 
+			"        d.raw_data_inout ,\n" + 
+			"        d.manual_ot_hr ,\n" + 
+			"        d.full_night ,\n" + 
+			"        d.half_night ,\n" + 
+			"        d.out_time ,\n" + 
+			"        d.early_going_mark ,\n" + 
+			"        d.early_going_min ,\n" + 
+			"        d.multiple_entries ,\n" + 
+			"        d.casetype ,\n" + 
+			"        d.is_fixed ,\n" + 
+			"        d.by_file_updated ,\n" + 
+			"        d.location_id ,\n" + 
+			"        d.emp_type ,\n" + 
+			"        et.wh_work as emp_json ,\n" + 
+			"        d.atsumm_uid ,\n" + 
+			"        d.file_name ,\n" + 
+			"        d.row_id,\n" + 
+			"        d.atts_sd_show  \n" + 
+			"    FROM\n" + 
+			"        tbl_attt_daily_daily d,\n" + 
+			"        m_employees e,\n" + 
+			"        m_department dep,\n" + 
+			"        tbl_mst_emp_types et\n" + 
+			"    WHERE\n" + 
+			"        d.att_date between :date and :date \n" + 
+			"        and d.emp_id=e.emp_id         \n" + 
+			"        and e.depart_id=dep.depart_id\n" + 
+			"        and e.emp_type=et.emp_type_id", nativeQuery = true)
+	List<GetDailyDailyRecord> getDailyDailyRecordForHrByDate(@Param("date") String date);
+
 }
