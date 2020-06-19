@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.hrmgt.model.AssetAmc;
 import com.ats.hrmgt.model.AssetCategory;
 import com.ats.hrmgt.model.AssetEmployee;
+import com.ats.hrmgt.model.AssetServiceDetails;
 import com.ats.hrmgt.model.AssetServicing;
 import com.ats.hrmgt.model.AssetTrans;
 import com.ats.hrmgt.model.AssetVendor;
@@ -22,6 +23,7 @@ import com.ats.hrmgt.model.AssignedAssetsList;
 import com.ats.hrmgt.model.EmpSalAllowance;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.Info;
+import com.ats.hrmgt.repo.asset.AssetServiceDetailsRepo;
 import com.ats.hrmgt.repo.asset.AssetServicingRepo;
 import com.ats.hrmgt.repository.AssetAmcRepo;
 import com.ats.hrmgt.repository.AssetCategoryRepo;
@@ -52,6 +54,8 @@ public class AssetMgmtApiController {
 	@Autowired AssignedAssetsListRepo assignedAssetListRepo;
 	
 	@Autowired AssetServicingRepo assetServiceRepo;
+	
+	@Autowired AssetServiceDetailsRepo assetServiceListRepo;
 	
 	/*****************************************************************************/
 	
@@ -715,5 +719,20 @@ public class AssetMgmtApiController {
 		}
 
 		return info;
+	}
+	
+	
+	
+	@RequestMapping(value = { "/getAssetServiceList" }, method = RequestMethod.POST)
+	public List<AssetServiceDetails> getAssetServiceList(@RequestParam int assetId) {
+		List<AssetServiceDetails> list = new ArrayList<AssetServiceDetails>();
+		try {
+			list = assetServiceListRepo.getAssetServiceList(assetId);
+		} catch (Exception e) {
+			System.err.println("Excep in getAssetServiceList : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 }
