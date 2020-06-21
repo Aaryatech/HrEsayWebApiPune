@@ -23,6 +23,8 @@ import com.ats.hrmgt.model.AssignedAssetsList;
 import com.ats.hrmgt.model.EmpSalAllowance;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.Info;
+import com.ats.hrmgt.model.assets.AssetEmpHistoryInfo;
+import com.ats.hrmgt.repo.asset.AssetEmpHistoryInfoRepo;
 import com.ats.hrmgt.repo.asset.AssetServiceDetailsRepo;
 import com.ats.hrmgt.repo.asset.AssetServicingRepo;
 import com.ats.hrmgt.repository.AssetAmcRepo;
@@ -56,6 +58,8 @@ public class AssetMgmtApiController {
 	@Autowired AssetServicingRepo assetServiceRepo;
 	
 	@Autowired AssetServiceDetailsRepo assetServiceListRepo;
+	
+	@Autowired AssetEmpHistoryInfoRepo assetEmpHistoryRepo;
 	
 	/*****************************************************************************/
 	
@@ -735,4 +739,18 @@ public class AssetMgmtApiController {
 
 		return list;
 	}
+	
+	@RequestMapping(value = { "/getAssetEmpHistoryList" }, method = RequestMethod.POST)
+	public List<AssetEmpHistoryInfo> getAssetEmpHistoryList(@RequestParam int assetId) {
+		List<AssetEmpHistoryInfo> list = new ArrayList<AssetEmpHistoryInfo>();
+		try {
+			list = assetEmpHistoryRepo.getAssetAssignedToEmp(assetId);
+		} catch (Exception e) {
+			System.err.println("Excep in getAssetEmpHistoryList : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
 }
