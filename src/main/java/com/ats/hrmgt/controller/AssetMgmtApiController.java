@@ -26,6 +26,7 @@ import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.assets.AMCExpirationDetail;
 import com.ats.hrmgt.model.assets.AssetEmpHistoryInfo;
 import com.ats.hrmgt.model.assets.AssetNotificatn;
+import com.ats.hrmgt.model.assets.AssetsDashDetails;
 import com.ats.hrmgt.model.assets.CatWiseAssetCount;
 import com.ats.hrmgt.model.assets.CatWiseAssetDistributn;
 import com.ats.hrmgt.model.assets.ServicingDashDetails;
@@ -42,6 +43,7 @@ import com.ats.hrmgt.repository.AssetCategoryRepo;
 import com.ats.hrmgt.repository.AssetEmployeeRepo;
 import com.ats.hrmgt.repository.AssetTransRepo;
 import com.ats.hrmgt.repository.AssetVendorRepo;
+import com.ats.hrmgt.repository.AssetsDashRepo;
 import com.ats.hrmgt.repository.AssetsDetailsListRepo;
 import com.ats.hrmgt.repository.AssetsRepo;
 import com.ats.hrmgt.repository.AssignedAssetsListRepo;
@@ -81,6 +83,7 @@ public class AssetMgmtApiController {
 	
 	@Autowired ServicingDashDetailsRepo servicingDetailRepo;
 	
+	@Autowired AssetsDashRepo assetDashRepo;
 	/*****************************************************************************/
 	
 	@RequestMapping(value = { "/getAllAssetCategory" }, method = RequestMethod.GET)
@@ -860,6 +863,26 @@ public class AssetMgmtApiController {
 			list = servicingDetailRepo.getServicingDashDetailsList();
 		} catch (Exception e) {
 			System.err.println("Excep in getServicingDetails : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	@RequestMapping(value = { "/getAssetsDashDetails" }, method = RequestMethod.POST)
+	public List<AssetsDashDetails> getAssetsDashDetails(@RequestParam int locId, @RequestParam List<String> vendorIds, 
+			@RequestParam String fromDate, @RequestParam String toDate) {
+		List<AssetsDashDetails> list = new ArrayList<AssetsDashDetails>();
+		try {
+			if(vendorIds!=null && locId!=0) {
+				list = assetDashRepo.getAssetsDashDetailsByVendorId(locId, vendorIds, fromDate, toDate);
+			}else if(vendorIds==null && locId!=0){
+				list = assetDashRepo.getAllAssetsDashDetails(locId, fromDate, toDate);
+			}else {
+			list = assetDashRepo.getAllAssetsDashDetailsBetweenDates(fromDate, toDate);
+			}
+		} catch (Exception e) {
+			System.err.println("Excep in getAssetsDashDetails : " + e.getMessage());
 			e.printStackTrace();
 		}
 

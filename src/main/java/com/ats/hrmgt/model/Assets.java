@@ -24,7 +24,7 @@ public class Assets {
 	private String assetMake;
 	private String assetModel;	
 	private String assetSrno;
-	private String assetPurDate	;
+	private Date assetPurDate	;
 	private int vendorId;
 	private String assetRemark;
 	
@@ -94,10 +94,11 @@ public class Assets {
 	public void setAssetSrno(String assetSrno) {
 		this.assetSrno = assetSrno;
 	}
-	public String getAssetPurDate() {
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getAssetPurDate() {
 		return assetPurDate;
 	}
-	public void setAssetPurDate(String assetPurDate) {
+	public void setAssetPurDate(Date assetPurDate) {
 		this.assetPurDate = assetPurDate;
 	}
 	public int getVendorId() {
@@ -119,6 +120,7 @@ public class Assets {
 	public void setAssetStatus(int assetStatus) {
 		this.assetStatus = assetStatus;
 	}
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
 	public String getScrapDate() {
 		return scrapDate;
 	}
