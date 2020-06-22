@@ -23,10 +23,18 @@ import com.ats.hrmgt.model.AssignedAssetsList;
 import com.ats.hrmgt.model.EmpSalAllowance;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.Info;
+import com.ats.hrmgt.model.assets.AMCExpirationDetail;
 import com.ats.hrmgt.model.assets.AssetEmpHistoryInfo;
+import com.ats.hrmgt.model.assets.AssetNotificatn;
+import com.ats.hrmgt.model.assets.CatWiseAssetCount;
+import com.ats.hrmgt.model.assets.CatWiseAssetDistributn;
+import com.ats.hrmgt.repo.asset.AMCExpirationDetailRepo;
 import com.ats.hrmgt.repo.asset.AssetEmpHistoryInfoRepo;
+import com.ats.hrmgt.repo.asset.AssetNotificatnRepo;
 import com.ats.hrmgt.repo.asset.AssetServiceDetailsRepo;
 import com.ats.hrmgt.repo.asset.AssetServicingRepo;
+import com.ats.hrmgt.repo.asset.CatWiseAssetCountRepo;
+import com.ats.hrmgt.repo.asset.CatWiseAssetDistributnRepo;
 import com.ats.hrmgt.repository.AssetAmcRepo;
 import com.ats.hrmgt.repository.AssetCategoryRepo;
 import com.ats.hrmgt.repository.AssetEmployeeRepo;
@@ -60,6 +68,14 @@ public class AssetMgmtApiController {
 	@Autowired AssetServiceDetailsRepo assetServiceListRepo;
 	
 	@Autowired AssetEmpHistoryInfoRepo assetEmpHistoryRepo;
+	
+	@Autowired AssetNotificatnRepo assetNotityRepo;
+	
+	@Autowired AMCExpirationDetailRepo amcExpireNotifyRepo;
+	
+	@Autowired CatWiseAssetDistributnRepo catWiseAssetDistributnRepo;
+	
+	@Autowired CatWiseAssetCountRepo cateWiseAssetCntRepo;
 	
 	/*****************************************************************************/
 	
@@ -689,6 +705,7 @@ public class AssetMgmtApiController {
 		return service;
 	}
 	
+	
 	@RequestMapping(value = { "/getAssetServicingById" }, method = RequestMethod.POST)
 	public AssetServicing getAssetServicingById(@RequestParam int serviceId) {
 		AssetServicing service = new AssetServicing();
@@ -725,8 +742,28 @@ public class AssetMgmtApiController {
 		return info;
 	}
 	
-	
-	
+	@RequestMapping(value = { "/updtRegService" }, method = RequestMethod.POST)
+	public Info updtRegService(@RequestParam int serviceId) {
+		Info info = new Info();
+		
+		try {
+			int i = assetServiceRepo.chngRegAssetService(serviceId);
+			
+			if(i>0) {
+				info.setError(false);
+				info.setMsg("Asset Service Deleted Successfully");
+			}else {
+				info.setError(true);
+				info.setMsg("Failed to Delete Asset Service");
+			}
+		} catch (Exception e) {
+			System.err.println("Excep in deleteAssetById : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return info;
+	}
+		
 	@RequestMapping(value = { "/getAssetServiceList" }, method = RequestMethod.POST)
 	public List<AssetServiceDetails> getAssetServiceList(@RequestParam int assetId) {
 		List<AssetServiceDetails> list = new ArrayList<AssetServiceDetails>();
@@ -753,4 +790,58 @@ public class AssetMgmtApiController {
 		return list;
 	}
 	
+/*****************************************************************************/
+	//Dashboard Query
+	@RequestMapping(value = { "/getAllAssetsForNotifiction" }, method = RequestMethod.GET)
+	public List<AssetNotificatn> getAllAssetsForNotifiction() {
+		List<AssetNotificatn> list = new ArrayList<AssetNotificatn>();
+		try {
+			list = assetNotityRepo.getAssetDetailForNotification();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllAssetsForNotifiction : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	@RequestMapping(value = { "/getAllAssetsAMCForNotifiction" }, method = RequestMethod.GET)
+	public List<AMCExpirationDetail> getAllAssetsAMCForNotifiction() {
+		List<AMCExpirationDetail> list = new ArrayList<AMCExpirationDetail>();
+		try {
+			list = amcExpireNotifyRepo.getAMCExpirationDetailForNotificatn();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllAssetsAMCForNotifiction : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+		
+	@RequestMapping(value = { "/getAllCateWiseAssetDistributn" }, method = RequestMethod.GET)
+	public List<CatWiseAssetDistributn> getAllCateWiseAssetDistributn() {
+		List<CatWiseAssetDistributn> list = new ArrayList<CatWiseAssetDistributn>();
+		try {
+			list = catWiseAssetDistributnRepo.getCatWiseAssetDistributn();
+		} catch (Exception e) {
+			System.err.println("Excep in getAllCateWiseAssetDistributn : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+		
+	@RequestMapping(value = { "/getCateWiseAssetCnt" }, method = RequestMethod.GET)
+	public List<CatWiseAssetCount> getCateWiseAssetCnt() {
+		List<CatWiseAssetCount> list = new ArrayList<CatWiseAssetCount>();
+		try {
+			list = cateWiseAssetCntRepo.getCatWiseAssetCount();
+		} catch (Exception e) {
+			System.err.println("Excep in getCateWiseAssetCnt : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 }

@@ -17,6 +17,11 @@ public interface AssetServicingRepo extends JpaRepository<AssetServicing, Intege
 	@Transactional
 	@Query(value="UPDATE t_asset_servicing SET del_status=0 WHERE t_servicing_id=:serviceId",nativeQuery=true)
 	int deleteAssetServiceInfo(@Param("serviceId") int serviceId);
+
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE t_asset_servicing SET service_type = 1 WHERE t_servicing_id !=:serviceId",nativeQuery=true)
+	int chngRegAssetService(@Param("serviceId")  int serviceId);
 	 
 
 }
