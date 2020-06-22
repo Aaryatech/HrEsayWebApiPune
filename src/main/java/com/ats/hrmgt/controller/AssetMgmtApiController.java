@@ -28,6 +28,7 @@ import com.ats.hrmgt.model.assets.AssetEmpHistoryInfo;
 import com.ats.hrmgt.model.assets.AssetNotificatn;
 import com.ats.hrmgt.model.assets.CatWiseAssetCount;
 import com.ats.hrmgt.model.assets.CatWiseAssetDistributn;
+import com.ats.hrmgt.model.assets.ServicingDashDetails;
 import com.ats.hrmgt.repo.asset.AMCExpirationDetailRepo;
 import com.ats.hrmgt.repo.asset.AssetEmpHistoryInfoRepo;
 import com.ats.hrmgt.repo.asset.AssetNotificatnRepo;
@@ -35,6 +36,7 @@ import com.ats.hrmgt.repo.asset.AssetServiceDetailsRepo;
 import com.ats.hrmgt.repo.asset.AssetServicingRepo;
 import com.ats.hrmgt.repo.asset.CatWiseAssetCountRepo;
 import com.ats.hrmgt.repo.asset.CatWiseAssetDistributnRepo;
+import com.ats.hrmgt.repo.asset.ServicingDashDetailsRepo;
 import com.ats.hrmgt.repository.AssetAmcRepo;
 import com.ats.hrmgt.repository.AssetCategoryRepo;
 import com.ats.hrmgt.repository.AssetEmployeeRepo;
@@ -76,6 +78,8 @@ public class AssetMgmtApiController {
 	@Autowired CatWiseAssetDistributnRepo catWiseAssetDistributnRepo;
 	
 	@Autowired CatWiseAssetCountRepo cateWiseAssetCntRepo;
+	
+	@Autowired ServicingDashDetailsRepo servicingDetailRepo;
 	
 	/*****************************************************************************/
 	
@@ -805,6 +809,7 @@ public class AssetMgmtApiController {
 		return list;
 	}
 	
+	//Show AMC Expiration Detail
 	@RequestMapping(value = { "/getAllAssetsAMCForNotifiction" }, method = RequestMethod.GET)
 	public List<AMCExpirationDetail> getAllAssetsAMCForNotifiction() {
 		List<AMCExpirationDetail> list = new ArrayList<AMCExpirationDetail>();
@@ -831,7 +836,7 @@ public class AssetMgmtApiController {
 		return list;
 	}
 	
-		
+	//Show available Asset Count Categorywise:
 	@RequestMapping(value = { "/getCateWiseAssetCnt" }, method = RequestMethod.GET)
 	public List<CatWiseAssetCount> getCateWiseAssetCnt() {
 		List<CatWiseAssetCount> list = new ArrayList<CatWiseAssetCount>();
@@ -839,6 +844,22 @@ public class AssetMgmtApiController {
 			list = cateWiseAssetCntRepo.getCatWiseAssetCount();
 		} catch (Exception e) {
 			System.err.println("Excep in getCateWiseAssetCnt : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	
+	//Servicing Dashboard Query
+	
+	@RequestMapping(value = { "/getServicingDetails" }, method = RequestMethod.GET)
+	public List<ServicingDashDetails> getServicingDetails() {
+		List<ServicingDashDetails> list = new ArrayList<ServicingDashDetails>();
+		try {
+			list = servicingDetailRepo.getServicingDashDetailsList();
+		} catch (Exception e) {
+			System.err.println("Excep in getServicingDetails : " + e.getMessage());
 			e.printStackTrace();
 		}
 
