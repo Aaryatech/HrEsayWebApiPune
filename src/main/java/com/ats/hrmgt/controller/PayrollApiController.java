@@ -1034,14 +1034,24 @@ public class PayrollApiController {
 							ammt = calculatePdata(salaryTermList.get(j), salaryTermList, getSalaryTempList.get(i),
 									amount_round);
 
-							tempVal = ammt / getSalaryTempList.get(i).getTotalDaysInmonth();
-							double deductValue = castNumber(
-									(tempVal * getSalaryTempList.get(i).getAbsentDays() * ab_deduction * 2),
-									amount_round);
-
-							getSalaryTempList.get(i).setAbDeduction(deductValue);
-							// assign to table Filed
-							salaryTermList.get(j).setValue(deductValue);
+							if (getSalaryTempList.get(i).getSalBasis().equalsIgnoreCase("monthly")) {
+								tempVal = ammt / getSalaryTempList.get(i).getTotalDaysInmonth();
+								double deductValue = castNumber(
+										(tempVal * getSalaryTempList.get(i).getAbsentDays() * ab_deduction * 2),
+										amount_round);
+								getSalaryTempList.get(i).setAbDeduction(deductValue);
+								salaryTermList.get(j).setValue(deductValue);
+							} else if (getSalaryTempList.get(i).getSalBasis().equalsIgnoreCase("daily")) {
+								tempVal = ammt / getSalaryTempList.get(i).getWorkingDays();
+								double deductValue = castNumber(
+										(tempVal * getSalaryTempList.get(i).getAbsentDays() * ab_deduction * 2),
+										amount_round);
+								getSalaryTempList.get(i).setAbDeduction(deductValue);
+								salaryTermList.get(j).setValue(deductValue);
+							} else {
+								getSalaryTempList.get(i).setAbDeduction(0);
+								salaryTermList.get(j).setValue(0);
+							}
 
 							break;
 						case "FD":
