@@ -24,6 +24,7 @@ import com.ats.hrmgt.model.EmpSalAllowance;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.assets.AMCExpirationDetail;
+import com.ats.hrmgt.model.assets.AssetAMCExpiryReport;
 import com.ats.hrmgt.model.assets.AssetEmpHistoryInfo;
 import com.ats.hrmgt.model.assets.AssetNotificatn;
 import com.ats.hrmgt.model.assets.AssetsDashDetails;
@@ -31,6 +32,7 @@ import com.ats.hrmgt.model.assets.CatWiseAssetCount;
 import com.ats.hrmgt.model.assets.CatWiseAssetDistributn;
 import com.ats.hrmgt.model.assets.ServicingDashDetails;
 import com.ats.hrmgt.repo.asset.AMCExpirationDetailRepo;
+import com.ats.hrmgt.repo.asset.AssetAMCExpiryReportRepo;
 import com.ats.hrmgt.repo.asset.AssetEmpHistoryInfoRepo;
 import com.ats.hrmgt.repo.asset.AssetNotificatnRepo;
 import com.ats.hrmgt.repo.asset.AssetServiceDetailsRepo;
@@ -83,7 +85,6 @@ public class AssetMgmtApiController {
 	
 	@Autowired ServicingDashDetailsRepo servicingDetailRepo;
 	
-	@Autowired AssetsDashRepo assetDashRepo;
 	/*****************************************************************************/
 	
 	@RequestMapping(value = { "/getAllAssetCategory" }, method = RequestMethod.GET)
@@ -869,6 +870,14 @@ public class AssetMgmtApiController {
 		return list;
 	}
 	
+	/*****************************Assets Reports*********************************/
+	@Autowired AssetsDashRepo assetDashRepo;
+	
+	@Autowired AssetAMCExpiryReportRepo assetAmcReportRepo;
+	
+		/************************************************/
+	
+	
 	@RequestMapping(value = { "/getAssetsDashDetails" }, method = RequestMethod.POST)
 	public List<AssetsDashDetails> getAssetsDashDetails(@RequestParam int locId, @RequestParam int vendorIds, 
 			@RequestParam String fromDate, @RequestParam String toDate) {
@@ -883,6 +892,22 @@ public class AssetMgmtApiController {
 			}
 		} catch (Exception e) {
 			System.err.println("Excep in getAssetsDashDetails : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	// AMC Expired Asset's Report
+	@RequestMapping(value = { "/getAssetsAMCExpiryDetails" }, method = RequestMethod.POST)
+	public List<AssetAMCExpiryReport> getAssetsAMCExpiryDetails(@RequestParam int locId) {
+		List<AssetAMCExpiryReport> list = new ArrayList<AssetAMCExpiryReport>();
+		try {
+			if(locId!=0) {
+				list = assetAmcReportRepo.getAllAssetAMCExpiryDetails(locId);
+			}
+		} catch (Exception e) {
+			System.err.println("Excep in getAssetsAMCExpiryDetails : " + e.getMessage());
 			e.printStackTrace();
 		}
 
