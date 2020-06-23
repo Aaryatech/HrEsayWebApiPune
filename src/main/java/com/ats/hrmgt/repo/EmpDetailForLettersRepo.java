@@ -13,11 +13,11 @@ public interface EmpDetailForLettersRepo extends JpaRepository<EmpDetailForLette
 			"        emp.emp_code,\n" + 
 			"        emp.first_name,\n" + 
 			"        emp.middle_name,\n" + 
-			"        emp.surname,\n" + 
+			"        emp.surname,emp.mobile_no_1 as mobile,\n" + 
 			"        dep.name AS dept_name,\n" + 
 			"        dg.name AS emp_desgn,\n" + 
 			"        loc.loc_name as  loc_name,\n" + 
-			"        con.org_name, \n" + 
+			"        con.org_name,con.owner, \n" + 
 			"        succomp.company_name  AS sub_comp_name,\n" + 
 			"        salinfo.cmp_joining_date,\n" + 
 			"        salinfo.cmp_leaving_date\n" + 
