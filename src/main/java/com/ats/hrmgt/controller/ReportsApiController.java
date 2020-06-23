@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.model.DailyAttendance;
+import com.ats.hrmgt.model.EmpDetailForLetters;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.SalaryCalc;
 import com.ats.hrmgt.model.graph.EmpDefaultSalaryGraph;
@@ -19,6 +20,7 @@ import com.ats.hrmgt.model.report.EmpLateMarkDetails;
 import com.ats.hrmgt.model.report.EmpOtReg;
 import com.ats.hrmgt.model.report.LoanStatementDetailsReport;
 import com.ats.hrmgt.model.report.PendingLoanReport;
+import com.ats.hrmgt.repo.EmpDetailForLettersRepo;
 import com.ats.hrmgt.repo.report.EmpLateMarkDetailsRepo;
 import com.ats.hrmgt.repo.report.EmpOtRegRepo;
 import com.ats.hrmgt.repo.report.LoanStatementRepo;
@@ -29,16 +31,24 @@ import com.ats.hrmgt.repository.SalaryCalcRepo;
 @RestController
 public class ReportsApiController {
 
-	@Autowired PendingLoanRepo pendLoanRepo;
+	@Autowired
+	PendingLoanRepo pendLoanRepo;
+
+	@Autowired
+	LoanStatementRepo loanStatRepo;
+
+	@Autowired
+	EmpOtRegRepo otRepo;
+
+	@Autowired
+	EmpLateMarkDetailsRepo empLateRepo;
+
+	@Autowired
+	SalaryCalcRepo salCalRepo;
 	
-	@Autowired LoanStatementRepo loanStatRepo;
-	
-	@Autowired EmpOtRegRepo otRepo;
-	
-	@Autowired EmpLateMarkDetailsRepo empLateRepo;
-	
-	@Autowired SalaryCalcRepo salCalRepo;
-	
+	@Autowired
+	EmpDetailForLettersRepo empDetailForLettersRepo;
+
 	@RequestMapping(value = { "/getEmpPendingLoanReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<PendingLoanReport> getEmpPendingLoanReport(@RequestParam("companyId") int companyId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
@@ -57,10 +67,11 @@ public class ReportsApiController {
 		return list;
 
 	}
-	
+
 	@RequestMapping(value = { "/getLoanStatemnetReport" }, method = RequestMethod.POST)
-	public @ResponseBody List<LoanStatementDetailsReport> getLoanStatemnetReport(@RequestParam("companyId") int companyId,
-			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
+	public @ResponseBody List<LoanStatementDetailsReport> getLoanStatemnetReport(
+			@RequestParam("companyId") int companyId, @RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate) {
 
 		List<LoanStatementDetailsReport> list = new ArrayList<LoanStatementDetailsReport>();
 
@@ -75,8 +86,8 @@ public class ReportsApiController {
 
 		return list;
 
-	}	
-	
+	}
+
 	@RequestMapping(value = { "/getEmpOtRegSummary" }, method = RequestMethod.POST)
 	public @ResponseBody List<EmpOtReg> getEmpOtRegSummary(@RequestParam("companyId") int companyId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
@@ -85,27 +96,24 @@ public class ReportsApiController {
 
 		try {
 			String frmDate = fromDate;
-			//System.out.println("From Date Before-----------"+frmDate);
+			// System.out.println("From Date Before-----------"+frmDate);
 			String[] parts = frmDate.split("-");
 			String year = parts[0];
 			String month = parts[1];
 			String date = parts[2];
-			
-			
-			System.out.println("From Date After-----------"+year+"/"+month+"/"+date);
-			
-			
+
+			System.out.println("From Date After-----------" + year + "/" + month + "/" + date);
+
 			String tDate = toDate;
-			//System.out.println("To Date Before-----------"+toDate);
+			// System.out.println("To Date Before-----------"+toDate);
 			String[] toparts = tDate.split("-");
 			String toyear = toparts[0];
 			String tomonth = toparts[1];
 			String todate = toparts[2];
-			
-			
-			System.out.println("To Date After-----------"+year+"/"+month+"/"+date);
-			
-			list = otRepo.getEmpOtSummary(companyId, month, year, tomonth ,toyear);
+
+			System.out.println("To Date After-----------" + year + "/" + month + "/" + date);
+
+			list = otRepo.getEmpOtSummary(companyId, month, year, tomonth, toyear);
 
 		} catch (Exception e) {
 
@@ -114,8 +122,8 @@ public class ReportsApiController {
 
 		return list;
 
-	}	
-	
+	}
+
 	@RequestMapping(value = { "/getEmpOtRegDetails" }, method = RequestMethod.POST)
 	public @ResponseBody List<EmpOtReg> getEmpOtRegDetails(@RequestParam("companyId") int companyId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
@@ -123,8 +131,7 @@ public class ReportsApiController {
 		List<EmpOtReg> list = new ArrayList<EmpOtReg>();
 
 		try {
-			
-			
+
 			list = otRepo.getEmpOtDetails(companyId, fromDate, toDate);
 
 		} catch (Exception e) {
@@ -134,8 +141,8 @@ public class ReportsApiController {
 
 		return list;
 
-	}	
-	
+	}
+
 	@RequestMapping(value = { "/getEmpLateMarkSummary" }, method = RequestMethod.POST)
 	public @ResponseBody List<EmpLateMarkDetails> getEmpLateMarkSummary(@RequestParam("companyId") int companyId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
@@ -144,23 +151,22 @@ public class ReportsApiController {
 
 		try {
 			String frmDate = fromDate;
-			//System.out.println("From Date Before-----------"+frmDate);
+			// System.out.println("From Date Before-----------"+frmDate);
 			String[] parts = frmDate.split("-");
 			String date = parts[2];
 			String month = parts[1];
 			String year = parts[0];
-			//System.out.println("From Date After-----------"+date+"/"+month+"/"+year);
-			
-			
+			// System.out.println("From Date After-----------"+date+"/"+month+"/"+year);
+
 			String tDate = toDate;
-		//	System.out.println("To Date Before-----------"+toDate);
+			// System.out.println("To Date Before-----------"+toDate);
 			String[] toparts = tDate.split("-");
 			String todate = toparts[2];
 			String tomonth = toparts[1];
 			String toyear = toparts[0];
-		//	System.out.println("To Date After-----------"+todate+"/"+tomonth+"/"+toyear);
+			// System.out.println("To Date After-----------"+todate+"/"+tomonth+"/"+toyear);
 
-			list = empLateRepo.getEmpLateMarkSummaryReport(companyId, month, year, tomonth ,toyear);
+			list = empLateRepo.getEmpLateMarkSummaryReport(companyId, month, year, tomonth, toyear);
 
 		} catch (Exception e) {
 
@@ -169,8 +175,8 @@ public class ReportsApiController {
 
 		return list;
 
-	}	
-	
+	}
+
 	@RequestMapping(value = { "/getEmpLateMarkDetails" }, method = RequestMethod.POST)
 	public @ResponseBody List<EmpLateMarkDetails> getEmpLateMarkDetails(@RequestParam("companyId") int companyId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
@@ -179,23 +185,22 @@ public class ReportsApiController {
 
 		try {
 			String frmDate = fromDate;
-			//System.out.println("From Date Before-----------"+frmDate);
+			// System.out.println("From Date Before-----------"+frmDate);
 			String[] parts = frmDate.split("-");
 			String date = parts[2];
 			String month = parts[1];
 			String year = parts[0];
-			//System.out.println("From Date After-----------"+date+"/"+month+"/"+year);
-			
-			
+			// System.out.println("From Date After-----------"+date+"/"+month+"/"+year);
+
 			String tDate = toDate;
-		//	System.out.println("To Date Before-----------"+toDate);
+			// System.out.println("To Date Before-----------"+toDate);
 			String[] toparts = tDate.split("-");
 			String todate = toparts[2];
 			String tomonth = toparts[1];
 			String toyear = toparts[0];
-		//	System.out.println("To Date After-----------"+todate+"/"+tomonth+"/"+toyear);
+			// System.out.println("To Date After-----------"+todate+"/"+tomonth+"/"+toyear);
 
-			list = empLateRepo.getEmpLateMarkDetailReport(companyId,fromDate, toDate);
+			list = empLateRepo.getEmpLateMarkDetailReport(companyId, fromDate, toDate);
 
 		} catch (Exception e) {
 
@@ -204,8 +209,8 @@ public class ReportsApiController {
 
 		return list;
 
-	}	
-	
+	}
+
 	@RequestMapping(value = { "/getEmpLateMarkDetailsByEmpId" }, method = RequestMethod.POST)
 	public @ResponseBody List<EmpLateMarkDetails> getEmpLateMarkDetailsByEmpId(@RequestParam("empId") int empId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
@@ -214,26 +219,25 @@ public class ReportsApiController {
 
 		try {
 			String frmDate = fromDate;
-			System.out.println("From Date Before-----------"+frmDate);
-			String[] parts = frmDate.split("-");			
+			System.out.println("From Date Before-----------" + frmDate);
+			String[] parts = frmDate.split("-");
 			String month = parts[0];
 			String year = parts[1];
-			System.out.println("From Date After-----------"+month+"/"+year);
-			
-			
+			System.out.println("From Date After-----------" + month + "/" + year);
+
 			String tDate = toDate;
-			System.out.println("To Date Before-----------"+toDate);
+			System.out.println("To Date Before-----------" + toDate);
 			String[] toparts = tDate.split("-");
 			String tomonth = toparts[0];
 			String toyear = toparts[1];
-			System.out.println("To Date After-----------"+tomonth+"/"+toyear);
-			
+			System.out.println("To Date After-----------" + tomonth + "/" + toyear);
+
 			// Get the number of days in that month
 			YearMonth yearMonthObject = YearMonth.of(Integer.parseInt(toyear), Integer.parseInt(tomonth));
-			int daysInMonth = yearMonthObject.lengthOfMonth(); //28  
-			//System.out.println("Ttl Days----------"+daysInMonth);
+			int daysInMonth = yearMonthObject.lengthOfMonth(); // 28
+			// System.out.println("Ttl Days----------"+daysInMonth);
 
-			list = empLateRepo.getEmpLateMarkDetailReportByEmpId(month, year, tomonth ,toyear, empId, daysInMonth);
+			list = empLateRepo.getEmpLateMarkDetailReportByEmpId(month, year, tomonth, toyear, empId, daysInMonth);
 
 		} catch (Exception e) {
 
@@ -242,35 +246,33 @@ public class ReportsApiController {
 
 		return list;
 
-	}	
-	
+	}
+
 	@RequestMapping(value = { "/getLoanStatemnetReportByEmpId" }, method = RequestMethod.POST)
-	public @ResponseBody List<LoanStatementDetailsReport> getLoanStatemnetReportByEmpId(@RequestParam("empId") int empId,
-			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
+	public @ResponseBody List<LoanStatementDetailsReport> getLoanStatemnetReportByEmpId(
+			@RequestParam("empId") int empId, @RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate) {
 
 		List<LoanStatementDetailsReport> list = new ArrayList<LoanStatementDetailsReport>();
 
 		try {
 			String frmDate = fromDate;
-			//System.out.println("From Date Before-----------"+frmDate);
-			String[] parts = frmDate.split("-");			
+			// System.out.println("From Date Before-----------"+frmDate);
+			String[] parts = frmDate.split("-");
 			String month = parts[0];
 			String year = parts[1];
-			String newfromDate = year+"-"+month+"-"+"01";
-			//System.out.println("From Date After-----------"+newfromDate);
-			
-			
+			String newfromDate = year + "-" + month + "-" + "01";
+			// System.out.println("From Date After-----------"+newfromDate);
+
 			String tDate = toDate;
-			//System.out.println("To Date Before-----------"+toDate);
+			// System.out.println("To Date Before-----------"+toDate);
 			String[] toparts = tDate.split("-");
 			String tomonth = toparts[0];
 			String toyear = toparts[1];
-			String newToDate = toyear+"-"+tomonth+"-"+"01";
-			//System.out.println("From Date After-----------"+newToDate);
-		
+			String newToDate = toyear + "-" + tomonth + "-" + "01";
+			// System.out.println("From Date After-----------"+newToDate);
 
-
-			list = loanStatRepo.getEmpLoanStateDetailsByEmpId(newfromDate, newToDate,empId);
+			list = loanStatRepo.getEmpLoanStateDetailsByEmpId(newfromDate, newToDate, empId);
 
 		} catch (Exception e) {
 
@@ -279,39 +281,38 @@ public class ReportsApiController {
 
 		return list;
 
-	}	
+	}
+
 	/***************************************************************************/
-	
-	@Autowired EmpDefaultSalaryGraphRepo defSalRepo;
-	
+
+	@Autowired
+	EmpDefaultSalaryGraphRepo defSalRepo;
+
 	@RequestMapping(value = { "/getDefaultSalByEmpId" }, method = RequestMethod.POST)
 	public List<EmpDefaultSalaryGraph> getEmployeeById(@RequestParam("empId") int empId,
 			@RequestParam("companyId") int companyId, @RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate) {
-		
-		List<EmpDefaultSalaryGraph> salCal = new ArrayList<EmpDefaultSalaryGraph>();		
+
+		List<EmpDefaultSalaryGraph> salCal = new ArrayList<EmpDefaultSalaryGraph>();
 		try {
 			String frmDate = fromDate;
-			//System.out.println("From Date Before-----------"+frmDate);
-			String[] parts = frmDate.split("-");			
+			// System.out.println("From Date Before-----------"+frmDate);
+			String[] parts = frmDate.split("-");
 			String month = parts[0];
 			String year = parts[1];
-			String newfromDate = year+"-"+month+"-"+"01";
-			//System.out.println("From Date After-----------"+newfromDate);
-			
-			
+			String newfromDate = year + "-" + month + "-" + "01";
+			// System.out.println("From Date After-----------"+newfromDate);
+
 			String tDate = toDate;
-			//System.out.println("To Date Before-----------"+toDate);
+			// System.out.println("To Date Before-----------"+toDate);
 			String[] toparts = tDate.split("-");
 			String tomonth = toparts[0];
 			String toyear = toparts[1];
-			String newToDate = toyear+"-"+tomonth+"-"+"01";
-			//System.out.println("From Date After-----------"+newToDate);
-		
-			
-			salCal = defSalRepo.getDefGrossSalByEmpId(newfromDate, newToDate,empId);	
-			
-			
+			String newToDate = toyear + "-" + tomonth + "-" + "01";
+			// System.out.println("From Date After-----------"+newToDate);
+
+			salCal = defSalRepo.getDefGrossSalByEmpId(newfromDate, newToDate, empId);
+
 		} catch (Exception e) {
 			System.err.println("Excep in getDefaultSalByEmpId : " + e.getMessage());
 			e.printStackTrace();
@@ -320,37 +321,32 @@ public class ReportsApiController {
 		return salCal;
 
 	}
-	
-	
 
 	@RequestMapping(value = { "/getGrossSalByEmpId" }, method = RequestMethod.POST)
 	public List<EmpDefaultSalaryGraph> getGrossSalByEmpId(@RequestParam("empId") int empId,
 			@RequestParam("companyId") int companyId, @RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate) {
-		
-		List<EmpDefaultSalaryGraph> salCal = new ArrayList<EmpDefaultSalaryGraph>();		
+
+		List<EmpDefaultSalaryGraph> salCal = new ArrayList<EmpDefaultSalaryGraph>();
 		try {
 			String frmDate = fromDate;
-			//System.out.println("From Date Before-----------"+frmDate);
-			String[] parts = frmDate.split("-");			
+			// System.out.println("From Date Before-----------"+frmDate);
+			String[] parts = frmDate.split("-");
 			String month = parts[0];
 			String year = parts[1];
-			String newfromDate = year+"-"+month+"-"+"01";
-			//System.out.println("From Date After-----------"+newfromDate);
-			
-			
+			String newfromDate = year + "-" + month + "-" + "01";
+			// System.out.println("From Date After-----------"+newfromDate);
+
 			String tDate = toDate;
-			//System.out.println("To Date Before-----------"+toDate);
+			// System.out.println("To Date Before-----------"+toDate);
 			String[] toparts = tDate.split("-");
 			String tomonth = toparts[0];
 			String toyear = toparts[1];
-			String newToDate = toyear+"-"+tomonth+"-"+"01";
-			//System.out.println("From Date After-----------"+newToDate);
-		
-			
-			salCal = defSalRepo.getGrossSalByEmpId(newfromDate, newToDate,empId);	
-			
-			
+			String newToDate = toyear + "-" + tomonth + "-" + "01";
+			// System.out.println("From Date After-----------"+newToDate);
+
+			salCal = defSalRepo.getGrossSalByEmpId(newfromDate, newToDate, empId);
+
 		} catch (Exception e) {
 			System.err.println("Excep in getDefaultSalByEmpId : " + e.getMessage());
 			e.printStackTrace();
@@ -359,5 +355,23 @@ public class ReportsApiController {
 		return salCal;
 
 	}
-	
+
+	@RequestMapping(value = { "/getEmpDetailForGenrateLetters" }, method = RequestMethod.POST)
+	public @ResponseBody EmpDetailForLetters getEmpDetailForGenrateLetters(@RequestParam("empId") int empId) {
+
+		EmpDetailForLetters empDetailForLetters = new EmpDetailForLetters();
+
+		try {
+
+			empDetailForLetters = empDetailForLettersRepo.getEmpPendingLoanDetails(empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return empDetailForLetters;
+
+	}
+
 }
