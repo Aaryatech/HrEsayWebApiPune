@@ -27,12 +27,14 @@ import com.ats.hrmgt.model.assets.AMCExpirationDetail;
 import com.ats.hrmgt.model.assets.AssetAMCExpiryReport;
 import com.ats.hrmgt.model.assets.AssetCateWiseSummaryReport;
 import com.ats.hrmgt.model.assets.AssetEmpHistoryInfo;
+import com.ats.hrmgt.model.assets.AssetLogReport;
 import com.ats.hrmgt.model.assets.AssetNotificatn;
 import com.ats.hrmgt.model.assets.AssetsDashDetails;
 import com.ats.hrmgt.model.assets.CatWiseAssetCount;
 import com.ats.hrmgt.model.assets.CatWiseAssetDistributn;
 import com.ats.hrmgt.model.assets.CatWiseTotalAssetsReport;
 import com.ats.hrmgt.model.assets.EmpWiseAssetsReport;
+import com.ats.hrmgt.model.assets.LocationWiseTtlAssets;
 import com.ats.hrmgt.model.assets.ScrappedAssetsReport;
 import com.ats.hrmgt.model.assets.ServicingDashDetails;
 import com.ats.hrmgt.model.assets.VendorWiseTtlAssetsReport;
@@ -40,6 +42,7 @@ import com.ats.hrmgt.repo.asset.AMCExpirationDetailRepo;
 import com.ats.hrmgt.repo.asset.AssetAMCExpiryReportRepo;
 import com.ats.hrmgt.repo.asset.AssetCateWiseSummaryReportRepo;
 import com.ats.hrmgt.repo.asset.AssetEmpHistoryInfoRepo;
+import com.ats.hrmgt.repo.asset.AssetLogReportRepo;
 import com.ats.hrmgt.repo.asset.AssetNotificatnRepo;
 import com.ats.hrmgt.repo.asset.AssetReturnPendingReportRepo;
 import com.ats.hrmgt.repo.asset.AssetServiceDetailsRepo;
@@ -48,6 +51,7 @@ import com.ats.hrmgt.repo.asset.CatWiseAssetCountRepo;
 import com.ats.hrmgt.repo.asset.CatWiseAssetDistributnRepo;
 import com.ats.hrmgt.repo.asset.CatWiseTotalAssetsReportRepo;
 import com.ats.hrmgt.repo.asset.EmpWiseAssetsReportRepo;
+import com.ats.hrmgt.repo.asset.LocationWiseTtlAssetsRepo;
 import com.ats.hrmgt.repo.asset.ScrappedAssetsReportRepo;
 import com.ats.hrmgt.repo.asset.ServicingDashDetailsRepo;
 import com.ats.hrmgt.repo.asset.VendorWiseTtlAssetsReportRepo;
@@ -442,6 +446,19 @@ public class AssetMgmtApiController {
 			list = assetsRepo.findByDelStatusOrderByAssetIdDesc(1);
 		} catch (Exception e) {
 			System.err.println("Excep in getAllAssets : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	@RequestMapping(value = { "/getAssetsListByLocId" }, method = RequestMethod.POST)
+	public List<Assets> getAssetsListByLocId(@RequestParam int locId) {
+		List<Assets> list = new ArrayList<Assets>();
+		try {
+			list = assetsRepo.findByLocIdAndDelStatus(locId, 1);
+		} catch (Exception e) {
+			System.err.println("Excep in getAssetsListByLocId : " + e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -897,6 +914,10 @@ public class AssetMgmtApiController {
 	@Autowired ScrappedAssetsReportRepo scrapAssetRepo;
 	
 	@Autowired VendorWiseTtlAssetsReportRepo vendorAssetReport;
+	
+	@Autowired LocationWiseTtlAssetsRepo locTtlAssetsRepo;
+	
+	@Autowired AssetLogReportRepo assetLogReport;
 		/************************************************/
 	
 	
@@ -1039,5 +1060,40 @@ public class AssetMgmtApiController {
 
 						return list;
 					}
-		
+				
+				//Location wise Total Asset
+				@RequestMapping(value = { "/getLocationWiseTotalAssetReport" }, method = RequestMethod.POST)
+				public List<LocationWiseTtlAssets> getLocationWiseTotalAssetReport(@RequestParam int locId) {
+				List<LocationWiseTtlAssets> list = new ArrayList<LocationWiseTtlAssets>();
+					try {
+							if(locId!=0) {
+									list = locTtlAssetsRepo.getLocationWiseTtlAssetsReportByLocId(locId);
+								}else {
+									list = locTtlAssetsRepo.getLocationWiseTtlAssetsReport();
+								}
+						} catch (Exception e) {
+								System.err.println("Excep in getLocationWiseTotalAssetReport : " + e.getMessage());
+								e.printStackTrace();
+						}
+
+						return list;
+					}
+				
+								
+				@RequestMapping(value = { "/getAssetLogReport" }, method = RequestMethod.POST)
+				public List<AssetLogReport> assetLogReport(@RequestParam int assetId) {
+				List<AssetLogReport> list = new ArrayList<AssetLogReport>();
+					try {
+							if(assetId!=0) {
+									list = assetLogReport.getAssetLogReportByAssetId(assetId);
+								}else {
+									list = assetLogReport.getAssetLogReport();
+								}
+						} catch (Exception e) {
+								System.err.println("Excep in getAssetLogReport : " + e.getMessage());
+								e.printStackTrace();
+						}
+
+						return list;
+					}
 }

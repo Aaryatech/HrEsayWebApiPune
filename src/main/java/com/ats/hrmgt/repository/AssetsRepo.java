@@ -49,4 +49,6 @@ public interface AssetsRepo extends JpaRepository<Assets, Integer> {
 	@Query(value="UPDATE m_assets SET asset_status=:assetStatus, maker_user_id=:userUpdateId, update_datetime=:updateTime WHERE asset_id=:assetId",nativeQuery=true)
 	int changeAssetStatusToLost(@Param("assetId") int assetId, @Param("assetStatus") int assetStatus, 
 			@Param("userUpdateId") int userUpdateId, @Param("updateTime") String updateTime);
+	
+	List<Assets> findByLocIdAndDelStatus(int locId, int del);
 }
