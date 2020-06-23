@@ -33,18 +33,21 @@ import com.ats.hrmgt.model.assets.CatWiseAssetCount;
 import com.ats.hrmgt.model.assets.CatWiseAssetDistributn;
 import com.ats.hrmgt.model.assets.CatWiseTotalAssetsReport;
 import com.ats.hrmgt.model.assets.EmpWiseAssetsReport;
+import com.ats.hrmgt.model.assets.ScrappedAssetsReport;
 import com.ats.hrmgt.model.assets.ServicingDashDetails;
 import com.ats.hrmgt.repo.asset.AMCExpirationDetailRepo;
 import com.ats.hrmgt.repo.asset.AssetAMCExpiryReportRepo;
 import com.ats.hrmgt.repo.asset.AssetCateWiseSummaryReportRepo;
 import com.ats.hrmgt.repo.asset.AssetEmpHistoryInfoRepo;
 import com.ats.hrmgt.repo.asset.AssetNotificatnRepo;
+import com.ats.hrmgt.repo.asset.AssetReturnPendingReportRepo;
 import com.ats.hrmgt.repo.asset.AssetServiceDetailsRepo;
 import com.ats.hrmgt.repo.asset.AssetServicingRepo;
 import com.ats.hrmgt.repo.asset.CatWiseAssetCountRepo;
 import com.ats.hrmgt.repo.asset.CatWiseAssetDistributnRepo;
 import com.ats.hrmgt.repo.asset.CatWiseTotalAssetsReportRepo;
 import com.ats.hrmgt.repo.asset.EmpWiseAssetsReportRepo;
+import com.ats.hrmgt.repo.asset.ScrappedAssetsReportRepo;
 import com.ats.hrmgt.repo.asset.ServicingDashDetailsRepo;
 import com.ats.hrmgt.repository.AssetAmcRepo;
 import com.ats.hrmgt.repository.AssetCategoryRepo;
@@ -886,6 +889,10 @@ public class AssetMgmtApiController {
 	@Autowired AssetCateWiseSummaryReportRepo cateWiseAssetReportRepo;
 	
 	@Autowired EmpWiseAssetsReportRepo empWiseAssetRepo;
+	
+	@Autowired AssetReturnPendingReportRepo assetPendingReturnRepo;
+	
+	@Autowired ScrappedAssetsReportRepo scrapAssetRepo;
 		/************************************************/
 	
 	
@@ -945,7 +952,7 @@ public class AssetMgmtApiController {
 	
 	//Asset Categorywise Summary
 		@RequestMapping(value = { "/getAssetCateSummaryReport" }, method = RequestMethod.GET)
-		public List<AssetCateWiseSummaryReport> getCateWiseTotalAssetReport() {
+		public List<AssetCateWiseSummaryReport> getAssetCateSummaryReport() {
 			List<AssetCateWiseSummaryReport> list = new ArrayList<AssetCateWiseSummaryReport>();
 			try {
 				
@@ -976,5 +983,41 @@ public class AssetMgmtApiController {
 
 					return list;
 				}
+				
+				//Asset Return Pending
+				@RequestMapping(value = { "/getAssetReturnPending" }, method = RequestMethod.POST)
+				public List<EmpWiseAssetsReport> getAssetReturnPending(@RequestParam int locId) {
+					List<EmpWiseAssetsReport> list = new ArrayList<EmpWiseAssetsReport>();
+					try {
+						if(locId!=0) {
+							list = assetPendingReturnRepo.getAssetReturnPendingReportByLocId(locId);
+						}else {
+							list = assetPendingReturnRepo.getAssetReturnPendingReport();
+						}
+					} catch (Exception e) {
+						System.err.println("Excep in getAssetReturnPending : " + e.getMessage());
+						e.printStackTrace();
+					}
+
+					return list;
+				}
+				
+		//Asset Return Pending
+		@RequestMapping(value = { "/getScrappedAssetsReport" }, method = RequestMethod.POST)
+		public List<ScrappedAssetsReport> getScrappedAssetsReport(@RequestParam int locId) {
+		List<ScrappedAssetsReport> list = new ArrayList<ScrappedAssetsReport>();
+			try {
+					if(locId!=0) {
+							list = scrapAssetRepo.getScrappedAllAssetsReportByLocId(locId); 
+						}else {
+							list = scrapAssetRepo.getScrappedAllAssetsReport();
+						}
+				} catch (Exception e) {
+						System.err.println("Excep in getScrappedAssetsReport : " + e.getMessage());
+						e.printStackTrace();
+				}
+
+				return list;
+			}
 		
 }
