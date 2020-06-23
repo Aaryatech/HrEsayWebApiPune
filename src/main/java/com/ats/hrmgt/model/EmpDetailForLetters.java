@@ -57,6 +57,21 @@ public class EmpDetailForLetters {
 
 	@Column(name = "cmp_leaving_date")
 	private Date cmpLeavingDate;
+	
+	@Column(name = "orinal_joining")
+	private Date orinalJoining;
+
+	@Column(name = "orinal_leaving")
+	private Date orinalLeaving;
+	
+	@Column(name = "address")
+	private String address;
+
+	@Column(name = "marital_status")
+	private String maritalStatus;
+
+	@Column(name = "gender")
+	private String gender;
 
 	public int getEmpId() {
 		return empId;
@@ -172,13 +187,54 @@ public class EmpDetailForLetters {
 		this.mobile = mobile;
 	}
 
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	@JsonFormat(locale = "ENGLISH", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getOrinalJoining() {
+		return orinalJoining;
+	}
+
+	public void setOrinalJoining(Date orinalJoining) {
+		this.orinalJoining = orinalJoining;
+	}
+	@JsonFormat(locale = "ENGLISH", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getOrinalLeaving() {
+		return orinalLeaving;
+	}
+
+	public void setOrinalLeaving(Date orinalLeaving) {
+		this.orinalLeaving = orinalLeaving;
+	}
+
 	@Override
 	public String toString() {
 		return "EmpDetailForLetters [empId=" + empId + ", empCode=" + empCode + ", firsName=" + firsName
 				+ ", middleName=" + middleName + ", surname=" + surname + ", deptName=" + deptName + ", empDesgn="
 				+ empDesgn + ", locName=" + locName + ", orgName=" + orgName + ", owner=" + owner + ", mobile=" + mobile
 				+ ", subCompName=" + subCompName + ", cmpJoiningDate=" + cmpJoiningDate + ", cmpLeavingDate="
-				+ cmpLeavingDate + "]";
+				+ cmpLeavingDate + ", orinalJoining=" + orinalJoining + ", orinalLeaving=" + orinalLeaving
+				+ ", address=" + address + ", maritalStatus=" + maritalStatus + ", gender=" + gender + "]";
 	}
 
 }

@@ -13,14 +13,19 @@ public interface EmpDetailForLettersRepo extends JpaRepository<EmpDetailForLette
 			"        emp.emp_code,\n" + 
 			"        emp.first_name,\n" + 
 			"        emp.middle_name,\n" + 
-			"        emp.surname,emp.mobile_no_1 as mobile,\n" + 
+			"        emp.surname,\n" + 
+			"        emp.mobile_no_1 as mobile,\n" + 
 			"        dep.name AS dept_name,\n" + 
 			"        dg.name AS emp_desgn,\n" + 
 			"        loc.loc_name as  loc_name,\n" + 
-			"        con.org_name,con.owner, \n" + 
+			"        con.org_name,\n" + 
+			"        con.owner,\n" + 
 			"        succomp.company_name  AS sub_comp_name,\n" + 
 			"        salinfo.cmp_joining_date,\n" + 
-			"        salinfo.cmp_leaving_date\n" + 
+			"        salinfo.cmp_leaving_date,salinfo.cmp_joining_date as orinal_joining,salinfo.cmp_leaving_date as orinal_leaving,\n" + 
+			"        empinfo.address,\n" + 
+			"        empinfo.marital_status,\n" + 
+			"        empinfo.gender\n" + 
 			"    FROM\n" + 
 			"        m_employees emp \n" + 
 			"    INNER JOIN\n" + 
@@ -49,9 +54,12 @@ public interface EmpDetailForLettersRepo extends JpaRepository<EmpDetailForLette
 			"            ON     salinfo.salary_type_id = saltype.sal_type_id \n" + 
 			"    LEFT JOIN\n" + 
 			"        tbl_mst_sub_company succomp \n" + 
-			"            ON     succomp.company_id = emp.sub_cmp_id  \n" + 
+			"            ON     succomp.company_id = emp.sub_cmp_id\n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_emp_info empinfo \n" + 
+			"            ON     empinfo.emp_id = emp.emp_id  \n" + 
 			"    WHERE\n" + 
-			"        emp.del_status = 1  and emp.emp_id=:empId", nativeQuery = true)
+			"        emp.del_status = 1 and emp.emp_id=:empId ", nativeQuery = true)
 	EmpDetailForLetters getEmpPendingLoanDetails(@Param("empId") int empId);
 
 }
