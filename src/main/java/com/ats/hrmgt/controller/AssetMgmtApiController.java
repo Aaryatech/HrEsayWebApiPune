@@ -25,20 +25,26 @@ import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.assets.AMCExpirationDetail;
 import com.ats.hrmgt.model.assets.AssetAMCExpiryReport;
+import com.ats.hrmgt.model.assets.AssetCateWiseSummaryReport;
 import com.ats.hrmgt.model.assets.AssetEmpHistoryInfo;
 import com.ats.hrmgt.model.assets.AssetNotificatn;
 import com.ats.hrmgt.model.assets.AssetsDashDetails;
 import com.ats.hrmgt.model.assets.CatWiseAssetCount;
 import com.ats.hrmgt.model.assets.CatWiseAssetDistributn;
+import com.ats.hrmgt.model.assets.CatWiseTotalAssetsReport;
+import com.ats.hrmgt.model.assets.EmpWiseAssetsReport;
 import com.ats.hrmgt.model.assets.ServicingDashDetails;
 import com.ats.hrmgt.repo.asset.AMCExpirationDetailRepo;
 import com.ats.hrmgt.repo.asset.AssetAMCExpiryReportRepo;
+import com.ats.hrmgt.repo.asset.AssetCateWiseSummaryReportRepo;
 import com.ats.hrmgt.repo.asset.AssetEmpHistoryInfoRepo;
 import com.ats.hrmgt.repo.asset.AssetNotificatnRepo;
 import com.ats.hrmgt.repo.asset.AssetServiceDetailsRepo;
 import com.ats.hrmgt.repo.asset.AssetServicingRepo;
 import com.ats.hrmgt.repo.asset.CatWiseAssetCountRepo;
 import com.ats.hrmgt.repo.asset.CatWiseAssetDistributnRepo;
+import com.ats.hrmgt.repo.asset.CatWiseTotalAssetsReportRepo;
+import com.ats.hrmgt.repo.asset.EmpWiseAssetsReportRepo;
 import com.ats.hrmgt.repo.asset.ServicingDashDetailsRepo;
 import com.ats.hrmgt.repository.AssetAmcRepo;
 import com.ats.hrmgt.repository.AssetCategoryRepo;
@@ -875,6 +881,11 @@ public class AssetMgmtApiController {
 	
 	@Autowired AssetAMCExpiryReportRepo assetAmcReportRepo;
 	
+	@Autowired CatWiseTotalAssetsReportRepo catWiseAssetRepo;
+	
+	@Autowired AssetCateWiseSummaryReportRepo cateWiseAssetReportRepo;
+	
+	@Autowired EmpWiseAssetsReportRepo empWiseAssetRepo;
 		/************************************************/
 	
 	
@@ -913,4 +924,57 @@ public class AssetMgmtApiController {
 
 		return list;
 	}
+	
+	//Categorywise Total Assets
+	@RequestMapping(value = { "/getCateWiseTotalAssetReport" }, method = RequestMethod.POST)
+	public List<CatWiseTotalAssetsReport> getCateWiseTotalAssetReport(@RequestParam int locId) {
+		List<CatWiseTotalAssetsReport> list = new ArrayList<CatWiseTotalAssetsReport>();
+		try {
+			if(locId!=0) {
+				list = catWiseAssetRepo.getCatWiseTotalAssetsByLocation(locId);
+			}else {
+				list = catWiseAssetRepo.getCatWiseTotalAssets();
+			}
+		} catch (Exception e) {
+			System.err.println("Excep in getCateWiseTotalAssetReport : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	//Asset Categorywise Summary
+		@RequestMapping(value = { "/getAssetCateSummaryReport" }, method = RequestMethod.GET)
+		public List<AssetCateWiseSummaryReport> getCateWiseTotalAssetReport() {
+			List<AssetCateWiseSummaryReport> list = new ArrayList<AssetCateWiseSummaryReport>();
+			try {
+				
+					list = cateWiseAssetReportRepo.getCateWiseAssetSummary();
+				
+			} catch (Exception e) {
+				System.err.println("Excep in getAssetCateSummaryReport : " + e.getMessage());
+				e.printStackTrace();
+			}
+
+			return list;
+		}
+		
+		//Emp wise Assets Assigned List
+				@RequestMapping(value = { "/getEmpWiseAssetsReport" }, method = RequestMethod.POST)
+				public List<EmpWiseAssetsReport> getEmpWiseAssetsReport(@RequestParam int locId) {
+					List<EmpWiseAssetsReport> list = new ArrayList<EmpWiseAssetsReport>();
+					try {
+						if(locId!=0) {
+							list = empWiseAssetRepo.getEmpWiseAssetsReportByLocId(locId);
+						}else {
+							list = empWiseAssetRepo.getEmpWiseAssetsReport();
+						}
+					} catch (Exception e) {
+						System.err.println("Excep in getEmpWiseAssetsReport : " + e.getMessage());
+						e.printStackTrace();
+					}
+
+					return list;
+				}
+		
 }
