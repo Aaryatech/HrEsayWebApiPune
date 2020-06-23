@@ -35,6 +35,7 @@ import com.ats.hrmgt.model.assets.CatWiseTotalAssetsReport;
 import com.ats.hrmgt.model.assets.EmpWiseAssetsReport;
 import com.ats.hrmgt.model.assets.ScrappedAssetsReport;
 import com.ats.hrmgt.model.assets.ServicingDashDetails;
+import com.ats.hrmgt.model.assets.VendorWiseTtlAssetsReport;
 import com.ats.hrmgt.repo.asset.AMCExpirationDetailRepo;
 import com.ats.hrmgt.repo.asset.AssetAMCExpiryReportRepo;
 import com.ats.hrmgt.repo.asset.AssetCateWiseSummaryReportRepo;
@@ -49,6 +50,7 @@ import com.ats.hrmgt.repo.asset.CatWiseTotalAssetsReportRepo;
 import com.ats.hrmgt.repo.asset.EmpWiseAssetsReportRepo;
 import com.ats.hrmgt.repo.asset.ScrappedAssetsReportRepo;
 import com.ats.hrmgt.repo.asset.ServicingDashDetailsRepo;
+import com.ats.hrmgt.repo.asset.VendorWiseTtlAssetsReportRepo;
 import com.ats.hrmgt.repository.AssetAmcRepo;
 import com.ats.hrmgt.repository.AssetCategoryRepo;
 import com.ats.hrmgt.repository.AssetEmployeeRepo;
@@ -893,6 +895,8 @@ public class AssetMgmtApiController {
 	@Autowired AssetReturnPendingReportRepo assetPendingReturnRepo;
 	
 	@Autowired ScrappedAssetsReportRepo scrapAssetRepo;
+	
+	@Autowired VendorWiseTtlAssetsReportRepo vendorAssetReport;
 		/************************************************/
 	
 	
@@ -1019,5 +1023,21 @@ public class AssetMgmtApiController {
 
 				return list;
 			}
+		
+		//Vendor wise Total Assets
+				@RequestMapping(value = { "/getVendorWiseTotalAssetsReport" }, method = RequestMethod.GET)
+				public List<VendorWiseTtlAssetsReport> getVendorWiseTotalAssetsReport() {
+				List<VendorWiseTtlAssetsReport> list = new ArrayList<VendorWiseTtlAssetsReport>();
+					try {
+							 
+							list = vendorAssetReport.getVendorWiseReport(); 
+								
+						} catch (Exception e) {
+								System.err.println("Excep in getVendorWiseTotalAssetsReport : " + e.getMessage());
+								e.printStackTrace();
+						}
+
+						return list;
+					}
 		
 }
