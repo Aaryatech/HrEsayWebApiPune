@@ -870,13 +870,13 @@ public class AssetMgmtApiController {
 	}
 	
 	@RequestMapping(value = { "/getAssetsDashDetails" }, method = RequestMethod.POST)
-	public List<AssetsDashDetails> getAssetsDashDetails(@RequestParam int locId, @RequestParam List<String> vendorIds, 
+	public List<AssetsDashDetails> getAssetsDashDetails(@RequestParam int locId, @RequestParam int vendorIds, 
 			@RequestParam String fromDate, @RequestParam String toDate) {
 		List<AssetsDashDetails> list = new ArrayList<AssetsDashDetails>();
 		try {
-			if(vendorIds!=null && locId!=0) {
+			if(vendorIds!=0 && locId!=0) {
 				list = assetDashRepo.getAssetsDashDetailsByVendorId(locId, vendorIds, fromDate, toDate);
-			}else if(vendorIds==null && locId!=0){
+			}else if(vendorIds==0 && locId!=0){
 				list = assetDashRepo.getAllAssetsDashDetails(locId, fromDate, toDate);
 			}else {
 			list = assetDashRepo.getAllAssetsDashDetailsBetweenDates(fromDate, toDate);
