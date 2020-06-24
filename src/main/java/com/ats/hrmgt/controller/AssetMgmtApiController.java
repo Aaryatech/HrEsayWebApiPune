@@ -625,18 +625,6 @@ public class AssetMgmtApiController {
 				System.err.println(assetTrans.get(i).getAssetTransId());
 				int assetId = assetTrans.get(i).getAssetId();
 				int updtAsset = assetsRepo.changeAssetStatus(assetId, 1);
-				
-				//Log
-				logId=aLogRepo.getCountAssetLogId();
-				log.setAssetLogId(logId+1);
-				log.setAssetId(assetTrans.get(i).getAssetId());
-				log.setAssetLogDate(date);
-				log.setAssetLogDesc("Assign assets to employee");
-				log.setAssetTransId(assetTrans.get(i).getAssetTransId());
-				log.setDelStatus(1);
-				log.setMakerUserId(assetTrans.get(i).getMakerUserId());
-				log.setUpdateDateTime(curDtTime);
-				aLogRepo.save(log);
 			}
 		} catch (Exception e) {
 			System.err.println("Excep in saveAssetsTrans : " + e.getMessage());
