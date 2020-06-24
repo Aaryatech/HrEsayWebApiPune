@@ -39,7 +39,7 @@ public interface AssetsDashRepo extends JpaRepository<AssetsDashDetails, Integer
 			"    assets.asset_status !=3 AND assets.asset_status !=4 AND\n" + 
 			"    loc.loc_id=:locId AND\n" + 
 			"    vendor.vendor_id=:vendorIds\n" + 
-			"ORDER BY assets.asset_id DESC",nativeQuery=true)
+			"ORDER BY assets.asset_pur_date DESC, assets.asset_cat_id DESC",nativeQuery=true)
 	List<AssetsDashDetails> getAssetsDashDetailsByVendorId(@Param("locId") int locId, @Param("vendorIds") int vendorIds, 
 			@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 	
@@ -71,7 +71,7 @@ public interface AssetsDashRepo extends JpaRepository<AssetsDashDetails, Integer
 			"    assets.del_status=1 AND\n" + 
 			"    assets.asset_status !=3 AND assets.asset_status !=4 AND\n" + 
 			"    loc.loc_id=:locId\n" + 
-			"ORDER BY assets.asset_id DESC",nativeQuery=true)
+			"ORDER BY assets.asset_pur_date DESC, assets.asset_cat_id DESC",nativeQuery=true)
 	List<AssetsDashDetails> getAllAssetsDashDetails(@Param("locId") int locId, 
 			@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 	
@@ -103,7 +103,7 @@ public interface AssetsDashRepo extends JpaRepository<AssetsDashDetails, Integer
 			"    assets.asset_pur_date BETWEEN :fromDate AND :toDate AND\n" + 
 			"    assets.del_status=1 AND\n" + 
 			"    assets.asset_status !=3 AND assets.asset_status !=4\n" + 
-			"ORDER BY assets.asset_id DESC",nativeQuery=true)
+			"ORDER BY assets.asset_pur_date DESC, assets.asset_cat_id DESC",nativeQuery=true)
 	List<AssetsDashDetails> getAllAssetsDashDetailsBetweenDates(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 
 	@Query(value="SELECT\n" + 
@@ -134,7 +134,7 @@ public interface AssetsDashRepo extends JpaRepository<AssetsDashDetails, Integer
 			"    assets.del_status=1 AND\n" + 
 			"    assets.asset_status !=3 AND assets.asset_status !=4 AND\n" +
 			"    vendor.vendor_id=:vendorIds\n" + 
-			"ORDER BY assets.asset_id DESC",nativeQuery=true)
+			"ORDER BY assets.asset_pur_date DESC, assets.asset_cat_id DESC",nativeQuery=true)
 	List<AssetsDashDetails> getAssetsDashDetailsByVendorId(@Param("vendorIds") int vendorIds, @Param("fromDate")String fromDate,
 			@Param("toDate") String toDate);
 }
