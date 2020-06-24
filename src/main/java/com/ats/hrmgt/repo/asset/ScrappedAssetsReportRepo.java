@@ -29,6 +29,7 @@ public interface ScrappedAssetsReportRepo extends JpaRepository<ScrappedAssetsRe
 			"FROM\n" + 
 			"    m_assets,\n" + 
 			"    m_location,\n" + 
+			"    m_user,\n" +
 			"    m_asset_category,\n" + 
 			"    m_employees\n" + 
 			"LEFT JOIN m_department dep ON\n" + 
@@ -37,7 +38,7 @@ public interface ScrappedAssetsReportRepo extends JpaRepository<ScrappedAssetsRe
 			"    m_employees.designation_id = dg.desig_id\n" + 
 			"WHERE\n" + 
 			"    m_asset_category.del_status = 1 AND m_asset_category.asset_cat_id = m_assets.asset_cat_id AND "
-			+ "m_assets.scrap_login_userid = m_employees.emp_id AND m_assets.del_status = 1 AND "
+			+ "m_assets.scrap_login_userid = m_user.user_id AND m_employees.emp_id=m_user.emp_id AND m_assets.del_status = 1 AND "
 			+ "m_assets.asset_status = 4 AND m_location.loc_id=m_assets.loc_id",nativeQuery=true)
 		List<ScrappedAssetsReport> getScrappedAllAssetsReport();
 	
@@ -61,6 +62,7 @@ public interface ScrappedAssetsReportRepo extends JpaRepository<ScrappedAssetsRe
 			"    m_assets,\n" + 
 			"    m_location,\n" + 
 			"    m_asset_category,\n" + 
+			"    m_user,\n" + 
 			"    m_employees\n" + 
 			"LEFT JOIN m_department dep ON\n" + 
 			"    m_employees.depart_id = dep.depart_id\n" + 
@@ -68,7 +70,7 @@ public interface ScrappedAssetsReportRepo extends JpaRepository<ScrappedAssetsRe
 			"    m_employees.designation_id = dg.desig_id\n" + 
 			"WHERE\n" + 
 			"    m_asset_category.del_status = 1 AND m_asset_category.asset_cat_id = m_assets.asset_cat_id AND"
-			+ " m_assets.scrap_login_userid = m_employees.emp_id AND m_assets.del_status = 1 AND "
+			+ " m_assets.scrap_login_userid = m_user.user_id AND m_employees.emp_id=m_user.emp_id AND m_assets.del_status = 1 AND "
 			+ "m_assets.asset_status = 4 AND m_location.loc_id=m_assets.loc_id AND m_assets.loc_id=:locId", nativeQuery=true)
 	List<ScrappedAssetsReport> getScrappedAllAssetsReportByLocId(@Param("locId") int locId);
 }

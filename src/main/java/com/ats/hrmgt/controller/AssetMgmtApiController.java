@@ -1,6 +1,9 @@
 package com.ats.hrmgt.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,7 @@ import com.ats.hrmgt.model.assets.AMCExpirationDetail;
 import com.ats.hrmgt.model.assets.AssetAMCExpiryReport;
 import com.ats.hrmgt.model.assets.AssetCateWiseSummaryReport;
 import com.ats.hrmgt.model.assets.AssetEmpHistoryInfo;
+import com.ats.hrmgt.model.assets.AssetLog;
 import com.ats.hrmgt.model.assets.AssetLogReport;
 import com.ats.hrmgt.model.assets.AssetNotificatn;
 import com.ats.hrmgt.model.assets.AssetsDashDetails;
@@ -42,6 +46,7 @@ import com.ats.hrmgt.repo.asset.AMCExpirationDetailRepo;
 import com.ats.hrmgt.repo.asset.AssetAMCExpiryReportRepo;
 import com.ats.hrmgt.repo.asset.AssetCateWiseSummaryReportRepo;
 import com.ats.hrmgt.repo.asset.AssetEmpHistoryInfoRepo;
+import com.ats.hrmgt.repo.asset.AssetLogRepo;
 import com.ats.hrmgt.repo.asset.AssetLogReportRepo;
 import com.ats.hrmgt.repo.asset.AssetNotificatnRepo;
 import com.ats.hrmgt.repo.asset.AssetReturnPendingReportRepo;
@@ -100,6 +105,13 @@ public class AssetMgmtApiController {
 	
 	@Autowired ServicingDashDetailsRepo servicingDetailRepo;
 	
+	@Autowired AssetLogRepo aLogRepo;
+	
+	Date date = new Date();
+	
+	SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	Calendar curCal = Calendar.getInstance();
+    String curDtTime=String.valueOf(sf.format(curCal.getTime()));
 	/*****************************************************************************/
 	
 	@RequestMapping(value = { "/getAllAssetCategory" }, method = RequestMethod.GET)
@@ -602,6 +614,8 @@ public class AssetMgmtApiController {
 	@RequestMapping(value = { "/saveAssetsTrans" }, method = RequestMethod.POST)
 	public List<AssetTrans> saveAssetsTrans(@RequestBody List<AssetTrans> assetTransList) {
 		List<AssetTrans> assetTrans = new ArrayList<AssetTrans>();
+		AssetLog log = new AssetLog();
+		int logId = 0;
 		System.out.println("Save AssetTransList--------" + assetTransList);
 		try {
 			assetTrans = assetTransRepo.saveAll(assetTransList);
@@ -611,6 +625,18 @@ public class AssetMgmtApiController {
 				System.err.println(assetTrans.get(i).getAssetTransId());
 				int assetId = assetTrans.get(i).getAssetId();
 				int updtAsset = assetsRepo.changeAssetStatus(assetId, 1);
+				
+				//Log
+				logId=aLogRepo.getCountAssetLogId();
+				log.setAssetLogId(logId+1);
+				log.setAssetId(assetTrans.get(i).getAssetId());
+				log.setAssetLogDate(date);
+				log.setAssetLogDesc("Assign assets to employee");
+				log.setAssetTransId(assetTrans.get(i).getAssetTransId());
+				log.setDelStatus(1);
+				log.setMakerUserId(assetTrans.get(i).getMakerUserId());
+				log.setUpdateDateTime(curDtTime);
+				aLogRepo.save(log);
 			}
 		} catch (Exception e) {
 			System.err.println("Excep in saveAssetsTrans : " + e.getMessage());
@@ -625,7 +651,7 @@ public class AssetMgmtApiController {
 			@RequestParam String returnDate,@RequestParam int assetId, @RequestParam String returnRemark, 
 			@RequestParam String assetReturnImg, @RequestParam String updateDateTime, @RequestParam int updateUserId) {
 		Info info = new Info();
-		
+		AssetLog log = new AssetLog();
 		try {
 			int i = assetTransRepo.updateAssetsStatus(assetTransId, assetTransStatus, returnDate, returnRemark, assetReturnImg, updateDateTime, updateUserId);
 			
@@ -633,6 +659,17 @@ public class AssetMgmtApiController {
 				int updtAsset = assetsRepo.changeAssetStatus(assetId, 0);
 				info.setError(false);
 				info.setMsg("Asset Deleted Successfully");
+				
+				//Log
+				log.setAssetLogId(0);
+				log.setAssetId(assetId);
+				log.setAssetLogDate(date);
+				log.setAssetLogDesc("Return assets from employee");
+				log.setAssetTransId(assetTransId);
+				log.setDelStatus(1);
+				log.setMakerUserId(updateUserId);
+				log.setUpdateDateTime(curDtTime);
+				aLogRepo.save(log);
 			}else {
 				info.setError(true);
 				info.setMsg("Failed to Delete Asset");
