@@ -930,6 +930,8 @@ public class AssetMgmtApiController {
 				list = assetDashRepo.getAssetsDashDetailsByVendorId(locId, vendorIds, fromDate, toDate);
 			}else if(vendorIds==0 && locId!=0){
 				list = assetDashRepo.getAllAssetsDashDetails(locId, fromDate, toDate);
+			}else if(vendorIds!=0 && locId==0) {
+				list = assetDashRepo.getAssetsDashDetailsByVendorId(vendorIds, fromDate, toDate);
 			}else {
 			list = assetDashRepo.getAllAssetsDashDetailsBetweenDates(fromDate, toDate);
 			}
