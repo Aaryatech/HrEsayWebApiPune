@@ -1,5 +1,6 @@
 package com.ats.hrmgt.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -80,42 +81,66 @@ public class GetPayrollGeneratedList {
 	private double epsEmployerPercentage;
 	private double presentInsentive;
 	private double nightAllow;
-	private double epsDefault; 
-	private double epmloyerEpfDefault; 
-	private double epmloyerEpfExtra; 
-	private double pfAdminChPercentage; 
-	private double edliPercentage; 
-	private double edliAdminPercentage;  
-	private double employerEsicPercentage; 
+	private double epsDefault;
+	private double epmloyerEpfDefault;
+	private double epmloyerEpfExtra;
+	private double pfAdminChPercentage;
+	private double edliPercentage;
+	private double edliAdminPercentage;
+	private double employerEsicPercentage;
 	private double employeeEsicPercentage;
-	private double employerMlwf; 
+	private double employerMlwf;
 	private double grossSalDefault;
 	private double adjustMinus;
 	private double adjustPlus;
 	private double reward;
 	private int subCmpId;
-	
+
 	private String name;
 	private String empTypeName;
 	private String departName;
 	private String designName;
-	
-	private float payableDays; 
+
+	private float payableDays;
 	private float presentDays;
 	private float weeklyOff;
 	private float paidHoliday;
 	private float paidLeave;
 	private float unpaidLeave;
 	private float absentDays;
-	
+
 	private String email;
-	
+
 	@Transient
 	List<SalAllownceCal> payrollAllownceList;
 
 	@Transient
+	List<GetAdvanceList> getAdvanceList;
+
+	@Transient
+	List<GetAdvanceList> getAbsentDedList;
+
+	@Transient
+	List<GetClaimList> getClaimList;
+
+	@Transient
+	List<GetPayDedList> getPayDedList;
+
+	@Transient
+	List<GetPayDedList> getRewardList;
+
+	@Transient
+	List<GetPayDedList> getLoanList;
+
+	@Transient
+	List<ProductionIncentiveList> performance;
+
+	@Transient
+	List<ProductionIncentiveList> production;
+
+	@Transient
 	private String moneyInword;
-	
+
 	public int getId() {
 		return id;
 	}
@@ -876,6 +901,70 @@ public class GetPayrollGeneratedList {
 		this.email = email;
 	}
 
+	public List<GetAdvanceList> getGetAdvanceList() {
+		return getAdvanceList;
+	}
+
+	public void setGetAdvanceList(List<GetAdvanceList> getAdvanceList) {
+		this.getAdvanceList = getAdvanceList;
+	}
+
+	public List<GetAdvanceList> getGetAbsentDedList() {
+		return getAbsentDedList;
+	}
+
+	public void setGetAbsentDedList(List<GetAdvanceList> getAbsentDedList) {
+		this.getAbsentDedList = getAbsentDedList;
+	}
+
+	public List<GetClaimList> getGetClaimList() {
+		return getClaimList;
+	}
+
+	public void setGetClaimList(List<GetClaimList> getClaimList) {
+		this.getClaimList = getClaimList;
+	}
+
+	public List<GetPayDedList> getGetPayDedList() {
+		return getPayDedList;
+	}
+
+	public void setGetPayDedList(List<GetPayDedList> getPayDedList) {
+		this.getPayDedList = getPayDedList;
+	}
+
+	public List<GetPayDedList> getGetRewardList() {
+		return getRewardList;
+	}
+
+	public void setGetRewardList(List<GetPayDedList> getRewardList) {
+		this.getRewardList = getRewardList;
+	}
+
+	public List<GetPayDedList> getGetLoanList() {
+		return getLoanList;
+	}
+
+	public void setGetLoanList(List<GetPayDedList> getLoanList) {
+		this.getLoanList = getLoanList;
+	}
+
+	public List<ProductionIncentiveList> getPerformance() {
+		return performance;
+	}
+
+	public void setPerformance(List<ProductionIncentiveList> performance) {
+		this.performance = performance;
+	}
+
+	public List<ProductionIncentiveList> getProduction() {
+		return production;
+	}
+
+	public void setProduction(List<ProductionIncentiveList> production) {
+		this.production = production;
+	}
+
 	@Override
 	public String toString() {
 		return "GetPayrollGeneratedList [id=" + id + ", cmpId=" + cmpId + ", empId=" + empId + ", empCode=" + empCode
@@ -910,8 +999,11 @@ public class GetPayrollGeneratedList {
 				+ ", departName=" + departName + ", designName=" + designName + ", payableDays=" + payableDays
 				+ ", presentDays=" + presentDays + ", weeklyOff=" + weeklyOff + ", paidHoliday=" + paidHoliday
 				+ ", paidLeave=" + paidLeave + ", unpaidLeave=" + unpaidLeave + ", absentDays=" + absentDays
-				+ ", email=" + email + ", payrollAllownceList=" + payrollAllownceList + ", moneyInword=" + moneyInword
-				+ "]";
+				+ ", email=" + email + ", payrollAllownceList=" + payrollAllownceList + ", getAdvanceList="
+				+ getAdvanceList + ", getAbsentDedList=" + getAbsentDedList + ", getClaimList=" + getClaimList
+				+ ", getPayDedList=" + getPayDedList + ", getRewardList=" + getRewardList + ", getLoanList="
+				+ getLoanList + ", performance=" + performance + ", production=" + production + ", moneyInword="
+				+ moneyInword + "]";
 	}
 
 }

@@ -36,6 +36,7 @@ import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.LateMarkListForInsertAdvance;
 import com.ats.hrmgt.model.MstEmpType;
 import com.ats.hrmgt.model.PayRollDataForProcessing;
+import com.ats.hrmgt.model.ProductionIncentiveList;
 import com.ats.hrmgt.model.SalAllownceCal;
 import com.ats.hrmgt.model.SalAllownceTemp;
 import com.ats.hrmgt.model.SalaryCalc;
@@ -65,6 +66,7 @@ import com.ats.hrmgt.repository.GetSalDynamicTempRecordRepository;
 import com.ats.hrmgt.repository.LateMarkListForInsertAdvanceRepository;
 import com.ats.hrmgt.repository.MstEmpTypeRepository;
 import com.ats.hrmgt.repository.PayDeductionDetailsRepo;
+import com.ats.hrmgt.repository.ProductionIncentiveListRepo;
 import com.ats.hrmgt.repository.SalAllownceCalRepo;
 import com.ats.hrmgt.repository.SalAllownceTempRepo;
 import com.ats.hrmgt.repository.SalaryCalcRepo;
@@ -159,6 +161,9 @@ public class PayrollApiController {
 
 	@Autowired
 	LateMarkListForInsertAdvanceRepository lateMarkListForInsertAdvanceRepository;
+
+	@Autowired
+	ProductionIncentiveListRepo productionIncentiveListRepo;
 
 	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForPayRoll" }, method = RequestMethod.POST)
 	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForPayRoll(@RequestParam("month") int month,
@@ -1846,7 +1851,7 @@ public class PayrollApiController {
 					loanDetails.setPayType("SP");
 					loanDetails.setLoginName(String.valueOf(userId));
 					loanDetails.setLoginTime(sf.format(date));
-
+					loanDetails.setDelStatus(1);
 					int amt = 0;
 
 					if (getLoanList.get(i).getCurrentOutstanding() < getLoanList.get(i).getLoanEmiIntrest()) {
@@ -2044,9 +2049,9 @@ public class PayrollApiController {
 				list.get(i).setMlwf(castNumber(list.get(i).getMlwf(), amount_round));
 				list.get(i).setPayDed(castNumber(list.get(i).getPayDed(), amount_round));
 				list.get(i).setItded(castNumber(list.get(i).getItded(), amount_round));
-				
+
 				list.get(i).setNetSalary(castNumber(list.get(i).getNetSalary(), amount_round));
-				
+
 				long sal = (long) list.get(i).getNetSalary();
 				list.get(i).setMoneyInword(EnglishNumberToWords.convert(sal));
 				list.get(i).setPayrollAllownceList(assignAllownceList);
@@ -2161,6 +2166,199 @@ public class PayrollApiController {
 		}
 
 		return info;
+	}
+
+	@RequestMapping(value = { "/getSalaryDetailByEmpIds" }, method = RequestMethod.POST)
+	@ResponseBody
+	public PayRollDataForProcessing getSalaryDetailByEmpIds(@RequestParam("month") int month,
+			@RequestParam("year") int year, @RequestParam("empIds") List<Integer> empIds) {
+
+		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
+
+		try {
+
+			List<Setting> settingList = settingRepo.findByGroup("PAYROLLHIDESHOW");
+
+			int payroll_claim_show = 0;
+			int payroll_advance_show = 0;
+			int payroll_loan_show = 0;
+			int payroll_payded_show = 0;
+			int payroll_reward_show = 0;
+
+			for (int k = 0; k < settingList.size(); k++) {
+				if (settingList.get(k).getKey().equalsIgnoreCase("payroll_claim_show")) {
+					payroll_claim_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_advance_show")) {
+					payroll_advance_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_loan_show")) {
+					payroll_loan_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_payded_show")) {
+					payroll_payded_show = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_reward_show")) {
+					payroll_reward_show = Integer.parseInt(settingList.get(k).getValue());
+				}
+			}
+
+			List<GetAdvanceList> getAdvanceList = new ArrayList<>();
+			List<GetClaimList> getClaimList = new ArrayList<>();
+			List<GetPayDedList> getPayDedList = new ArrayList<>();
+			List<GetPayDedList> getRewardList = new ArrayList<>();
+			List<GetPayDedList> getLoanList = new ArrayList<>();
+			List<GetAdvanceList> getAbsentDedList = new ArrayList<>();
+
+			getAbsentDedList = getAdvanceListRepo.getAbsentDedListSaparate(month, year, empIds);
+
+			if (payroll_advance_show == 1) {
+				getAdvanceList = getAdvanceListRepo.getAdvanceListSaparate(month, year, empIds);
+			}
+
+			if (payroll_claim_show == 1) {
+				getClaimList = getClaimListRepo.getClaimListSaparate(month, year, empIds);
+			}
+			if (payroll_payded_show == 1) {
+				getPayDedList = getPayDedListRepo.getPayDedListSaparate(month, year, empIds);
+			}
+
+			if (payroll_reward_show == 1) {
+				getRewardList = getPayDedListRepo.getBonusListSaparate(month, year, empIds);
+			}
+
+			if (payroll_loan_show == 1) {
+				getLoanList = getPayDedListRepo.getLoanListSaparate(month, year, empIds);
+			}
+
+			List<ProductionIncentiveList> performanceIncentiveList = productionIncentiveListRepo
+					.getPerformanceIncentiveList(month, year, empIds);
+
+			List<ProductionIncentiveList> productionIncentiveList = productionIncentiveListRepo
+					.getproductionIncentiveList(month, year, empIds);
+
+			List<GetPayrollGeneratedList> list = getPayrollGeneratedListRepo.getPayrollGenratedList(month, year,
+					empIds);
+
+			Setting setting = settingRepo.findByKey("ammount_format_show");
+			int amount_round = Integer.parseInt(setting.getValue());
+
+			for (int i = 0; i < list.size(); i++) {
+
+				List<GetAdvanceList> advance = new ArrayList<>();
+				List<GetClaimList> calim = new ArrayList<>();
+				List<GetPayDedList> payded = new ArrayList<>();
+				List<GetPayDedList> reward = new ArrayList<>();
+				List<GetPayDedList> loan = new ArrayList<>();
+				List<GetAdvanceList> anbsent = new ArrayList<>();
+				List<ProductionIncentiveList> performance = new ArrayList<>();
+				List<ProductionIncentiveList> production = new ArrayList<>();
+
+				for (int j = 0; j < getAdvanceList.size(); j++) {
+
+					if (getAdvanceList.get(j).getEmpId() == list.get(i).getEmpId()) {
+						advance.add(getAdvanceList.get(j));
+					}
+
+				}
+
+				for (int j = 0; j < getClaimList.size(); j++) {
+
+					if (getClaimList.get(j).getEmpId() == list.get(i).getEmpId()) {
+						calim.add(getClaimList.get(j));
+					}
+
+				}
+
+				for (int j = 0; j < getPayDedList.size(); j++) {
+
+					if (getPayDedList.get(j).getEmpId() == list.get(i).getEmpId()) {
+						payded.add(getPayDedList.get(j));
+					}
+
+				}
+
+				for (int j = 0; j < getRewardList.size(); j++) {
+
+					if (getRewardList.get(j).getEmpId() == list.get(i).getEmpId()) {
+						reward.add(getRewardList.get(j));
+					}
+
+				}
+
+				for (int j = 0; j < getLoanList.size(); j++) {
+
+					if (getLoanList.get(j).getEmpId() == list.get(i).getEmpId()) {
+						loan.add(getLoanList.get(j));
+					}
+
+				}
+
+				for (int j = 0; j < getAbsentDedList.size(); j++) {
+
+					if (getAbsentDedList.get(j).getEmpId() == list.get(i).getEmpId()) {
+						anbsent.add(getAbsentDedList.get(j));
+					}
+
+				}
+
+				for (int j = 0; j < performanceIncentiveList.size(); j++) {
+
+					if (performanceIncentiveList.get(j).getEmpId() == list.get(i).getEmpId()) {
+						performance.add(performanceIncentiveList.get(j));
+					}
+
+				}
+				for (int j = 0; j < productionIncentiveList.size(); j++) {
+
+					if (productionIncentiveList.get(j).getEmpId() == list.get(i).getEmpId()) {
+
+						double amt = (list.get(i).getOtWages() / productionIncentiveList.get(j).getTotOthr())
+								* productionIncentiveList.get(j).getHrs();
+						productionIncentiveList.get(j).setAmt(castNumber(amt, amount_round));
+						production.add(productionIncentiveList.get(j));
+					}
+
+				}
+
+				list.get(i).setBasicCal(castNumber(list.get(i).getBasicCal(), amount_round));
+				list.get(i).setOtWages(castNumber(list.get(i).getOtWages(), amount_round));
+				list.get(i).setProductionInsentive(
+						castNumber((list.get(i).getProductionInsentive() / performance.size()), amount_round));
+				list.get(i).setReward(castNumber(list.get(i).getReward(), amount_round));
+				list.get(i).setNightAllow(castNumber(list.get(i).getReward(), amount_round));
+				list.get(i).setPerformanceBonus(castNumber(list.get(i).getPerformanceBonus(), amount_round));
+				list.get(i).setMiscExpAdd(castNumber(list.get(i).getMiscExpAdd(), amount_round));
+				list.get(i).setPtDed(castNumber(list.get(i).getPtDed(), amount_round));
+				list.get(i).setEmployeePf((float) castNumber(list.get(i).getEmployeePf(), amount_round));
+				list.get(i).setEsic((float) castNumber(list.get(i).getEsic(), amount_round));
+				list.get(i).setAdvanceDed(castNumber(list.get(i).getAdvanceDed(), amount_round));
+				list.get(i).setTds(castNumber(list.get(i).getTds(), amount_round));
+				list.get(i).setSocietyContribution(castNumber(list.get(i).getSocietyContribution(), amount_round));
+				list.get(i).setLoanDed(castNumber(list.get(i).getLoanDed(), amount_round));
+				list.get(i).setMlwf(castNumber(list.get(i).getMlwf(), amount_round));
+				list.get(i).setPayDed(castNumber(list.get(i).getPayDed(), amount_round));
+				list.get(i).setItded(castNumber(list.get(i).getItded(), amount_round));
+
+				list.get(i).setNetSalary(castNumber(list.get(i).getNetSalary(), amount_round));
+
+				long sal = (long) list.get(i).getNetSalary();
+				list.get(i).setMoneyInword(EnglishNumberToWords.convert(sal));
+
+				list.get(i).setGetAdvanceList(advance);
+				list.get(i).setGetClaimList(calim);
+				list.get(i).setGetPayDedList(payded);
+				list.get(i).setGetRewardList(reward);
+				list.get(i).setGetLoanList(loan);
+				list.get(i).setGetAbsentDedList(anbsent);
+				list.get(i).setProduction(production);
+				list.get(i).setPerformance(performance);
+
+			}
+
+			payRollDataForProcessing.setPayrollGeneratedList(list);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return payRollDataForProcessing;
 	}
 
 }

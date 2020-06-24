@@ -49,4 +49,40 @@ public interface GetPayDedListRepo extends JpaRepository<GetPayDedList, Integer>
 			+ "and current_outstanding>0 and emp_id in (:empIds) group by emp_id", nativeQuery = true)
 	GetPayDedList getLoanListForFullFinal(List<Integer> empIds);
 
+	@Query(value = "select uuid() as id,emp_id, round(ded_rate)  as amt from tblm_pay_deduction_details where month=:month and year=:year "
+			+ "and del_status=1 and is_deducted=1 and emp_id in (:empIds) ", nativeQuery = true)
+	List<GetPayDedList> getPayDedListSaparate(@Param("month") int month, @Param("year") int year,
+			@Param("empIds") List<Integer> empIds);
+
+	@Query(value = "select\n" + 
+			"        uuid() as id,\n" + 
+			"        emp_id,\n" + 
+			"        round(pay_rate) as amt \n" + 
+			"    from\n" + 
+			"        tblm_pay_bonus_details \n" + 
+			"    where\n" + 
+			"        month=:month \n" + 
+			"        and year=:year \n" + 
+			"        and del_status=1 \n" + 
+			"        and is_paid=1 \n" + 
+			"        and emp_id in (:empIds) ", nativeQuery = true)
+	List<GetPayDedList> getBonusListSaparate(@Param("month") int month, @Param("year") int year,
+	@Param("empIds") List<Integer> empIds);
+
+	@Query(value = "select\n" + 
+			"        uuid() as id,\n" + 
+			"        lm.emp_id,\n" + 
+			"        round(ld.amount_emi) as amt \n" + 
+			"    from\n" + 
+			"        tbl_loan_main lm,\n" + 
+			"        tbl_loan_details ld\n" + 
+			"    where\n" + 
+			"        ld.months=:month\n" + 
+			"        and ld.years=:year\n" + 
+			"        and lm.del_status=1 \n" + 
+			"        and lm.emp_id in (:empIds) and ld.loan_main_id=lm.id\n" + 
+			"        and ld.pay_type='SP'", nativeQuery = true)
+	List<GetPayDedList> getLoanListSaparate(@Param("month") int month, @Param("year") int year,
+	@Param("empIds") List<Integer> empIds);
+
 }
