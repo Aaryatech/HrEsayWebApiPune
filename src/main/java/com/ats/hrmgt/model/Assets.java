@@ -1,6 +1,7 @@
 package com.ats.hrmgt.model;
 
-import java.util.Date;
+
+import java.sql.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,12 +25,12 @@ public class Assets {
 	private String assetMake;
 	private String assetModel;	
 	private String assetSrno;
-	private Date assetPurDate	;
+	private Date assetPurDate;
 	private int vendorId;
 	private String assetRemark;
 	
 	private int assetStatus;
-	private String scrapDate;
+	private Date scrapDate;
 	private String scrapRemark;
 	private String scrapAuthoriyDetails;
 	private int scrapLoginUserid;
@@ -121,10 +122,10 @@ public class Assets {
 		this.assetStatus = assetStatus;
 	}
 	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
-	public String getScrapDate() {
+	public Date getScrapDate() {
 		return scrapDate;
 	}
-	public void setScrapDate(String scrapDate) {
+	public void setScrapDate(Date scrapDate) {
 		this.scrapDate = scrapDate;
 	}
 	public String getScrapRemark() {
