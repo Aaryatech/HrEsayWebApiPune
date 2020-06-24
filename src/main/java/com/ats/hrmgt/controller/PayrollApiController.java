@@ -2041,7 +2041,12 @@ public class PayrollApiController {
 				list.get(i).setTds(castNumber(list.get(i).getTds(), amount_round));
 				list.get(i).setSocietyContribution(castNumber(list.get(i).getSocietyContribution(), amount_round));
 				list.get(i).setLoanDed(castNumber(list.get(i).getLoanDed(), amount_round));
+				list.get(i).setMlwf(castNumber(list.get(i).getMlwf(), amount_round));
+				list.get(i).setPayDed(castNumber(list.get(i).getPayDed(), amount_round));
+				list.get(i).setItded(castNumber(list.get(i).getItded(), amount_round));
+				
 				list.get(i).setNetSalary(castNumber(list.get(i).getNetSalary(), amount_round));
+				
 				long sal = (long) list.get(i).getNetSalary();
 				list.get(i).setMoneyInword(EnglishNumberToWords.convert(sal));
 				list.get(i).setPayrollAllownceList(assignAllownceList);

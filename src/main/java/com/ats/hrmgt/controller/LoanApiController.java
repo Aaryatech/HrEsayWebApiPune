@@ -106,27 +106,38 @@ public class LoanApiController {
 			@RequestParam("currentOut") String currentOut, @RequestParam("repayAmt") String repayAmt) {
 
 		Info info = new Info();
-		String status = null;
-		int currentOutstanding1 = Integer.parseInt(currentOut);
-		int repayAmt1 = Integer.parseInt(repayAmt);
-		if (currentOutstanding1 == 0) {
-			status = "Paid";
-		} else {
-			status = "Active";
-		}
 
 		try {
-
-			int delete = loanMainRepo.forecloseLoan(loanId, userId, closeDate, currentTotpaid, currentOut,
-					dateTimeUpdate, status);
-
-			if (delete > 0) {
-				info.setError(false);
-				info.setMsg("deleted");
+			String status = null;
+			int currentOutstanding1 = Integer.parseInt(currentOut);
+			int repayAmt1 = Integer.parseInt(repayAmt);
+			if (currentOutstanding1 == 0) {
+				status = "Paid";
+				int delete = loanMainRepo.forecloseLoan(loanId, userId, closeDate, currentTotpaid, currentOut,
+						dateTimeUpdate, status);
+				if (delete > 0) {
+					info.setError(false);
+					info.setMsg("deleted");
+				} else {
+					info.setError(true);
+					info.setMsg("failed");
+				}
 			} else {
-				info.setError(true);
-				info.setMsg("failed");
+				status = "Active";
+				int delete = loanMainRepo.partialLoan(loanId, userId, currentTotpaid, currentOut, dateTimeUpdate);
+				if (delete > 0) {
+					info.setError(false);
+					info.setMsg("deleted");
+				} else {
+					info.setError(true);
+					info.setMsg("failed");
+				}
 			}
+
+			/*
+			 * int delete = loanMainRepo.forecloseLoan(loanId, userId, closeDate,
+			 * currentTotpaid, currentOut, dateTimeUpdate, status);
+			 */
 
 		} catch (Exception e) {
 
@@ -156,15 +167,13 @@ public class LoanApiController {
 
 	}
 
- 
-
 	@Autowired
 	SettingRepo settingRepo;
 
 	@RequestMapping(value = { "/calLoan" }, method = RequestMethod.POST)
 	public @ResponseBody LoanCalculation calLoan(@RequestParam("roi") String roi, @RequestParam("tenure") String tenure,
 			@RequestParam("loanAmt") String loanAmt, @RequestParam("startDate") String startDate) {
-		  
+
 		LoanCalculation list = new LoanCalculation();
 		try {
 
@@ -176,18 +185,18 @@ public class LoanApiController {
 			float period = Float.parseFloat(tenure);
 			float si = 0;
 			float emi = 0;
-float totalPayble=0;
+			float totalPayble = 0;
 			LocalDate localDate = LocalDate.parse(startDate);
 
-		//	System.out.println("bef" + localDate);
-			LocalDate oneMonthLater = localDate.plusMonths(Integer.parseInt(tenure)-1);
-			//System.out.println("aft" + oneMonthLater);
+			// System.out.println("bef" + localDate);
+			LocalDate oneMonthLater = localDate.plusMonths(Integer.parseInt(tenure) - 1);
+			// System.out.println("aft" + oneMonthLater);
 
 			list.setCalDate(String.valueOf(oneMonthLater));
 			int insertVal = 0;
 			try {
 
-				  setting = settingRepo.findByKey("ammount_format_Insert");
+				setting = settingRepo.findByKey("ammount_format_Insert");
 				insertVal = Integer.parseInt(setting.getValue());
 			} catch (Exception e) {
 
@@ -196,18 +205,18 @@ float totalPayble=0;
 			}
 			if (type == 1) {
 				si = (principle * (period / 12) * rate) / 100;
-				System.err.println("si " +si);
- 				si = si + principle;
- 				
- 				// Sac si=(float) NumberFormatting.castNumber(si, 1);
- 				si=Math.round(si);
+				System.err.println("si " + si);
+				si = si + principle;
+
+				// Sac si=(float) NumberFormatting.castNumber(si, 1);
+				si = Math.round(si);
 				// System.err.println("rounded "+emi);
 				emi = Math.round(si / period);
-				//emi=(float) NumberFormatting.castNumber(emi, 1);
+				// emi=(float) NumberFormatting.castNumber(emi, 1);
 				// System.err.println("rounded off "+emi);
-				//Sac si = emi * period;
+				// Sac si = emi * period;
 
-				//Sac si=(float) NumberFormatting.castNumber(si, 1);
+				// Sac si=(float) NumberFormatting.castNumber(si, 1);
 			} else {
 				si = 0;
 				emi = 0;
@@ -215,7 +224,7 @@ float totalPayble=0;
 
 			list.setEmiAmt(emi);
 			list.setRepayAmt(si);
-			
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -224,20 +233,19 @@ float totalPayble=0;
 		return list;
 
 	}
-	
+
 	@RequestMapping(value = { "/getAddLoanType" }, method = RequestMethod.GET)
-	public @ResponseBody Setting getAddLoanType() {	
+	public @ResponseBody Setting getAddLoanType() {
 		Setting setting = new Setting();
 		String str = new String();
 		try {
 			setting = settingRepo.findByKey("LoanCalculationType");
-			
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			e.getMessage();
 		}
 		return setting;
-		
+
 	}
 
 	@Autowired
@@ -372,13 +380,14 @@ float totalPayble=0;
 	@RequestMapping(value = { "/updateSkipLoan" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateSkipLoan(@RequestParam("dateTimeUpdate") String dateTimeUpdate,
 			@RequestParam("userId") int userId, @RequestParam("skipStr") String skipStr,
-			@RequestParam("count") int count, @RequestParam("advId") int advId,@RequestParam("repayEnd") String repayEnd) {
+			@RequestParam("count") int count, @RequestParam("advId") int advId,
+			@RequestParam("repayEnd") String repayEnd) {
 
 		Info info = new Info();
 
 		try {
 
-			int delete = loanMainRepo.skipLoan(advId, userId, count, skipStr, dateTimeUpdate,repayEnd);
+			int delete = loanMainRepo.skipLoan(advId, userId, count, skipStr, dateTimeUpdate, repayEnd);
 
 			if (delete > 0) {
 				info.setError(false);
@@ -423,20 +432,20 @@ float totalPayble=0;
 
 			dt = loanDetailsRepo.getRecord(loanId);
 			String month = null;
-			String calDate =null;
-			if(dt!=null) {
+			String calDate = null;
+			if (dt != null) {
 				if (String.valueOf(dt.getMonths()).length() == 1) {
 					month = "0".concat(String.valueOf(dt.getMonths()));
 				} else {
 					month = String.valueOf(dt.getMonths());
 				}
-				  calDate = String.valueOf(dt.getYears()).concat("-").concat(month).concat("-").concat(day);
+				calDate = String.valueOf(dt.getYears()).concat("-").concat(month).concat("-").concat(day);
 
-			}else {
-				calDate=sf.format(date1);
+			} else {
+				calDate = sf.format(date1);
 			}
-			 
-			//System.err.println("cal" + calDate);
+
+			// System.err.println("cal" + calDate);
 			int currentOutstanding1 = Integer.parseInt(currentOutstanding);
 			int loanEmi1 = Integer.parseInt(loanEmi);
 			int partialAmt1 = Integer.parseInt(partialAmt);
@@ -445,11 +454,11 @@ float totalPayble=0;
 			int y = n / loanEmi1;
 			LocalDate localDate = LocalDate.parse(calDate);
 
-			//System.out.println("bef" + localDate);
-			//System.out.println("y" + y);
+			// System.out.println("bef" + localDate);
+			// System.out.println("y" + y);
 			LocalDate oneMonthLater = localDate.plusMonths(y);
-			//System.out.println("aft" + oneMonthLater);
- 			info.setError(false);
+			// System.out.println("aft" + oneMonthLater);
+			info.setError(false);
 			info.setMsg(String.valueOf(oneMonthLater));
 
 		} catch (Exception e) {
@@ -462,39 +471,40 @@ float totalPayble=0;
 		return info;
 
 	}
-	//Sachin 07-06-2020 5:25 PM 
-	//updateGuarantor
+
+	// Sachin 07-06-2020 5:25 PM
+	// updateGuarantor
 	@RequestMapping(value = { "/updateGuarantor" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateGuarantor(@RequestParam("oldGuarantor") int oldGuarantor,
 			@RequestParam("newGuarantor") int newGuarantor, @RequestParam("loginName") int loginName,
 			@RequestParam("loginTime") String loginTime, @RequestParam("loanId") int loanId) {
 
 		Info info = new Info();
-		
-		int result=0;
+
+		int result = 0;
 		try {
-		result = loanMainRepo.updateGuarantor1(loanId, loginName, loginTime, oldGuarantor, newGuarantor);
-		System.err.println("G1 Updated" +result);
-		}catch (Exception e) {
-			result=0;
+			result = loanMainRepo.updateGuarantor1(loanId, loginName, loginTime, oldGuarantor, newGuarantor);
+			System.err.println("G1 Updated" + result);
+		} catch (Exception e) {
+			result = 0;
 		}
-		
-		if(result>0) {
+
+		if (result > 0) {
 			info.setError(false);
 			info.setMsg("Success");
-		}else {
+		} else {
 			result = loanMainRepo.updateGuarantor2(loanId, loginName, loginTime, oldGuarantor, newGuarantor);
-			System.err.println("G2 Updated " +result);
+			System.err.println("G2 Updated " + result);
 		}
-		
-		if(result>0) {
+
+		if (result > 0) {
 			info.setError(false);
 			info.setMsg("Success");
-		}else {
+		} else {
 			info.setError(true);
 			info.setMsg("Failed");
 		}
-		
+
 		return info;
 	}
 }

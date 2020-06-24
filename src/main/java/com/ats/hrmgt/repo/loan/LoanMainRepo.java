@@ -98,5 +98,12 @@ public interface LoanMainRepo  extends JpaRepository<LoanMain, Integer>{
 			@Param("oldGuarantor")  int oldGuarantor,@Param("newGuarantor")  int newGuarantor);
 
 
+	@Transactional
+	@Modifying
+	@Query("update LoanMain set login_name =:userId,login_time=:dateTimeUpdate ,current_totpaid=:currentTotpaid ,current_outstanding=:currentOut WHERE id=:loanId")
+	int partialLoan(@Param("loanId")  int loanId,@Param("userId")  int userId, @Param("currentTotpaid")  String currentTotpaid,@Param("currentOut")  String currentOut,
+			@Param("dateTimeUpdate")  String dateTimeUpdate );
+	 
+
 
 }
