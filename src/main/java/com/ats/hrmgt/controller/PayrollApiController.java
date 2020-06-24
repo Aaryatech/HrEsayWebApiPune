@@ -2335,7 +2335,7 @@ public class PayrollApiController {
 				list.get(i).setMlwf(castNumber(list.get(i).getMlwf(), amount_round));
 				list.get(i).setPayDed(castNumber(list.get(i).getPayDed(), amount_round));
 				list.get(i).setItded(castNumber(list.get(i).getItded(), amount_round));
-
+				list.get(i).setAbDeduction(castNumber(list.get(i).getAbDeduction(), amount_round));
 				list.get(i).setNetSalary(castNumber(list.get(i).getNetSalary(), amount_round));
 
 				long sal = (long) list.get(i).getNetSalary();
