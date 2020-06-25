@@ -26,6 +26,7 @@ import com.ats.hrmgt.model.EmpSalAllowance;
 import com.ats.hrmgt.model.EmpSalInfoDaiyInfoTempInfo;
 import com.ats.hrmgt.model.EmpSalaryInfo;
 import com.ats.hrmgt.model.EmpSalaryInfoForPayroll;
+import com.ats.hrmgt.model.GetAdvanceDetails;
 import com.ats.hrmgt.model.GetAdvanceList;
 import com.ats.hrmgt.model.GetClaimList;
 import com.ats.hrmgt.model.GetEmpDetail;
@@ -58,6 +59,7 @@ import com.ats.hrmgt.repository.EmpSalAllowanceRepo;
 import com.ats.hrmgt.repository.EmpSalInfoDaiyInfoTempInfoRepo;
 import com.ats.hrmgt.repository.EmpSalaryInfoForPayrollRepository;
 import com.ats.hrmgt.repository.EmpSalaryInfoRepo;
+import com.ats.hrmgt.repository.GetAdvanceDetailsRepo;
 import com.ats.hrmgt.repository.GetAdvanceListRepo;
 import com.ats.hrmgt.repository.GetClaimListRepo;
 import com.ats.hrmgt.repository.GetPayDedListRepo;
@@ -164,6 +166,9 @@ public class PayrollApiController {
 
 	@Autowired
 	ProductionIncentiveListRepo productionIncentiveListRepo;
+
+	@Autowired
+	GetAdvanceDetailsRepo getAdvanceDetailsRepo;
 
 	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForPayRoll" }, method = RequestMethod.POST)
 	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForPayRoll(@RequestParam("month") int month,
@@ -2177,61 +2182,83 @@ public class PayrollApiController {
 
 		try {
 
-			List<Setting> settingList = settingRepo.findByGroup("PAYROLLHIDESHOW");
+			List<Integer> wootsts = new ArrayList<>();
+			wootsts.add(13);
+			wootsts.add(14);
+
+			List<Integer> absts = new ArrayList<>();
+			absts.add(22);
+
+			List<Setting> attendance = settingRepo.findByGroup("Attendance");
+			List<Setting> payrollhideshow = settingRepo.findByGroup("PAYROLLHIDESHOW");
 
 			int payroll_claim_show = 0;
 			int payroll_advance_show = 0;
 			int payroll_loan_show = 0;
 			int payroll_payded_show = 0;
 			int payroll_reward_show = 0;
+			int max_late_day_allowed = 0;
 
-			for (int k = 0; k < settingList.size(); k++) {
-				if (settingList.get(k).getKey().equalsIgnoreCase("payroll_claim_show")) {
-					payroll_claim_show = Integer.parseInt(settingList.get(k).getValue());
-				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_advance_show")) {
-					payroll_advance_show = Integer.parseInt(settingList.get(k).getValue());
-				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_loan_show")) {
-					payroll_loan_show = Integer.parseInt(settingList.get(k).getValue());
-				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_payded_show")) {
-					payroll_payded_show = Integer.parseInt(settingList.get(k).getValue());
-				} else if (settingList.get(k).getKey().equalsIgnoreCase("payroll_reward_show")) {
-					payroll_reward_show = Integer.parseInt(settingList.get(k).getValue());
+			for (int k = 0; k < payrollhideshow.size(); k++) {
+				if (payrollhideshow.get(k).getKey().equalsIgnoreCase("payroll_claim_show")) {
+					payroll_claim_show = Integer.parseInt(payrollhideshow.get(k).getValue());
+				} else if (payrollhideshow.get(k).getKey().equalsIgnoreCase("payroll_advance_show")) {
+					payroll_advance_show = Integer.parseInt(payrollhideshow.get(k).getValue());
+				} else if (payrollhideshow.get(k).getKey().equalsIgnoreCase("payroll_loan_show")) {
+					payroll_loan_show = Integer.parseInt(payrollhideshow.get(k).getValue());
+				} else if (payrollhideshow.get(k).getKey().equalsIgnoreCase("payroll_payded_show")) {
+					payroll_payded_show = Integer.parseInt(payrollhideshow.get(k).getValue());
+				} else if (payrollhideshow.get(k).getKey().equalsIgnoreCase("payroll_reward_show")) {
+					payroll_reward_show = Integer.parseInt(payrollhideshow.get(k).getValue());
 				}
 			}
 
-			List<GetAdvanceList> getAdvanceList = new ArrayList<>();
-			List<GetClaimList> getClaimList = new ArrayList<>();
-			List<GetPayDedList> getPayDedList = new ArrayList<>();
-			List<GetPayDedList> getRewardList = new ArrayList<>();
-			List<GetPayDedList> getLoanList = new ArrayList<>();
-			List<GetAdvanceList> getAbsentDedList = new ArrayList<>();
+			for (int k = 0; k < attendance.size(); k++) {
+				if (attendance.get(k).getKey().equalsIgnoreCase("max_late_day_allowed")) {
+					max_late_day_allowed = Integer.parseInt(attendance.get(k).getValue());
+					break;
+				}
+			}
 
-			getAbsentDedList = getAdvanceListRepo.getAbsentDedListSaparate(month, year, empIds);
+			List<GetAdvanceDetails> getLateMarkAdvanceList = new ArrayList<>();
+			List<GetAdvanceDetails> getAdvanceList = new ArrayList<>();
+			List<GetAdvanceDetails> getClaimList = new ArrayList<>();
+			List<GetAdvanceDetails> getPayDedList = new ArrayList<>();
+			List<GetAdvanceDetails> getRewardList = new ArrayList<>();
+			List<GetAdvanceDetails> getLoanList = new ArrayList<>();
+
+			getLateMarkAdvanceList = getAdvanceDetailsRepo.getLateMarkAdvanceListSaparate(month, year, empIds);
 
 			if (payroll_advance_show == 1) {
-				getAdvanceList = getAdvanceListRepo.getAdvanceListSaparate(month, year, empIds);
+				getAdvanceList = getAdvanceDetailsRepo.getAdvanceListSaparate(month, year, empIds);
 			}
 
 			if (payroll_claim_show == 1) {
-				getClaimList = getClaimListRepo.getClaimListSaparate(month, year, empIds);
+				getClaimList = getAdvanceDetailsRepo.getClaimListSaparate(month, year, empIds);
 			}
 			if (payroll_payded_show == 1) {
-				getPayDedList = getPayDedListRepo.getPayDedListSaparate(month, year, empIds);
+				getPayDedList = getAdvanceDetailsRepo.getPayDedListSaparate(month, year, empIds);
 			}
 
 			if (payroll_reward_show == 1) {
-				getRewardList = getPayDedListRepo.getBonusListSaparate(month, year, empIds);
+				getRewardList = getAdvanceDetailsRepo.getBonusListSaparate(month, year, empIds);
 			}
 
 			if (payroll_loan_show == 1) {
-				getLoanList = getPayDedListRepo.getLoanListSaparate(month, year, empIds);
+				getLoanList = getAdvanceDetailsRepo.getLoanListSaparate(month, year, empIds);
 			}
 
 			List<ProductionIncentiveList> performanceIncentiveList = productionIncentiveListRepo
-					.getPerformanceIncentiveList(month, year, empIds);
+					.getPerformanceIncentiveList(month, year, empIds, wootsts);
 
 			List<ProductionIncentiveList> productionIncentiveList = productionIncentiveListRepo
 					.getproductionIncentiveList(month, year, empIds);
+
+			List<ProductionIncentiveList> getAbDedList = productionIncentiveListRepo.getPerformanceIncentiveList(month,
+					year, empIds, absts);
+
+			List<ProductionIncentiveList> getLateMarkDedList = productionIncentiveListRepo
+					.getLateMarkDedListSaparate(month, year, empIds);
 
 			List<GetPayrollGeneratedList> list = getPayrollGeneratedListRepo.getPayrollGenratedList(month, year,
 					empIds);
@@ -2241,12 +2268,14 @@ public class PayrollApiController {
 
 			for (int i = 0; i < list.size(); i++) {
 
-				List<GetAdvanceList> advance = new ArrayList<>();
-				List<GetClaimList> calim = new ArrayList<>();
-				List<GetPayDedList> payded = new ArrayList<>();
-				List<GetPayDedList> reward = new ArrayList<>();
-				List<GetPayDedList> loan = new ArrayList<>();
-				List<GetAdvanceList> anbsent = new ArrayList<>();
+				List<GetAdvanceDetails> advance = new ArrayList<>();
+				List<GetAdvanceDetails> calim = new ArrayList<>();
+				List<GetAdvanceDetails> payded = new ArrayList<>();
+				List<GetAdvanceDetails> reward = new ArrayList<>();
+				List<GetAdvanceDetails> loan = new ArrayList<>();
+
+				List<ProductionIncentiveList> latemark = new ArrayList<>();
+				List<ProductionIncentiveList> absent = new ArrayList<>();
 				List<ProductionIncentiveList> performance = new ArrayList<>();
 				List<ProductionIncentiveList> production = new ArrayList<>();
 
@@ -2290,14 +2319,36 @@ public class PayrollApiController {
 
 				}
 
-				for (int j = 0; j < getAbsentDedList.size(); j++) {
+				GetAdvanceDetails advancelatemarkdeductemprecord = new GetAdvanceDetails();
 
-					if (getAbsentDedList.get(j).getEmpId() == list.get(i).getEmpId()) {
-						anbsent.add(getAbsentDedList.get(j));
+				for (int j = 0; j < getLateMarkAdvanceList.size(); j++) {
+
+					if (getLateMarkAdvanceList.get(j).getEmpId() == list.get(i).getEmpId()) {
+						advancelatemarkdeductemprecord = getLateMarkAdvanceList.get(j);
+						break;
 					}
 
 				}
 
+				for (int j = 0; j < getLateMarkDedList.size(); j++) {
+
+					if (getLateMarkDedList.get(j).getEmpId() == list.get(i).getEmpId()) {
+
+						latemark.add(getLateMarkDedList.get(j));
+					}
+
+				}
+
+				double latemarkamt = advancelatemarkdeductemprecord.getAmt()
+						/ ((latemark.size() - max_late_day_allowed));
+
+				for (int j = 0; j < getAbDedList.size(); j++) {
+
+					if (getAbDedList.get(j).getEmpId() == list.get(i).getEmpId()) {
+						absent.add(getAbDedList.get(j));
+					}
+
+				}
 				for (int j = 0; j < performanceIncentiveList.size(); j++) {
 
 					if (performanceIncentiveList.get(j).getEmpId() == list.get(i).getEmpId()) {
@@ -2335,8 +2386,9 @@ public class PayrollApiController {
 				list.get(i).setMlwf(castNumber(list.get(i).getMlwf(), amount_round));
 				list.get(i).setPayDed(castNumber(list.get(i).getPayDed(), amount_round));
 				list.get(i).setItded(castNumber(list.get(i).getItded(), amount_round));
-				list.get(i).setAbDeduction(castNumber(list.get(i).getAbDeduction(), amount_round));
+				list.get(i).setAbDeduction(castNumber((list.get(i).getAbDeduction() / absent.size()), amount_round));
 				list.get(i).setNetSalary(castNumber(list.get(i).getNetSalary(), amount_round));
+				list.get(i).setAdjustPlus(castNumber(latemarkamt, amount_round));
 
 				long sal = (long) list.get(i).getNetSalary();
 				list.get(i).setMoneyInword(EnglishNumberToWords.convert(sal));
@@ -2346,10 +2398,10 @@ public class PayrollApiController {
 				list.get(i).setGetPayDedList(payded);
 				list.get(i).setGetRewardList(reward);
 				list.get(i).setGetLoanList(loan);
-				list.get(i).setGetAbsentDedList(anbsent);
+				list.get(i).setGetAbsentDedList(absent);
+				list.get(i).setGetLateMarkDedList(latemark);
 				list.get(i).setProduction(production);
 				list.get(i).setPerformance(performance);
-
 			}
 
 			payRollDataForProcessing.setPayrollGeneratedList(list);

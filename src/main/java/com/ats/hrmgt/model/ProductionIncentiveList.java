@@ -31,6 +31,12 @@ public class ProductionIncentiveList {
 	@Column(name = "tot_othr")
 	private int totOthr;
 	
+	@Column(name = "show_hrs")
+	private String showHrs;
+	
+	@Column(name = "att_status")
+	private String attStatus;
+	
 	@Transient
 	private double amt;
 	
@@ -83,10 +89,26 @@ public class ProductionIncentiveList {
 		this.totOthr = totOthr;
 	}
 
+	public String getShowHrs() {
+		return showHrs;
+	}
+
+	public void setShowHrs(String showHrs) {
+		this.showHrs = showHrs;
+	}
+
+	public String getAttStatus() {
+		return attStatus;
+	}
+
+	public void setAttStatus(String attStatus) {
+		this.attStatus = attStatus;
+	}
+
 	@Override
 	public String toString() {
 		return "ProductionIncentiveList [id=" + id + ", empId=" + empId + ", attDate=" + attDate + ", hrs=" + hrs
-				+ ", totOthr=" + totOthr + ", amt=" + amt + "]";
+				+ ", totOthr=" + totOthr + ", showHrs=" + showHrs + ", attStatus=" + attStatus + ", amt=" + amt + "]";
 	}
 
 }

@@ -115,22 +115,25 @@ public class GetPayrollGeneratedList {
 	List<SalAllownceCal> payrollAllownceList;
 
 	@Transient
-	List<GetAdvanceList> getAdvanceList;
+	List<GetAdvanceDetails> getAdvanceList;
 
 	@Transient
-	List<GetAdvanceList> getAbsentDedList;
+	List<ProductionIncentiveList> getAbsentDedList;
+	
+	@Transient
+	List<ProductionIncentiveList> getLateMarkDedList;
 
 	@Transient
-	List<GetClaimList> getClaimList;
+	List<GetAdvanceDetails> getClaimList;
 
 	@Transient
-	List<GetPayDedList> getPayDedList;
+	List<GetAdvanceDetails> getPayDedList;
 
 	@Transient
-	List<GetPayDedList> getRewardList;
+	List<GetAdvanceDetails> getRewardList;
 
 	@Transient
-	List<GetPayDedList> getLoanList;
+	List<GetAdvanceDetails> getLoanList;
 
 	@Transient
 	List<ProductionIncentiveList> performance;
@@ -901,51 +904,51 @@ public class GetPayrollGeneratedList {
 		this.email = email;
 	}
 
-	public List<GetAdvanceList> getGetAdvanceList() {
+	public List<GetAdvanceDetails> getGetAdvanceList() {
 		return getAdvanceList;
 	}
 
-	public void setGetAdvanceList(List<GetAdvanceList> getAdvanceList) {
+	public void setGetAdvanceList(List<GetAdvanceDetails> getAdvanceList) {
 		this.getAdvanceList = getAdvanceList;
 	}
 
-	public List<GetAdvanceList> getGetAbsentDedList() {
+	public List<ProductionIncentiveList> getGetAbsentDedList() {
 		return getAbsentDedList;
 	}
 
-	public void setGetAbsentDedList(List<GetAdvanceList> getAbsentDedList) {
+	public void setGetAbsentDedList(List<ProductionIncentiveList> getAbsentDedList) {
 		this.getAbsentDedList = getAbsentDedList;
 	}
 
-	public List<GetClaimList> getGetClaimList() {
+	public List<GetAdvanceDetails> getGetClaimList() {
 		return getClaimList;
 	}
 
-	public void setGetClaimList(List<GetClaimList> getClaimList) {
+	public void setGetClaimList(List<GetAdvanceDetails> getClaimList) {
 		this.getClaimList = getClaimList;
 	}
 
-	public List<GetPayDedList> getGetPayDedList() {
+	public List<GetAdvanceDetails> getGetPayDedList() {
 		return getPayDedList;
 	}
 
-	public void setGetPayDedList(List<GetPayDedList> getPayDedList) {
+	public void setGetPayDedList(List<GetAdvanceDetails> getPayDedList) {
 		this.getPayDedList = getPayDedList;
 	}
 
-	public List<GetPayDedList> getGetRewardList() {
+	public List<GetAdvanceDetails> getGetRewardList() {
 		return getRewardList;
 	}
 
-	public void setGetRewardList(List<GetPayDedList> getRewardList) {
+	public void setGetRewardList(List<GetAdvanceDetails> getRewardList) {
 		this.getRewardList = getRewardList;
 	}
 
-	public List<GetPayDedList> getGetLoanList() {
+	public List<GetAdvanceDetails> getGetLoanList() {
 		return getLoanList;
 	}
 
-	public void setGetLoanList(List<GetPayDedList> getLoanList) {
+	public void setGetLoanList(List<GetAdvanceDetails> getLoanList) {
 		this.getLoanList = getLoanList;
 	}
 
@@ -963,6 +966,14 @@ public class GetPayrollGeneratedList {
 
 	public void setProduction(List<ProductionIncentiveList> production) {
 		this.production = production;
+	}
+
+	public List<ProductionIncentiveList> getGetLateMarkDedList() {
+		return getLateMarkDedList;
+	}
+
+	public void setGetLateMarkDedList(List<ProductionIncentiveList> getLateMarkDedList) {
+		this.getLateMarkDedList = getLateMarkDedList;
 	}
 
 	@Override
@@ -1000,10 +1011,10 @@ public class GetPayrollGeneratedList {
 				+ ", presentDays=" + presentDays + ", weeklyOff=" + weeklyOff + ", paidHoliday=" + paidHoliday
 				+ ", paidLeave=" + paidLeave + ", unpaidLeave=" + unpaidLeave + ", absentDays=" + absentDays
 				+ ", email=" + email + ", payrollAllownceList=" + payrollAllownceList + ", getAdvanceList="
-				+ getAdvanceList + ", getAbsentDedList=" + getAbsentDedList + ", getClaimList=" + getClaimList
-				+ ", getPayDedList=" + getPayDedList + ", getRewardList=" + getRewardList + ", getLoanList="
-				+ getLoanList + ", performance=" + performance + ", production=" + production + ", moneyInword="
-				+ moneyInword + "]";
+				+ getAdvanceList + ", getAbsentDedList=" + getAbsentDedList + ", getLateMarkDedList="
+				+ getLateMarkDedList + ", getClaimList=" + getClaimList + ", getPayDedList=" + getPayDedList
+				+ ", getRewardList=" + getRewardList + ", getLoanList=" + getLoanList + ", performance=" + performance
+				+ ", production=" + production + ", moneyInword=" + moneyInword + "]";
 	}
 
 }
