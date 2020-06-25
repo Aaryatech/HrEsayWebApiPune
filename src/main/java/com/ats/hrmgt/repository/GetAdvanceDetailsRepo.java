@@ -12,7 +12,7 @@ public interface GetAdvanceDetailsRepo extends JpaRepository<GetAdvanceDetails, 
 
 	
 	 @Query(value = "select\n" + 
-	 		"        id,\n" + 
+	 		"        uuid() as id,\n" + 
 	 		"        emp_id,\n" + 
 	 		"        round(adv_amount) as amt,\n" + 
 	 		"        adv_date as date,\n" + 
@@ -30,7 +30,7 @@ public interface GetAdvanceDetailsRepo extends JpaRepository<GetAdvanceDetails, 
 			@Param("empIds") List<Integer> empIds);
 
 	 @Query(value = "select\n" + 
-	 		"        ca_head_id as id,\n" + 
+	 		"        uuid() as id,\n" + 
 	 		"        emp_id,\n" + 
 	 		"        round(claim_amount) as amt,\n" + 
 	 		"        ca_from_dt as date,\n" + 
@@ -104,7 +104,7 @@ public interface GetAdvanceDetailsRepo extends JpaRepository<GetAdvanceDetails, 
 			@Param("empIds") List<Integer> empIds);
 
 	 @Query(value = "select\n" + 
-		 		"        id,\n" + 
+		 		"        uuid() as id,\n" + 
 		 		"        emp_id,\n" + 
 		 		"        adv_amount as amt,\n" + 
 		 		"        adv_date as date,\n" + 
