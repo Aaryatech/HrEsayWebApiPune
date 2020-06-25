@@ -804,11 +804,11 @@ public class AssetMgmtApiController {
 	}
 	
 	@RequestMapping(value = { "/updtRegService" }, method = RequestMethod.POST)
-	public Info updtRegService(@RequestParam int serviceId) {
+	public Info updtRegService(@RequestParam int serviceId, @RequestParam int assetId) {
 		Info info = new Info();
 		
 		try {
-			int i = assetServiceRepo.chngRegAssetService(serviceId);
+			int i = assetServiceRepo.chngRegAssetService(serviceId, assetId);
 			
 			if(i>0) {
 				info.setError(false);

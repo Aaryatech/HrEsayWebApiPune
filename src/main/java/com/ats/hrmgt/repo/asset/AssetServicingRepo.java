@@ -20,8 +20,8 @@ public interface AssetServicingRepo extends JpaRepository<AssetServicing, Intege
 
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE t_asset_servicing SET service_type = 1 WHERE t_servicing_id !=:serviceId",nativeQuery=true)
-	int chngRegAssetService(@Param("serviceId")  int serviceId);
+	@Query(value="UPDATE `t_asset_servicing` SET `service_type` = 1 WHERE `t_asset_servicing`.`t_servicing_id` !=:serviceId AND t_asset_servicing.asset_id=:assetId",nativeQuery=true)
+	int chngRegAssetService( @Param("serviceId")  int serviceId, @Param("assetId")  int assetId);
 	 
 
 }
