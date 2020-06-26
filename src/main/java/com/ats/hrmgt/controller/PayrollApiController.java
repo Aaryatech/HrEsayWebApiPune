@@ -2041,7 +2041,7 @@ public class PayrollApiController {
 				list.get(i).setOtWages(castNumber(list.get(i).getOtWages(), amount_round));
 				list.get(i).setProductionInsentive(castNumber(list.get(i).getProductionInsentive(), amount_round));
 				list.get(i).setReward(castNumber(list.get(i).getReward(), amount_round));
-				list.get(i).setNightAllow(castNumber(list.get(i).getReward(), amount_round));
+				list.get(i).setNightAllow(castNumber(list.get(i).getNightAllow(), amount_round));
 				list.get(i).setPerformanceBonus(castNumber(list.get(i).getPerformanceBonus(), amount_round));
 				list.get(i).setMiscExpAdd(castNumber(list.get(i).getMiscExpAdd(), amount_round));
 				list.get(i).setPtDed(castNumber(list.get(i).getPtDed(), amount_round));
@@ -2373,7 +2373,7 @@ public class PayrollApiController {
 				list.get(i).setProductionInsentive(
 						castNumber((list.get(i).getProductionInsentive() / performance.size()), amount_round));
 				list.get(i).setReward(castNumber(list.get(i).getReward(), amount_round));
-				list.get(i).setNightAllow(castNumber(list.get(i).getReward(), amount_round));
+				list.get(i).setNightAllow(castNumber(list.get(i).getNightAllow(), amount_round));
 				list.get(i).setPerformanceBonus(castNumber(list.get(i).getPerformanceBonus(), amount_round));
 				list.get(i).setMiscExpAdd(castNumber(list.get(i).getMiscExpAdd(), amount_round));
 				list.get(i).setPtDed(castNumber(list.get(i).getPtDed(), amount_round));
