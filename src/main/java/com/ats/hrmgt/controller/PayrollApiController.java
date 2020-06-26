@@ -48,6 +48,7 @@ import com.ats.hrmgt.model.SalaryTypesMaster;
 import com.ats.hrmgt.model.SampleClass;
 import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.SlabMaster;
+import com.ats.hrmgt.model.SummaryAttendance;
 import com.ats.hrmgt.model.advance.Advance;
 import com.ats.hrmgt.model.loan.LoanDetails;
 import com.ats.hrmgt.model.loan.LoanMain;
@@ -171,7 +172,7 @@ public class PayrollApiController {
 
 	@Autowired
 	GetAdvanceDetailsRepo getAdvanceDetailsRepo;
-	
+
 	@Autowired
 	GetEmpDetailForFullPayslipRepo getEmpDetailForFullPayslipRepo;
 
@@ -2417,10 +2418,11 @@ public class PayrollApiController {
 
 		return payRollDataForProcessing;
 	}
-	
+
 	@RequestMapping(value = { "/getEmpDetailForFullSalarySlip" }, method = RequestMethod.POST)
 	@ResponseBody
-	public List<GetEmpDetailForFullPayslip> getEmpDetailForFullSalarySlip(@RequestParam("empIds") List<Integer> empIds) {
+	public List<GetEmpDetailForFullPayslip> getEmpDetailForFullSalarySlip(
+			@RequestParam("empIds") List<Integer> empIds) {
 
 		List<GetEmpDetailForFullPayslip> list = new ArrayList<>();
 
@@ -2434,5 +2436,6 @@ public class PayrollApiController {
 
 		return list;
 	}
+ 
 
 }

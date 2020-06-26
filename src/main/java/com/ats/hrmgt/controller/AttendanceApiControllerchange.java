@@ -50,6 +50,7 @@ import com.ats.hrmgt.model.LoginResponse;
 import com.ats.hrmgt.model.LvType;
 import com.ats.hrmgt.model.LvmSumUp;
 import com.ats.hrmgt.model.MstEmpType;
+import com.ats.hrmgt.model.ProductionIncentiveList;
 import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.ShiftAssignDaily;
 import com.ats.hrmgt.model.ShiftMaster;
@@ -2693,4 +2694,21 @@ public class AttendanceApiControllerchange {
 
 	}
 
+	@RequestMapping(value = { "/getCountofWeeklyOff" }, method = RequestMethod.POST)
+	@ResponseBody
+	public List<SummaryAttendance> getCountofWeeklyOff(@RequestParam("deptId") List<Integer> deptId,
+			@RequestParam("month") int month, @RequestParam("year") int year) {
+
+		List<SummaryAttendance> summaryDailyAttendanceList = new ArrayList<>();
+		try {
+
+			summaryDailyAttendanceList = summaryAttendanceRepository.getCountofWeeklyOff(month, year, deptId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return summaryDailyAttendanceList;
+	}
 }
