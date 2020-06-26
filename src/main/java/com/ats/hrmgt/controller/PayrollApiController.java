@@ -30,6 +30,7 @@ import com.ats.hrmgt.model.GetAdvanceDetails;
 import com.ats.hrmgt.model.GetAdvanceList;
 import com.ats.hrmgt.model.GetClaimList;
 import com.ats.hrmgt.model.GetEmpDetail;
+import com.ats.hrmgt.model.GetEmpDetailForFullPayslip;
 import com.ats.hrmgt.model.GetPayDedList;
 import com.ats.hrmgt.model.GetPayrollGeneratedList;
 import com.ats.hrmgt.model.GetSalDynamicTempRecord;
@@ -62,6 +63,7 @@ import com.ats.hrmgt.repository.EmpSalaryInfoRepo;
 import com.ats.hrmgt.repository.GetAdvanceDetailsRepo;
 import com.ats.hrmgt.repository.GetAdvanceListRepo;
 import com.ats.hrmgt.repository.GetClaimListRepo;
+import com.ats.hrmgt.repository.GetEmpDetailForFullPayslipRepo;
 import com.ats.hrmgt.repository.GetPayDedListRepo;
 import com.ats.hrmgt.repository.GetPayrollGeneratedListRepo;
 import com.ats.hrmgt.repository.GetSalDynamicTempRecordRepository;
@@ -169,6 +171,9 @@ public class PayrollApiController {
 
 	@Autowired
 	GetAdvanceDetailsRepo getAdvanceDetailsRepo;
+	
+	@Autowired
+	GetEmpDetailForFullPayslipRepo getEmpDetailForFullPayslipRepo;
 
 	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForPayRoll" }, method = RequestMethod.POST)
 	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForPayRoll(@RequestParam("month") int month,
@@ -2411,6 +2416,23 @@ public class PayrollApiController {
 		}
 
 		return payRollDataForProcessing;
+	}
+	
+	@RequestMapping(value = { "/getEmpDetailForFullSalarySlip" }, method = RequestMethod.POST)
+	@ResponseBody
+	public List<GetEmpDetailForFullPayslip> getEmpDetailForFullSalarySlip(@RequestParam("empIds") List<Integer> empIds) {
+
+		List<GetEmpDetailForFullPayslip> list = new ArrayList<>();
+
+		try {
+
+			list = getEmpDetailForFullPayslipRepo.getEmpDetailForFullSalarySlip(empIds);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 
 }
