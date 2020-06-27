@@ -30,15 +30,15 @@ public interface AssetsDetailsListRepo extends JpaRepository<AssetsDetailsList, 
 			"        assets.ex_var2,\n" + 
 			"        assets.maker_user_id,\n" + 
 			"        assets.update_datetime,\n" + 
-			"        m_asset_vendor.comp_name as vendor, m_location.loc_name as location\n" + 
+			"        m_asset_vendor.comp_name as vendor, m_location.loc_name as location, stat.status_text\n" + 
 			"    from\n" + 
 			"        m_assets assets,\n" + 
 			"        m_asset_vendor,\n" + 
-			"        m_asset_category, m_location\n" + 
+			"        m_asset_category, m_location\n, dm_status_mst stat" + 
 			"        \n" + 
 			"    where\n" + 
 			"        assets.del_status=1 AND\n" + 
-			"        assets.asset_cat_id=m_asset_category.asset_cat_id AND\n" + 
+			"        assets.asset_cat_id=m_asset_category.asset_cat_id AND stat.status_value=assets.asset_status AND\n" + 
 			"        assets.vendor_id=m_asset_vendor.vendor_id AND m_location.loc_id=assets.loc_id\n" + 
 			"    order by\n" + 
 			"        assets.asset_id desc", nativeQuery=true)
@@ -64,15 +64,15 @@ public interface AssetsDetailsListRepo extends JpaRepository<AssetsDetailsList, 
 			"        assets.ex_var2,\n" + 
 			"        assets.maker_user_id,\n" + 
 			"        assets.update_datetime,\n" + 
-			"        m_asset_vendor.comp_name as vendor, m_location.loc_name as location\n" + 
+			"        m_asset_vendor.comp_name as vendor, m_location.loc_name as location, stat.status_text\n" + 
 			"    from\n" + 
 			"        m_assets assets,\n" + 
 			"        m_asset_vendor,\n" + 
-			"        m_asset_category, m_location\n" + 
+			"        m_asset_category, m_location, dm_status_mst stat\n" + 
 			"        \n" + 
 			"    where\n" + 
 			"        assets.del_status=1 AND\n" + 
-			"        assets.asset_cat_id=m_asset_category.asset_cat_id AND\n" + 
+			"        assets.asset_cat_id=m_asset_category.asset_cat_id AND stat.status_value=assets.asset_status AND\n" + 
 			"        assets.vendor_id=m_asset_vendor.vendor_id  AND m_location.loc_id=:locId AND  m_location.loc_id=assets.loc_id\n" + 
 			"    order by\n" + 
 			"        assets.asset_id desc", nativeQuery=true)
@@ -98,15 +98,15 @@ public interface AssetsDetailsListRepo extends JpaRepository<AssetsDetailsList, 
 			"        assets.ex_var2,\n" + 
 			"        assets.maker_user_id,\n" + 
 			"        assets.update_datetime,\n" + 
-			"        m_asset_vendor.comp_name as vendor, m_location.loc_name as location\n" + 
+			"        m_asset_vendor.comp_name as vendor, m_location.loc_name as location, stat.status_text\n" + 
 			"    from\n" + 
 			"        m_assets assets,\n" + 
 			"        m_asset_vendor,\n" + 
-			"        m_asset_category, m_location\n" + 
+			"        m_asset_category, m_location, dm_status_mst stat\n" + 
 			"        \n" + 
 			"    where\n" + 
 			"        assets.del_status=1 AND\n" + 
-			"        assets.asset_cat_id=m_asset_category.asset_cat_id AND\n" + 
+			"        assets.asset_cat_id=m_asset_category.asset_cat_id AND stat.status_value=assets.asset_status AND \n" + 
 			"        assets.vendor_id=m_asset_vendor.vendor_id AND m_location.loc_id=assets.loc_id AND assets.asset_id=:assetId\n" + 
 			"    order by\n" + 
 			"        assets.asset_id desc", nativeQuery=true)
@@ -133,18 +133,18 @@ public interface AssetsDetailsListRepo extends JpaRepository<AssetsDetailsList, 
 			"        assets.maker_user_id,\n" + 
 			"        assets.update_datetime,\n" + 
 			"        m_asset_vendor.comp_name as vendor,\n" + 
-			"        m_location.loc_name as location     \n" + 
+			"        m_location.loc_name as location, stat.status_text     \n" + 
 			"    from\n" + 
 			"        m_assets assets,\n" + 
 			"        m_asset_vendor,\n" + 
-			"        m_asset_category,\n" + 
+			"        m_asset_category, dm_status_mst stat,\n" + 
 			"        m_location              \n" + 
 			"    where\n" + 
 			"        assets.del_status=1 \n" + 
 			"        AND         assets.asset_cat_id=m_asset_category.asset_cat_id \n" + 
 			"        AND         assets.vendor_id=m_asset_vendor.vendor_id \n" + 
 			"        AND m_location.loc_id=assets.loc_id     \n" + 
-			"        AND assets.asset_status=0\n" + 
+			"        AND assets.asset_status=0 AND stat.status_value=assets.asset_status\n" + 
 			"    order by\n" + 
 			"        assets.asset_id desc",nativeQuery=true)
 	List<AssetsDetailsList> getAllUnassignAssetList();

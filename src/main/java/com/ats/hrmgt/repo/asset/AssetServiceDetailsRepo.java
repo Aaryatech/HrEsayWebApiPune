@@ -31,6 +31,6 @@ public interface AssetServiceDetailsRepo extends JpaRepository<AssetServiceDetai
 			"WHERE\n" + 
 			"    service.vendor_id=vendor.vendor_id AND\n" + 
 			"    service.del_status=1 AND\n" + 
-			"    service.asset_id=:assetId",nativeQuery=true)
+			"    service.asset_id=:assetId ORDER BY t_servicing_id DESC",nativeQuery=true)
 	public List<AssetServiceDetails> getAssetServiceList(@Param("assetId") int assetId);
 }

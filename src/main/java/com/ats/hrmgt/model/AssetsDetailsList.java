@@ -27,6 +27,7 @@ public class AssetsDetailsList {
 	private Date assetPurDate;
 	private String assetPurImage;
 	private String vendor;
+	private String statusText;
 	private String assetRemark;
 	private int makerUserId;
 	private String updateDatetime;
@@ -147,6 +148,12 @@ public class AssetsDetailsList {
 	public void setVendor(String vendor) {
 		this.vendor = vendor;
 	}
+	public String getStatusText() {
+		return statusText;
+	}
+	public void setStatusText(String statusText) {
+		this.statusText = statusText;
+	}
 	public String getLocation() {
 		return location;
 	}
@@ -170,10 +177,10 @@ public class AssetsDetailsList {
 		return "AssetsDetailsList [assetId=" + assetId + ", assetCode=" + assetCode + ", assetName=" + assetName
 				+ ", assetDesc=" + assetDesc + ", catName=" + catName + ", assetMake=" + assetMake + ", assetModel="
 				+ assetModel + ", assetSrno=" + assetSrno + ", assetStatus=" + assetStatus + ", assetPurDate="
-				+ assetPurDate + ", assetPurImage=" + assetPurImage + ", vendor=" + vendor + ", assetRemark="
-				+ assetRemark + ", makerUserId=" + makerUserId + ", updateDatetime=" + updateDatetime + ", delStatus="
-				+ delStatus + ", location=" + location + ", exInt1=" + exInt1 + ", exInt2=" + exInt2 + ", exVar1="
-				+ exVar1 + ", exVar2=" + exVar2 + "]";
+				+ assetPurDate + ", assetPurImage=" + assetPurImage + ", vendor=" + vendor + ", statusText="
+				+ statusText + ", assetRemark=" + assetRemark + ", makerUserId=" + makerUserId + ", updateDatetime="
+				+ updateDatetime + ", delStatus=" + delStatus + ", location=" + location + ", exInt1=" + exInt1
+				+ ", exInt2=" + exInt2 + ", exVar1=" + exVar1 + ", exVar2=" + exVar2 + "]";
 	}
 	
 }
