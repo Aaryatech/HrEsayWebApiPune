@@ -43,4 +43,7 @@ public interface AssetTransRepo extends JpaRepository<AssetTrans, Integer> {
 	int updateStatusAssetsLost(@Param("transactnId") int transactnId, @Param("status")  int status, @Param("userUpdateId") int userUpdateId, 
 			@Param("updateTime") String updateTime, @Param("assetStatus") int assetStatus, @Param("lostAssetRemark") String lostAssetRemark);
 
+	@Query(value="SELECT assign_img_file FROM t_asset_trans WHERE emp_id=:empId AND asset_id=:assetId AND del_status=1 AND asset_trans_status=1",nativeQuery=true)
+	String getImgByEmpId(@Param("assetId")int assetId, @Param("empId")int empId);
+
 }

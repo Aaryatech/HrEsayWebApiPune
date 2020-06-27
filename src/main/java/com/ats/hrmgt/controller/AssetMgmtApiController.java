@@ -449,7 +449,18 @@ public class AssetMgmtApiController {
 		return info;
 	}
 	
-	
+	@RequestMapping(value = { "/getAssignedImg" }, method = RequestMethod.POST)
+	public String updtAssetToScrap(@RequestParam int assetId, @RequestParam int empId) {
+		String imgStr = null;
+		try {
+			imgStr = assetTransRepo.getImgByEmpId(assetId, empId);
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return imgStr;
+		
+	}
 	/********************************************************************/
 	@RequestMapping(value = { "/getAssetsList" }, method = RequestMethod.GET)
 	public List<Assets> getAssetsList() {
