@@ -2440,6 +2440,24 @@ public class AttendanceApiControllerchange {
 
 	}
 
+	@RequestMapping(value = { "/getEmployyeDailyDailyListByAuthority" }, method = RequestMethod.POST)
+	public @ResponseBody List<DailyAttendance> getEmployyeDailyDailyListByAuthority(@RequestParam("date") String date,
+			@RequestParam("empId") int empId) {
+
+		List<DailyAttendance> dailyAttendanceList = new ArrayList<>();
+		try {
+
+			dailyAttendanceList = dailyAttendanceRepository.getEmployyeDailyDailyListByAuthority(date,empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return dailyAttendanceList;
+
+	}
+
 	@RequestMapping(value = { "/getEmployyeDailyDailyListforHr" }, method = RequestMethod.POST)
 	public @ResponseBody List<DailyAttendance> getEmployyeDailyDailyListforHr(@RequestParam("date") String date,
 			@RequestParam("desgType") int desgType, @RequestParam("departIds") List<Integer> departIds) {
