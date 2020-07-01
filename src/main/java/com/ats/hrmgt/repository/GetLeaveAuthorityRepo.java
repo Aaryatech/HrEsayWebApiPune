@@ -123,7 +123,7 @@ public interface GetLeaveAuthorityRepo extends JpaRepository<GetLeaveAuthority, 
 			"    WHERE\n" + 
 			"        auth.del_status=1 \n" + 
 			"        AND auth.company_id=1\n" + 
-			"        AND  ei.emp_id=auth.emp_id and ei.del_status=1 ", nativeQuery = true)
+			"        AND  ei.emp_id=auth.emp_id and ei.del_status=1 group by auth.emp_id", nativeQuery = true)
 
 	List<GetLeaveAuthority> getLeaveAuth();
 

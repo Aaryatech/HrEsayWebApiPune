@@ -1655,5 +1655,57 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"        ) >= DATE_FORMAT(CURDATE(), '%Y-%m'))  ", nativeQuery = true)
 
 	List<GetEmployeeDetails> getEmpListByLocId(@Param("locId") int locId);
+
+
+	@Query(value = "SELECT\n" + 
+			"        emp.*,\n" + 
+			"        dep.name AS dept_name,\n" + 
+			"        dg.name AS emp_desgn,\n" + 
+			"        loc.loc_name,\n" + 
+			"        con.org_name,\n" + 
+			"        sht.shiftname,\n" + 
+			"        emptyp.name AS emp_type_name,\n" + 
+			"        empd.licence_no as sal_type_name,\n" + 
+			"        'NA' AS  sub_comp_name,\n" + 
+			"        'NA' AS  wo_cat_name,\n" + 
+			"        'NA'  as ho_cat_name ,\n" + 
+			"        salinfo.gross_salary      \n" + 
+			"    FROM\n" + 
+			"        m_employees emp      \n" + 
+			"    INNER JOIN\n" + 
+			"        tbl_emp_salary_info salinfo              \n" + 
+			"            ON     emp.emp_id = salinfo.emp_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_designation dg              \n" + 
+			"            ON     emp.designation_id = dg.desig_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_department dep              \n" + 
+			"            ON     emp.depart_id = dep.depart_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_contractor con              \n" + 
+			"            ON     emp.contractor_id = con.contractor_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_location loc              \n" + 
+			"            ON     emp.location_id = loc.loc_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_mst_emp_types emptyp              \n" + 
+			"            ON     emp.emp_type = emptyp.emp_type_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_shift_timming sht              \n" + 
+			"            ON     emp.current_shiftid = sht.id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        m_emp_driver empd              \n" + 
+			"            ON     empd.emp_id = emp.emp_id      \n" + 
+			"    WHERE\n" + 
+			"        emp.del_status = 1                   \n" + 
+			"        AND emp.designation_id=:driverDesignatin  \n" + 
+			"        AND (\n" + 
+			"            salinfo.cmp_leaving_date IS NULL \n" + 
+			"            or salinfo.cmp_leaving_date='' \n" + 
+			"            or salinfo.cmp_leaving_date=1970-00-00 \n" + 
+			"            or  date_format(salinfo.cmp_leaving_date,'%Y-%m')>=date_format(CURDATE(),'%Y-%m')\n" + 
+			"        ) \n" + 
+			"        and emp.emp_id not in (select pd.driver_id from t_route_plan_detail pd,t_route_plan_header ph where ph.plan_head_id=pd.plan_head_id and plan_date=:date)", nativeQuery = true)
+	List<GetEmployeeDetails> getlistforinsertInitiallydriverInPlanRoute(@Param("driverDesignatin")int driverDesignatin,@Param("date") String date);
    
 }
