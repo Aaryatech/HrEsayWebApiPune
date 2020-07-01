@@ -7,13 +7,16 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.ats.hrmgt.model.RoutePlanDetail; 
+import com.ats.hrmgt.model.RoutePlanDetail;
 
-public interface RoutePlanDetailRepo extends JpaRepository<RoutePlanDetail, Integer>{
+public interface RoutePlanDetailRepo extends JpaRepository<RoutePlanDetail, Integer> {
 
 	@Transactional
 	@Modifying
-	@Query("update RoutePlanDetail set route_id=:routeId,isoffday_isff=:isFF  WHERE plan_detail_id=:planDetailId")
-	int updateRouteId(@Param("planDetailId") int planDetailId,@Param("isFF") int isFF,@Param("routeId") int routeId); 
+	@Query("update RoutePlanDetail set route_id=:routeId,isoffday_isff=:isFF,route_name=:rountName,fr_name=:frName,fr_ids=:frId,type_id=:typeId,km=:km,incentive=:incentive"
+			+ "  WHERE plan_detail_id=:planDetailId")
+	int updateRouteId(@Param("planDetailId") int planDetailId, @Param("isFF") int isFF, @Param("routeId") int routeId,
+			@Param("rountName") String rountName, @Param("frName") String frName, @Param("frId") String frId,
+			@Param("typeId") int typeId, @Param("km") int km, @Param("incentive") float incentive);
 
 }

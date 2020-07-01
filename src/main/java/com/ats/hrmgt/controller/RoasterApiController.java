@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.model.GetEmployeeDetails;
 import com.ats.hrmgt.model.Info;
+import com.ats.hrmgt.model.PlanHistoryDetail;
+import com.ats.hrmgt.model.PlanHistoryTypeWise;
+import com.ats.hrmgt.model.RouteList;
+import com.ats.hrmgt.model.RouteListRepo;
 import com.ats.hrmgt.model.RoutePlanDetail;
 import com.ats.hrmgt.model.RoutePlanDetailWithName;
 import com.ats.hrmgt.model.RoutePlanHeader;
@@ -21,6 +25,8 @@ import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.report.PendingLoanReport;
 import com.ats.hrmgt.repo.EmpDetailForLettersRepo;
 import com.ats.hrmgt.repository.GetEmployeeDetailsRepo;
+import com.ats.hrmgt.repository.PlanHistoryDetailRepo;
+import com.ats.hrmgt.repository.PlanHistoryTypeWiseRepo;
 import com.ats.hrmgt.repository.RoutePlanDetailRepo;
 import com.ats.hrmgt.repository.RoutePlanDetailWithNameRepo;
 import com.ats.hrmgt.repository.RoutePlanHeaderRepo;
@@ -47,6 +53,15 @@ public class RoasterApiController {
 
 	@Autowired
 	RouteTypeRepo routeTypeRepo;
+
+	@Autowired
+	RouteListRepo routeListRepo;
+
+	@Autowired
+	PlanHistoryDetailRepo planHistoryDetailRepo;
+
+	@Autowired
+	PlanHistoryTypeWiseRepo planHistoryTypeWiseRepo;
 
 	@RequestMapping(value = { "/insertInitiallydriverInPlanRoute" }, method = RequestMethod.POST)
 	public @ResponseBody Info insertInitiallydriverInPlanRoute(@RequestParam("date") String date) {
@@ -103,13 +118,17 @@ public class RoasterApiController {
 
 	@RequestMapping(value = { "/updateRouteId" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateRouteId(@RequestParam("planDetailId") int planDetailId,
-			@RequestParam("isFF") int isFF, @RequestParam("routeId") int routeId) {
+			@RequestParam("isFF") int isFF, @RequestParam("routeId") int routeId,
+			@RequestParam("rountName") String rountName, @RequestParam("frName") String frName,
+			@RequestParam("frId") String frId, @RequestParam("typeId") int typeId, @RequestParam("km") int km,
+			@RequestParam("incentive") float incentive) {
 
 		Info info = new Info();
 
 		try {
 
-			int update = routePlanDetailRepo.updateRouteId(planDetailId, isFF, routeId);
+			int update = routePlanDetailRepo.updateRouteId(planDetailId, isFF, routeId, rountName, frName, frId,
+					typeId,km,incentive);
 
 			info.setMsg("updated");
 			info.setError(false);
@@ -212,6 +231,47 @@ public class RoasterApiController {
 		}
 
 		return info;
+
+	}
+
+	@RequestMapping(value = { "/getRouteList" }, method = RequestMethod.GET)
+	public @ResponseBody List<RouteList> getRouteList() {
+
+		List<RouteList> list = new ArrayList<>();
+
+		try {
+
+			list = routeListRepo.findByDelStatus(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/getPlanHistoryByEmpId" }, method = RequestMethod.POST)
+	public @ResponseBody PlanHistoryDetail getPlanHistoryByEmpId(@RequestParam("empId") int empId,
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
+
+		PlanHistoryDetail planHistoryDetail = new PlanHistoryDetail();
+
+		try {
+
+			planHistoryDetail = planHistoryDetailRepo.getPlanHistoryByEmpId(empId, fromDate, toDate);
+
+			List<PlanHistoryTypeWise> list = planHistoryTypeWiseRepo.getPlanHistoryByEmpId(empId, fromDate, toDate);
+
+			planHistoryDetail.setPlanwisehistoryList(list);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return planHistoryDetail;
 
 	}
 
