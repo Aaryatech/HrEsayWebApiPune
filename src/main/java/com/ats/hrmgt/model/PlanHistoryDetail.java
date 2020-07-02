@@ -35,6 +35,9 @@ public class PlanHistoryDetail {
 	
 	@Transient
 	List<PlanHistoryTypeWise> planwisehistoryList;
+	
+	@Transient
+	List<PlanHistoryRouteWise> routewisePlanHistory;
 
 	public String getId() {
 		return id;
@@ -92,11 +95,19 @@ public class PlanHistoryDetail {
 		this.empName = empName;
 	}
 
+	public List<PlanHistoryRouteWise> getRoutewisePlanHistory() {
+		return routewisePlanHistory;
+	}
+
+	public void setRoutewisePlanHistory(List<PlanHistoryRouteWise> routewisePlanHistory) {
+		this.routewisePlanHistory = routewisePlanHistory;
+	}
+
 	@Override
 	public String toString() {
 		return "PlanHistoryDetail [id=" + id + ", offdays=" + offdays + ", ffdays=" + ffdays + ", km=" + km
 				+ ", incentive=" + incentive + ", empName=" + empName + ", planwisehistoryList=" + planwisehistoryList
-				+ "]";
+				+ ", routewisePlanHistory=" + routewisePlanHistory + "]";
 	} 
 	
 	

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.hrmgt.model.GetEmployeeDetails;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.PlanHistoryDetail;
+import com.ats.hrmgt.model.PlanHistoryRouteWise;
 import com.ats.hrmgt.model.PlanHistoryTypeWise;
 import com.ats.hrmgt.model.RouteList;
 import com.ats.hrmgt.model.RouteListRepo;
@@ -26,6 +27,7 @@ import com.ats.hrmgt.model.report.PendingLoanReport;
 import com.ats.hrmgt.repo.EmpDetailForLettersRepo;
 import com.ats.hrmgt.repository.GetEmployeeDetailsRepo;
 import com.ats.hrmgt.repository.PlanHistoryDetailRepo;
+import com.ats.hrmgt.repository.PlanHistoryRouteWiseRepo;
 import com.ats.hrmgt.repository.PlanHistoryTypeWiseRepo;
 import com.ats.hrmgt.repository.RoutePlanDetailRepo;
 import com.ats.hrmgt.repository.RoutePlanDetailWithNameRepo;
@@ -62,6 +64,9 @@ public class RoasterApiController {
 
 	@Autowired
 	PlanHistoryTypeWiseRepo planHistoryTypeWiseRepo;
+
+	@Autowired
+	PlanHistoryRouteWiseRepo planHistoryRouteWiseRepo;
 
 	@RequestMapping(value = { "/insertInitiallydriverInPlanRoute" }, method = RequestMethod.POST)
 	public @ResponseBody Info insertInitiallydriverInPlanRoute(@RequestParam("date") String date) {
@@ -127,8 +132,8 @@ public class RoasterApiController {
 
 		try {
 
-			int update = routePlanDetailRepo.updateRouteId(planDetailId, isFF, routeId, rountName, frName, frId,
-					typeId,km,incentive);
+			int update = routePlanDetailRepo.updateRouteId(planDetailId, isFF, routeId, rountName, frName, frId, typeId,
+					km, incentive);
 
 			info.setMsg("updated");
 			info.setError(false);
@@ -252,6 +257,42 @@ public class RoasterApiController {
 
 	}
 
+	@RequestMapping(value = { "/getRouteById" }, method = RequestMethod.POST)
+	public @ResponseBody RouteList getRouteById(@RequestParam("id") int id) {
+
+		RouteList save = new RouteList();
+
+		try {
+
+			save = routeListRepo.findByRouteId(id);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return save;
+
+	}
+
+	@RequestMapping(value = { "/saveRouteList" }, method = RequestMethod.POST)
+	public @ResponseBody List<RouteList> saveRouteList(@RequestBody List<RouteList> routeList) {
+
+		List<RouteList> list = new ArrayList<>();
+
+		try {
+
+			list = routeListRepo.saveAll(routeList);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
 	@RequestMapping(value = { "/getPlanHistoryByEmpId" }, method = RequestMethod.POST)
 	public @ResponseBody PlanHistoryDetail getPlanHistoryByEmpId(@RequestParam("empId") int empId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
@@ -263,9 +304,11 @@ public class RoasterApiController {
 			planHistoryDetail = planHistoryDetailRepo.getPlanHistoryByEmpId(empId, fromDate, toDate);
 
 			List<PlanHistoryTypeWise> list = planHistoryTypeWiseRepo.getPlanHistoryByEmpId(empId, fromDate, toDate);
+			List<PlanHistoryRouteWise> routewisePlanHistory = planHistoryRouteWiseRepo.getPlanHistoryByEmpId(empId,
+					fromDate, toDate);
 
 			planHistoryDetail.setPlanwisehistoryList(list);
-
+			planHistoryDetail.setRoutewisePlanHistory(routewisePlanHistory);
 		} catch (Exception e) {
 
 			e.printStackTrace();
