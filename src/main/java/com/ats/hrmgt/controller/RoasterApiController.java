@@ -121,6 +121,49 @@ public class RoasterApiController {
 
 	}
 
+	@RequestMapping(value = { "/getRoasterPlanListByDate" }, method = RequestMethod.POST)
+	public @ResponseBody List<RoutePlanDetailWithName> getRoasterPlanListByDate(@RequestParam("date") String date) {
+
+		List<RoutePlanDetailWithName> list = new ArrayList<>();
+
+		try {
+
+			list = routePlanDetailWithNameRepo.getDriverPlanList(date);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/updateAndSubmitConfirmDateRoster" }, method = RequestMethod.POST)
+	public @ResponseBody Info updateAndSubmitConfirmDateRoster(@RequestParam("date") String date) {
+
+		Info info = new Info();
+
+		try {
+
+			RoutePlanHeader routePlanHeader = routePlanHeaderRepo.getdateexitrecord(date);
+			routePlanHeader.setIsConfirm(1);
+			routePlanHeader = routePlanHeaderRepo.save(routePlanHeader);
+
+			info.setError(false);
+			info.setMsg("success");
+
+		} catch (Exception e) {
+
+			info.setError(true);
+			info.setMsg("failed");
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
 	@RequestMapping(value = { "/updateRouteId" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateRouteId(@RequestParam("planDetailId") int planDetailId,
 			@RequestParam("isFF") int isFF, @RequestParam("routeId") int routeId,
@@ -134,6 +177,29 @@ public class RoasterApiController {
 
 			int update = routePlanDetailRepo.updateRouteId(planDetailId, isFF, routeId, rountName, frName, frId, typeId,
 					km, incentive);
+
+			info.setMsg("updated");
+			info.setError(false);
+		} catch (Exception e) {
+			info.setMsg("error");
+			info.setError(true);
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
+	@RequestMapping(value = { "/changeLateMarkInRoaster" }, method = RequestMethod.POST)
+	public @ResponseBody Info changeLateMarkInRoaster(@RequestParam("planDetailId") int planDetailId,
+			@RequestParam("lateMark") int lateMark, @RequestParam("lateMin") int lateMin,
+			@RequestParam("startTime") String startTime) {
+
+		Info info = new Info();
+
+		try {
+
+			int update = routePlanDetailRepo.changeLateMarkInRoaster(planDetailId, lateMark, lateMin, startTime);
 
 			info.setMsg("updated");
 			info.setError(false);

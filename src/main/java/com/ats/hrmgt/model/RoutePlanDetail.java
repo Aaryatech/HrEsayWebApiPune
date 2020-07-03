@@ -46,6 +46,9 @@ public class RoutePlanDetail {
 	@Column(name = "late_min")
 	private int lateMin;
 
+	@Column(name = "start_time")
+	private String startTime;
+	
 	@Column(name = "km")
 	private int km;
 
@@ -210,14 +213,22 @@ public class RoutePlanDetail {
 		this.routeId = routeId;
 	}
 
+	public String getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+
 	@Override
 	public String toString() {
 		return "RoutePlanDetail [planDetailId=" + planDetailId + ", planHeadId=" + planHeadId + ", routeId=" + routeId
 				+ ", driverId=" + driverId + ", isoffdayIsff=" + isoffdayIsff + ", typeId=" + typeId + ", routeName="
 				+ routeName + ", frName=" + frName + ", frIds=" + frIds + ", lateMark=" + lateMark + ", lateMin="
-				+ lateMin + ", km=" + km + ", incentive=" + incentive + ", delStatus=" + delStatus + ", extraInt1="
-				+ extraInt1 + ", extraInt2=" + extraInt2 + ", extraVar2=" + extraVar2 + ", extraVar1=" + extraVar1
-				+ "]";
+				+ lateMin + ", startTime=" + startTime + ", km=" + km + ", incentive=" + incentive + ", delStatus="
+				+ delStatus + ", extraInt1=" + extraInt1 + ", extraInt2=" + extraInt2 + ", extraVar2=" + extraVar2
+				+ ", extraVar1=" + extraVar1 + "]";
 	}
 	
 	

@@ -1971,6 +1971,24 @@ public class AttendanceApiControllerchange {
 
 	}
 
+	@RequestMapping(value = { "/getDailyDailyRecordForRoaster" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetDailyDailyRecord> getDailyDailyRecordForRoaster(@RequestParam("date") String date,
+			@RequestParam("empIds") List<Integer> empIds) {
+
+		List<GetDailyDailyRecord> summaryDailyAttendanceList = new ArrayList<>();
+		try {
+
+			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForRoaster(date, empIds);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return summaryDailyAttendanceList;
+
+	}
+
 	@RequestMapping(value = { "/getDailyDailyRecordForOtApproval" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetDailyDailyRecord> getDailyDailyRecordForOtApproval(@RequestParam("date") String date,
 			@RequestParam("empId") int empId) {
@@ -2321,6 +2339,23 @@ public class AttendanceApiControllerchange {
 
 	}
 
+	@RequestMapping(value = { "/getLvTypeListAll" }, method = RequestMethod.GET)
+	public @ResponseBody List<LvType> getLvTypeListAll() {
+
+		List<LvType> lvTypeList = new ArrayList<>();
+		try {
+
+			lvTypeList = lvTypeRepository.findAll();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return lvTypeList;
+
+	}
+
 	@RequestMapping(value = { "/getDailyDailyRecordBetweenDateAndByEmpId" }, method = RequestMethod.POST)
 	public @ResponseBody List<DailyAttendance> getDailyDailyRecordBetweenDateAndByEmpId(
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
@@ -2447,7 +2482,7 @@ public class AttendanceApiControllerchange {
 		List<DailyAttendance> dailyAttendanceList = new ArrayList<>();
 		try {
 
-			dailyAttendanceList = dailyAttendanceRepository.getEmployyeDailyDailyListByAuthority(date,empId);
+			dailyAttendanceList = dailyAttendanceRepository.getEmployyeDailyDailyListByAuthority(date, empId);
 
 		} catch (Exception e) {
 
@@ -2529,7 +2564,8 @@ public class AttendanceApiControllerchange {
 
 			}
 		} catch (Exception e) {
-
+			info.setError(true);
+			info.setMsg("failed");
 			e.printStackTrace();
 		}
 
@@ -2633,8 +2669,7 @@ public class AttendanceApiControllerchange {
 
 	}
 
-	
-	 /*@Scheduled(cron = "0/20 * * * * ? ") */
+	/* @Scheduled(cron = "0/20 * * * * ? ") */
 	@Scheduled(cron = "* * 1 * * ? ")
 	public void callAttendancFuntion() {
 

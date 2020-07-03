@@ -19,4 +19,10 @@ public interface RoutePlanDetailRepo extends JpaRepository<RoutePlanDetail, Inte
 			@Param("rountName") String rountName, @Param("frName") String frName, @Param("frId") String frId,
 			@Param("typeId") int typeId, @Param("km") int km, @Param("incentive") float incentive);
 
+	@Transactional
+	@Modifying
+	@Query("update RoutePlanDetail set late_mark=:lateMark,late_min=:lateMin,start_time=:startTime  WHERE plan_detail_id=:planDetailId")
+	int changeLateMarkInRoaster(@Param("planDetailId") int planDetailId, @Param("lateMark") int lateMark,
+			@Param("lateMin") int lateMin, @Param("startTime") String startTime);
+
 }
