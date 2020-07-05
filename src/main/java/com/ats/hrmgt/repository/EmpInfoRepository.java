@@ -52,4 +52,8 @@ public interface EmpInfoRepository extends JpaRepository<EmpInfo, Integer> {
 			"        )", nativeQuery = true)
 	List<EmpInfo> getEmpListForAssignShift(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 
+	@Query(value = "SELECT e.*,emp_sal.cmp_joining_date, emp_sal.sal_basis, emp_sal.salary_type_id  FROM m_employees e, tbl_emp_salary_info emp_sal "
+			+ "where e.emp_id=emp_sal.emp_id and e.del_status=1 and e.designation_id=:design and (emp_sal.cmp_leaving_date IS NULL or emp_sal.cmp_leaving_date='' or emp_sal.cmp_leaving_date=1970-00-00 or  date_format(emp_sal.cmp_leaving_date,'%Y-%m')>=date_format(:fromDate,'%Y-%m'))", nativeQuery = true)
+	List<EmpInfo> getEmpListAllForRoaster(@Param("fromDate") String fromDate,@Param("design") int design);
+
 }

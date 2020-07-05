@@ -40,7 +40,7 @@ public interface DailyDailyInformationRepository extends JpaRepository<DailyDail
 			"        sp.name_sd,\n" + 
 			"        sum(dl.working_hrs) as working_min,\n" + 
 			"        ifnull((select sum(tbl_attt_daily_daily.ot_hr) from tbl_attt_daily_daily where tbl_attt_daily_daily.emp_id=dl.emp_id and "
-			+ "tbl_attt_daily_daily.freeze_by_supervisor=2 and dl.lv_sumup_id=tbl_attt_daily_daily.lv_sumup_id),0)  as ot_min,\n" + 
+			+ "tbl_attt_daily_daily.freeze_by_supervisor=2 and dl.lv_sumup_id=tbl_attt_daily_daily.lv_sumup_id and tbl_attt_daily_daily.att_date between :fromDate and :toDate),0)  as ot_min,\n" + 
 			"        sum(late_mark) as late_mark,\n" + 
 			"        sum(late_min) as  late_min,sum(full_night) as  full_night,sum(atsumm_uid) as  mark_compoff,\n" + 
 			"        es.sal_basis\n" + 

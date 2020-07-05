@@ -1,6 +1,8 @@
 package com.ats.hrmgt.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +13,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ats.hrmgt.model.AttendanceSheetData;
+import com.ats.hrmgt.model.DailyAttendance;
+import com.ats.hrmgt.model.DailyDailyInfomationForChart;
+import com.ats.hrmgt.model.DateAndDay;
+import com.ats.hrmgt.model.EmpInfo;
+import com.ats.hrmgt.model.EmpInfoWithDateInfoList;
+import com.ats.hrmgt.model.EmpInfoWithDateInfoListForRaster;
 import com.ats.hrmgt.model.GetEmployeeDetails;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.PlanHistoryDetail;
 import com.ats.hrmgt.model.PlanHistoryRouteWise;
 import com.ats.hrmgt.model.PlanHistoryTypeWise;
+import com.ats.hrmgt.model.RoasterSheetData;
 import com.ats.hrmgt.model.RouteList;
 import com.ats.hrmgt.model.RouteListRepo;
 import com.ats.hrmgt.model.RoutePlanDetail;
@@ -25,6 +35,7 @@ import com.ats.hrmgt.model.RouteType;
 import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.report.PendingLoanReport;
 import com.ats.hrmgt.repo.EmpDetailForLettersRepo;
+import com.ats.hrmgt.repository.EmpInfoRepository;
 import com.ats.hrmgt.repository.GetEmployeeDetailsRepo;
 import com.ats.hrmgt.repository.PlanHistoryDetailRepo;
 import com.ats.hrmgt.repository.PlanHistoryRouteWiseRepo;
@@ -67,6 +78,9 @@ public class RoasterApiController {
 
 	@Autowired
 	PlanHistoryRouteWiseRepo planHistoryRouteWiseRepo;
+
+	@Autowired
+	EmpInfoRepository empInfoRepository;
 
 	@RequestMapping(value = { "/insertInitiallydriverInPlanRoute" }, method = RequestMethod.POST)
 	public @ResponseBody Info insertInitiallydriverInPlanRoute(@RequestParam("date") String date) {
@@ -381,6 +395,104 @@ public class RoasterApiController {
 		}
 
 		return planHistoryDetail;
+
+	}
+
+	@RequestMapping(value = { "/getMonthlyRoasterSheet" }, method = RequestMethod.POST)
+	public @ResponseBody RoasterSheetData getMonthlyRoasterSheet(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate) {
+
+		RoasterSheetData info = new RoasterSheetData();
+
+		try {
+
+			Setting setting = settingRepo.findByKey("designation_id");
+
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			Date fmdt = df.parse(fromDate);
+			Date todt = df.parse(toDate);
+
+			/*
+			 * System.out.println(fmdt + " " + todt);
+			 * 
+			 * Calendar temp = Calendar.getInstance(); temp.setTime(fmdt); int year =
+			 * temp.get(Calendar.YEAR); int month = temp.get(Calendar.MONTH) + 1;
+			 */
+
+			List<EmpInfo> empList = empInfoRepository.getEmpListAllForRoaster(fromDate,
+					Integer.parseInt(setting.getValue()));
+
+			List<RoutePlanDetail> ressavedetailList = routePlanDetailRepo.getListForMonthlySheet(fromDate, toDate);
+			List<String> dates = new ArrayList<>();
+			List<DateAndDay> dateAndDayList = new ArrayList<>();
+
+			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat sdf = new SimpleDateFormat("EEE");
+
+			for (Date j = fmdt; j.compareTo(todt) <= 0;) {
+
+				dates.add(sf.format(j));
+
+				DateAndDay dateAndDay = new DateAndDay();
+				String stringDate = sdf.format(j);
+				dateAndDay.setDate(sf.format(j));
+				dateAndDay.setDay(stringDate);
+				dateAndDayList.add(dateAndDay);
+
+				/* System.out.println(sf.parse(sf.format(j))); */
+				j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
+			}
+
+			List<EmpInfoWithDateInfoListForRaster> infomationList = new ArrayList<>();
+
+			for (int i = 0; i < empList.size(); i++) {
+
+				EmpInfoWithDateInfoListForRaster infomation = new EmpInfoWithDateInfoListForRaster();
+				infomation.setEmpCode(empList.get(i).getEmpCode());
+				infomation.setEmpId(empList.get(i).getEmpId());
+				infomation.setEmpName(empList.get(i).getFirstName() + " " + empList.get(i).getSurname());
+				List<RoutePlanDetail> dateInfo = new ArrayList<>();
+
+				for (int j = 0; j < dates.size(); j++) {
+
+					Date dt = sf.parse(dates.get(j));
+					int find = 0;
+
+					for (int k = 0; k < ressavedetailList.size(); k++) {
+
+						Date attsdt = df.parse(ressavedetailList.get(k).getExtraVar1());
+						if (ressavedetailList.get(k).getDriverId() == empList.get(i).getEmpId()
+								&& attsdt.compareTo(dt) == 0) {
+
+							dateInfo.add(ressavedetailList.get(k));
+
+							find = 1;
+							break;
+						}
+
+					}
+
+					if (find == 0) {
+
+						RoutePlanDetail dilydly = new RoutePlanDetail();
+						dilydly.setExtraVar1(df.format(dt));
+						dateInfo.add(dilydly);
+					}
+
+				}
+				infomation.setSttsList(dateInfo);
+				infomationList.add(infomation);
+			}
+
+			info.setDates(dates);
+			info.setInfomationList(infomationList);
+			info.setDateAndDayList(dateAndDayList);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
 
 	}
 
