@@ -145,6 +145,34 @@ public class RoasterApiController {
 
 	}
 
+	@RequestMapping(value = { "/checkRouteDateIsConfirm" }, method = RequestMethod.POST)
+	public @ResponseBody Info checkRouteDateIsConfirm(@RequestParam("date") String date) {
+
+		Info info = new Info();
+
+		try {
+
+			RoutePlanHeader routePlanHeader = routePlanHeaderRepo.getdateexitrecord(date);
+
+			if (routePlanHeader.getIsConfirm() == 0) {
+				info.setError(true);
+				info.setMsg("Date is not Confirm");
+			} else {
+				info.setError(false);
+				info.setMsg("get Data");
+			}
+
+		} catch (Exception e) {
+
+			info.setError(true);
+			info.setMsg("Date is not Confirm");
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
 	@RequestMapping(value = { "/getRoasterPlanListByDate" }, method = RequestMethod.POST)
 	public @ResponseBody List<RoutePlanDetailWithName> getRoasterPlanListByDate(@RequestParam("date") String date) {
 
@@ -526,20 +554,21 @@ public class RoasterApiController {
 		RoasterSheetData info = new RoasterSheetData();
 
 		try {
- 
+
 			List<RoasterSummeryDetail> roasterSummeryDetailList = roasterSummeryDetailRepository
 					.getRoasterSummeryDetailByEmpId(fromDate, toDate, empId);
 
 			List<TypeWiseRoasterList> typeWiseRoasterList = typeWiseRoasterListRepository
-					.getRoasterSummeryDetailByEmpId(fromDate, toDate,empId);
+					.getRoasterSummeryDetailByEmpId(fromDate, toDate, empId);
 
-			List<RoutePlanDetailWithName> routePlanDetailWithNamelist = routePlanDetailWithNameRepo.getDriverPlanListByEmpId(fromDate,toDate,empId);
+			List<RoutePlanDetailWithName> routePlanDetailWithNamelist = routePlanDetailWithNameRepo
+					.getDriverPlanListByEmpId(fromDate, toDate, empId);
 			List<RouteType> routeTypelist = routeTypeRepo.findByDelStatus(1);
 			info.setRouteTypelist(routeTypelist);
 			info.setTypeWiseRoasterList(typeWiseRoasterList);
 			info.setRoasterSummeryDetailList(roasterSummeryDetailList);
 			info.setRoutePlanDetailWithNamelist(routePlanDetailWithNamelist);
-			
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
