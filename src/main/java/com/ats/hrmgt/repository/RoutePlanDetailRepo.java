@@ -32,4 +32,9 @@ public interface RoutePlanDetailRepo extends JpaRepository<RoutePlanDetail, Inte
 			+ "t_route_plan_detail pd where plan_date between :fromDate and :toDate and pd.plan_head_id=ph.plan_head_id   ", nativeQuery = true)
 	List<RoutePlanDetail> getListForMonthlySheet(@Param("fromDate")String fromDate,@Param("toDate") String toDate);
 
+	@Query(value = "select pd.plan_detail_id,pd.plan_head_id,pd.route_id,pd.driver_id,pd.isoffday_isff,pd.type_id,pd.route_name,pd.fr_name,pd.fr_ids,pd.late_mark,pd.late_min,"
+			+ "pd.start_time,pd.km,pd.incentive,pd.del_status,pd.extra_int1,ph.is_confirm as extra_int2,ph.plan_date as extra_var1,pd.extra_var2 from t_route_plan_header ph,"
+			+ "t_route_plan_detail pd where plan_date between :fromDate and :toDate and pd.plan_head_id=ph.plan_head_id  order by pd.driver_id asc,extra_var1 asc  ", nativeQuery = true)
+	List<RoutePlanDetail> getListForNotification(@Param("fromDate")String fromDate,@Param("toDate") String toDate);
+
 }

@@ -2,10 +2,13 @@ package com.ats.hrmgt.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,13 +16,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.model.AttendanceSheetData;
 import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.DailyDailyInfomationForChart;
+import com.ats.hrmgt.model.DataForUpdateAttendance;
 import com.ats.hrmgt.model.DateAndDay;
 import com.ats.hrmgt.model.EmpInfo;
 import com.ats.hrmgt.model.EmpInfoWithDateInfoList;
 import com.ats.hrmgt.model.EmpInfoWithDateInfoListForRaster;
+import com.ats.hrmgt.model.FileUploadedData;
 import com.ats.hrmgt.model.GetEmployeeDetails;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.PlanHistoryDetail;
@@ -609,5 +615,105 @@ public class RoasterApiController {
 	 * 
 	 * }
 	 */
+
+	@RequestMapping(value = { "/sendNotificatinBetweenDateForPlanRoute" }, method = RequestMethod.POST)
+	public @ResponseBody Info sendNotificatinBetweenDateForPlanRoute(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate) {
+
+		Info info = new Info();
+
+		try {
+
+			Setting setting = settingRepo.findByKey("designation_id");
+
+			List<EmpInfo> empList = empInfoRepository.getEmpListAllForRoaster(fromDate,
+					Integer.parseInt(setting.getValue()));
+
+			List<RoutePlanDetail> ressavedetailList = routePlanDetailRepo.getListForNotification(fromDate, toDate);
+
+			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+
+			for (int i = 0; i < empList.size(); i++) {
+
+				String msg = "Hi " + empList.get(i).getFirstName() + " " + empList.get(i).getSurname()
+						+ ",\n your duties \n";
+
+				for (int k = 0; k < ressavedetailList.size(); k++) {
+
+					if (ressavedetailList.get(k).getDriverId() == empList.get(i).getEmpId()) {
+
+						msg = msg + " " + DateConvertor.convertToDMY(ressavedetailList.get(k).getExtraVar1()) + " - ";
+
+						if (ressavedetailList.get(k).getRouteId() != 0) {
+							msg = msg + "" + ressavedetailList.get(k).getRouteName() + "\n";
+						} else if (ressavedetailList.get(k).getIsoffdayIsff() == 1) {
+							msg = msg + "FF \n";
+
+						} else if (ressavedetailList.get(k).getIsoffdayIsff() == 2) {
+							msg = msg + "Off Day \n";
+
+						} else {
+							msg = msg + "NA \n";
+						}
+
+					}
+
+				}
+
+				System.out.println(msg);
+
+			}
+
+			info.setError(false);
+			info.setMsg("successfully Send Notification");
+		} catch (Exception e) {
+
+			info.setError(true);
+			info.setMsg("error to Send Notification");
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
+	@Scheduled(cron = "0 30 18 * * ? ")
+	/* @Scheduled(cron = "0/2 * * * * ? ") */
+	public void callRouteFuntion() {
+
+		try {
+
+			Date dt = new Date();
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
+			dt.setTime(dt.getTime() + 1000 * 60 * 60 * 24);
+			String dateyy = sf.format(dt);
+			String datedd = dd.format(dt);
+
+			List<RoutePlanDetailWithName> routePlanDetailWithNamelist = routePlanDetailWithNameRepo
+					.getDriverListForNextDaySchedule(dateyy);
+
+			for (int i = 0; i < routePlanDetailWithNamelist.size(); i++) {
+
+				String msg = "Tommorow your duty on ";
+
+				if (routePlanDetailWithNamelist.get(i).getRouteId() != 0) {
+					msg = msg + "" + routePlanDetailWithNamelist.get(i).getRouteName();
+				} else if (routePlanDetailWithNamelist.get(i).getIsoffdayIsff() == 1) {
+					msg = msg + "FF";
+
+				} else if (routePlanDetailWithNamelist.get(i).getIsoffdayIsff() == 2) {
+					msg = "Tommorow is your Off Day";
+
+				}
+
+				System.out.println(msg + " " + routePlanDetailWithNamelist.get(i).getExtraVar1());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
 
 }

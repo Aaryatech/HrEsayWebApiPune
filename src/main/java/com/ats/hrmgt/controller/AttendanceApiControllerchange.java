@@ -2670,7 +2670,7 @@ public class AttendanceApiControllerchange {
 	}
 
 	/* @Scheduled(cron = "0/20 * * * * ? ") */
-	@Scheduled(cron = "* * 1 * * ? ")
+	@Scheduled(cron = "0 0 1 * * ? ")
 	public void callAttendancFuntion() {
 
 		try {
