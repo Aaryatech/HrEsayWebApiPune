@@ -15,7 +15,25 @@ public interface RoutePlanDetailWithNameRepo extends JpaRepository<RoutePlanDeta
 	List<RoutePlanDetailWithName> getDriverPlanList(@Param("date") String date);
 
 	@Query(value = "select\n" + 
-			"        pd.*,\n" + 
+			"        pd.plan_detail_id,\n" + 
+			"        pd.plan_head_id,\n" + 
+			"        pd.route_id,\n" + 
+			"        pd.driver_id,\n" + 
+			"        pd.isoffday_isff,\n" + 
+			"        pd.type_id,\n" + 
+			"        pd.route_name,\n" + 
+			"        pd.fr_name,\n" + 
+			"        pd.fr_ids,\n" + 
+			"        pd.late_mark,\n" + 
+			"        pd.late_min,\n" + 
+			"        pd.start_time,\n" + 
+			"        pd.km,\n" + 
+			"        pd.incentive,\n" + 
+			"        pd.del_status,\n" + 
+			"        pd.extra_int1,\n" + 
+			"        ph.is_confirm as extra_int2,\n" + 
+			"        ph.plan_date as extra_var1,\n" + 
+			"        pd.extra_var2,\n" + 
 			"        concat(emp.first_name,' ',emp.surname) as first_name,\n" + 
 			"        ph.plan_date as surname \n" + 
 			"    from\n" + 
