@@ -26,6 +26,8 @@ import com.ats.hrmgt.model.PlanHistoryDetail;
 import com.ats.hrmgt.model.PlanHistoryRouteWise;
 import com.ats.hrmgt.model.PlanHistoryTypeWise;
 import com.ats.hrmgt.model.RoasterSheetData;
+import com.ats.hrmgt.model.RoasterSummeryDetail;
+import com.ats.hrmgt.model.RoasterSummeryDetailRepository;
 import com.ats.hrmgt.model.RouteList;
 import com.ats.hrmgt.model.RouteListRepo;
 import com.ats.hrmgt.model.RoutePlanDetail;
@@ -33,6 +35,7 @@ import com.ats.hrmgt.model.RoutePlanDetailWithName;
 import com.ats.hrmgt.model.RoutePlanHeader;
 import com.ats.hrmgt.model.RouteType;
 import com.ats.hrmgt.model.Setting;
+import com.ats.hrmgt.model.TypeWiseRoasterList;
 import com.ats.hrmgt.model.report.PendingLoanReport;
 import com.ats.hrmgt.repo.EmpDetailForLettersRepo;
 import com.ats.hrmgt.repository.EmpInfoRepository;
@@ -45,6 +48,7 @@ import com.ats.hrmgt.repository.RoutePlanDetailWithNameRepo;
 import com.ats.hrmgt.repository.RoutePlanHeaderRepo;
 import com.ats.hrmgt.repository.RouteTypeRepo;
 import com.ats.hrmgt.repository.SettingRepo;
+import com.ats.hrmgt.repository.TypeWiseRoasterListRepository;
 
 @RestController
 public class RoasterApiController {
@@ -81,6 +85,12 @@ public class RoasterApiController {
 
 	@Autowired
 	EmpInfoRepository empInfoRepository;
+
+	@Autowired
+	RoasterSummeryDetailRepository roasterSummeryDetailRepository;
+
+	@Autowired
+	TypeWiseRoasterListRepository typeWiseRoasterListRepository;
 
 	@RequestMapping(value = { "/insertInitiallydriverInPlanRoute" }, method = RequestMethod.POST)
 	public @ResponseBody Info insertInitiallydriverInPlanRoute(@RequestParam("date") String date) {
@@ -487,6 +497,19 @@ public class RoasterApiController {
 			info.setDates(dates);
 			info.setInfomationList(infomationList);
 			info.setDateAndDayList(dateAndDayList);
+
+			List<RoasterSummeryDetail> roasterSummeryDetailList = roasterSummeryDetailRepository
+					.getRoasterSummeryDetail(fromDate, toDate, Integer.parseInt(setting.getValue()));
+
+			List<TypeWiseRoasterList> typeWiseRoasterList = typeWiseRoasterListRepository
+					.getRoasterSummeryDetail(fromDate, toDate);
+
+			info.setRoasterSummeryDetailList(roasterSummeryDetailList);
+			info.setTypeWiseRoasterList(typeWiseRoasterList);
+
+			List<RouteType> routeTypelist = routeTypeRepo.findByDelStatus(1);
+			info.setRouteTypelist(routeTypelist);
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -495,5 +518,67 @@ public class RoasterApiController {
 		return info;
 
 	}
+
+	@RequestMapping(value = { "/getMonthlyRoasterSheetByEmpId" }, method = RequestMethod.POST)
+	public @ResponseBody RoasterSheetData getMonthlyRoasterSheetByEmpId(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("empId") int empId) {
+
+		RoasterSheetData info = new RoasterSheetData();
+
+		try {
+ 
+			List<RoasterSummeryDetail> roasterSummeryDetailList = roasterSummeryDetailRepository
+					.getRoasterSummeryDetailByEmpId(fromDate, toDate, empId);
+
+			List<TypeWiseRoasterList> typeWiseRoasterList = typeWiseRoasterListRepository
+					.getRoasterSummeryDetailByEmpId(fromDate, toDate,empId);
+
+			List<RoutePlanDetailWithName> routePlanDetailWithNamelist = routePlanDetailWithNameRepo.getDriverPlanListByEmpId(fromDate,toDate,empId);
+			List<RouteType> routeTypelist = routeTypeRepo.findByDelStatus(1);
+			info.setRouteTypelist(routeTypelist);
+			info.setTypeWiseRoasterList(typeWiseRoasterList);
+			info.setRoasterSummeryDetailList(roasterSummeryDetailList);
+			info.setRoutePlanDetailWithNamelist(routePlanDetailWithNamelist);
+			
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
+	/*
+	 * @RequestMapping(value = { "/getRoasterSummeryDetail" }, method =
+	 * RequestMethod.POST) public @ResponseBody RoasterSheetData
+	 * getRoasterSummeryDetail(@RequestParam("fromDate") String fromDate,
+	 * 
+	 * @RequestParam("toDate") String toDate) {
+	 * 
+	 * RoasterSheetData info = new RoasterSheetData();
+	 * 
+	 * try {
+	 * 
+	 * Setting setting = settingRepo.findByKey("designation_id");
+	 * 
+	 * List<RoasterSummeryDetail> roasterSummeryDetailList =
+	 * roasterSummeryDetailRepository.getRoasterSummeryDetail(fromDate,toDate,
+	 * Integer.parseInt(setting.getValue()));
+	 * 
+	 * List<TypeWiseRoasterList> typeWiseRoasterList = typeWiseRoasterListRepository
+	 * .getRoasterSummeryDetail(fromDate,toDate);
+	 * 
+	 * info.setRoasterSummeryDetailList(roasterSummeryDetailList);
+	 * info.setTypeWiseRoasterList(typeWiseRoasterList);
+	 * 
+	 * } catch (Exception e) {
+	 * 
+	 * e.printStackTrace(); }
+	 * 
+	 * return info;
+	 * 
+	 * }
+	 */
 
 }
