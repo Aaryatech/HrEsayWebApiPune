@@ -67,7 +67,7 @@ public interface RoasterSummeryDetailRepository extends JpaRepository<RoasterSum
 			"        ifnull((select count('') from t_route_plan_detail pd, t_route_plan_header ph where ph.plan_date between :fromDate and :toDate and pd.isoffday_isff=2 and ph.plan_head_id=pd.plan_head_id and pd.driver_id=e.emp_id),0) as ff_count,\n" + 
 			"        ifnull((select count('') from t_route_plan_detail pd, t_route_plan_header ph where ph.plan_date between :fromDate and :toDate and pd.late_mark=1 and ph.plan_head_id=pd.plan_head_id and pd.driver_id=e.emp_id),0) as late_mark,\n" + 
 			"        ifnull((select sum(pd.late_min) from t_route_plan_detail pd, t_route_plan_header ph where ph.plan_date between :fromDate and :toDate and  ph.plan_head_id=pd.plan_head_id and pd.driver_id=e.emp_id),0) as late_min,\n" + 
-			"        ifnull((select sum(pd.incentive) from t_route_plan_detail pd, t_route_plan_header ph where ph.plan_date between :fromDate and :toDate and  ph.plan_head_id=pd.plan_head_id and pd.driver_id=e.emp_id),0) as incentive,\n" + 
+			"        ifnull((select sum(pd.incentive) from t_route_plan_detail pd, t_route_plan_header ph where ph.plan_date between :fromDate and :toDate and  ph.plan_head_id=pd.plan_head_id and pd.driver_id=e.emp_id and ph.is_confirm=1),0) as incentive,\n" + 
 			"        ifnull((select sum(pd.km) from t_route_plan_detail pd, t_route_plan_header ph where ph.plan_date between :fromDate and :toDate and  ph.plan_head_id=pd.plan_head_id and pd.driver_id=e.emp_id),0) as km\n" + 
 			"    FROM\n" + 
 			"        m_employees e,\n" + 

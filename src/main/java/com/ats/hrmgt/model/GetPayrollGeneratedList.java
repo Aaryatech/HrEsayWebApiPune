@@ -128,6 +128,9 @@ public class GetPayrollGeneratedList {
 	List<GetAdvanceDetails> getClaimList;
 
 	@Transient
+	List<GetAdvanceDetails> getBhattaList;
+	
+	@Transient
 	List<GetAdvanceDetails> getPayDedList;
 
 	@Transient
@@ -985,6 +988,14 @@ public class GetPayrollGeneratedList {
 		this.bhatta = bhatta;
 	}
 
+	public List<GetAdvanceDetails> getGetBhattaList() {
+		return getBhattaList;
+	}
+
+	public void setGetBhattaList(List<GetAdvanceDetails> getBhattaList) {
+		this.getBhattaList = getBhattaList;
+	}
+
 	@Override
 	public String toString() {
 		return "GetPayrollGeneratedList [id=" + id + ", cmpId=" + cmpId + ", empId=" + empId + ", empCode=" + empCode
@@ -1021,9 +1032,10 @@ public class GetPayrollGeneratedList {
 				+ ", paidHoliday=" + paidHoliday + ", paidLeave=" + paidLeave + ", unpaidLeave=" + unpaidLeave
 				+ ", absentDays=" + absentDays + ", email=" + email + ", payrollAllownceList=" + payrollAllownceList
 				+ ", getAdvanceList=" + getAdvanceList + ", getAbsentDedList=" + getAbsentDedList
-				+ ", getLateMarkDedList=" + getLateMarkDedList + ", getClaimList=" + getClaimList + ", getPayDedList="
-				+ getPayDedList + ", getRewardList=" + getRewardList + ", getLoanList=" + getLoanList + ", performance="
-				+ performance + ", production=" + production + ", moneyInword=" + moneyInword + "]";
+				+ ", getLateMarkDedList=" + getLateMarkDedList + ", getClaimList=" + getClaimList + ", getBhattaList="
+				+ getBhattaList + ", getPayDedList=" + getPayDedList + ", getRewardList=" + getRewardList
+				+ ", getLoanList=" + getLoanList + ", performance=" + performance + ", production=" + production
+				+ ", moneyInword=" + moneyInword + "]";
 	}
 
 }

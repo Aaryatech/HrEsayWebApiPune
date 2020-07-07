@@ -103,6 +103,7 @@ public interface GetAdvanceDetailsRepo extends JpaRepository<GetAdvanceDetails, 
 	List<GetAdvanceDetails> getLoanListSaparate(@Param("month") int month, @Param("year") int year,
 			@Param("empIds") List<Integer> empIds);
 
+	 
 	 @Query(value = "select\n" + 
 		 		"        uuid() as id,\n" + 
 		 		"        emp_id,\n" + 
@@ -119,6 +120,24 @@ public interface GetAdvanceDetailsRepo extends JpaRepository<GetAdvanceDetails, 
 		 		"        and emp_id in (:empIds) \n" + 
 		 		"        and ex_int1=1", nativeQuery = true) 
 	List<GetAdvanceDetails> getLateMarkAdvanceListSaparate(@Param("month") int month, @Param("year") int year,
+			@Param("empIds") List<Integer> empIds);
+
+	 @Query(value = "select\n" + 
+	 		"        uuid() as id,\n" + 
+	 		"        pd.driver_id as emp_id,\n" + 
+	 		"        round(pd.incentive) as amt,\n" + 
+	 		"        ph.plan_date as date,\n" + 
+	 		"        '' as remark     \n" + 
+	 		"    from\n" + 
+	 		"        t_route_plan_header ph,\n" + 
+	 		"        t_route_plan_detail pd          \n" + 
+	 		"    where\n" + 
+	 		"        month(ph.plan_date)=:month                   \n" + 
+	 		"        and year(ph.plan_date)=:year                 \n" + 
+	 		"        and pd.del_status=1                   \n" + 
+	 		"        and pd.driver_id in (:empIds) and ph.plan_head_id=pd.plan_head_id \n" + 
+	 		"        and ph.is_confirm=1", nativeQuery = true) 
+	List<GetAdvanceDetails> getBhattaListSaparate(@Param("month") int month, @Param("year") int year,
 			@Param("empIds") List<Integer> empIds);
 
 }
