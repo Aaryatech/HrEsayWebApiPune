@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
@@ -39,6 +40,8 @@ import com.ats.hrmgt.model.LateMarkListForInsertAdvance;
 import com.ats.hrmgt.model.MstEmpType;
 import com.ats.hrmgt.model.PayRollDataForProcessing;
 import com.ats.hrmgt.model.ProductionIncentiveList;
+import com.ats.hrmgt.model.RoasterSummeryDetail;
+import com.ats.hrmgt.model.RoasterSummeryDetailRepository;
 import com.ats.hrmgt.model.SalAllownceCal;
 import com.ats.hrmgt.model.SalAllownceTemp;
 import com.ats.hrmgt.model.SalaryCalc;
@@ -133,6 +136,9 @@ public class PayrollApiController {
 
 	@Autowired
 	EmpSalInfoDaiyInfoTempInfoRepo empSalInfoDaiyInfoTempInfoRepo;
+
+	@Autowired
+	RoasterSummeryDetailRepository roasterSummeryDetailRepository;
 
 	@Autowired
 	SalaryCalcRepo salaryCalcRepo;
@@ -667,8 +673,19 @@ public class PayrollApiController {
 		List<EmpSalInfoDaiyInfoTempInfo> getSalaryTempList = new ArrayList<>();
 		try {
 
-			Date dt = new Date();
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			Setting setting = settingRepo.findByKey("designation_id");
+
+			Date firstDay = new GregorianCalendar(year, month - 1, 1).getTime();
+			Date lastDay = new GregorianCalendar(year, month, 0).getTime();
+
+			String fromDate = sf.format(firstDay);
+			String toDate = sf.format(lastDay);
+
+			List<RoasterSummeryDetail> roasterSummeryDetailList = roasterSummeryDetailRepository
+					.getRoasterSummeryDetailForPayRoll(fromDate, toDate, Integer.parseInt(setting.getValue()));
+
+			Date dt = new Date();
 			String date = sf.format(dt);
 			String[] dates = date.split("-");
 
@@ -1240,6 +1257,16 @@ public class PayrollApiController {
 				} catch (Exception e) {
 					// e.printStackTrace();
 				}
+
+				for (int k = 0; k < roasterSummeryDetailList.size(); k++) {
+
+					if (roasterSummeryDetailList.get(k).getEmpId() == getSalaryTempList.get(i).getEmpId()) {
+						getSalaryTempList.get(i).setBhatta(roasterSummeryDetailList.get(k).getIncentive());
+						break;
+					}
+
+				}
+
 				getSalaryTempList.get(i).setTotPfAdminCh(castNumber(
 						(getSalaryTempList.get(i).getEpsWages() * tot_pf_admin_ch_percentage), amount_round));
 				getSalaryTempList.get(i).setTotEdliCh(
@@ -1259,7 +1286,8 @@ public class PayrollApiController {
 				getSalaryTempList.get(i).setNetSalary(castNumber((getSalaryTempList.get(i).getGrossSalaryDytemp()
 						+ getSalaryTempList.get(i).getPerformanceBonus() + getSalaryTempList.get(i).getMiscExpAdd()
 						+ getSalaryTempList.get(i).getReward() + getSalaryTempList.get(i).getOtWages()
-						+ getSalaryTempList.get(i).getProductionInsentive() + getSalaryTempList.get(i).getNightAllow())
+						+ getSalaryTempList.get(i).getProductionInsentive() + getSalaryTempList.get(i).getNightAllow()
+						+ getSalaryTempList.get(i).getBhatta())
 						- (getSalaryTempList.get(i).getAdvanceDed() + getSalaryTempList.get(i).getLoanDed()
 								+ getSalaryTempList.get(i).getPayDed() + getSalaryTempList.get(i).getEsic()
 								+ getSalaryTempList.get(i).getEmployeePf() + getSalaryTempList.get(i).getPtDed()
@@ -1758,7 +1786,8 @@ public class PayrollApiController {
 				SalaryCalc.setReward(salList.get(i).getReward());
 				SalaryCalc.setNightRate(salList.get(i).getNightRate());
 				SalaryCalc.setOtRate(salList.get(i).getOtRate());
-
+				SalaryCalc.setBhatta(salList.get(i).getBhatta());
+				
 				SalaryCalc saveres = salaryCalcRepo.save(SalaryCalc);
 
 				List<SalAllownceCal> allowlist = new ArrayList<>();
@@ -2060,7 +2089,7 @@ public class PayrollApiController {
 				list.get(i).setMlwf(castNumber(list.get(i).getMlwf(), amount_round));
 				list.get(i).setPayDed(castNumber(list.get(i).getPayDed(), amount_round));
 				list.get(i).setItded(castNumber(list.get(i).getItded(), amount_round));
-
+				list.get(i).setBhatta(castNumber(list.get(i).getBhatta(), amount_round));
 				list.get(i).setNetSalary(castNumber(list.get(i).getNetSalary(), amount_round));
 
 				long sal = (long) list.get(i).getNetSalary();
@@ -2436,6 +2465,5 @@ public class PayrollApiController {
 
 		return list;
 	}
- 
 
 }
