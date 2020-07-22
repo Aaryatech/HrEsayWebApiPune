@@ -302,19 +302,20 @@ public interface GetDailyDailyRecordRepository extends JpaRepository<GetDailyDai
 			"        d.emp_type ,\n" + 
 			"        et.wh_work as emp_json ,\n" + 
 			"        d.atsumm_uid ,\n" + 
-			"        ifnull((select CONCAT(m_employees.first_name,' ',m_employees.surname) from m_employees,leave_authority where leave_authority.emp_id=m_employees.emp_id and leave_authority.emp_id=e.emp_id),'-') as file_name ,\n" + 
+			"        ifnull((select ifnull(( select CONCAT(m_employees.first_name, ' ', m_employees.surname) from m_employees where la.ini_auth_emp_id=m_employees.emp_id),'-') as name from \n" + 
+			"        leave_authority la where la.emp_id=e.emp_id  ), '-') as file_name ,\n" + 
 			"        d.row_id,\n" + 
-			"        d.atts_sd_show \n" + 
+			"        d.atts_sd_show      \n" + 
 			"    FROM\n" + 
 			"        tbl_attt_daily_daily d,\n" + 
 			"        m_employees e,\n" + 
 			"        m_department dep,\n" + 
-			"        tbl_mst_emp_types et \n" + 
+			"        tbl_mst_emp_types et      \n" + 
 			"    WHERE\n" + 
-			"        d.att_date between :date and :date          \n" + 
-			"        and d.emp_id=e.emp_id                  \n" + 
-			"        and e.depart_id=dep.depart_id         \n" + 
-			"        and e.emp_type=et.emp_type_id ", nativeQuery = true)
+			"        d.att_date between :date and :date                   \n" + 
+			"        and d.emp_id=e.emp_id                           \n" + 
+			"        and e.depart_id=dep.depart_id                  \n" + 
+			"        and e.emp_type=et.emp_type_id", nativeQuery = true)
 	List<GetDailyDailyRecord> getDailyDailyRecordForHrByDate(@Param("date") String date);
 
 	@Query(value = " SELECT\n" + 
