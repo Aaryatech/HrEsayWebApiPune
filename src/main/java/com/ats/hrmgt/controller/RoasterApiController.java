@@ -248,6 +248,28 @@ public class RoasterApiController {
 
 	}
 
+	@RequestMapping(value = { "/updateRouteName" }, method = RequestMethod.POST)
+	public @ResponseBody Info updateRouteName(@RequestParam("planDetailId") int planDetailId,
+			@RequestParam("rountName") String rountName, @RequestParam("incentive") float incentive) {
+
+		Info info = new Info();
+
+		try {
+
+			int update = routePlanDetailRepo.updateRouteName(planDetailId, rountName, incentive);
+
+			info.setMsg("updated");
+			info.setError(false);
+		} catch (Exception e) {
+			info.setMsg("error");
+			info.setError(true);
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
 	@RequestMapping(value = { "/changeLateMarkInRoaster" }, method = RequestMethod.POST)
 	public @ResponseBody Info changeLateMarkInRoaster(@RequestParam("planDetailId") int planDetailId,
 			@RequestParam("lateMark") int lateMark, @RequestParam("lateMin") int lateMin,
