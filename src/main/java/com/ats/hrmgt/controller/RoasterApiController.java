@@ -250,13 +250,14 @@ public class RoasterApiController {
 
 	@RequestMapping(value = { "/updateRouteName" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateRouteName(@RequestParam("planDetailId") int planDetailId,
-			@RequestParam("rountName") String rountName, @RequestParam("incentive") float incentive) {
+			@RequestParam("routeName") String routeName, @RequestParam("frNameChange") String frNameChange,
+			@RequestParam("incentive") float incentive,@RequestParam("kmChange") int kmChange) {
 
 		Info info = new Info();
 
 		try {
 
-			int update = routePlanDetailRepo.updateRouteName(planDetailId, rountName, incentive);
+			int update = routePlanDetailRepo.updateRouteName(planDetailId, routeName, incentive,frNameChange,kmChange);
 
 			info.setMsg("updated");
 			info.setError(false);

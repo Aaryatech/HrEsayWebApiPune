@@ -39,8 +39,8 @@ public interface RoutePlanDetailRepo extends JpaRepository<RoutePlanDetail, Inte
 
 	@Transactional
 	@Modifying
-	@Query("update RoutePlanDetail set route_name=:rountName,incentive=:incentive WHERE plan_detail_id=:planDetailId")
+	@Query("update RoutePlanDetail set route_name=:rountName,incentive=:incentive,fr_name=:frNameChange,km=:kmChange WHERE plan_detail_id=:planDetailId")
 	int updateRouteName(@Param("planDetailId") int planDetailId, @Param("rountName") String rountName,
-			@Param("incentive") float incentive);
+			@Param("incentive") float incentive, @Param("frNameChange") String frNameChange,@Param("kmChange") int kmChange);
 
 }

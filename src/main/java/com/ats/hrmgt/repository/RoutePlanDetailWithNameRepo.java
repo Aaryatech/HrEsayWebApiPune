@@ -44,7 +44,7 @@ public interface RoutePlanDetailWithNameRepo extends JpaRepository<RoutePlanDeta
 			"        ph.plan_date between :fromDate and :toDate \n" + 
 			"        and pd.plan_head_id=ph.plan_head_id \n" + 
 			"        and emp.emp_id=:empId and emp.emp_id=pd.driver_id \n" + 
-			"        and emp.del_status=1", nativeQuery = true)
+			"        and emp.del_status=1 order by ph.plan_date", nativeQuery = true)
 	List<RoutePlanDetailWithName> getDriverPlanListByEmpId(@Param("fromDate") String fromDate, @Param("toDate") String toDate,@Param("empId") int empId);
 
 	
