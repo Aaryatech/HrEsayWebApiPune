@@ -128,6 +128,7 @@ public class RoasterApiController {
 					routePlanDetail.setPlanHeadId(routePlanHeader.getPlanHeadId());
 					routePlanDetail.setDriverId(list.get(i).getEmpId());
 					routePlanDetail.setDelStatus(1);
+					routePlanDetail.setIsoffdayIsff(1);
 					routePlanDetaillist.add(routePlanDetail);
 				}
 
@@ -251,13 +252,14 @@ public class RoasterApiController {
 	@RequestMapping(value = { "/updateRouteName" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateRouteName(@RequestParam("planDetailId") int planDetailId,
 			@RequestParam("routeName") String routeName, @RequestParam("frNameChange") String frNameChange,
-			@RequestParam("incentive") float incentive,@RequestParam("kmChange") int kmChange) {
+			@RequestParam("incentive") float incentive, @RequestParam("kmChange") int kmChange) {
 
 		Info info = new Info();
 
 		try {
 
-			int update = routePlanDetailRepo.updateRouteName(planDetailId, routeName, incentive,frNameChange,kmChange);
+			int update = routePlanDetailRepo.updateRouteName(planDetailId, routeName, incentive, frNameChange,
+					kmChange);
 
 			info.setMsg("updated");
 			info.setError(false);

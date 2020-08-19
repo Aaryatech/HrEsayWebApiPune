@@ -1812,7 +1812,8 @@ public class AttendanceApiControllerchange {
 
 	@RequestMapping(value = { "/getAttendanceSheet" }, method = RequestMethod.POST)
 	public @ResponseBody AttendanceSheetData getAttendanceSheet(@RequestParam("fromDate") String fromDate,
-			@RequestParam("toDate") String toDate) {
+			@RequestParam("toDate") String toDate, @RequestParam("userType") int userType,
+			@RequestParam("userId") int userId) {
 
 		AttendanceSheetData info = new AttendanceSheetData();
 		try {
@@ -1828,10 +1829,20 @@ public class AttendanceApiControllerchange {
 			 * temp.get(Calendar.YEAR); int month = temp.get(Calendar.MONTH) + 1;
 			 */
 
-			List<EmpInfo> empList = empInfoRepository.getEmpListAll(fromDate);
+			List<EmpInfo> empList = new ArrayList<>();
 
-			List<DailyAttendance> dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAll(fromDate,
-					toDate);
+			List<DailyAttendance> dailyAttendanceList = new ArrayList<>();
+
+			if (userType == 1) {
+
+				empList = empInfoRepository.getEmpListForHod(fromDate, userId);
+				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForHod(fromDate, toDate, userId);
+
+			} else {
+
+				empList = empInfoRepository.getEmpListAll(fromDate);
+				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAll(fromDate, toDate);
+			}
 
 			List<String> dates = new ArrayList<>();
 			List<DateAndDay> dateAndDayList = new ArrayList<>();
@@ -1919,12 +1930,21 @@ public class AttendanceApiControllerchange {
 
 	@RequestMapping(value = { "/getMonthlySummryAttendace" }, method = RequestMethod.POST)
 	public @ResponseBody List<SummaryAttendance> getMonthlySummryAttendace(@RequestParam("month") int month,
-			@RequestParam("year") int year) {
+			@RequestParam("year") int year, @RequestParam("userType") int userType,
+			@RequestParam("userId") int userId) {
 
 		List<SummaryAttendance> summaryDailyAttendanceList = new ArrayList<>();
 		try {
 
-			summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListAll(month, year);
+			if (userType == 1) {
+
+				summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListForHod(month, year,
+						userId);
+
+			} else {
+
+				summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListAll(month, year);
+			}
 
 		} catch (Exception e) {
 

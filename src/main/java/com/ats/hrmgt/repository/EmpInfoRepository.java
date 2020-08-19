@@ -56,4 +56,25 @@ public interface EmpInfoRepository extends JpaRepository<EmpInfo, Integer> {
 			+ "where e.emp_id=emp_sal.emp_id and e.del_status=1 and e.designation_id=:design and (emp_sal.cmp_leaving_date IS NULL or emp_sal.cmp_leaving_date='' or emp_sal.cmp_leaving_date=1970-00-00 or  date_format(emp_sal.cmp_leaving_date,'%Y-%m')>=date_format(:fromDate,'%Y-%m'))", nativeQuery = true)
 	List<EmpInfo> getEmpListAllForRoaster(@Param("fromDate") String fromDate,@Param("design") int design);
 
+	@Query(value = "SELECT\n" + 
+			"        e.*,\n" + 
+			"        emp_sal.cmp_joining_date,\n" + 
+			"        emp_sal.sal_basis,\n" + 
+			"        emp_sal.salary_type_id  \n" + 
+			"    FROM\n" + 
+			"        m_employees e,\n" + 
+			"        tbl_emp_salary_info emp_sal,\n" + 
+			"        leave_authority la\n" + 
+			"    where\n" + 
+			"        e.emp_id=emp_sal.emp_id \n" + 
+			"        and e.del_status=1 and la.emp_id=e.emp_id           \n" + 
+			"        and la.ini_auth_emp_id=:userId \n" + 
+			"        and (\n" + 
+			"            emp_sal.cmp_leaving_date IS NULL \n" + 
+			"            or emp_sal.cmp_leaving_date='' \n" + 
+			"            or emp_sal.cmp_leaving_date=1970-00-00 \n" + 
+			"            or  date_format(emp_sal.cmp_leaving_date,'%Y-%m')>=date_format(:fromDate,'%Y-%m')\n" + 
+			"        )", nativeQuery = true)
+	List<EmpInfo> getEmpListForHod(@Param("fromDate") String fromDate,@Param("userId") int userId);
+
 }
