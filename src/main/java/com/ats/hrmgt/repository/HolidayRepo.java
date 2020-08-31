@@ -44,4 +44,7 @@ public interface HolidayRepo extends JpaRepository<Holiday, Integer> {
 			+ "and holiday_fromdt not in (select holidate from t_optional_holiday where emp_id=:empId and (status=0 or status=1) and year_id=cal_yr_id)", nativeQuery = true)
 	List<Holiday> getHolidayListforoptionalHoliday(@Param("date") String date,@Param("yearId") int yearId, @Param("catId") int catId,@Param("empId") int empId);
 
+	@Query(value = "select * from m_holiday where cal_yr_id=:yearId and ex_int1=:catId and del_status=1", nativeQuery = true)
+	List<Holiday> getHolidayByYearIdAndCateId(int yearId, int catId);
+
 }

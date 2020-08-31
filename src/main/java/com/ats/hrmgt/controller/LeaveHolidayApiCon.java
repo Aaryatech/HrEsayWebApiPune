@@ -218,6 +218,30 @@ public class LeaveHolidayApiCon {
 
 	}
 
+	
+	@RequestMapping(value = { "/getHolidayByYearIdAndCateId" }, method = RequestMethod.POST)
+	public @ResponseBody List<Holiday> getHolidayByYearIdAndCateId(@RequestParam("yearId") int yearId,
+			@RequestParam("catId") int catId) {
+
+		List<Holiday> holiday = new ArrayList<>();
+		try {
+
+			holiday = holidayRepo.getHolidayByYearIdAndCateId(yearId, catId);
+			/*
+			 * holiday.setHolidayFromdt(DateConvertor.convertToDMY(holiday.getHolidayFromdt(
+			 * )));
+			 * holiday.setHolidayTodt(DateConvertor.convertToDMY(holiday.getHolidayTodt()));
+			 */
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return holiday;
+
+	}
+
 	@RequestMapping(value = { "/deleteHoliday" }, method = RequestMethod.POST)
 	public @ResponseBody Info deleteHoliday(@RequestParam("holidayId") int holidayId) {
 
@@ -247,13 +271,14 @@ public class LeaveHolidayApiCon {
 	}
 
 	@RequestMapping(value = { "/deleteHolidayByGroup" }, method = RequestMethod.POST)
-	public @ResponseBody Info deleteHolidayByGroup(@RequestParam("catid") int catid,@RequestParam("yearId") int yearId) {
+	public @ResponseBody Info deleteHolidayByGroup(@RequestParam("catid") int catid,
+			@RequestParam("yearId") int yearId) {
 
 		Info info = new Info();
 
 		try {
 
-			int delete = holidayRepo.deleteHolidayByGroup(yearId,catid);
+			int delete = holidayRepo.deleteHolidayByGroup(yearId, catid);
 
 			if (delete > 0) {
 				info.setError(false);
@@ -273,7 +298,7 @@ public class LeaveHolidayApiCon {
 		return info;
 
 	}
-	
+
 	// -----------Leave Authority-----------------------
 
 	@RequestMapping(value = { "/saveLeaveAuthority" }, method = RequestMethod.POST)
@@ -489,25 +514,25 @@ public class LeaveHolidayApiCon {
 		return info;
 
 	}
-	
-	//Sachin 30-04-2020
+
+	// Sachin 30-04-2020
 	@RequestMapping(value = { "/getHolidayCountsByDate" }, method = RequestMethod.POST)
-	public @ResponseBody Integer getHolidayCountsByDate(@RequestParam int holidayId,@RequestParam String holidaytDate) {
-		int holidayCount=0;
+	public @ResponseBody Integer getHolidayCountsByDate(@RequestParam int holidayId,
+			@RequestParam String holidaytDate) {
+		int holidayCount = 0;
 		try {
-			if(holidayId<1) {
-			holidayCount = holidayMasterRepo.getCountOfHolidayByDate(holidaytDate);
-			}
-			else {
+			if (holidayId < 1) {
+				holidayCount = holidayMasterRepo.getCountOfHolidayByDate(holidaytDate);
+			} else {
 				holidayCount = holidayMasterRepo.getCountOfHolidayByDateForEdit(holidaytDate, holidayId);
 			}
 
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			holidayCount=1;
+			holidayCount = 1;
 		}
-		System.err.println("holidayCount " +holidayCount);
+		System.err.println("holidayCount " + holidayCount);
 		return holidayCount;
-}
+	}
 
 }
