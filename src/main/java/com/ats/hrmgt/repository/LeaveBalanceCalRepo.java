@@ -23,4 +23,6 @@ public interface LeaveBalanceCalRepo extends JpaRepository<LeaveBalanceCal, Inte
 	@Modifying
 	@Query("update LeaveBalanceCal set ex_int1=0,ex_var1=:date  WHERE cal_yr_id=:yearId AND emp_id in (:empId)")
 	int updateIsPaidIncash(int yearId, List<Integer> empId,String date);
+
+	List<LeaveBalanceCal> findByCalYrIdAndEmpId(int yearId, int empId);
 }

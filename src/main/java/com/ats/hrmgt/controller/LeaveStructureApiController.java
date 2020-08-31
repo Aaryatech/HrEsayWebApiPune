@@ -252,12 +252,11 @@ public class LeaveStructureApiController {
 
 			save = leaveAllotmentRepository.saveAndFlush(leavesAllotment);
 			if (save != null) {
-				System.out.println("*************Hii");
+
 				save.setError(false);
 
 				List<LeaveStructureDetails> leaveStructureDetailsList = leaveStructureDetailsRepo
 						.findByLvsIdAndDelStatus(save.getLvsId(), 1);
-				System.out.println(leaveStructureDetailsList.toString());
 
 				for (int j = 0; j < leaveStructureDetailsList.size(); j++) {
 
@@ -279,10 +278,7 @@ public class LeaveStructureApiController {
 
 					leaveBalanceCal.setLvTypeId(leaveStructureDetailsList.get(j).getLvTypeId());
 
-					System.out.println("--------------" + leaveBalanceCal.toString());
-
 					LeaveBalanceCal leaveBalanccRes = leaveBalanceCalRepo.saveAndFlush(leaveBalanceCal);
-					System.out.println(leaveBalanccRes.toString());
 				}
 
 			} else {
@@ -297,6 +293,56 @@ public class LeaveStructureApiController {
 			e.printStackTrace();
 		}
 		return save;
+
+	}
+
+	@RequestMapping(value = { "/getLeaveAllotmentByKey" }, method = RequestMethod.POST)
+	public @ResponseBody LeavesAllotment getLeaveAllotmentByKey(@RequestParam("lvsaPkey") int lvsaPkey) {
+
+		LeavesAllotment list = new LeavesAllotment();
+		try {
+
+			list = leaveAllotmentRepository.getLeaveAllotmentByKey(lvsaPkey);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/updateLeaveStructure" }, method = RequestMethod.POST)
+	public @ResponseBody Info updateLeaveStructure(@RequestParam("lvsaPkey") int lvsaPkey,
+			@RequestParam("lvsId") int lvsId, @RequestParam("empId") int empId, @RequestParam("yearId") int yearId) {
+
+		Info info = new Info();
+		try {
+
+			int update = leaveAllotmentRepository.updateLeaveStructureBylvsaPkey(lvsId, lvsaPkey);
+			List<LeaveStructureDetails> leaveStructureDetailsList = leaveStructureDetailsRepo
+					.findByLvsIdAndDelStatus(lvsId, 1);
+
+			List<LeaveBalanceCal> balList = leaveBalanceCalRepo.findByCalYrIdAndEmpId(yearId, empId);
+
+			for (int i = 0; i < leaveStructureDetailsList.size(); i++) {
+
+				for (int j = 0; j < balList.size(); j++) {
+
+					if (balList.get(j).getLvTypeId() == leaveStructureDetailsList.get(i).getLvTypeId()) {
+
+					}
+
+				}
+
+			}
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
 
 	}
 
