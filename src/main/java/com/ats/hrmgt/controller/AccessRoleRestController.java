@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.hrmgt.model.AccessRightModule;
 import com.ats.hrmgt.model.AccessRightSubModule;
 import com.ats.hrmgt.model.EmpType;
+import com.ats.hrmgt.model.GetAccessibleLocation;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.LoginResponse;
 import com.ats.hrmgt.repository.AccessRightModuleRepository;
 import com.ats.hrmgt.repository.AccessRightSubModuleRepository;
 import com.ats.hrmgt.repository.EmpTypeRepository;
+import com.ats.hrmgt.repository.GetAccessibleLocationeRepository;
 import com.ats.hrmgt.repository.LoginResponseRepository;
 
 @RestController
@@ -37,6 +39,9 @@ public class AccessRoleRestController {
 
 	@Autowired
 	LoginResponseRepository loginResponseRepository;
+	
+	@Autowired
+	GetAccessibleLocationeRepository getAccessibleLocationeRepository;
 
 	@RequestMapping(value = { "/loginProcess" }, method = RequestMethod.POST)
 	public @ResponseBody LoginResponse loginProcess(@RequestParam("username") String username,
@@ -64,6 +69,25 @@ public class AccessRoleRestController {
 		} catch (Exception e) {
 			loginResponse = new LoginResponse();
 			loginResponse.setIsError(true);
+			e.printStackTrace();
+		}
+
+		return loginResponse;
+
+	}
+	
+	@RequestMapping(value = { "/getAccessibleLocationAndPresentLocation" }, method = RequestMethod.POST)
+	public @ResponseBody GetAccessibleLocation getAccessibleLocationAndPresentLocation(@RequestParam("empId") int empId) {
+
+		GetAccessibleLocation loginResponse = new GetAccessibleLocation();
+		try {
+
+		 
+			loginResponse = getAccessibleLocationeRepository.getAccessibleLocationAndPresentLocation(empId);
+ 
+		} catch (Exception e) {
+			loginResponse = new GetAccessibleLocation();
+			loginResponse.setError(true);
 			e.printStackTrace();
 		}
 
