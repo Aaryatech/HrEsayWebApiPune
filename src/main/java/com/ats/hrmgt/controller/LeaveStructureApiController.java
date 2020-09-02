@@ -320,6 +320,10 @@ public class LeaveStructureApiController {
 		Info info = new Info();
 		try {
 
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date now = new Date();
+			String dateTime = dateFormat.format(now);
+
 			int update = leaveAllotmentRepository.updateLeaveStructureBylvsaPkey(lvsId, lvsaPkey);
 			List<LeaveStructureDetails> leaveStructureDetailsList = leaveStructureDetailsRepo
 					.findByLvsIdAndDelStatus(lvsId, 1);
@@ -328,15 +332,43 @@ public class LeaveStructureApiController {
 
 			for (int i = 0; i < leaveStructureDetailsList.size(); i++) {
 
+				int flag = 0;
+
 				for (int j = 0; j < balList.size(); j++) {
 
 					if (balList.get(j).getLvTypeId() == leaveStructureDetailsList.get(i).getLvTypeId()) {
 
+						flag = 1;
+						break;
 					}
 
 				}
 
+				if (flag == 0) {
+					LeaveBalanceCal leaveBalanceCal = new LeaveBalanceCal();
+
+					leaveBalanceCal.setCalYrId(yearId);
+					leaveBalanceCal.setDelStatus(1);
+					leaveBalanceCal.setEmpId(empId);
+					leaveBalanceCal.setIsActive(1);
+					leaveBalanceCal.setLvAlloted(0);
+					leaveBalanceCal.setLvbalId(0);
+					leaveBalanceCal.setLvCarryFwd(0);
+					leaveBalanceCal.setLvCarryFwdRemarks("Null");
+					leaveBalanceCal.setLvEncash(0);
+					leaveBalanceCal.setOpBal(0);
+					leaveBalanceCal.setMakerUserId(1);
+					leaveBalanceCal.setMakerEnterDatetime(dateTime);
+					leaveBalanceCal.setLvEncashRemarks("Null");
+					leaveBalanceCal.setLvTypeId(leaveStructureDetailsList.get(i).getLvTypeId());
+					balList.add(leaveBalanceCal);
+
+				}
+
 			}
+
+			List<LeaveBalanceCal> leaveBalanccRes = leaveBalanceCalRepo.saveAll(balList);
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
