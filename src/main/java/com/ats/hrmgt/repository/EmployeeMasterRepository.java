@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.ats.hrmgt.model.EmployeeMaster;
+import com.ats.hrmgt.model.Location;
 import com.ats.hrmgt.model.TblEmpBankInfo;
 
 import java.lang.String;
@@ -188,6 +189,10 @@ public interface EmployeeMasterRepository extends JpaRepository<EmployeeMaster, 
 			"                )\n" + 
 			"            ) and  del_status=1 and location_id=:locId", nativeQuery = true)
 	List<EmployeeMaster> getemplistwhichisnotyearendByEmpId(@Param("locId") int locId);
+
+
+	@Query(value = " SELECT * FROM m_employees WHERE del_status=1 and location_id in (:locId)", nativeQuery = true)
+	List<EmployeeMaster> getEmplistForAssignAuthorityAll(@Param("locId")List<Location> locId);
  
 
 	

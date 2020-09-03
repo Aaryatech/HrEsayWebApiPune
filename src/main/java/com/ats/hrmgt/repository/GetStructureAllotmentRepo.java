@@ -71,6 +71,28 @@ public interface GetStructureAllotmentRepo extends JpaRepository<GetStructureAll
 	List<GetStructureAllotment> getStructureAllotmentForProb(@Param("companyId") int companyId,
 			@Param("locIdList") List<Integer> locIdList, @Param("calYrId") int calYrId,@Param("lvsId") int lvsId);
 
+
+	@Query(value = "SELECT\n" + 
+			"    e.emp_id,\n" + 
+			"    e.emp_code,\n" + 
+			"    e.first_name AS emp_fname,\n" + 
+			"    e.middle_name AS emp_mname,\n" + 
+			"    e.surname AS emp_sname,\n" + 
+			"    dep.name AS emp_dept_name,\n" + 
+			"    dg.name AS emp_cat_name,\n" + 
+			"    l.lvs_name\n" + 
+			"FROM\n" + 
+			"    m_employees e\n" + 
+			"LEFT JOIN leave_structure_allotment lsa ON\n" + 
+			"    e.emp_id = lsa.emp_id AND lsa.cal_yr_id = :calYrId\n" + 
+			"LEFT JOIN leave_structure_header l ON\n" + 
+			"    lsa.lvs_id = l.lvs_id AND l.del_status = 1\n" + 
+			"LEFT JOIN m_designation dg ON\n" + 
+			"    e.designation_id = dg.desig_id\n" + 
+			"LEFT JOIN m_department dep ON\n" + 
+			"    e.depart_id = dep.depart_id where e.del_status=1 and e.location_id in (:locId)", nativeQuery = true)
+	List<GetStructureAllotment> getStructureAllotmentListLocId(@Param("calYrId")int calYrId, @Param("locId")List<Integer> locId);
+
 	/*
 	 * SELECT e.emp_id,e.emp_code,e.emp_fname,e.emp_mname,e.emp_sname
 	 * ,d.emp_dept_name, c.emp_cat_name ,l.lvs_name FROM emp_info e LEFT JOIN
