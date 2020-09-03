@@ -136,8 +136,6 @@ public class MasterApiController {
 		return list;
 
 	}
-	
-	
 
 	@Autowired
 	LeaveStructureDetailsRepo leaveStructureDetailsRepo;
@@ -267,10 +265,10 @@ public class MasterApiController {
 	 * 
 	 * }
 	 */
-	
+
 	@Autowired
 	WeekoffCategoryRepo weekoffCategoryRepo;
-	
+
 	@RequestMapping(value = { "/checkUniqueDeptDesgn" }, method = RequestMethod.POST)
 	public @ResponseBody Info checkUniqueField(@RequestParam String inputValue, @RequestParam int valueType,
 			@RequestParam int isEditCall, @RequestParam int primaryKey, @RequestParam("compId") int compId) {
@@ -279,10 +277,9 @@ public class MasterApiController {
 //1- dept,2-desgn
 		List<Department> dept = new ArrayList<Department>();
 		List<Designation> desgn = new ArrayList<Designation>();
-		
+
 		List<HolidayCategory> hoCatList = new ArrayList<HolidayCategory>();
 		List<WeekoffCategory> woCatList = new ArrayList<WeekoffCategory>();
-
 
 		if (valueType == 1) {
 			// System.err.println("Its Dept check");
@@ -322,14 +319,15 @@ public class MasterApiController {
 			}
 
 		}
-		
+
 		else if (valueType == 3) {
- 			if (isEditCall == 0) {
-		 
+			if (isEditCall == 0) {
+
 				hoCatList = holidayCategoryRepo.findByHoCatNameAndCompanyId(inputValue, compId);
 			} else {
-				 
-				hoCatList = holidayCategoryRepo.findByHoCatNameAndCompanyIdAndHoCatIdNot(inputValue.trim(), compId, primaryKey);
+
+				hoCatList = holidayCategoryRepo.findByHoCatNameAndCompanyIdAndHoCatIdNot(inputValue.trim(), compId,
+						primaryKey);
 			}
 
 			if (hoCatList.size() <= 0) {
@@ -341,15 +339,15 @@ public class MasterApiController {
 
 			}
 
-		} 
-		else if (valueType == 4) {
+		} else if (valueType == 4) {
 			System.err.println("Its Week cat check");
 			if (isEditCall == 0) {
-			 System.err.println("Its New Record Insert ");
-			 woCatList = weekoffCategoryRepo.findByWoCatNameAndCompanyId(inputValue, compId);
+				System.err.println("Its New Record Insert ");
+				woCatList = weekoffCategoryRepo.findByWoCatNameAndCompanyId(inputValue, compId);
 			} else {
 				System.err.println("Its Edit Record ");
-				woCatList = weekoffCategoryRepo.findByWoCatNameAndCompanyIdAndWoCatIdNot(inputValue.trim(), compId, primaryKey);
+				woCatList = weekoffCategoryRepo.findByWoCatNameAndCompanyIdAndWoCatIdNot(inputValue.trim(), compId,
+						primaryKey);
 			}
 
 			if (woCatList.size() <= 0) {
@@ -362,7 +360,6 @@ public class MasterApiController {
 			}
 
 		}
-
 
 		return info;
 
@@ -507,7 +504,7 @@ public class MasterApiController {
 	@RequestMapping(value = { "/getLocationsByIds" }, method = RequestMethod.POST)
 	public @ResponseBody List<Location> getLocationsByIds(@RequestParam List<Location> locIds) {
 
-		 List<Location> locs= new ArrayList<Location>();
+		List<Location> locs = new ArrayList<Location>();
 		try {
 
 			locs = locationRepository.getLocationsByIds(locIds);
@@ -520,7 +517,7 @@ public class MasterApiController {
 		return locs;
 
 	}
-	
+
 	@RequestMapping(value = { "/getCalculateYearListIsCurrent" }, method = RequestMethod.GET)
 	public @ResponseBody CalenderYear getCalculateYearListIsCurrent() {
 
@@ -559,8 +556,7 @@ public class MasterApiController {
 		return calendearYear;
 
 	}
-	
-	
+
 	@Autowired
 	GetEmployeeDetailsRepo getEmployeeDetailsRepo;
 
@@ -580,7 +576,7 @@ public class MasterApiController {
 		return list;
 
 	}
-	
+
 	@RequestMapping(value = { "/getEmplistForAssignAuthorityAll" }, method = RequestMethod.GET)
 	public @ResponseBody List<EmployeeMaster> getEmplistForAssignAuthorityAll() {
 
@@ -615,6 +611,41 @@ public class MasterApiController {
 
 	}
 
+	@RequestMapping(value = { "/getEmpInfoListForLeaveAuthLocId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetEmployeeDetails> getEmpInfoListForLeaveAuthLocId(
+			@RequestParam("locId") List<Integer> locId) {
+
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+
+			list = getEmployeeDetailsRepo.getEmpInfoListForLeaveAuthLocId(locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/getEmpInfoListForLeaveAuthLocId" }, method = RequestMethod.GET)
+	public @ResponseBody List<GetEmployeeDetails> getEmpInfoListForLeaveAuthLocId() {
+
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+
+			list = getEmployeeDetailsRepo.getEmpListByCompanyIdForAuth();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
 	@RequestMapping(value = { "/getEmpInfoListByEmpIdList" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetEmployeeDetails> getEmpInfoListByEmpIdList(
 			@RequestParam("empIdList") List<Integer> empIdList) {
@@ -623,8 +654,6 @@ public class MasterApiController {
 		try {
 
 			list = getEmployeeDetailsRepo.getEmpListByCompanyIdAndEmpIdList(empIdList);
-
-		 
 
 		} catch (Exception e) {
 
@@ -657,9 +686,9 @@ public class MasterApiController {
 	}
 
 	@RequestMapping(value = { "/getAuthorityWiseEmpListByEmpId" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetEmployeeDetails>  getAuthorityWiseEmpListByEmpId(@RequestParam("empId") int empId) {
+	public @ResponseBody List<GetEmployeeDetails> getAuthorityWiseEmpListByEmpId(@RequestParam("empId") int empId) {
 
-		List<GetEmployeeDetails>  list = new ArrayList<GetEmployeeDetails>();
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
 		try {
 
 			list = getEmployeeDetailsRepo.getAuthorityWiseEmpListByEmpId(empId);
@@ -672,11 +701,11 @@ public class MasterApiController {
 		return list;
 
 	}
-	
+
 	@RequestMapping(value = { "/getEmpListForClaimAuthByEmpId" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetEmployeeDetails> getEmpListForClaimAuthByEmpId(@RequestParam("empId") int empId) {
 
-		List<GetEmployeeDetails>  list = new ArrayList<GetEmployeeDetails>();
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
 		try {
 
 			list = getEmployeeDetailsRepo.getEmpListForClaimAuthByEmpId(empId);
@@ -689,11 +718,12 @@ public class MasterApiController {
 		return list;
 
 	}
-	
-	@RequestMapping(value = { "/getAuthorityWiseEmpListByEmpIdForApp" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetEmployeeDetails>  getAuthorityWiseEmpListByEmpIdForApp(@RequestParam("empId") int empId) {
 
-		List<GetEmployeeDetails>  list = new ArrayList<GetEmployeeDetails>();
+	@RequestMapping(value = { "/getAuthorityWiseEmpListByEmpIdForApp" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetEmployeeDetails> getAuthorityWiseEmpListByEmpIdForApp(
+			@RequestParam("empId") int empId) {
+
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
 		try {
 
 			list = getEmployeeDetailsRepo.getAuthorityWiseEmpListByEmpIdForApp(empId);
@@ -741,7 +771,7 @@ public class MasterApiController {
 		return shiftList;
 
 	}
-	
+
 	@RequestMapping(value = { "/getShiftListByLpad" }, method = RequestMethod.POST)
 	public @ResponseBody List<ShiftMaster> getShiftListByLpad() {
 
@@ -758,7 +788,7 @@ public class MasterApiController {
 		return shiftList;
 
 	}
-	
+
 	@RequestMapping(value = { "/getShiftListByLpadForShiftAllocation" }, method = RequestMethod.POST)
 	public @ResponseBody List<ShiftMaster> getShiftListByLpadForShiftAllocation() {
 
@@ -838,7 +868,7 @@ public class MasterApiController {
 		return selfGrouptList;
 
 	}
-	
+
 	@RequestMapping(value = { "/getSelftGroupListForAddShift" }, method = RequestMethod.GET)
 	public @ResponseBody List<SelfGroup> getSelftGroupListForAddShift() {
 
@@ -937,13 +967,12 @@ public class MasterApiController {
 	}
 
 	@RequestMapping(value = { "/getShiftListByGroupIdandlocId" }, method = RequestMethod.POST)
-	public @ResponseBody List<ShiftMaster> getShiftListByGroupIdandlocId(
-			@RequestParam("groupId") int groupId) {
+	public @ResponseBody List<ShiftMaster> getShiftListByGroupIdandlocId(@RequestParam("groupId") int groupId) {
 
 		List<ShiftMaster> shiftList = new ArrayList<>();
 		try {
 
-			shiftList = shiftMasterRepository.getShiftListByGroupIdandlocId( groupId);
+			shiftList = shiftMasterRepository.getShiftListByGroupIdandlocId(groupId);
 
 		} catch (Exception e) {
 
@@ -997,8 +1026,7 @@ public class MasterApiController {
 		return list;
 
 	}
-	
-	
+
 	@RequestMapping(value = { "/getHolidayCategoryHoCatId" }, method = RequestMethod.POST)
 	public @ResponseBody HolidayCategory getHolidayCategoryHoCatId(@RequestParam("hoCatId") int hoCatId) {
 
@@ -1025,7 +1053,7 @@ public class MasterApiController {
 		Info info = new Info();
 
 		try {
-			List<Holiday> lvsDet = holidayRepo.findByExInt1AndDelStatus(Integer.parseInt(hoCatId),1);
+			List<Holiday> lvsDet = holidayRepo.findByExInt1AndDelStatus(Integer.parseInt(hoCatId), 1);
 
 			if (lvsDet.size() <= 0) {
 
@@ -1055,11 +1083,7 @@ public class MasterApiController {
 		return info;
 
 	}
-	
-	
-	
 
-	
 	@RequestMapping(value = { "/saveWeekoffCat" }, method = RequestMethod.POST)
 	public @ResponseBody WeekoffCategory saveWeekoffCat(@RequestBody WeekoffCategory holiCat) {
 
@@ -1101,8 +1125,7 @@ public class MasterApiController {
 		return list;
 
 	}
-	
-	
+
 	@RequestMapping(value = { "/getWeekoffCategoryHoCatId" }, method = RequestMethod.POST)
 	public @ResponseBody WeekoffCategory getWeekoffCategoryHoCatId(@RequestParam("woCatId") int woCatId) {
 
@@ -1129,7 +1152,7 @@ public class MasterApiController {
 		Info info = new Info();
 
 		try {
-			List<WeeklyOff> lvsDet = weeklyOffRepo.findByExInt1AndDelStatus(Integer.parseInt(woCatId),1);
+			List<WeeklyOff> lvsDet = weeklyOffRepo.findByExInt1AndDelStatus(Integer.parseInt(woCatId), 1);
 
 			if (lvsDet.size() <= 0) {
 
@@ -1159,9 +1182,10 @@ public class MasterApiController {
 		return info;
 
 	}
-	
+
 	@Autowired
 	SkillRatesRepo skillRatesRepo;
+
 	@RequestMapping(value = { "/getSkillRateList" }, method = RequestMethod.GET)
 	public @ResponseBody List<SkillRates> getSkillRateList() {
 
@@ -1169,9 +1193,8 @@ public class MasterApiController {
 		try {
 
 			list = skillRatesRepo.findByDelStatusOrderBySkillIdDesc(1);
-			
-			
-			System.err.println("SkillRates---"+list.toString());
+
+			System.err.println("SkillRates---" + list.toString());
 
 		} catch (Exception e) {
 
@@ -1181,9 +1204,7 @@ public class MasterApiController {
 		return list;
 
 	}
-	
-	
-	
+
 	@RequestMapping(value = { "/saveSkillRate" }, method = RequestMethod.POST)
 	public @ResponseBody SkillRates saveSkillRate(@RequestBody SkillRates skill) {
 
@@ -1199,7 +1220,7 @@ public class MasterApiController {
 			} else {
 				save.setError(false);
 			}
-			 
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -1209,8 +1230,6 @@ public class MasterApiController {
 
 	}
 
-	 
-	
 	@RequestMapping(value = { "/getSkillById" }, method = RequestMethod.POST)
 	public @ResponseBody SkillRates getSkillById(@RequestParam("skillId") int skillId) {
 
@@ -1227,17 +1246,17 @@ public class MasterApiController {
 		return skill;
 
 	}
- 
 
 	@Autowired
 	EmployeeMasterRepository EmployeeMasterRepository;
+
 	@RequestMapping(value = { "/deleteSkillRate" }, method = RequestMethod.POST)
-	public @ResponseBody Info deleteSkillRate(@RequestParam("skillId") int  skillId) {
+	public @ResponseBody Info deleteSkillRate(@RequestParam("skillId") int skillId) {
 
 		Info info = new Info();
 
 		try {
-			List<EmployeeMaster> lvsDet = weeklyOffRepo.findByExInt2AndDelStatus(skillId,1);
+			List<EmployeeMaster> lvsDet = weeklyOffRepo.findByExInt2AndDelStatus(skillId, 1);
 
 			if (lvsDet.size() <= 0) {
 
@@ -1267,5 +1286,5 @@ public class MasterApiController {
 		return info;
 
 	}
-	
+
 }

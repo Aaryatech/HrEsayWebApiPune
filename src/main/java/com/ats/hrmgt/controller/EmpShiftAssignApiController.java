@@ -57,6 +57,19 @@ public class EmpShiftAssignApiController {
 		return list;
 	}
 
+	@RequestMapping(value = { "/getAllEmployeeDetailBylocationId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailBylocationId(@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailBylocationId(locId);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
 	@RequestMapping(value = { "/getAllEmployeeDetailAccesibleLoc" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailAccesibleLoc() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -85,6 +98,21 @@ public class EmpShiftAssignApiController {
 		return list;
 	}
 
+	@RequestMapping(value = { "/getAllEmployeeDetailSkillRateLocId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailSkillRateLocId(@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+
+			System.err.println("skill");
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailSkillRateLocId(locId);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
 	@RequestMapping(value = { "/getAllEmployeeDetailShiftGroup" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailShiftGroup() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -106,6 +134,21 @@ public class EmpShiftAssignApiController {
 		try {
 
 			list = getEmployeeDetailsRepo.getAllEmployeeDetailAccesssRole();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	@RequestMapping(value = { "/getAllEmployeeDetailAccesssRoleLocId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailAccesssRole(@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailAccesssRoleLocId(locId);
 
 		} catch (Exception e) {
 
@@ -153,7 +196,8 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	//Sachin 7-06-2020 get multiple emp detail by comma sepe empIds
+
+	// Sachin 7-06-2020 get multiple emp detail by comma sepe empIds
 	@RequestMapping(value = { "/getEmpDetailByEmpIds" }, method = RequestMethod.POST)
 	public List<GetEmployeeDetails> getEmpDetailByEmpIds(@RequestParam("empIds") List<String> empIds) {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -522,6 +566,19 @@ public class EmpShiftAssignApiController {
 		return list;
 	}
 
+	@RequestMapping(value = { "/getAllEmployeeDetailForLoginTypeLocId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailForLoginTypeLocId(@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailForLoginTypeLocId(locId);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	// location accessible code 03-09-2020
 	// Sachin 05-05-2020
 
 	// Employee Company Assignment
@@ -538,6 +595,20 @@ public class EmpShiftAssignApiController {
 		return list;
 	}
 
+	@RequestMapping(value = { "/getAllEmployeeDetailassignSubCompanyLocId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailassignSubCompanyLocId(
+			@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailassignSubCompanyLocId(locId);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
 	@RequestMapping(value = { "/getAllEmployeeDetailshowAssignEmpType" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailshowAssignEmpType() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -545,6 +616,21 @@ public class EmpShiftAssignApiController {
 			list = getEmployeeDetailsRepo.getAllEmployeeDetailshowAssignEmpType();
 		} catch (Exception e) {
 			System.err.println("Excep in getAllEmployeeDetailassignSubCompany : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	@RequestMapping(value = { "/getAllEmployeeDetailshowAssignEmpTypeLocId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailshowAssignEmpTypeLocId(
+			@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailshowAssignEmpTypeLocId(locId);
+
+		} catch (Exception e) {
+
 			e.printStackTrace();
 		}
 
@@ -565,6 +651,20 @@ public class EmpShiftAssignApiController {
 		return list;
 	}
 
+	@RequestMapping(value = { "/getAllEmployeeDetailshowAssignDesignationLocId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailshowAssignDesignationLocId(
+			@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailshowAssignDesignationLocId(locId);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
 	// Employee Department Assignment
 	@RequestMapping(value = { "/getAllEmployeeDetailassignDept" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailassignDept() {
@@ -573,6 +673,18 @@ public class EmpShiftAssignApiController {
 			list = getEmployeeDetailsRepo.getAllEmployeeDetailassignDept();
 		} catch (Exception e) {
 			System.err.println("Excep in getAllEmployeeDetailassignDept : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	@RequestMapping(value = { "/getAllEmployeeDetailassignDeptlocId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailassignDeptlocId(@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailassignDeptlocId(locId);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -606,6 +718,20 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
+
+	@RequestMapping(value = { "/getAllEmployeeDetailassignHolidayCategoryLocId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailassignHolidayCategoryLocId(
+			@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailassignHolidayCategoryLocId(locId);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 	// Employee Weekly Off Category Assignment
 
 	@RequestMapping(value = { "/getAllEmployeeDetailassignWeekoffCategory" }, method = RequestMethod.GET)
@@ -615,6 +741,20 @@ public class EmpShiftAssignApiController {
 			list = getEmployeeDetailsRepo.getAllEmployeeDetailassignWeekoffCategory();
 		} catch (Exception e) {
 			System.err.println("Excep in getAllEmployeeDetailassignWeekoffCategory : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	@RequestMapping(value = { "/getAllEmployeeDetailassignWeekoffCategoryLocId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailassignWeekoffCategoryLocId(
+			@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailassignWeekoffCategoryLocId(locId);
+		} catch (Exception e) {
+
 			e.printStackTrace();
 		}
 
@@ -635,6 +775,19 @@ public class EmpShiftAssignApiController {
 		return list;
 	}
 
+	@RequestMapping(value = { "/getAllEmployeeDetailshowEmpListToAssignSalStructLocId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailshowEmpListToAssignSalStructLocId(
+			@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailshowEmpListToAssignSalStructLocId(locId);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 	// Employee Shift Assignment
 
 	@RequestMapping(value = { "/getAllEmployeeDetailshowEmpListToAssignShift" }, method = RequestMethod.GET)
@@ -664,8 +817,9 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	//Sachin 05-06-2020
-	//Get Employees Eligible for Loan/Guarantor
+
+	// Sachin 05-06-2020
+	// Get Employees Eligible for Loan/Guarantor
 	@RequestMapping(value = { "/getEmpsForLoanOrGuarantor" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getEmpsForLoanOrGuarantor() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();

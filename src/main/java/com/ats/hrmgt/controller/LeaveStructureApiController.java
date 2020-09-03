@@ -176,7 +176,7 @@ public class LeaveStructureApiController {
 		List<GetLeaveAuthority> list = new ArrayList<GetLeaveAuthority>();
 		try {
 
-			list = getLeaveAuthorityRepo.getLeaveAuth();
+			list = getLeaveAuthorityRepo.getLeaveAuth(locIdList);
 
 			/*
 			 * for (int i = 0; i < list.size(); i++) {
