@@ -2029,12 +2029,12 @@ public class AttendanceApiControllerchange {
 
 	@RequestMapping(value = { "/getDailyDailyRecordForOtApproval" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetDailyDailyRecord> getDailyDailyRecordForOtApproval(@RequestParam("date") String date,
-			@RequestParam("empId") int empId) {
+			@RequestParam("empId") int empId, @RequestParam("locId") List<Integer> locId) {
 
 		List<GetDailyDailyRecord> summaryDailyAttendanceList = new ArrayList<>();
 		try {
 
-			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForOtApproval(date, empId);
+			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForOtApproval(date, empId,locId);
 
 		} catch (Exception e) {
 
@@ -2047,13 +2047,13 @@ public class AttendanceApiControllerchange {
 
 	@RequestMapping(value = { "/getDailyDailyRecordForFinalOtApproval" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetDailyDailyRecord> getDailyDailyRecordForFinalOtApproval(
-			@RequestParam("date") String date, @RequestParam("empId") int empId) {
+			@RequestParam("date") String date, @RequestParam("empId") int empId,@RequestParam("locId") List<Integer> locId) {
 
 		List<GetDailyDailyRecord> summaryDailyAttendanceList = new ArrayList<>();
 		try {
 
 			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForFinalOtApproval(date,
-					empId);
+					empId,locId);
 
 		} catch (Exception e) {
 

@@ -107,8 +107,8 @@ public interface GetDailyDailyRecordRepository extends JpaRepository<GetDailyDai
 			"            where\n" + 
 			"                ini_auth_emp_id =:empId\n" + 
 			"        ) \n" + 
-			"        and ot_hr>0 and e.emp_id=dl.emp_id and e.emp_type=et.emp_type_id and et.ot_applicable='Yes'", nativeQuery = true)
-	List<GetDailyDailyRecord> getDailyDailyRecordForOtApproval(@Param("date") String date,@Param("empId") int empId);
+			"        and ot_hr>0 and e.emp_id=dl.emp_id and e.emp_type=et.emp_type_id and et.ot_applicable='Yes' and e.location_id in (:locId)", nativeQuery = true)
+	List<GetDailyDailyRecord> getDailyDailyRecordForOtApproval(@Param("date") String date,@Param("empId") int empId, @Param("locId") List<Integer> locId);
 
 	
 	@Query(value = "SELECT\n" + 
@@ -181,8 +181,8 @@ public interface GetDailyDailyRecordRepository extends JpaRepository<GetDailyDai
 			"            where\n" + 
 			"                fin_auth_emp_id =:empId\n" + 
 			"        ) \n" + 
-			"        and ot_hr>0 and e.emp_id=dl.emp_id and e.emp_type=et.emp_type_id and et.ot_applicable='Yes'", nativeQuery = true)
-	List<GetDailyDailyRecord> getDailyDailyRecordForFinalOtApproval(@Param("date") String date,@Param("empId") int empId);
+			"        and ot_hr>0 and e.emp_id=dl.emp_id and e.emp_type=et.emp_type_id and et.ot_applicable='Yes' and e.location_id in (:locId)", nativeQuery = true)
+	List<GetDailyDailyRecord> getDailyDailyRecordForFinalOtApproval(@Param("date") String date,@Param("empId") int empId, @Param("locId") List<Integer> locId);
 
 	/*@Query(value = " SELECT\n" + 
 			"        d.id ,\n" + 
