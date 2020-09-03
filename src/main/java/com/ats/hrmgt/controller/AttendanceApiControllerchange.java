@@ -1813,7 +1813,7 @@ public class AttendanceApiControllerchange {
 	@RequestMapping(value = { "/getAttendanceSheet" }, method = RequestMethod.POST)
 	public @ResponseBody AttendanceSheetData getAttendanceSheet(@RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("userType") int userType,
-			@RequestParam("userId") int userId,@RequestParam("locId") List<Integer> locId) {
+			@RequestParam("userId") int userId, @RequestParam("locId") List<Integer> locId) {
 
 		AttendanceSheetData info = new AttendanceSheetData();
 		try {
@@ -1840,8 +1840,8 @@ public class AttendanceApiControllerchange {
 
 			} else {
 
-				empList = empInfoRepository.getEmpListAlllocId(fromDate,locId);
-				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAlllocId(fromDate, toDate,locId);
+				empList = empInfoRepository.getEmpListAlllocId(fromDate, locId);
+				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAlllocId(fromDate, toDate, locId);
 			}
 
 			List<String> dates = new ArrayList<>();
@@ -1930,8 +1930,8 @@ public class AttendanceApiControllerchange {
 
 	@RequestMapping(value = { "/getMonthlySummryAttendace" }, method = RequestMethod.POST)
 	public @ResponseBody List<SummaryAttendance> getMonthlySummryAttendace(@RequestParam("month") int month,
-			@RequestParam("year") int year, @RequestParam("userType") int userType,
-			@RequestParam("userId") int userId,@RequestParam("locId") List<Integer> locId) {
+			@RequestParam("year") int year, @RequestParam("userType") int userType, @RequestParam("userId") int userId,
+			@RequestParam("locId") List<Integer> locId) {
 
 		List<SummaryAttendance> summaryDailyAttendanceList = new ArrayList<>();
 		try {
@@ -1939,10 +1939,11 @@ public class AttendanceApiControllerchange {
 			if (userType == 1) {
 
 				summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListForHod(month, year,
-						userId); 
+						userId);
 			} else {
 
-				summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListAlllocId(month, year,locId);
+				summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListAlllocId(month, year,
+						locId);
 			}
 
 		} catch (Exception e) {
@@ -1997,7 +1998,7 @@ public class AttendanceApiControllerchange {
 		List<GetDailyDailyRecord> summaryDailyAttendanceList = new ArrayList<>();
 		try {
 
-			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForHrByDateLocId(date,locId);
+			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForHrByDateLocId(date, locId);
 
 		} catch (Exception e) {
 
@@ -2473,13 +2474,14 @@ public class AttendanceApiControllerchange {
 
 	@RequestMapping(value = { "/getListForfixunfixAttendance" }, method = RequestMethod.POST)
 	public @ResponseBody List<EmpSalaryInfoForPayroll> getListForfixunfixAttendance(@RequestParam("month") int month,
-			@RequestParam("year") int year, @RequestParam("isFixed") int isFixed, @RequestParam("sts") String sts) {
+			@RequestParam("year") int year, @RequestParam("isFixed") int isFixed, @RequestParam("sts") String sts,
+			@RequestParam("locId") List<Integer> locId) {
 
 		List<EmpSalaryInfoForPayroll> list = new ArrayList<>();
 
 		try {
 
-			list = empSalaryInfoForPayrollRepository.getListForfixunfixAttendance(month, year, isFixed, sts);
+			list = empSalaryInfoForPayrollRepository.getListForfixunfixAttendance(month, year, isFixed, sts,locId);
 
 		} catch (Exception e) {
 
