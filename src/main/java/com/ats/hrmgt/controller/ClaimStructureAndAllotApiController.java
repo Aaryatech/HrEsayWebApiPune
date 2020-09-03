@@ -160,7 +160,7 @@ public class ClaimStructureAndAllotApiController {
 
 		List<GetClaimStructureAllotment> list = new ArrayList<GetClaimStructureAllotment>();
 		try {
-			list = getClaimStructureAllotment.getStructureAllotment(companyId);
+			list = getClaimStructureAllotment.getStructureAllotment(companyId,locIdList);
 
 			System.out.println(list.toString());
 

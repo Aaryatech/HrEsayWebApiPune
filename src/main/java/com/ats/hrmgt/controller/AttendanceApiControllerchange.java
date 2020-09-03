@@ -1813,7 +1813,7 @@ public class AttendanceApiControllerchange {
 	@RequestMapping(value = { "/getAttendanceSheet" }, method = RequestMethod.POST)
 	public @ResponseBody AttendanceSheetData getAttendanceSheet(@RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("userType") int userType,
-			@RequestParam("userId") int userId) {
+			@RequestParam("userId") int userId,@RequestParam("locId") List<Integer> locId) {
 
 		AttendanceSheetData info = new AttendanceSheetData();
 		try {
@@ -1840,8 +1840,8 @@ public class AttendanceApiControllerchange {
 
 			} else {
 
-				empList = empInfoRepository.getEmpListAll(fromDate);
-				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAll(fromDate, toDate);
+				empList = empInfoRepository.getEmpListAlllocId(fromDate,locId);
+				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAlllocId(fromDate, toDate,locId);
 			}
 
 			List<String> dates = new ArrayList<>();
@@ -1931,7 +1931,7 @@ public class AttendanceApiControllerchange {
 	@RequestMapping(value = { "/getMonthlySummryAttendace" }, method = RequestMethod.POST)
 	public @ResponseBody List<SummaryAttendance> getMonthlySummryAttendace(@RequestParam("month") int month,
 			@RequestParam("year") int year, @RequestParam("userType") int userType,
-			@RequestParam("userId") int userId) {
+			@RequestParam("userId") int userId,@RequestParam("locId") List<Integer> locId) {
 
 		List<SummaryAttendance> summaryDailyAttendanceList = new ArrayList<>();
 		try {
@@ -1939,11 +1939,10 @@ public class AttendanceApiControllerchange {
 			if (userType == 1) {
 
 				summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListForHod(month, year,
-						userId);
-
+						userId); 
 			} else {
 
-				summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListAll(month, year);
+				summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListAlllocId(month, year,locId);
 			}
 
 		} catch (Exception e) {
@@ -1981,6 +1980,24 @@ public class AttendanceApiControllerchange {
 		try {
 
 			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForHrByDate(date);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return summaryDailyAttendanceList;
+
+	}
+
+	@RequestMapping(value = { "/getDailyDailyRecordForHrByDateLocId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetDailyDailyRecord> getDailyDailyRecordForHrByDateLocId(
+			@RequestParam("date") String date, @RequestParam("locId") List<Integer> locId) {
+
+		List<GetDailyDailyRecord> summaryDailyAttendanceList = new ArrayList<>();
+		try {
+
+			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForHrByDateLocId(date,locId);
 
 		} catch (Exception e) {
 
@@ -2513,6 +2530,26 @@ public class AttendanceApiControllerchange {
 
 	}
 
+	@RequestMapping(value = { "/getEmployyeDailyDailyListByAuthorityLocId" }, method = RequestMethod.POST)
+	public @ResponseBody List<DailyAttendance> getEmployyeDailyDailyListByAuthorityLocId(
+			@RequestParam("date") String date, @RequestParam("empId") int empId,
+			@RequestParam("locId") List<Integer> locId) {
+
+		List<DailyAttendance> dailyAttendanceList = new ArrayList<>();
+		try {
+
+			dailyAttendanceList = dailyAttendanceRepository.getEmployyeDailyDailyListByAuthorityLocId(date, empId,
+					locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return dailyAttendanceList;
+
+	}
+
 	@RequestMapping(value = { "/getEmployyeDailyDailyListforHr" }, method = RequestMethod.POST)
 	public @ResponseBody List<DailyAttendance> getEmployyeDailyDailyListforHr(@RequestParam("date") String date,
 			@RequestParam("desgType") int desgType, @RequestParam("departIds") List<Integer> departIds) {
@@ -2521,6 +2558,24 @@ public class AttendanceApiControllerchange {
 		try {
 
 			dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForSecurityApprove(date);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return dailyAttendanceList;
+
+	}
+
+	@RequestMapping(value = { "/getEmployyeDailyDailyListforHrLocId" }, method = RequestMethod.POST)
+	public @ResponseBody List<DailyAttendance> getEmployyeDailyDailyListforHrLocId(@RequestParam("date") String date,
+			@RequestParam("desgType") int desgType, @RequestParam("locId") List<Integer> locId) {
+
+		List<DailyAttendance> dailyAttendanceList = new ArrayList<>();
+		try {
+
+			dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForSecurityApproveLocId(date, locId);
 
 		} catch (Exception e) {
 

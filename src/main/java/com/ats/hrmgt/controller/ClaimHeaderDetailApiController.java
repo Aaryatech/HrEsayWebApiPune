@@ -182,13 +182,13 @@ public class ClaimHeaderDetailApiController {
 
 	}
 
-	@RequestMapping(value = { "/getClaimHeaderToChangeDate" }, method = RequestMethod.GET)
-	public @ResponseBody List<ClaimApplyHeader> getClaimHeaderToChangeDate() {
+	@RequestMapping(value = { "/getClaimHeaderToChangeDate" }, method = RequestMethod.POST)
+	public @ResponseBody List<ClaimApplyHeader> getClaimHeaderToChangeDate(@RequestParam("locId") List<Integer> locId) {
 
 		List<ClaimApplyHeader> list = new ArrayList<ClaimApplyHeader>();
 		try {
 
-			list = claimHeaderRepo.getClaimHeaderListByCompanyId();
+			list = claimHeaderRepo.getClaimHeaderListByCompanyIdlocId(locId);
 
 		} catch (Exception e) {
 
@@ -208,7 +208,7 @@ public class ClaimHeaderDetailApiController {
 
 		try {
 
-			int delete = claimHeaderRepo.updatePaid(dateTimeUpdate,userId,clmHeadId,month,year);
+			int delete = claimHeaderRepo.updatePaid(dateTimeUpdate, userId, clmHeadId, month, year);
 
 			if (delete > 0) {
 				info.setError(false);

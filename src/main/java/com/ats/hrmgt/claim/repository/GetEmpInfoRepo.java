@@ -237,9 +237,9 @@ public interface GetEmpInfoRepo extends JpaRepository<GetEmployeeInfo, Integer> 
 			"                claim_authority claim  \n" + 
 			"            WHERE\n" + 
 			"                claim.del_status=1 \n" + 
-			"        ) ", nativeQuery = true)
+			"        ) and emp_info.location_id in (:locIdList)", nativeQuery = true)
 
-	List<GetEmployeeInfo> getEmpListByCompanyIdForAuthClaim(@Param("companyId") int companyId);
+	List<GetEmployeeInfo> getEmpListByCompanyIdForAuthClaim(@Param("companyId") int companyId,@Param("locIdList") List<Integer> locIdList);
 	 
 	@Query(value = " SELECT\n" + 
 			"    emp_info.emp_code,\n" + 
