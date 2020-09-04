@@ -2034,7 +2034,7 @@ public class AttendanceApiControllerchange {
 		List<GetDailyDailyRecord> summaryDailyAttendanceList = new ArrayList<>();
 		try {
 
-			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForOtApproval(date, empId,locId);
+			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForOtApproval(date, empId);
 
 		} catch (Exception e) {
 
@@ -2053,7 +2053,7 @@ public class AttendanceApiControllerchange {
 		try {
 
 			summaryDailyAttendanceList = getDailyDailyRecordRepository.getDailyDailyRecordForFinalOtApproval(date,
-					empId,locId);
+					empId);
 
 		} catch (Exception e) {
 

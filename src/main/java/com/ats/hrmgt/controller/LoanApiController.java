@@ -269,6 +269,25 @@ public class LoanApiController {
 
 	}
 
+	@RequestMapping(value = { "/getLoanHistoryEmpWiseLocId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetLoan> getLoanHistoryEmpWiseLocId(@RequestParam("status") String status,
+			@RequestParam("calYrId") String calYrId, @RequestParam("companyId") int companyId,
+			@RequestParam("locId") List<Integer> locId) {
+
+		List<GetLoan> list = new ArrayList<GetLoan>();
+		try {
+
+			list = getLoanRepo.getLoanHistoryEmpWiseLocId(companyId, status, calYrId,locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+	
 	@RequestMapping(value = { "/getLoanHistoryEmpWiseForCompany" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetLoan> getLoanHistoryEmpWise(@RequestParam("companyId") int companyId) {
 
@@ -276,6 +295,23 @@ public class LoanApiController {
 		try {
 
 			list = getLoanRepo.getLoanHistoryEmpwiseComp(companyId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+	
+	@RequestMapping(value = { "/getLoanHistoryEmpWiseForCompanyLocId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetLoan> getLoanHistoryEmpWiseForCompanyLocId(@RequestParam("locId") List<Integer> locId) {
+
+		List<GetLoan> list = new ArrayList<GetLoan>();
+		try {
+
+			list = getLoanRepo.getLoanHistoryEmpWiseForCompanyLocId(locId);
 
 		} catch (Exception e) {
 
