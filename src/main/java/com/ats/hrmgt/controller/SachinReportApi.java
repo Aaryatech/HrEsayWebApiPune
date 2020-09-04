@@ -22,7 +22,7 @@ public class SachinReportApi {
 	
 	@RequestMapping(value = { "/getHodDashboard" }, method = RequestMethod.POST)
 	public @ResponseBody List<HodDashboard> getHodDashboard(
-			@RequestParam("deptIdList")  List<Integer> deptIdList, @RequestParam("locIdList") List<Integer> locIdList,
+		 	@RequestParam("deptIdList")  List<Integer> deptIdList, @RequestParam("locIdList") List<Integer> locIdList,
 			@RequestParam("cmFromDate") String cmFromDate, @RequestParam("cmToDate") String cmToDate,
 			@RequestParam("pmFromDate") String pmFromDate, @RequestParam("pmToDate") String pmToDate) {
 
