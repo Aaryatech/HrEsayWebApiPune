@@ -288,8 +288,8 @@ public class AttendanceApiControllerchange {
 			 * SimpleDateFormat("HH:mm:ss");
 			 * System.out.println(date_format.format(cal1.getTime()));
 			 */
-			jdbcTemplate.batchUpdate(dailyDailyQuery);
-			jdbcTemplate.batchUpdate(dailyDailySummryQuery);
+			/*jdbcTemplate.batchUpdate(dailyDailyQuery);
+			jdbcTemplate.batchUpdate(dailyDailySummryQuery);*/
 
 			// query=query.substring(0, query.length()-1);
 			// dailyAttendanceRepository.insert(query);
