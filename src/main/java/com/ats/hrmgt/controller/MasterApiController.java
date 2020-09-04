@@ -594,6 +594,24 @@ public class MasterApiController {
 
 	}
 
+	@RequestMapping(value = { "/getEmplistForAssignAuthorityAllByLocId" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmployeeMaster> getEmplistForAssignAuthorityAllByLocId(
+			@RequestParam("locId") List<Location> locId) {
+
+		List<EmployeeMaster> list = new ArrayList<>();
+		try {
+
+			list = employeeMasterRepository.getEmplistForAssignAuthorityAll(locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
 	@RequestMapping(value = { "/getEmpInfoListForLeaveAuth" }, method = RequestMethod.GET)
 	public @ResponseBody List<GetEmployeeDetails> getEmpInfoListForLeaveAuth() {
 

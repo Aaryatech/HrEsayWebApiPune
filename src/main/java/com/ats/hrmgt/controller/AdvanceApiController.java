@@ -93,6 +93,23 @@ public class AdvanceApiController {
 		return list;
 
 	}
+	
+	@RequestMapping(value = { "/getPendingAdvanceLocId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetAdvance> getPendingAdvanceLocId(@RequestParam("companyId") int companyId,@RequestParam("locId") List<Integer> locId) {
+
+		List<GetAdvance> list = new ArrayList<GetAdvance>();
+		try {
+
+			list = getAdvanceRepo.getPendingAdvanceLocId(companyId,locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
 
 	@RequestMapping(value = { "/getAdvanceHistory" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetAdvance> getAdvanceHistory(@RequestParam("empId") int empId,

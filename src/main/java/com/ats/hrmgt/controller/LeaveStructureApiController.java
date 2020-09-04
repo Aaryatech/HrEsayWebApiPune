@@ -220,6 +220,27 @@ public class LeaveStructureApiController {
 
 	}
 
+	@RequestMapping(value = { "/getStructureAllotmentListLocId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetStructureAllotment> getStructureAllotmentListLocId(
+			@RequestParam("locId") List<Integer> locId) {
+
+		List<GetStructureAllotment> list = new ArrayList<GetStructureAllotment>();
+		try {
+
+			CalenderYear calYear = new CalenderYear();
+			calYear = calculateYearRepository.findByIsCurrent(1);
+
+			list = getStructureAllotmentRepo.getStructureAllotmentListLocId(calYear.getCalYrId(), locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
 	@RequestMapping(value = { "getLeaveAllotmentByCurrentCalender" }, method = RequestMethod.GET)
 	public @ResponseBody List<LeavesAllotment> getLeaveAllotmentByCurrentCalender() {
 
@@ -642,6 +663,23 @@ public class LeaveStructureApiController {
 		return list;
 	}
 
+	@RequestMapping(value = { "/getPendingListOfleaveCashLocId" }, method = RequestMethod.POST)
+	public @ResponseBody List<LeaveCashReport> getPendingListOfleaveCashLocId(@RequestParam("yearId") int yearId,
+			@RequestParam("locId") List<Integer> locId) {
+
+		List<LeaveCashReport> list = new ArrayList<>();
+
+		try {
+
+			list = leaveCashReportRepository.getPendingListOfleaveCashLocId(yearId, locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		return list;
+	}
+
 	@RequestMapping(value = { "/getPaidListOfleaveCash" }, method = RequestMethod.POST)
 	public @ResponseBody List<LeaveCashReport> getPaidListOfleaveCash(@RequestParam("yearId") int yearId) {
 
@@ -650,6 +688,23 @@ public class LeaveStructureApiController {
 		try {
 
 			list = leaveCashReportRepository.getPaidListOfleaveCash(yearId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	@RequestMapping(value = { "/getPaidListOfleaveCashLocId" }, method = RequestMethod.POST)
+	public @ResponseBody List<LeaveCashReport> getPaidListOfleaveCashLocId(@RequestParam("yearId") int yearId,
+			@RequestParam("locId") List<Integer> locId) {
+
+		List<LeaveCashReport> list = new ArrayList<>();
+
+		try {
+
+			list = leaveCashReportRepository.getPaidListOfleaveCashLocId(yearId,locId);
 
 		} catch (Exception e) {
 

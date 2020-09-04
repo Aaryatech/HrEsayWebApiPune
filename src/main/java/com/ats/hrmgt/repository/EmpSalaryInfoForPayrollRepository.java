@@ -168,9 +168,9 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			"                calc_month=:month \n" + 
 			"                and calc_year=:year\n" + 
 			"        ) and sd.total_days_inmonth=(SELECT count(*) FROM tbl_attt_daily_daily where YEAR(att_date) =sd.year "
-			+ "and MONTH(att_date) =sd.month and e.emp_id=tbl_attt_daily_daily.emp_id and is_fixed=:isFixed and rec_status=:sts) \n" + 
+			+ "and MONTH(att_date) =sd.month and e.emp_id=tbl_attt_daily_daily.emp_id and is_fixed=:isFixed and rec_status=:sts) and e.location_id=:locId\n" + 
 			"    order by\n" + 
 			"        e.emp_id", nativeQuery = true)
-	List<EmpSalaryInfoForPayroll> getListForfixunfixAttendance(int month, int year, int isFixed, String sts);
+	List<EmpSalaryInfoForPayroll> getListForfixunfixAttendance(int month, int year, int isFixed, String sts, List<Integer> locId);
 
 }

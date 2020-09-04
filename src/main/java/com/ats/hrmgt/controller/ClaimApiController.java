@@ -283,11 +283,11 @@ public class ClaimApiController {
 
 				String[] reportIds = list.get(i).getCaRepToEmpIds().split(",");
 				
-				System.err.println("rep to ids  "+reportIds.toString());
+				//System.err.println("rep to ids  "+reportIds.toString());
 
 				List<String> name = getLeaveAuthorityRepo.getEmpReportingName(reportIds);
 				list.get(i).setRePortingName(name);
-				System.err.println("rep to "+name.toString());
+				//System.err.println("rep to "+name.toString());
 			}
 
 		} catch (Exception e) {
