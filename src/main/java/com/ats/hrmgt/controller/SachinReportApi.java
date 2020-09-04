@@ -19,7 +19,7 @@ import com.ats.hrmgt.repo.report.HodDashboardRepo;
 public class SachinReportApi {
 
 	@Autowired HodDashboardRepo hodDashbRepo;
-	
+	//Sachin  04-09-2020
 	@RequestMapping(value = { "/getHodDashboard" }, method = RequestMethod.POST)
 	public @ResponseBody List<HodDashboard> getHodDashboard(
 		 	@RequestParam("deptIdList")  List<Integer> deptIdList, @RequestParam("locIdList") List<Integer> locIdList,

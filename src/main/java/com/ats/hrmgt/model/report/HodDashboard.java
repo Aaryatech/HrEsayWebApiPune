@@ -3,6 +3,8 @@ package com.ats.hrmgt.model.report;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+//Sachin  04-09-2020
+
 @Entity
 public class HodDashboard {
 
