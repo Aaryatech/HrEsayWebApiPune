@@ -184,13 +184,13 @@ public class PayrollApiController {
 
 	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForPayRoll" }, method = RequestMethod.POST)
 	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForPayRoll(@RequestParam("month") int month,
-			@RequestParam("year") int year) {
+			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId) {
 
 		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
 
 		try {
 			List<EmpSalaryInfoForPayroll> list = empSalaryInfoForPayrollRepository
-					.getEmployeeListWithEmpSalEnfoForPayRoll(month, year);
+					.getEmployeeListWithEmpSalEnfoForPayRoll(month, year, locId);
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
 			List<EmpSalAllowance> empAllowanceList = empSalAllowanceRepo.findByDelStatus(1);
 
@@ -1959,7 +1959,8 @@ public class PayrollApiController {
 	@RequestMapping(value = { "/getPayrollGenratedList" }, method = RequestMethod.POST)
 	@ResponseBody
 	public PayRollDataForProcessing getPayrollGenratedList(@RequestParam("month") int month,
-			@RequestParam("year") int year, @RequestParam("companyId") int companyId) {
+			@RequestParam("year") int year, @RequestParam("companyId") int companyId,
+			@RequestParam("locId") List<Integer> locId) {
 
 		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
 
@@ -1968,9 +1969,9 @@ public class PayrollApiController {
 			List<GetPayrollGeneratedList> list = new ArrayList<>();
 
 			if (companyId == 0) {
-				list = getPayrollGeneratedListRepo.getPayrollGenratedList(month, year);
+				list = getPayrollGeneratedListRepo.getPayrollGenratedListLocId(month, year,locId);
 			} else {
-				list = getPayrollGeneratedListRepo.getPayrollGenratedList(month, year, companyId);
+				list = getPayrollGeneratedListRepo.getPayrollGenratedListLocId(month, year, companyId,locId);
 			}
 
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
@@ -2455,7 +2456,7 @@ public class PayrollApiController {
 				list.get(i).setProduction(production);
 				list.get(i).setPerformance(performance);
 				list.get(i).setGetBhattaList(bhatta);
-				
+
 			}
 
 			payRollDataForProcessing.setPayrollGeneratedList(list);

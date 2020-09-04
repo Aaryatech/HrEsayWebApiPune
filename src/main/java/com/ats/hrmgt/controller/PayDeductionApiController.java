@@ -121,7 +121,18 @@ public class PayDeductionApiController {
 
 		return list;
 	}
-	
+	@RequestMapping(value = { "/getAllEmpPayDeductDetailLocId" }, method = RequestMethod.POST)
+	public List<PayDeductionDetailList> getAllEmpPayDeductDetailLocId(@RequestParam List<Integer> locId) {
+		List<PayDeductionDetailList> list = new ArrayList<PayDeductionDetailList>();
+		try {
+			list = deductDetailRepo.getAllEmpPayDeductDetailLocId(locId);
+		} catch (Exception e) {
+			 
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 	@RequestMapping(value = { "/getEmpPayDeductionById" }, method = RequestMethod.POST)
 	public PayDeductionDetailList getEmpPayDeductionById(@RequestParam int dedId) {
 		PayDeductionDetailList deduct = new PayDeductionDetailList();

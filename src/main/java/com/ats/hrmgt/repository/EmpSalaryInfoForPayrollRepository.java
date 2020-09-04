@@ -55,11 +55,11 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			"                calc_month=:month \n" + 
 			"                and calc_year=:year\n" + 
 			"        ) and sd.total_days_inmonth=(SELECT count(*) FROM tbl_attt_daily_daily where YEAR(att_date) =sd.year "
-			+ "and MONTH(att_date) =sd.month and e.emp_id=tbl_attt_daily_daily.emp_id and is_fixed=1 and rec_status='F') \n" + 
+			+ "and MONTH(att_date) =sd.month and e.emp_id=tbl_attt_daily_daily.emp_id and is_fixed=1 and rec_status='F') and e.location_id=:locId\n" + 
 			"    order by\n" + 
 			"        e.emp_id", nativeQuery = true)
 	List<EmpSalaryInfoForPayroll> getEmployeeListWithEmpSalEnfoForPayRoll(@Param("month") int month,
-			@Param("year") int year);
+			@Param("year") int year, @Param("locId") List<Integer> locId);
 
 	@Query(value = "select\n" + 
 			"        e.emp_code,e.sub_cmp_id,\n" + 
