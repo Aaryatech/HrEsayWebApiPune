@@ -457,14 +457,14 @@ public class EmpShiftAssignApiController {
 
 	}
 
-	@RequestMapping(value = { "/getCountOfAssignForAttendance" }, method = RequestMethod.GET)
-	public @ResponseBody CountOfAssignPending getCountOfAssignForAttendance() {
+	@RequestMapping(value = { "/getCountOfAssignForAttendance" }, method = RequestMethod.POST)
+	public @ResponseBody CountOfAssignPending getCountOfAssignForAttendance(@RequestParam("locId") int locId) {
 
 		CountOfAssignPending count = new CountOfAssignPending();
 
 		try {
 
-			count = countOfAssignPendingRepository.getCountOfAssignForAttendance();
+			count = countOfAssignPendingRepository.getCountOfAssignForAttendance(locId);
 
 		} catch (Exception e) {
 
