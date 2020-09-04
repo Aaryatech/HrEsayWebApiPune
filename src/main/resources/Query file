@@ -1,0 +1,42 @@
+HOD DB Query
+SELECT b.*,  coalesce((Present_Days	.cnt),
+        0) as present_days ,coalesce((WO_Actually_Covered.cnt),
+        0) as week_off_covered,
+        
+        coalesce((WIAB.cnt),
+        0) as ab_days,
+          coalesce((Last_month_pending_WO.cnt),
+        0) as last_month_pend_woff,
+         coalesce((OT_last_month.ot_minutes),
+        0) as ot_last_month,
+         coalesce((Working_Days.working_days),
+        0) as working_days
+        
+
+FROM (SELECT m_employees.emp_id,m_employees.first_name,m_employees.surname FROM m_employees) b
+      
+      LEFT JOIN (SELECT tbl_lvm_sumup.name_sd , COUNT(tbl_attt_daily_daily.lv_sumup_id) as cnt,tbl_attt_daily_daily.emp_id
+                 FROM tbl_attt_daily_daily, tbl_lvm_sumup WHERE tbl_attt_daily_daily.att_date BETWEEN '2020-08-01' AND '2020-08-31' AND  tbl_attt_daily_daily.lv_sumup_id=tbl_lvm_sumup.id and tbl_lvm_sumup.id=5 GROUP by  
+ tbl_attt_daily_daily.lv_sumup_id,tbl_attt_daily_daily.emp_id ) Present_Days on b.emp_id=Present_Days.emp_id
+ 
+ 
+  LEFT JOIN (SELECT tbl_lvm_sumup.name_sd , COUNT(tbl_attt_daily_daily.lv_sumup_id) as cnt,tbl_attt_daily_daily.emp_id
+                 FROM tbl_attt_daily_daily, tbl_lvm_sumup WHERE tbl_attt_daily_daily.att_date BETWEEN '2020-08-01' AND '2020-08-31' AND  tbl_attt_daily_daily.lv_sumup_id=tbl_lvm_sumup.id and tbl_lvm_sumup.id=12 GROUP by  
+ tbl_attt_daily_daily.lv_sumup_id,tbl_attt_daily_daily.emp_id ) WO_Actually_Covered	on b.emp_id=WO_Actually_Covered.emp_id
+  
+  LEFT JOIN (SELECT tbl_lvm_sumup.name_sd , COUNT(tbl_attt_daily_daily.lv_sumup_id) as cnt,tbl_attt_daily_daily.emp_id
+                 FROM tbl_attt_daily_daily, tbl_lvm_sumup WHERE tbl_attt_daily_daily.att_date BETWEEN '2020-08-01' AND '2020-08-31' AND  tbl_attt_daily_daily.lv_sumup_id=tbl_lvm_sumup.id and tbl_lvm_sumup.id=22 GROUP by  
+ tbl_attt_daily_daily.lv_sumup_id,tbl_attt_daily_daily.emp_id ) WIAB on b.emp_id=WIAB.emp_id
+ 
+ 
+   LEFT JOIN (SELECT tbl_lvm_sumup.name_sd , COUNT(tbl_attt_daily_daily.lv_sumup_id) as cnt,tbl_attt_daily_daily.emp_id
+                 FROM tbl_attt_daily_daily, tbl_lvm_sumup WHERE tbl_attt_daily_daily.att_date BETWEEN '2020-07-01' AND '2020-07-31' AND  tbl_attt_daily_daily.lv_sumup_id=tbl_lvm_sumup.id and tbl_lvm_sumup.id=12 GROUP by  
+ tbl_attt_daily_daily.lv_sumup_id,tbl_attt_daily_daily.emp_id ) Last_month_pending_WO	on b.emp_id=Last_month_pending_WO.emp_id
+ 
+ 
+ LEFT JOIN (SELECT sum(tbl_attt_daily_daily.ot_hr) as ot_minutes,tbl_attt_daily_daily.emp_id
+                 FROM tbl_attt_daily_daily WHERE tbl_attt_daily_daily.att_date BETWEEN '2020-07-01' AND '2020-07-31' and tbl_attt_daily_daily.freeze_by_supervisor=2  GROUP by
+ tbl_attt_daily_daily.emp_id ) OT_last_month	on b.emp_id=OT_last_month.emp_id
+ 
+LEFT JOIN ( SELECT tbl_attt_summary_daily.working_days,tbl_attt_summary_daily.emp_id FROM tbl_attt_summary_daily WHERE tbl_attt_summary_daily.month=month('2020-07-01') and 
+tbl_attt_summary_daily.year=year('2020-07-01') ) Working_Days on b.emp_id=Working_Days.emp_id
