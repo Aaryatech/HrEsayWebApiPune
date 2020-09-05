@@ -3143,6 +3143,16 @@ public class AttendanceApiControllerchange {
 
 			}
 
+			String[] dts = dataForUpdateAttendance.getFromDate().split("-");
+
+			Date firstDay = new GregorianCalendar(Integer.parseInt(dts[0]), Integer.parseInt(dts[1]) - 1, 1).getTime();
+			Date lastDay = new GregorianCalendar(Integer.parseInt(dts[0]), Integer.parseInt(dts[1]), 0).getTime();
+
+			int month = Integer.parseInt(dts[1]);
+			int year = Integer.parseInt(dts[0]);
+			Info info1 = finalUpdateDailySumaryRecord(sf.format(firstDay), sf.format(lastDay),
+					dataForUpdateAttendance.getUserId(), month, year, 0);
+
 			// System.out.println("dailyAttendanceList " + quiry);
 
 			// List<DailyAttendance> dailyAttendanceSaveRes =
