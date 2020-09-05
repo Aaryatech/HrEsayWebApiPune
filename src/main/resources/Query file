@@ -2,7 +2,7 @@ HOD DB Query
 SELECT b.*,  coalesce((Present_Days	.cnt),
         0) as present_days ,coalesce((WO_Actually_Covered.cnt),
         0) as week_off_covered,
-        
+         
         coalesce((WIAB.cnt),
         0) as ab_days,
           coalesce((Last_month_pending_WO.cnt),
