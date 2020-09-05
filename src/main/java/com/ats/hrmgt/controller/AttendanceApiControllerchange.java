@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.model.AttendaceLiveCount;
+import com.ats.hrmgt.model.AttendaceReturnInfo;
 import com.ats.hrmgt.model.AttendanceSheetData;
 import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.DailyDailyInfomationForChart;
@@ -45,6 +46,7 @@ import com.ats.hrmgt.model.Holiday;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.InfoForUploadAttendance;
 import com.ats.hrmgt.model.LeaveApply;
+import com.ats.hrmgt.model.LeaveCancelEmployee;
 import com.ats.hrmgt.model.LeaveStsAndLeaveId;
 import com.ats.hrmgt.model.LeaveTrail;
 import com.ats.hrmgt.model.LoginResponse;
@@ -1339,6 +1341,8 @@ public class AttendanceApiControllerchange {
 				// System.out.println("case type
 				// -----------------"+dailyAttendanceList.get(i).getCasetype());
 				if (dailyAttendanceList.get(i).getByFileUpdated() == 1) {
+					dailyAttendanceList.get(i).setCommentsSupervisor("8");
+
 					querysb.append("update\n" + "        tbl_attt_daily_daily \n" + "    set\n" + "        atsumm_uid='"
 							+ dailyAttendanceList.get(i).getAtsummUid() + "'," + "        att_date='"
 							+ dailyAttendanceList.get(i).getAttDate() + "'," + "        att_status='"
@@ -2870,13 +2874,13 @@ public class AttendanceApiControllerchange {
 	}
 
 	@RequestMapping(value = { "/importAttendanceByFileAndUpdateForPresentStatus" }, method = RequestMethod.POST)
-	public @ResponseBody Info importAttendanceByFileAndUpdateForPresentStatus(
+	public @ResponseBody AttendaceReturnInfo importAttendanceByFileAndUpdateForPresentStatus(
 			@RequestBody DataForUpdateAttendance dataForUpdateAttendance) {
 
-		Info info = new Info();
+		AttendaceReturnInfo info = new AttendaceReturnInfo();
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
-
+		List<LeaveCancelEmployee> list = new ArrayList<>();
 		try {
 
 			String fromDate = dataForUpdateAttendance.getFromDate();
@@ -2949,9 +2953,10 @@ public class AttendanceApiControllerchange {
 								// holiday : 3=holiday ,4: holiday NO
 								// leave : 5=leave ,6: no leave
 								// presentStatus : 7=present ,8: absent
-
+								dailyAttendanceList.get(i).setByFileUpdated(1);
 								dailyAttendanceList.get(i).setInTime(fileUploadedDataList.get(j).getInTime());
-
+								dailyAttendanceList.get(i).setOutTime("00:00:00");
+								dailyAttendanceList.get(i).setCommentsSupervisor("8");
 								int weekEndStatus = commonFunctionService.findDateInWeekEnd(sf.format(defaultDate),
 										sf.format(defaultDate), weeklyOfflist, weeklyOffShitList,
 										dailyAttendanceList.get(i).getLocationId(), employee.getWeekEndCatId(),
@@ -2968,11 +2973,20 @@ public class AttendanceApiControllerchange {
 								String atteanceCase = weekEndStatus + "" + holidayStatus + "" + leaveStatus + ""
 										+ presentStatus;
 								dailyAttendanceList.get(i).setCasetype(atteanceCase);
-
+								System.out
+										.println("case" + atteanceCase + " " + dailyAttendanceList.get(i).getEmpName());
 								if (atteanceCase.equals("1357") || atteanceCase.equals("1457")
 										|| atteanceCase.equals("2357") || atteanceCase.equals("2457")) {
 
-									System.out.println("Plzzzz cancel Leave" + dailyAttendanceList.get(i).getEmpName());
+									LeaveCancelEmployee leaveCancelEmployee = new LeaveCancelEmployee();
+									leaveCancelEmployee.setEmpCode(dailyAttendanceList.get(i).getEmpCode());
+									leaveCancelEmployee.setEmpId(dailyAttendanceList.get(i).getEmpId());
+									leaveCancelEmployee.setEmpName(dailyAttendanceList.get(i).getEmpName());
+									leaveCancelEmployee.setLeaveType(dailyAttendanceList.get(i).getAttStatus());
+									list.add(leaveCancelEmployee);
+
+									// System.out.println("Plzzzz cancel Leave" +
+									// dailyAttendanceList.get(i).getEmpName());
 								} else if (atteanceCase.equals("1358") || atteanceCase.equals("1458")
 										|| atteanceCase.equals("2358") || atteanceCase.equals("2458")) {
 
@@ -3062,7 +3076,7 @@ public class AttendanceApiControllerchange {
 										// System.out.println(dailyAttendanceList.get(i).getAttStatus());
 									}
 								}
-
+								System.out.println("STS" + dailyAttendanceList.get(i).getAttsSdShow());
 							}
 							break;
 
@@ -3135,13 +3149,12 @@ public class AttendanceApiControllerchange {
 			// dailyAttendanceRepository.saveAll(dailyAttendanceList);
 			info.setError(false);
 			info.setMsg("success");
-
-		} catch (
-
-		Exception e) {
+			info.setList(list);
+		} catch (Exception e) {
 
 			info.setError(true);
 			info.setMsg("failed");
+			info.setList(list);
 			e.printStackTrace();
 		}
 		return info;
