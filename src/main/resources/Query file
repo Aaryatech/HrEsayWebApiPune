@@ -127,3 +127,12 @@ m_employees.depart_id
         ) OT_last_month 
             on b.emp_id=OT_last_month.emp_id
             GROUP by dept.depart_id
+            
+  #Get Daily daily records.
+  
+ SELECT tbl_attt_daily_daily.id,tbl_attt_daily_daily.emp_id,tbl_attt_daily_daily.att_date,tbl_attt_daily_daily.ot_hr
+ FROM tbl_attt_daily_daily WHERE tbl_attt_daily_daily.att_date BETWEEN '2020-09-01' and '2020-09-31' and emp_id=1
+ 
+ SELECT tbl_attt_daily_daily.id,tbl_attt_daily_daily.emp_id,tbl_attt_daily_daily.att_date,tbl_attt_daily_daily.ot_hr,
+DAYNAME(att_date) as day_name ,DATE_FORMAT(att_date,'%d-%m-%Y') AS niceDate 
+FROM tbl_attt_daily_daily WHERE tbl_attt_daily_daily.att_date BETWEEN '2020-09-01' and '2020-09-31' and emp_id=1

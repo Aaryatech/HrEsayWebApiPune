@@ -419,4 +419,12 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 	@Query(value = "select ad.* from tbl_attt_daily_daily ad ,m_employees e where ad.att_date between :fromDate and :toDate  and ad.emp_id=e.emp_id and e.location_id in (:locId)", nativeQuery = true)
 	List<DailyAttendance> dailyAttendanceListAlllocId(@Param("fromDate")String fromDate,@Param("toDate") String toDate,@Param("locId") List<Integer> locId);
 
+	
+	
+	//Sachin 05-09-2020
+	@Transactional
+	@Modifying
+	@Query("UPDATE DailyAttendance set ot_hr=:otHr  WHERE id=:id")
+	int updateOTById(@Param("otHr") String otHr,@Param("id") int id );
+
 }

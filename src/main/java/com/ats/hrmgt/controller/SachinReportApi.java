@@ -5,17 +5,21 @@ import java.util.List;
 
 import org.hibernate.mapping.Array;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ats.hrmgt.model.DailyDaily;
 import com.ats.hrmgt.model.InfoForUploadAttendance;
 import com.ats.hrmgt.model.report.HodDashboard;
 import com.ats.hrmgt.model.report.HodDeptDashb;
+import com.ats.hrmgt.repo.DailyDailyRepo;
 import com.ats.hrmgt.repo.report.HodDashboardRepo;
 import com.ats.hrmgt.repo.report.HodDeptDashbRepo;
+import com.ats.hrmgt.repository.DailyAttendanceRepository;
 
 @RestController
 public class SachinReportApi {
@@ -71,5 +75,57 @@ public class SachinReportApi {
 			
 			return hodDeptDashbList;
 		}
+		
+		
+		@Autowired DailyDailyRepo dailyDailyRepo;
+		@Autowired DailyAttendanceRepository  dailyrRepo;
+		@RequestMapping(value = { "/getDailyDailyBetFdTdAndEmpId" }, method = RequestMethod.POST)
+		public @ResponseBody List<DailyDaily> getDailyDailyBetFdTdAndEmpId(
+				@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
+				@RequestParam("empId") int empId) {
+
+			List<DailyDaily> dailyList = new ArrayList<>();
+			
+			try {
+
+				dailyList = dailyDailyRepo.getData(fromDate, toDate, empId);
+				System.err.println(" dailyList " +dailyList.toString());
+				if(dailyList.isEmpty() || dailyList.equals(null) ) {
+					System.err.println("If null or empty  dailyList ");
+					dailyList = new ArrayList<>();
+				}
+			} catch (Exception e) {
+				dailyList = new ArrayList<>();
+				e.printStackTrace();
+			}
+			
+			return dailyList;
+		}
+		
+		
+		
+		
+		@RequestMapping(value = { "/saveDailyOTUpdate" }, method = RequestMethod.POST)
+		public @ResponseBody List<DailyDaily> saveDailyOTUpdate(@RequestBody List<DailyDaily> dailyList) {
+
+			List<DailyDaily> dailyListRes = new ArrayList<>();
+			
+			try {
+
+				//dailyListRes = dailyDailyRepo.saveAll(dailyList);
+				
+				for(int x=0;x<dailyList.size();x++) {
+					int result=dailyrRepo.updateOTById(dailyList.get(x).getOtHr(),dailyList.get(x).getId());
+				}
+				System.err.println(" dailyListRes " +dailyListRes.toString());
+			} catch (Exception e) {
+				dailyListRes = new ArrayList<>();
+				e.printStackTrace();
+			}
+			
+			return dailyListRes;
+		}
+		
+		
 		
 }
