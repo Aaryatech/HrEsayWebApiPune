@@ -81,4 +81,9 @@ public interface EmpInfoRepository extends JpaRepository<EmpInfo, Integer> {
 			+ "where e.emp_id=emp_sal.emp_id and e.del_status=1 and (emp_sal.cmp_leaving_date IS NULL or emp_sal.cmp_leaving_date='' or emp_sal.cmp_leaving_date=1970-00-00 or  date_format(emp_sal.cmp_leaving_date,'%Y-%m')>=date_format(:fromDate,'%Y-%m')) and e.location_id in (:locId)", nativeQuery = true)
 	List<EmpInfo> getEmpListAlllocId(@Param("fromDate")String fromDate, @Param("locId")List<Integer> locId);
 
+	@Query(value = "SELECT e.*,emp_sal.cmp_joining_date, emp_sal.sal_basis, emp_sal.salary_type_id  FROM m_employees e, tbl_emp_salary_info emp_sal "
+			+ "where e.emp_id=emp_sal.emp_id and e.emp_id not in (select emp_id from tbl_attt_daily_daily  where att_date between :fromDate "
+			+ "and :toDate group by emp_id) and e.del_status=1 and (emp_sal.cmp_leaving_date IS NULL or emp_sal.cmp_leaving_date='' or emp_sal.cmp_leaving_date=1970-00-00 or  date_format(emp_sal.cmp_leaving_date,'%Y-%m')>=date_format(:fromDate,'%Y-%m')) and e.location_id in (:locId)", nativeQuery = true)
+	 List<EmpInfo> getEmpListLocId(String fromDate, String toDate, List<Integer> locId);
+
 }

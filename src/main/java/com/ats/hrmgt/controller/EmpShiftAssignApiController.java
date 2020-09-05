@@ -457,14 +457,14 @@ public class EmpShiftAssignApiController {
 
 	}
 
-	@RequestMapping(value = { "/getCountOfAssignForAttendance" }, method = RequestMethod.GET)
-	public @ResponseBody CountOfAssignPending getCountOfAssignForAttendance() {
+	@RequestMapping(value = { "/getCountOfAssignForAttendance" }, method = RequestMethod.POST)
+	public @ResponseBody CountOfAssignPending getCountOfAssignForAttendance(@RequestParam("locId") int locId) {
 
 		CountOfAssignPending count = new CountOfAssignPending();
 
 		try {
 
-			count = countOfAssignPendingRepository.getCountOfAssignForAttendance();
+			count = countOfAssignPendingRepository.getCountOfAssignForAttendance(locId);
 
 		} catch (Exception e) {
 
@@ -516,6 +516,19 @@ public class EmpShiftAssignApiController {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
 		try {
 			list = getEmployeeDetailsRepo.getAllEmployeeDetailForFullnFinal();
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	@RequestMapping(value = { "/getAllEmployeeDetailForFullnFinalLocId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailForFullnFinalLocId(@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailForFullnFinalLocId(locId);
 		} catch (Exception e) {
 
 			e.printStackTrace();

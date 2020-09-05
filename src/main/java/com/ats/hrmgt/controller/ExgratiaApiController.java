@@ -49,15 +49,15 @@ public class ExgratiaApiController {
 
 	@RequestMapping(value = { "/getAllEmployeeDetailForBonus" }, method = RequestMethod.POST)
 	public List<GetEmployeeDetails> getAllEmployeeDetailForBonusUpdate(@RequestParam("bonusId") int bonusId,
-			@RequestParam("flag") int flag) {
+			@RequestParam("flag") int flag,@RequestParam("locId") List<Integer> locId) {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
 		try {
 
 			if (flag == 1) {
-				list = getEmployeeDetailsRepo.getEmpDetailListByBonusId(bonusId);
+				list = getEmployeeDetailsRepo.getEmpDetailListByBonusId(bonusId,locId);
 
 			} else {
-				list = getEmployeeDetailsRepo.getEmpDetailListByBonusIdAssignedBonus(bonusId);
+				list = getEmployeeDetailsRepo.getEmpDetailListByBonusIdAssignedBonus(bonusId,locId);
 			}
 		} catch (Exception e) {
 			System.err.println("Excep in getAllEmployeeDetail : " + e.getMessage());

@@ -173,7 +173,8 @@ public class AttendanceApiControllerchange {
 
 	@RequestMapping(value = { "/initiallyInsertDailyRecord" }, method = RequestMethod.POST)
 	public @ResponseBody Info initiallyInsertDailyRecord(@RequestParam("fromDate") String fromDate,
-			@RequestParam("toDate") String toDate, @RequestParam("userId") int userId) {
+			@RequestParam("toDate") String toDate, @RequestParam("userId") int userId,
+			@RequestParam("locId") List<Integer> locId) {
 
 		Info info = new Info();
 		try {
@@ -190,9 +191,9 @@ public class AttendanceApiControllerchange {
 			int year = temp.get(Calendar.YEAR);
 			int month = temp.get(Calendar.MONTH) + 1;
 
-			List<EmpInfo> empList = empInfoRepository.getEmpList(fromDate, toDate);
+			List<EmpInfo> empList = empInfoRepository.getEmpListLocId(fromDate, toDate, locId);
 
-			List<SummaryDailyAttendance> summaryDailyAttendanceList = new ArrayList<>();
+			// List<SummaryDailyAttendance> summaryDailyAttendanceList = new ArrayList<>();
 
 			// SummaryDailyAttendance summaryDailyAttendance = new SummaryDailyAttendance();
 			List<DailyAttendance> dailyAttendanceList = new ArrayList<>();
@@ -297,12 +298,11 @@ public class AttendanceApiControllerchange {
 
 			// List<DailyAttendance> dailyAttendanceSaveRes =
 			// dailyAttendanceRepository.saveAll(dailyAttendanceList);
+
 			/*
-			 * cal1 = Calendar.getInstance();
-			 * System.out.println(date_format.format(cal1.getTime()));
+			 * List<SummaryDailyAttendance> summaryDailyAttendanceSaveRes =
+			 * summaryDailyAttendanceRepository .saveAll(summaryDailyAttendanceList);
 			 */
-			List<SummaryDailyAttendance> summaryDailyAttendanceSaveRes = summaryDailyAttendanceRepository
-					.saveAll(summaryDailyAttendanceList);
 			info.setError(false);
 			info.setMsg("success");
 		} catch (Exception e) {
@@ -317,13 +317,14 @@ public class AttendanceApiControllerchange {
 
 	@RequestMapping(value = { "/getInformationOfUploadedAttendance" }, method = RequestMethod.POST)
 	public @ResponseBody InfoForUploadAttendance getInformationOfUploadedAttendance(
-			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
+			@RequestParam("locId") List<Integer> locId) {
 
 		InfoForUploadAttendance infoForUploadAttendance = new InfoForUploadAttendance();
 		try {
 
 			infoForUploadAttendance = infoForUploadAttendanceRepository.getInformationOfUploadedAttendance(fromDate,
-					toDate);
+					toDate, locId);
 
 		} catch (Exception e) {
 
@@ -2047,7 +2048,8 @@ public class AttendanceApiControllerchange {
 
 	@RequestMapping(value = { "/getDailyDailyRecordForFinalOtApproval" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetDailyDailyRecord> getDailyDailyRecordForFinalOtApproval(
-			@RequestParam("date") String date, @RequestParam("empId") int empId,@RequestParam("locId") List<Integer> locId) {
+			@RequestParam("date") String date, @RequestParam("empId") int empId,
+			@RequestParam("locId") List<Integer> locId) {
 
 		List<GetDailyDailyRecord> summaryDailyAttendanceList = new ArrayList<>();
 		try {
@@ -2481,7 +2483,7 @@ public class AttendanceApiControllerchange {
 
 		try {
 
-			list = empSalaryInfoForPayrollRepository.getListForfixunfixAttendance(month, year, isFixed, sts,locId);
+			list = empSalaryInfoForPayrollRepository.getListForfixunfixAttendance(month, year, isFixed, sts, locId);
 
 		} catch (Exception e) {
 
