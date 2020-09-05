@@ -46,7 +46,7 @@ public interface SummaryAttendanceRepository extends JpaRepository<SummaryAttend
 	List<SummaryAttendance> summaryDailyAttendanceListForHod(@Param("month")int month,@Param("year") int year,@Param("userId") int userId);
 
 	
-	@Query(value = "select ds.id,ds.emp_id,ds.emp_code,ds.emp_name,working_days,present_days,weekly_off,paid_holiday,paid_leave,legal_strike,lay_off,unpaid_holiday,"
+	@Query(value = "select ds.id,ds.emp_id,ds.emp_code,concat(e.first_name,' ',e.surname) as emp_name,working_days,present_days,weekly_off,paid_holiday,paid_leave,legal_strike,lay_off,unpaid_holiday,"
 			+ "unpaid_leave,absent_days,payable_days,ncp_days, totlate_mins as totlate_mins,totlate_days,"
 			+ "CONCAT(FLOOR(totout_mins/60),'.',LPAD(MOD(totout_mins,60), 2, '0')) as totout_mins,CONCAT(FLOOR(totworking_hrs/60),'.',LPAD(MOD(totworking_hrs,60), 2, '0')) "
 			+ "as totworking_hrs,CONCAT(FLOOR(totot_hrs/60),'.',LPAD(MOD(totot_hrs,60), 2, '0')) as totot_hrs,CONCAT(FLOOR(tot_othr/60),'.',LPAD(MOD(tot_othr,60), 2, '0')) "

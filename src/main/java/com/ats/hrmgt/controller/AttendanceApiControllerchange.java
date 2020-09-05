@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.common.DateConvertor;
+import com.ats.hrmgt.model.AttendaceLiveCount;
 import com.ats.hrmgt.model.AttendanceSheetData;
 import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.DailyDailyInfomationForChart;
@@ -62,6 +63,7 @@ import com.ats.hrmgt.model.WeeklyOffShit;
 import com.ats.hrmgt.repo.EmpJsonDataRepository;
 import com.ats.hrmgt.repo.ShiftAssignDailyRepository;
 import com.ats.hrmgt.repository.AccessRightModuleRepository;
+import com.ats.hrmgt.repository.AttendaceLiveCountRepository;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
 import com.ats.hrmgt.repository.DailyDailyInformationRepository;
 import com.ats.hrmgt.repository.EmpInfoRepository;
@@ -170,6 +172,9 @@ public class AttendanceApiControllerchange {
 
 	@Autowired
 	EmpListForHolidayApproveRepo empListForHolidayApproveRepo;
+
+	@Autowired
+	AttendaceLiveCountRepository attendaceLiveCountRepository;
 
 	@RequestMapping(value = { "/initiallyInsertDailyRecord" }, method = RequestMethod.POST)
 	public @ResponseBody Info initiallyInsertDailyRecord(@RequestParam("fromDate") String fromDate,
@@ -827,6 +832,7 @@ public class AttendanceApiControllerchange {
 
 					String atteanceCase = weekEndStatus + "" + holidayStatus + "" + leaveStatus + "" + presentStatus;
 
+					System.out.println(atteanceCase);
 					dailyAttendanceList.get(i).setCasetype(atteanceCase);
 
 					try {
@@ -2843,5 +2849,349 @@ public class AttendanceApiControllerchange {
 		}
 
 		return summaryDailyAttendanceList;
+	}
+
+	@RequestMapping(value = { "/presentAttendaceLiveCount" }, method = RequestMethod.POST)
+	public @ResponseBody List<AttendaceLiveCount> presentAttendaceLiveCount(@RequestParam("fromDate") String fromDate,
+			@RequestParam("locId") List<Integer> locId) {
+
+		List<AttendaceLiveCount> list = new ArrayList<>();
+		try {
+
+			list = attendaceLiveCountRepository.presentAttendaceLiveCount(fromDate, locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/importAttendanceByFileAndUpdateForPresentStatus" }, method = RequestMethod.POST)
+	public @ResponseBody Info importAttendanceByFileAndUpdateForPresentStatus(
+			@RequestBody DataForUpdateAttendance dataForUpdateAttendance) {
+
+		Info info = new Info();
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
+
+		try {
+
+			String fromDate = dataForUpdateAttendance.getFromDate();
+			String toDate = dataForUpdateAttendance.getToDate();
+
+			List<DailyAttendance> dailyAttendanceList = new ArrayList<>();
+
+			List<EmpJsonData> jsonDataList = new ArrayList<>();
+
+			dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceList(fromDate, toDate);
+			List<MstEmpType> mstEmpTypeList = mstEmpTypeRepository.findAll();
+			List<Holiday> holidayList = holidayRepo.getholidaybetweendate(fromDate, toDate);
+			List<WeeklyOff> weeklyOfflist = weeklyOffRepo.getWeeklyOffList();
+			List<WeeklyOffShit> weeklyOffShitList = weeklyOffShitRepository.getWeeklyOffShitList(fromDate, toDate);
+			List<LvType> lvTypeList = lvTypeRepository.findAll();
+			List<WeeklyOffShit> weeklyOffShitFromList = weeklyOffShitRepository.weeklyOffShitFromList(fromDate, toDate);
+			List<LeaveApply> leavetList = leaveApplyRepository.getleavetListForAttndace(fromDate, toDate);
+			jsonDataList = empJsonDataRepository.jsonDataList();
+
+			List<FileUploadedData> fileUploadedDataList = dataForUpdateAttendance.getFileUploadedDataList();
+
+			StringBuilder querysb = new StringBuilder();
+			MstEmpType mstEmpType = new MstEmpType();
+
+			for (int i = 0; i < dailyAttendanceList.size(); i++) {
+
+				Date defaultDate = sf.parse(dailyAttendanceList.get(i).getAttDate());
+
+				EmpJsonData employee = new EmpJsonData();
+
+				for (int j = 0; j < jsonDataList.size(); j++) {
+
+					if (jsonDataList.get(j).getEmpId() == dailyAttendanceList.get(i).getEmpId()) {
+						employee = jsonDataList.get(j);
+						break;
+					}
+
+				}
+				dailyAttendanceList.get(i).setEmpType(employee.getEmpType());
+				for (int j = 0; j < mstEmpTypeList.size(); j++) {
+
+					if (mstEmpTypeList.get(j).getEmpTypeId() == employee.getEmpType()) {
+						mstEmpType = mstEmpTypeList.get(j);
+						break;
+					}
+
+				}
+				// assign in time and out time from uploaded csv to record
+				for (int j = 0; j < fileUploadedDataList.size(); j++) {
+
+					try {
+						Date uploadedDate = dd.parse(fileUploadedDataList.get(j).getLogDate());
+
+						if (dailyAttendanceList.get(i).getEmpCode().equals(fileUploadedDataList.get(j).getEmpCode())
+								&& defaultDate.compareTo(uploadedDate) == 0) {
+
+							if (fileUploadedDataList.get(j).getInTime().trim().equalsIgnoreCase("")
+									|| fileUploadedDataList.get(j).getInTime().equals("0:00")
+									|| fileUploadedDataList.get(j).getInTime().equals("0:00")
+									|| fileUploadedDataList.get(j).getInTime().equals("00:00")
+									|| fileUploadedDataList.get(j).getInTime().equals("00:00")
+									|| fileUploadedDataList.get(j).getInTime().equals("00:00:00")
+									|| fileUploadedDataList.get(j).getInTime().equals("00:00:00")) {
+
+								// dailyAttendanceList.get(i).setInTime("00:00:00");
+
+							} else {
+
+								// weekEnnd : 1=Weekly off,2: no weekly off
+								// holiday : 3=holiday ,4: holiday NO
+								// leave : 5=leave ,6: no leave
+								// presentStatus : 7=present ,8: absent
+
+								dailyAttendanceList.get(i).setInTime(fileUploadedDataList.get(j).getInTime());
+
+								int weekEndStatus = commonFunctionService.findDateInWeekEnd(sf.format(defaultDate),
+										sf.format(defaultDate), weeklyOfflist, weeklyOffShitList,
+										dailyAttendanceList.get(i).getLocationId(), employee.getWeekEndCatId(),
+										dailyAttendanceList.get(i).getEmpId(), weeklyOffShitFromList);
+
+								int holidayStatus = commonFunctionService.findDateInHoliday(sf.format(defaultDate),
+										sf.format(defaultDate), holidayList, dailyAttendanceList.get(i).getLocationId(),
+										employee.getHolidayCatId());
+								int presentStatus = 7;
+								LeaveStsAndLeaveId stsInfo = commonFunctionService.findDateInLeave(
+										sf.format(defaultDate), leavetList, dailyAttendanceList.get(i).getEmpId());
+								int leaveStatus = stsInfo.getSts();
+
+								String atteanceCase = weekEndStatus + "" + holidayStatus + "" + leaveStatus + ""
+										+ presentStatus;
+								dailyAttendanceList.get(i).setCasetype(atteanceCase);
+
+								if (atteanceCase.equals("1357") || atteanceCase.equals("1457")
+										|| atteanceCase.equals("2357") || atteanceCase.equals("2457")) {
+
+									System.out.println("Plzzzz cancel Leave" + dailyAttendanceList.get(i).getEmpName());
+								} else if (atteanceCase.equals("1358") || atteanceCase.equals("1458")
+										|| atteanceCase.equals("2358") || atteanceCase.equals("2458")) {
+
+									dailyAttendanceList.get(i).setAttStatus(stsInfo.getStsshortname());
+									dailyAttendanceList.get(i).setLvSumupId(stsInfo.getLvTypeId());
+									dailyAttendanceList.get(i).setAttsSdShow(stsInfo.getStsshortname());
+
+								} else if (atteanceCase.equals("1367") || atteanceCase.equals("1368")
+										|| atteanceCase.equals("1467") || atteanceCase.equals("1468")
+										|| atteanceCase.equals("2367") || atteanceCase.equals("2368")) {
+
+									// apply wo,ho,wo-ot,ho-ot
+									if (!dailyAttendanceList.get(i).getAttStatus().equalsIgnoreCase("WO-CO")
+											&& !dailyAttendanceList.get(i).getAttStatus().equalsIgnoreCase("PH-CO")) {
+
+										String newStts = AttendanceStatusOnlyPresent(employee,
+												dailyAttendanceList.get(i), dailyAttendanceList.get(i).getEmpId(),
+												dailyAttendanceList.get(i).getAttDate(), atteanceCase, mstEmpType);
+
+										dailyAttendanceList.get(i).setAttStatus(newStts);
+										for (int k = 0; k < lvTypeList.size(); k++) {
+											if (lvTypeList.get(k).getNameSd().equals(newStts)) {
+												dailyAttendanceList.get(i)
+														.setLvSumupId(lvTypeList.get(k).getLvSumupId());
+												dailyAttendanceList.get(i)
+														.setAttsSdShow(lvTypeList.get(k).getNameSdShow());
+												break;
+											}
+										}
+
+									}
+
+								} else if (atteanceCase.equals("2467") || atteanceCase.equals("2468")) {
+									// as thumb or direct AB
+									if (atteanceCase.equals("2467")) {
+										dailyAttendanceList.get(i).setAttStatus("P");
+										for (int k = 0; k < lvTypeList.size(); k++) {
+											if (lvTypeList.get(k).getNameSd().equals("P")) {
+												dailyAttendanceList.get(i)
+														.setLvSumupId(lvTypeList.get(k).getLvSumupId());
+												dailyAttendanceList.get(i)
+														.setAttsSdShow(lvTypeList.get(k).getNameSdShow());
+												break;
+											}
+										}
+									} else if (atteanceCase.equals("2468")) {
+
+										try {
+											if (defaultDate.compareTo(sf.parse(employee.getCmpJoiningDate())) >= 0) {
+												dailyAttendanceList.get(i).setAttStatus("AB");
+												for (int k = 0; k < lvTypeList.size(); k++) {
+													if (lvTypeList.get(k).getNameSd().equals("AB")) {
+														dailyAttendanceList.get(i)
+																.setLvSumupId(lvTypeList.get(k).getLvSumupId());
+														dailyAttendanceList.get(i)
+																.setAttsSdShow(lvTypeList.get(k).getNameSdShow());
+														break;
+													}
+												}
+
+											} else {
+												dailyAttendanceList.get(i).setAttStatus("NA");
+												for (int k = 0; k < lvTypeList.size(); k++) {
+													if (lvTypeList.get(k).getNameSd().equals("NA")) {
+														dailyAttendanceList.get(i)
+																.setLvSumupId(lvTypeList.get(k).getLvSumupId());
+														dailyAttendanceList.get(i)
+																.setAttsSdShow(lvTypeList.get(k).getNameSdShow());
+														break;
+													}
+												}
+
+											}
+										} catch (Exception e) {
+											dailyAttendanceList.get(i).setAttStatus("NA");
+											for (int k = 0; k < lvTypeList.size(); k++) {
+												if (lvTypeList.get(k).getNameSd().equals("NA")) {
+													dailyAttendanceList.get(i)
+															.setLvSumupId(lvTypeList.get(k).getLvSumupId());
+													dailyAttendanceList.get(i)
+															.setAttsSdShow(lvTypeList.get(k).getNameSdShow());
+													break;
+												}
+											}
+										}
+
+										// System.out.println(dailyAttendanceList.get(i).getAttStatus());
+									}
+								}
+
+							}
+							break;
+
+						}
+					} catch (Exception e) {
+						// e.printStackTrace();
+					}
+
+				}
+
+				querysb = new StringBuilder();
+				dailyAttendanceList.get(i)
+						.setLoginName(dataForUpdateAttendance.getUserId() + ": import Exel Aurangabd");
+				// System.out.println("case type
+				// -----------------"+dailyAttendanceList.get(i).getCasetype());
+				if (dailyAttendanceList.get(i).getByFileUpdated() == 1) {
+					querysb.append("update\n" + "        tbl_attt_daily_daily \n" + "    set\n" + "        atsumm_uid='"
+							+ dailyAttendanceList.get(i).getAtsummUid() + "'," + "        att_date='"
+							+ dailyAttendanceList.get(i).getAttDate() + "'," + "        att_status='"
+							+ dailyAttendanceList.get(i).getAttStatus() + "'," + "        by_file_updated='"
+							+ dailyAttendanceList.get(i).getByFileUpdated() + "'," + "        casetype='"
+							+ dailyAttendanceList.get(i).getCasetype() + "'," + "        comments_supervisor='"
+							+ dailyAttendanceList.get(i).getCommentsSupervisor() + "'," + "        company_id='"
+							+ dailyAttendanceList.get(i).getCompanyId() + "'," + "        current_shiftid='"
+							+ dailyAttendanceList.get(i).getCurrentShiftid() + "'," + "        current_shiftname='"
+							+ dailyAttendanceList.get(i).getCurrentShiftname() + "'," + "        early_going_mark='"
+							+ dailyAttendanceList.get(i).getEarlyGoingMark() + "'," + "        early_going_min='"
+							+ dailyAttendanceList.get(i).getEarlyGoingMin() + "'," + "        emp_code='"
+							+ dailyAttendanceList.get(i).getEmpCode() + "'," + "        emp_id='"
+							+ dailyAttendanceList.get(i).getEmpId() + "'," + "        emp_json='"
+							+ dailyAttendanceList.get(i).getEmpJson() + "'," + "        emp_name='"
+							+ dailyAttendanceList.get(i).getEmpName() + "'," + "        emp_type='"
+							+ dailyAttendanceList.get(i).getEmpType() + "'," + "        file_name=NULL,"
+							+ "        freeze_by_supervisor='" + dailyAttendanceList.get(i).getFreezeBySupervisor()
+							+ "'," + "        full_night='" + dailyAttendanceList.get(i).getFullNight() + "',"
+							+ "        get_pass_used_count='" + dailyAttendanceList.get(i).getGetPassUsedCount() + "',"
+							+ "        get_pass_used_hour='" + dailyAttendanceList.get(i).getGetPassUsedHour() + "',"
+							+ "        get_pass_used_hour_reason=NULL," + "        half_night='"
+							+ dailyAttendanceList.get(i).getHalfNight() + "'," + "        import_date=NULL,"
+							+ "        in_time='" + dailyAttendanceList.get(i).getInTime() + "'," + "        is_fixed='"
+							+ dailyAttendanceList.get(i).getIsFixed() + "'," + "        late_mark='"
+							+ dailyAttendanceList.get(i).getLateMark() + "'," + "        late_min='"
+							+ dailyAttendanceList.get(i).getLateMin() + "'," + "        location_id='"
+							+ dailyAttendanceList.get(i).getLocationId() + "'," + "        login_name='"
+							+ dailyAttendanceList.get(i).getLoginName() + "'," + "        login_time=NULL,"
+							+ "        lv_sumup_id='" + dailyAttendanceList.get(i).getLvSumupId() + "',"
+							+ "        manual_ot_hr='" + dailyAttendanceList.get(i).getManualOtHr() + "',"
+							+ "        multiple_entries='" + dailyAttendanceList.get(i).getMultipleEntries()
+							+ "', ot_hr='" + dailyAttendanceList.get(i).getOtHr() + "'," + "        out_time='"
+							+ dailyAttendanceList.get(i).getOutTime() + "'," + "        raw_data_inout=NULL,"
+							+ "        reason=NULL," + "        rec_status='"
+							+ dailyAttendanceList.get(i).getRecStatus() + "'," + "        row_id='"
+							+ dailyAttendanceList.get(i).getRowId() + "'," + "        working_hrs='"
+							+ dailyAttendanceList.get(i).getWorkingHrs() + "'" + ",atts_sd_show='"
+							+ dailyAttendanceList.get(i).getAttsSdShow() + "'    where\n" + "        id="
+							+ dailyAttendanceList.get(i).getId() + ";");
+					try {
+						String quiry = querysb.toString();
+						jdbcTemplate.batchUpdate(quiry);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+
+			// System.out.println("dailyAttendanceList " + quiry);
+
+			// List<DailyAttendance> dailyAttendanceSaveRes =
+			// dailyAttendanceRepository.saveAll(dailyAttendanceList);
+			info.setError(false);
+			info.setMsg("success");
+
+		} catch (
+
+		Exception e) {
+
+			info.setError(true);
+			info.setMsg("failed");
+			e.printStackTrace();
+		}
+		return info;
+	}
+
+	public String AttendanceStatusOnlyPresent(EmpJsonData employee, DailyAttendance dailyAttendance, int empId,
+			String date, String atteanceCase, MstEmpType mstEmpType) {
+
+		String ret = new String();
+
+		try {
+
+			if (atteanceCase.equals("1357") || atteanceCase.equals("1367") || atteanceCase.equals("2357")
+					|| atteanceCase.equals("2367")) {
+
+				if (mstEmpType.getWhWork().equals("OT") || mstEmpType.getWhWork().equals("Compoff")) {
+
+					if (atteanceCase.equals("1357") || atteanceCase.equals("1367")) {
+						ret = "PH-WO-P";
+					} else {
+						ret = "PH-OT";
+					}
+				} else {
+					ret = "PH";
+				}
+			} else if (atteanceCase.equals("1358") || atteanceCase.equals("1368") || atteanceCase.equals("2358")
+					|| atteanceCase.equals("2368")) {
+				if (atteanceCase.equals("1358") || atteanceCase.equals("1368")) {
+					ret = "PH-WO";
+				} else {
+					ret = "PH";
+				}
+			} else if (atteanceCase.equals("1457") || atteanceCase.equals("1467")) {
+
+				if (mstEmpType.getWhWork().equals("OT") || mstEmpType.getWhWork().equals("Compoff")) {
+
+					ret = "WO-OT";
+
+				} else {
+					ret = "WO";
+				}
+			} else if (atteanceCase.equals("1458") || atteanceCase.equals("1468")) {
+				ret = "WO";
+			} else if (atteanceCase.equals("2468")) {
+				ret = "AB";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return ret;
 	}
 }
