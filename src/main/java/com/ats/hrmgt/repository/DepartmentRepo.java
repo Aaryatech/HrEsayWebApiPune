@@ -25,4 +25,8 @@ public interface DepartmentRepo extends JpaRepository<Department, Integer> {
 	public List<Department> findByNameAndCompanyId(String dept, int compId);
 
 	public List<Department> findByNameAndCompanyIdAndDepartIdNot(String trim, int compId, int primaryKey);
+	
+	@Query(value=" SELECT  * FROM  m_department WHERE del_status=1 AND   depart_id IN (:deptIdString) ",nativeQuery=true)
+	public List<Department> findByDepartIdIn(List<Integer> deptIdString);
+
 }

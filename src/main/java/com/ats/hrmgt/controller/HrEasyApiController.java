@@ -240,6 +240,23 @@ public class HrEasyApiController {
 		return list;
 
 	}
+	
+	//Sachin 04-09-2020
+	@RequestMapping(value = { "/getDeptByDeptIds" }, method = RequestMethod.POST)
+	public List<Department> getDeptByDeptIds(@RequestParam List<Integer> deptIdString) {
+		List<Department> list = new ArrayList<Department>();
+		try {
+			list = deptRepo.findByDepartIdIn(deptIdString);
+			
+		} catch (Exception e) {
+			System.err.println("Excep in getDeptByDeptIds : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+	
 
 	@RequestMapping(value = { "/getDepartmentById" }, method = RequestMethod.POST)
 	public Department getDepartmentById(@RequestParam int deptId) {
