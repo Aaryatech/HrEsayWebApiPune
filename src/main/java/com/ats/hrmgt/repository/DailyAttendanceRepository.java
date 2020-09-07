@@ -400,7 +400,7 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 			"        dep.name as emp_json ,\n" + 
 			"        d.atsumm_uid ,\n" + 
 			"        d.file_name ,\n" + 
-			"        d.row_id,\n" + 
+			"        e.notice_pay_amount as row_id,\n" + 
 			"        d.atts_sd_show      \n" + 
 			"    from\n" + 
 			"        tbl_attt_daily_daily d,\n" + 
@@ -413,7 +413,7 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 			"        and e.depart_id=dep.depart_id         \n" + 
 			"        and la.emp_id=e.emp_id  \n" + 
 			"        and la.ini_auth_emp_id=:empId\n" + 
-			"        and d.comments_supervisor=8 and e.location_id in (:locId)", nativeQuery = true)
+			"        and d.comments_supervisor=8 and e.location_id in (:locId) order by e.notice_pay_amount asc,d.emp_name asc", nativeQuery = true)
 	List<DailyAttendance> getEmployyeDailyDailyListByAuthorityLocId(@Param("date")String date, @Param("empId")int empId, @Param("locId")List<Integer> locId);
 
 	@Query(value = "select ad.* from tbl_attt_daily_daily ad ,m_employees e where ad.att_date between :fromDate and :toDate  and ad.emp_id=e.emp_id and e.location_id in (:locId)", nativeQuery = true)

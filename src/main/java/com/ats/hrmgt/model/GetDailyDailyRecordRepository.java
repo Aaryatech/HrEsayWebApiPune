@@ -439,7 +439,7 @@ public interface GetDailyDailyRecordRepository extends JpaRepository<GetDailyDai
 			"        d.atsumm_uid ,\n" + 
 			"        ifnull((select ifnull(( select CONCAT(m_employees.first_name, ' ', m_employees.surname) from m_employees where la.ini_auth_emp_id=m_employees.emp_id),'-') as name from \n" + 
 			"        leave_authority la where la.emp_id=e.emp_id  ), '-') as file_name ,\n" + 
-			"        d.row_id,\n" + 
+			"        e.notice_pay_amount as row_id,\n" + 
 			"        d.atts_sd_show      \n" + 
 			"    FROM\n" + 
 			"        tbl_attt_daily_daily d,\n" + 
@@ -450,7 +450,7 @@ public interface GetDailyDailyRecordRepository extends JpaRepository<GetDailyDai
 			"        d.att_date between :date and :date                   \n" + 
 			"        and d.emp_id=e.emp_id                           \n" + 
 			"        and e.depart_id=dep.depart_id                  \n" + 
-			"        and e.emp_type=et.emp_type_id and e.location_id in (:locId)", nativeQuery = true)
+			"        and e.emp_type=et.emp_type_id and e.location_id in (:locId) order by e.notice_pay_amount asc,d.emp_name asc", nativeQuery = true)
 	List<GetDailyDailyRecord> getDailyDailyRecordForHrByDateLocId(@Param("date")String date,@Param("locId") List<Integer> locId); 
 
 }

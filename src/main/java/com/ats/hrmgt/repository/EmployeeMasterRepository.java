@@ -193,6 +193,12 @@ public interface EmployeeMasterRepository extends JpaRepository<EmployeeMaster, 
 
 	@Query(value = " SELECT * FROM m_employees WHERE del_status=1 and location_id in (:locId)", nativeQuery = true)
 	List<EmployeeMaster> getEmplistForAssignAuthorityAll(@Param("locId")List<Location> locId);
+
+
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE m_employees SET  notice_pay_amount =:isActive WHERE emp_id IN(:empId)", nativeQuery = true)
+	int deleteEmployeeStatus(int empId, int isActive);
  
 
 	

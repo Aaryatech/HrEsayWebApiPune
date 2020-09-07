@@ -208,6 +208,32 @@ public class EmployeeApiController {
 
 	}
 
+	@RequestMapping(value = { "/deleteEmployeeStatus" }, method = RequestMethod.POST)
+	public Info deleteEmployeeStatus(@RequestParam int empId, @RequestParam int isActive) {
+
+		Info info = new Info();
+		try {
+
+			int res = empRepo.deleteEmployeeStatus(empId, isActive);
+
+			if (res > 0) {
+
+				info.setError(false);
+				info.setMsg("Sucess");
+			} else {
+				info.setError(true);
+				info.setMsg("Fail");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
 	@RequestMapping(value = { "/saveEmployee" }, method = RequestMethod.POST)
 	public EmployeeMaster saveEmployee(@RequestBody EmployeeMaster emp) {
 		EmployeeMaster empSave = new EmployeeMaster();
@@ -309,7 +335,6 @@ public class EmployeeApiController {
 					resp1.setDocId("0");
 				}
 			}
-			
 
 		} catch (Exception e) {
 			resp1 = null;
