@@ -11,21 +11,27 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
+ 
 import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.common.Firebase;
 import com.ats.hrmgt.model.AuthorityInformation;
 import com.ats.hrmgt.model.CalenderYear;
+import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.DailyRecordForCompOff;
+import com.ats.hrmgt.model.DataForUpdateAttendance;
 import com.ats.hrmgt.model.EmpBasicAllownceForLeaveInCash;
 import com.ats.hrmgt.model.EmpLeaveHistoryRep;
+import com.ats.hrmgt.model.EmployeeListForInActive;
 import com.ats.hrmgt.model.EmployeeMaster;
+import com.ats.hrmgt.model.FileUploadedData;
 import com.ats.hrmgt.model.GetAuthorityIds;
 import com.ats.hrmgt.model.GetDetailForGraduaty;
 import com.ats.hrmgt.model.GetLeaveApplyAuthwise;
@@ -34,6 +40,7 @@ import com.ats.hrmgt.model.InfoForCompOffList;
 import com.ats.hrmgt.model.LeaveApply;
 import com.ats.hrmgt.model.LeaveHistory;
 import com.ats.hrmgt.model.LeaveHistoryDetailForCarry;
+import com.ats.hrmgt.model.LeaveStsAndLeaveId;
 import com.ats.hrmgt.model.LeaveTrail;
 import com.ats.hrmgt.model.LeaveTypeWithLimit;
 import com.ats.hrmgt.model.MstEmpType;
@@ -44,6 +51,7 @@ import com.ats.hrmgt.repository.AuthorityInformationRepository;
 import com.ats.hrmgt.repository.CalculateYearRepository;
 import com.ats.hrmgt.repository.EmpBasicAllownceForLeaveInCashRepo;
 import com.ats.hrmgt.repository.EmpLeaveHistoryRepRepo;
+import com.ats.hrmgt.repository.EmployeeListForInActiveRepository;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.GetAuthorityIdsRepo;
 import com.ats.hrmgt.repository.GetDetailForGraduatyRepo;
@@ -56,6 +64,7 @@ import com.ats.hrmgt.repository.LeaveTypeWithLimitRepository;
 import com.ats.hrmgt.repository.MstEmpTypeRepository;
 import com.ats.hrmgt.repository.PayableDayAndPresentDaysRepo;
 import com.ats.hrmgt.repository.SettingRepo;
+import com.ats.hrmgt.service.CommonFunctionService;
 
 @RestController
 public class LeaveActionApiController {
@@ -776,6 +785,109 @@ public class LeaveActionApiController {
 		}
 
 		return list;
+
+	}
+
+	@Autowired
+	CommonFunctionService commonFunctionService;
+
+	@Autowired
+	EmployeeListForInActiveRepository employeeListForInActiveRepository;
+
+	@Autowired
+	AttendanceApiControllerchange attendanceApiControllerchange;
+
+	/*@Scheduled(cron = "0/20 * * * * ? ")*/
+	 @Scheduled(cron = "0 0 23 * * ? ")  
+	public void applyLWPofInactiveEmployee() {
+
+		try {
+			Date dt = new Date();
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			List<LeaveApply> leavetList = leaveApplyRepository.getleavetListForAttndace(sf.format(dt), sf.format(dt));
+			List<EmployeeListForInActive> empList = employeeListForInActiveRepository.getEmpInactiveList();
+			CalenderYear calendearYear = calculateYearRepository.findByIsCurrent(1);
+
+			for (int i = 0; i < empList.size(); i++) {
+
+				int findLeave = 0;
+
+				for (int j = 0; j < leavetList.size(); j++) {
+
+					if (empList.get(i).getEmpId() == leavetList.get(j).getEmpId()) {
+						findLeave = 1;
+						break;
+					}
+
+				}
+
+				if (findLeave == 0) {
+					LeaveApply leaveSummary = new LeaveApply();
+
+					leaveSummary.setCalYrId(calendearYear.getCalYrId());
+					leaveSummary.setEmpId(empList.get(i).getEmpId());
+					leaveSummary.setFinalStatus(1);
+					leaveSummary.setLeaveNumDays(1);
+					leaveSummary.setCirculatedTo("1");
+					leaveSummary.setLeaveDuration("1");
+					leaveSummary.setLeaveEmpReason("BY SYSTEM");
+					leaveSummary.setLvTypeId(2);
+					leaveSummary.setLeaveFromdt(sf.format(dt));
+					leaveSummary.setLeaveTodt(sf.format(dt));
+
+					leaveSummary.setExInt1(3);
+					leaveSummary.setExInt2(1);
+					leaveSummary.setExInt3(1);
+					leaveSummary.setExVar1("NA");
+
+					leaveSummary.setExVar2("0");/*
+					leaveSummary.setExVar3("");*/
+					leaveSummary.setIsActive(1);
+					leaveSummary.setDelStatus(1);
+					leaveSummary.setMakerUserId(1);
+					leaveSummary.setMakerEnterDatetime(df.format(dt));
+
+					LeaveApply save = leaveApplyRepository.saveAndFlush(leaveSummary);
+
+					if (save != null) {
+						  
+
+							List<FileUploadedData> fileUploadedDataList = new ArrayList<>();
+
+							FileUploadedData fileUploadedData = new FileUploadedData();
+							fileUploadedData.setEmpCode(empList.get(i).getEmpCode());
+							fileUploadedData.setEmpName("XYZ");
+							fileUploadedData.setLogDate(DateConvertor.convertToDMY(sf.format(dt)));
+							fileUploadedData.setInTime("00:00:00");
+							fileUploadedData.setOutTime("00:00:00");
+
+							fileUploadedDataList.add(fileUploadedData);
+							DataForUpdateAttendance dataForUpdateAttendance = new DataForUpdateAttendance();
+							dataForUpdateAttendance.setFromDate(sf.format(dt));
+							dataForUpdateAttendance.setToDate(sf.format(dt));
+							dataForUpdateAttendance.setMonth(0);
+							dataForUpdateAttendance.setYear(0);
+							dataForUpdateAttendance.setUserId(1);
+							dataForUpdateAttendance.setFileUploadedDataList(fileUploadedDataList);
+							dataForUpdateAttendance.setEmpId(empList.get(i).getEmpId());
+							// System.out.println(dataForUpdateAttendance);
+							Info dailydailyinfo = attendanceApiControllerchange
+									.getVariousListForUploadAttendace(dataForUpdateAttendance);
+
+						 
+					}
+				}
+			}
+
+			/*
+			 * LeaveStsAndLeaveId stsInfo = commonFunctionService.findDateInLeave(
+			 * sf.format(dt), leavetList, dailyAttendanceList.get(i).getEmpId());
+			 */
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 }
