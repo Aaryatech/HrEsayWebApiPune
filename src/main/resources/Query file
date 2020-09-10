@@ -136,3 +136,19 @@ m_employees.depart_id
  SELECT tbl_attt_daily_daily.id,tbl_attt_daily_daily.emp_id,tbl_attt_daily_daily.att_date,tbl_attt_daily_daily.ot_hr,
 DAYNAME(att_date) as day_name ,DATE_FORMAT(att_date,'%d-%m-%Y') AS niceDate 
 FROM tbl_attt_daily_daily WHERE tbl_attt_daily_daily.att_date BETWEEN '2020-09-01' and '2020-09-31' and emp_id=1
+
+
+
+SELECT 
+    `emp_code`, 
+    COUNT(`emp_code`)
+FROM
+    m_employees
+    WHERE del_status=1
+GROUP BY emp_code  
+HAVING COUNT(emp_code) > 1
+
+SELECT `emp_id`, COUNT(`lv_type_id`) FROM leave_balance_cal WHERE `cal_yr_id`=3 GROUP BY emp_id,`lv_type_id` HAVING COUNT(lv_type_id) > 1
+
+
+select ds.id,ds.emp_id,concat(ds.month,'-',ds.year) as month from tbl_attt_summary_daily ds where date_format(concat(ds.year,'-',ds.month,'-01'),'%Y-%m')>=date_format(date_sub(now(),Interval 2 month),'%Y-%m') and ds.emp_id=1;
