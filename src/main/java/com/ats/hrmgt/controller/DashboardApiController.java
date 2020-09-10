@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.model.DailyAttendance;
+import com.ats.hrmgt.model.EmpGraphDetail;
+import com.ats.hrmgt.model.EmpInfoForDashBoard;
 import com.ats.hrmgt.model.HolidayMaster;
 import com.ats.hrmgt.model.LeaveApply;
 import com.ats.hrmgt.model.LeaveAuthority;
@@ -53,6 +55,8 @@ import com.ats.hrmgt.model.repo.dash.PerformanceProdDashRepo;
 import com.ats.hrmgt.model.repo.dash.PreDayAttnDashRepo;
 import com.ats.hrmgt.repo.HolidayMasterRepo;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
+import com.ats.hrmgt.repository.EmpGraphDetailRepository;
+import com.ats.hrmgt.repository.EmpInfoForDashBoardRepository;
 import com.ats.hrmgt.repository.LeaveAuthorityRepository;
 import com.ats.hrmgt.repository.SummaryDailyAttendanceRepository;
 import com.ats.hrmgt.repository.TblEmpInfoRepo;
@@ -82,7 +86,7 @@ public class DashboardApiController {
 
 	@RequestMapping(value = { "/getCommonDash" }, method = RequestMethod.POST)
 	public @ResponseBody CommonDash getCommonDash(@RequestParam("fiterdate") String fiterdate,
-			@RequestParam("empId") int empId,@RequestParam("userType") int userType,
+			@RequestParam("empId") int empId, @RequestParam("userType") int userType,
 			@RequestParam("isAuth") int isAuth) throws ParseException {
 
 		CommonDash comDash = new CommonDash();
@@ -93,14 +97,14 @@ public class DashboardApiController {
 		String temp[] = fiterdate.split("-");
 
 		// 1 getBirthDayAndHolidayDash
-		
-		//for all
+
+		// for all
 		try {
 
 			holilist = holidayMasterRepo.getHolidaysForDash(fiterdate);
 			birthListToday = getBirthDaysForDashRepo.getTodaysBirth(fiterdate);
 			birthListUpcoming = getBirthDaysForDashRepo.getWeekBirth(fiterdate);
- 			birthHoliDash.setBirthListToday(birthListToday);
+			birthHoliDash.setBirthListToday(birthListToday);
 			birthHoliDash.setBirthListUpcoming(birthListUpcoming);
 			birthHoliDash.setHoliList(holilist);
 
@@ -110,9 +114,7 @@ public class DashboardApiController {
 		}
 
 		comDash.setBirth(birthHoliDash);
-		
-		
-		
+
 		// 12 getLeaveHistForDash
 		List<GetLeaveHistForDash> leaveHistForDashlist = new ArrayList<GetLeaveHistForDash>();
 		try {
@@ -138,72 +140,65 @@ public class DashboardApiController {
 		}
 
 		comDash.setDeptWiseEmpCntList(listEmpDiv);
-		
-		
-		
+
 		// getDedTypewiseDeduction
 
-				List<DeptWiseWeekoffDash> listDedTypewiseAm = new ArrayList<DeptWiseWeekoffDash>();
-				try {
+		List<DeptWiseWeekoffDash> listDedTypewiseAm = new ArrayList<DeptWiseWeekoffDash>();
+		try {
 
-					listDedTypewiseAm = deptWiseWeekoffDashRepo.getDedTypewiseAmt(empId);
+			listDedTypewiseAm = deptWiseWeekoffDashRepo.getDedTypewiseAmt(empId);
 
-				} catch (Exception e) {
+		} catch (Exception e) {
 
-					e.printStackTrace();
-				}
-				comDash.setDedWiseDedList(listDedTypewiseAm);
-				// /getRewardWisewiseDeduction
+			e.printStackTrace();
+		}
+		comDash.setDedWiseDedList(listDedTypewiseAm);
+		// /getRewardWisewiseDeduction
 
-				List<DeptWiseWeekoffDash> rewardwiseAmtlist = new ArrayList<DeptWiseWeekoffDash>();
-				try {
+		List<DeptWiseWeekoffDash> rewardwiseAmtlist = new ArrayList<DeptWiseWeekoffDash>();
+		try {
 
-					rewardwiseAmtlist = deptWiseWeekoffDashRepo.getRewardwiseAmt(empId);
+			rewardwiseAmtlist = deptWiseWeekoffDashRepo.getRewardwiseAmt(empId);
 
-				} catch (Exception e) {
+		} catch (Exception e) {
 
-					e.printStackTrace();
-				}
-				comDash.setRewardWiseDedList(rewardwiseAmtlist);
+			e.printStackTrace();
+		}
+		comDash.setRewardWiseDedList(rewardwiseAmtlist);
 
-				
-				
-				
-				IncentivesAmtDash incent = new IncentivesAmtDash();
-				try {
+		IncentivesAmtDash incent = new IncentivesAmtDash();
+		try {
 
-					incent = incentivesAmtDashRepo.getWeekBirth(empId);
+			incent = incentivesAmtDashRepo.getWeekBirth(empId);
 
-				} catch (Exception e) {
+		} catch (Exception e) {
 
-					e.printStackTrace();
-				}
+			e.printStackTrace();
+		}
 
-				comDash.setIcent(incent);
+		comDash.setIcent(incent);
 
-				// getPerfProd
+		// getPerfProd
 
-				PerformanceProdDash prod = new PerformanceProdDash();
+		PerformanceProdDash prod = new PerformanceProdDash();
 
-				try {
+		try {
 
-					prod = performanceProdDashRepo.getPerformanceDetails(temp[0], temp[1], empId);
+			prod = performanceProdDashRepo.getPerformanceDetails(temp[0], temp[1], empId);
 
-					comDash.setPerfList(prod);
-					prod = performanceProdDashRepo.getProdDetails(temp[0], temp[1], empId);
+			comDash.setPerfList(prod);
+			prod = performanceProdDashRepo.getProdDetails(temp[0], temp[1], empId);
 
-					comDash.setProdList(prod);
+			comDash.setProdList(prod);
 
-				} catch (Exception e) {
+		} catch (Exception e) {
 
-					e.printStackTrace();
-				}
+			e.printStackTrace();
+		}
 
-		
-		
-	//	for HR only
-		
-		if(userType==2) {
+		// for HR only
+
+		if (userType == 2) {
 			// 2 getNewHireDash
 			GetNewHiresDash hireDash = new GetNewHiresDash();
 
@@ -218,7 +213,7 @@ public class DashboardApiController {
 
 			comDash.setNewHire(hireDash);
 			// 3 getLeaveCountDash
-			
+
 			LeavePenDash leavePenDash = new LeavePenDash();
 
 			try {
@@ -230,8 +225,7 @@ public class DashboardApiController {
 				e.printStackTrace();
 			}
 			comDash.setLvDet(leavePenDash);
-			
-			
+
 			// 5 getAttnDash
 			PreDayAttnDash preDayAttn = new PreDayAttnDash();
 			DailyAttendance dailyAttn = new DailyAttendance();
@@ -255,8 +249,7 @@ public class DashboardApiController {
 				e.printStackTrace();
 			}
 			comDash.setAttnDet(preDayAttn);
-			
-			
+
 			// 7 getAllPendingMasterDet
 
 			GetAllPendingMasterDet pendingMast = new GetAllPendingMasterDet();
@@ -270,9 +263,7 @@ public class DashboardApiController {
 				e.printStackTrace();
 			}
 			comDash.setMasterDet(pendingMast);
-			
-			
-			
+
 			// 9 getAdvLoanDash
 
 			LoanAdvDashDet advDash = new LoanAdvDashDet();
@@ -289,11 +280,7 @@ public class DashboardApiController {
 
 				e.printStackTrace();
 			}
-			
-			
-			
-			
-			
+
 			// 11 getDeptWisePerformanceBonus
 
 			List<DeptWiseWeekoffDash> deptWisePerformanceBonusLidt = new ArrayList<DeptWiseWeekoffDash>();
@@ -307,9 +294,7 @@ public class DashboardApiController {
 			}
 
 			comDash.setPerfListDept(deptWisePerformanceBonusLidt);
-			
-			
-			
+
 			// getAgeDiversity
 
 			GetNewHiresDash ageDiv = new GetNewHiresDash();
@@ -340,81 +325,69 @@ public class DashboardApiController {
 				e.printStackTrace();
 			}
 
-
 		}
-		
-		
 
-		
+		// for HR and Authority
 
-		//for HR and Authority
-		
-		if(userType==2 || isAuth >0) {
-			
+		if (userType == 2 || isAuth > 0) {
+
 			// 6 getDashDeptWiseWeekoff
-		List<DeptWiseWeekoffDash> list = new ArrayList<DeptWiseWeekoffDash>();
-		try {
+			List<DeptWiseWeekoffDash> list = new ArrayList<DeptWiseWeekoffDash>();
+			try {
 
-			list = deptWiseWeekoffDashRepo.getAttendance(fiterdate);
+				list = deptWiseWeekoffDashRepo.getAttendance(fiterdate);
 
-		} catch (Exception e) {
+			} catch (Exception e) {
 
-			e.printStackTrace();
-		}
-		comDash.setDeptwiseWkoff(list);
-		
-		
-		// 8 getRewardedDet
-		
-		
-				PayRewardDedDash dedDet = new PayRewardDedDash();
-				PayRewardDedDash rewardDet = new PayRewardDedDash();
-				try {
-					dedDet = payRewardDedDashRepo.getDedDetails(temp[0], temp[1]);
-					rewardDet = payRewardDedDashRepo.getRewardDetails(temp[0], temp[1]);
+				e.printStackTrace();
+			}
+			comDash.setDeptwiseWkoff(list);
 
-				} catch (Exception e) {
+			// 8 getRewardedDet
 
-					e.printStackTrace();
-				}
+			PayRewardDedDash dedDet = new PayRewardDedDash();
+			PayRewardDedDash rewardDet = new PayRewardDedDash();
+			try {
+				dedDet = payRewardDedDashRepo.getDedDetails(temp[0], temp[1]);
+				rewardDet = payRewardDedDashRepo.getRewardDetails(temp[0], temp[1]);
 
-				comDash.setDedDet(dedDet);
-				comDash.setRewardDet(rewardDet);
-				
-				
-				// 10 getEmpAbsentLv
-				List<DeptWiseWeekoffDash> list1 = new ArrayList<DeptWiseWeekoffDash>();
-				try {
+			} catch (Exception e) {
 
-					list1 = deptWiseWeekoffDashRepo.getLeavesAndAbsent(fiterdate);
+				e.printStackTrace();
+			}
 
-				} catch (Exception e) {
+			comDash.setDedDet(dedDet);
+			comDash.setRewardDet(rewardDet);
 
-					e.printStackTrace();
-				}
-				comDash.setDeptWiseLvAbLList(list1);
-				
-				
-				
-				
-				// getEmpLastMonthAttn
+			// 10 getEmpAbsentLv
+			List<DeptWiseWeekoffDash> list1 = new ArrayList<DeptWiseWeekoffDash>();
+			try {
 
-				SummaryDailyAttendance summlist = new SummaryDailyAttendance();
+				list1 = deptWiseWeekoffDashRepo.getLeavesAndAbsent(fiterdate);
 
-				try {
+			} catch (Exception e) {
 
-					summlist = summaryDailyAttendanceRepository.summaryDailyAttendanceList1(temp[1], temp[0], empId);
+				e.printStackTrace();
+			}
+			comDash.setDeptWiseLvAbLList(list1);
 
-				} catch (Exception e) {
+			// getEmpLastMonthAttn
 
-					e.printStackTrace();
-				}
-				comDash.setAttnLastMon(summlist);
+			SummaryDailyAttendance summlist = new SummaryDailyAttendance();
 
+			try {
+
+				summlist = summaryDailyAttendanceRepository.summaryDailyAttendanceList1(temp[1], temp[0], empId);
+
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+			comDash.setAttnLastMon(summlist);
 
 		}
 
-		System.err.println("----------"+comDash.toString());
+		System.err.println("----------" + comDash.toString());
 		return comDash;
 
 	}
@@ -878,6 +851,45 @@ public class DashboardApiController {
 		}
 
 		return n;
+
+	}
+
+	@Autowired
+	EmpInfoForDashBoardRepository empInfoForDashBoardRepository;
+	
+	@Autowired
+	EmpGraphDetailRepository empGraphDetailRepository;
+	
+	@RequestMapping(value = { "/getEmpInfoForModelGraph" }, method = RequestMethod.POST)
+	public @ResponseBody EmpInfoForDashBoard getEmpInfoForModelGraph(@RequestParam("empId") int empId) {
+
+		EmpInfoForDashBoard emp = new EmpInfoForDashBoard();
+		try {
+
+			emp = empInfoForDashBoardRepository.getEmpInfoForModelGraph(empId); 
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return emp;
+
+	}
+	
+	@RequestMapping(value = { "/getLateMarkGraph" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmpGraphDetail> getLateMarkGraph(@RequestParam("empId") int empId) {
+
+		List<EmpGraphDetail> emp = new ArrayList<EmpGraphDetail>();
+		
+		try {
+
+			emp = empGraphDetailRepository.getLateMarkGraph(empId); 
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return emp;
 
 	}
 
