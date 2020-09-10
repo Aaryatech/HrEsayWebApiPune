@@ -25,7 +25,13 @@ public class EmpGraphDetail {
 	
 	@Column(name="late_mark")
 	private String lateMark;
-
+ 
+	@Column(name="leave_count")
+	private int leaveCount;
+	
+	@Column(name="lwp")
+	private int lwp;
+	
 	public int getId() {
 		return id;
 	}
@@ -66,10 +72,26 @@ public class EmpGraphDetail {
 		this.lateMark = lateMark;
 	}
 
+	public int getLeaveCount() {
+		return leaveCount;
+	}
+
+	public void setLeaveCount(int leaveCount) {
+		this.leaveCount = leaveCount;
+	}
+
+	public int getLwp() {
+		return lwp;
+	}
+
+	public void setLwp(int lwp) {
+		this.lwp = lwp;
+	}
+
 	@Override
 	public String toString() {
 		return "EmpGraphDetail [id=" + id + ", empId=" + empId + ", month=" + month + ", lateMin=" + lateMin
-				+ ", lateMark=" + lateMark + "]";
+				+ ", lateMark=" + lateMark + ", leaveCount=" + leaveCount + ", lwp=" + lwp + "]";
 	}
 
 	 
