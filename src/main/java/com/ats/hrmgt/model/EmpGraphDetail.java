@@ -32,6 +32,9 @@ public class EmpGraphDetail {
 	@Column(name="lwp")
 	private int lwp;
 	
+	@Column(name="ab")
+	private String ab;
+	
 	public int getId() {
 		return id;
 	}
@@ -88,15 +91,18 @@ public class EmpGraphDetail {
 		this.lwp = lwp;
 	}
 
+	public String getAb() {
+		return ab;
+	}
+
+	public void setAb(String ab) {
+		this.ab = ab;
+	}
+
 	@Override
 	public String toString() {
 		return "EmpGraphDetail [id=" + id + ", empId=" + empId + ", month=" + month + ", lateMin=" + lateMin
-				+ ", lateMark=" + lateMark + ", leaveCount=" + leaveCount + ", lwp=" + lwp + "]";
+				+ ", lateMark=" + lateMark + ", leaveCount=" + leaveCount + ", lwp=" + lwp + ", ab=" + ab + "]";
 	}
-
-	 
-	
-	
-	 
-
+ 
 }
