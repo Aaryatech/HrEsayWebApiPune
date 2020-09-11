@@ -35,8 +35,8 @@ public interface GetBirthDaysForDashRepo extends JpaRepository<GetBirthDaysForDa
 			"INNER JOIN m_employees te ON\n" + 
 			"    tei.emp_id = te.emp_id\n" + 
 			"WHERE\n" + 
-			"    DATE_FORMAT(dob, '%m-%d') BETWEEN DATE_FORMAT(:currDate, '%m-%d') AND DATE_FORMAT(\n" + 
-			"        DATE_ADD(:currDate, INTERVAL 7 DAY),\n" + 
+			"    DATE_FORMAT(dob, '%m-%d') BETWEEN DATE_FORMAT(DATE_ADD(:currDate, INTERVAL 1 DAY), '%m-%d') AND DATE_FORMAT(\n" + 
+			"        DATE_ADD(:currDate, INTERVAL 6 DAY),\n" + 
 			"        '%m-%d'\n" + 
 			"    )  AND tei.del_status=1", nativeQuery = true)
 	List<GetBirthDaysForDash> getWeekBirth(@Param("currDate") String currDate);

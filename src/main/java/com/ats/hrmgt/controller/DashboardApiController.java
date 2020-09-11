@@ -363,7 +363,7 @@ public class DashboardApiController {
 			List<DeptWiseWeekoffDash> list1 = new ArrayList<DeptWiseWeekoffDash>();
 			try {
 
-				list1 = deptWiseWeekoffDashRepo.getLeavesAndAbsent(fiterdate);
+				//list1 = deptWiseWeekoffDashRepo.getLeavesAndAbsent(fiterdate);
 
 			} catch (Exception e) {
 

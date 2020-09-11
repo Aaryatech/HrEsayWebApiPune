@@ -14,7 +14,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 	
 
 	@Query(value = "SELECT\n" + 
-			"    dep.depart_id,\n" + 
+			"    UUID() as id,dep.depart_id,\n" + 
 			"    dep.name_sd,\n" + 
 			"    COUNT('') AS emp_count\n" + 
 			"FROM\n" + 
@@ -31,7 +31,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 	
 	
 	@Query(value = "SELECT\n" + 
-			"    dep.name_sd,\n" + 
+			"     UUID() as id,dep.name_sd,\n" + 
 			"    COUNT('') AS emp_count\n" + 
 			"FROM\n" + 
 			"    tbl_attt_daily_daily tad\n" + 
@@ -48,7 +48,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 	
 	@Query(value = "SELECT\n" + 
 			"\n" + 
-			"dep.depart_id,\n" + 
+			"  UUID() as id,dep.depart_id,\n" + 
 			"    dep.name_sd,\n" + 
 			"    COUNT(DISTINCT tad.emp_id) as   emp_count\n" + 
 			"FROM\n" + 
@@ -69,7 +69,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 	
 
 	@Query(value = "SELECT\n" + 
-			"    dep.name_sd,\n" + 
+			"     UUID() as id,dep.name_sd,\n" + 
 			"    dep.depart_id,\n" + 
 			"    (\n" + 
 			"    SELECT\n" + 
@@ -91,7 +91,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 	
 	
 	@Query(value = "SELECT\n" + 
-			"    payDed.type_name AS name_sd,\n" + 
+			"     UUID() as id,payDed.type_name AS name_sd,\n" + 
 			"    payDed.ded_type_id AS depart_id,\n" + 
 			"    SUM(dedDet.ded_rate) AS emp_count\n" + 
 			"FROM\n" + 
@@ -105,7 +105,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 	
 	
 	@Query(value = "SELECT\n" + 
-			"    payreward.type_name AS name_sd,\n" + 
+			"     UUID() as id,payreward.type_name AS name_sd,\n" + 
 			"    payreward.pay_type_id AS depart_id,\n" + 
 			"    SUM(payDet.pay_rate) AS emp_count\n" + 
 			"FROM\n" + 

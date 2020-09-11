@@ -31,13 +31,19 @@ public interface HolidayMasterRepo extends JpaRepository<HolidayMaster, Integer>
 	
 	
 	@Query(value = "SELECT\n" + 
-			"    *\n" + 
-			"FROM\n" + 
-			"    holiday_master\n" + 
-			"WHERE\n" + 
-			"    holiday_master.holiday_date BETWEEN :currDate AND DATE_ADD(:currDate, INTERVAL 30 DAY) AND holiday_master.del_status = 1\n" + 
-			"ORDER BY\n" + 
-			"    holiday_master.holiday_date ASC", nativeQuery = true)
+			"        holiday_id,\n" + 
+			"        holiday_fromdt as holiday_date,\n" + 
+			"        ex_var2 as holiday_name,\n" + 
+			"        0 as del_status\n" + 
+			"    FROM\n" + 
+			"        m_holiday \n" + 
+			"    WHERE\n" + 
+			"        m_holiday.holiday_fromdt BETWEEN '2020-09-11' AND DATE_ADD('2020-09-11', INTERVAL 30 DAY) \n" + 
+			"        AND m_holiday.del_status = 1\n" + 
+			"    group by \n" + 
+			"        m_holiday.ex_int2\n" + 
+			"    ORDER BY\n" + 
+			"        m_holiday.holiday_fromdt ASC", nativeQuery = true)
 	List<HolidayMaster> getHolidaysForDash(@Param("currDate") String currDate);
 
 	@Query(value = "select count('') as count from m_holiday where del_status=1 and ex_int1=:catId and cal_yr_id=:yearId", nativeQuery = true)

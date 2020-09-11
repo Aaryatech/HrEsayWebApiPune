@@ -1,10 +1,14 @@
 package com.ats.hrmgt.model.dashboard;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class GetBirthDaysForDash {
@@ -14,16 +18,12 @@ public class GetBirthDaysForDash {
 
 	private String name;
 
-	private String dob;
-	
-	
+	private Date dob;
+
 	private String empCode;
-	
-	
+
 	private int age;
 
-	
-	
 	public String getEmpCode() {
 		return empCode;
 	}
@@ -56,11 +56,12 @@ public class GetBirthDaysForDash {
 		this.name = name;
 	}
 
-	public String getDob() {
+	@JsonFormat(locale = "English", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getDob() {
 		return dob;
 	}
 
-	public void setDob(String dob) {
+	public void setDob(Date dob) {
 		this.dob = dob;
 	}
 
@@ -69,9 +70,5 @@ public class GetBirthDaysForDash {
 		return "GetBirthDaysForDash [empId=" + empId + ", name=" + name + ", dob=" + dob + ", empCode=" + empCode
 				+ ", age=" + age + "]";
 	}
-
- 
-	
-	
 
 }

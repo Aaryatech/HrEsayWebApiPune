@@ -17,7 +17,7 @@ public interface PreDayAttnDashRepo extends JpaRepository<PreDayAttnDash,String>
 			"    FROM\n" + 
 			"        tbl_attt_daily_daily td1\n" + 
 			"    WHERE\n" + 
-			"        td1.att_date = ':currDate' AND td1.lv_sumup_id = 11\n" + 
+			"        td1.att_date = :currDate AND td1.lv_sumup_id = 11\n" + 
 			") AS pre_emp,\n" + 
 			"(\n" + 
 			"    SELECT\n" + 
@@ -25,7 +25,7 @@ public interface PreDayAttnDashRepo extends JpaRepository<PreDayAttnDash,String>
 			"    FROM\n" + 
 			"        tbl_attt_daily_daily td2\n" + 
 			"    WHERE\n" + 
-			"        td2.att_date = ':currDate' AND td2.lv_sumup_id = 22\n" + 
+			"        td2.att_date = :currDate AND td2.lv_sumup_id = 22\n" + 
 			") AS absent_emp,\n" + 
 			"(\n" + 
 			"    SELECT\n" + 
@@ -33,7 +33,7 @@ public interface PreDayAttnDashRepo extends JpaRepository<PreDayAttnDash,String>
 			"    FROM\n" + 
 			"        tbl_attt_daily_daily td3\n" + 
 			"    WHERE\n" + 
-			"        td3.att_date = ':currDate' AND td3.lv_sumup_id IN(12, 14, 16, 17, 18, 19)\n" + 
+			"        td3.att_date = :currDate AND td3.lv_sumup_id IN(12, 14, 16, 17, 18, 19)\n" + 
 			") AS wo_emp,\n" + 
 			"(\n" + 
 			"    SELECT\n" + 
@@ -41,7 +41,7 @@ public interface PreDayAttnDashRepo extends JpaRepository<PreDayAttnDash,String>
 			"    FROM\n" + 
 			"        tbl_attt_daily_daily td4\n" + 
 			"    WHERE\n" + 
-			"        td4.att_date = ':currDate' AND td4.lv_sumup_id = 7\n" + 
+			"        td4.att_date = :currDate AND td4.lv_sumup_id = 7\n" + 
 			") AS lv_emp,\n" + 
 			"'NA' AS attn_date", nativeQuery = true)
 	PreDayAttnDash getAttendance(@Param("currDate") String currDate);
