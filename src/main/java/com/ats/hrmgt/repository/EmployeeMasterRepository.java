@@ -199,6 +199,12 @@ public interface EmployeeMasterRepository extends JpaRepository<EmployeeMaster, 
 	@Modifying
 	@Query(value = "UPDATE m_employees SET  notice_pay_amount =:isActive WHERE emp_id IN(:empId)", nativeQuery = true)
 	int deleteEmployeeStatus(int empId, int isActive);
+
+
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE m_employees SET  emp_code =:empCode WHERE emp_id IN(:id)", nativeQuery = true)
+	int submitupdateempcode(String empCode, int id);
  
 
 	

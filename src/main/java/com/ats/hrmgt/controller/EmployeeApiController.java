@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.hrmgt.claim.repository.EmployeeRelatedTblsRepo;
 import com.ats.hrmgt.claim.repository.ViewEmployeeRepo;
 import com.ats.hrmgt.model.Allowances;
+import com.ats.hrmgt.model.DailyDaily;
 import com.ats.hrmgt.model.EmpDoctype;
 import com.ats.hrmgt.model.EmpDriver;
 import com.ats.hrmgt.model.EmpSalAllowance;
@@ -208,6 +209,25 @@ public class EmployeeApiController {
 
 	}
 
+	@RequestMapping(value = { "/updateEmpCode" }, method = RequestMethod.POST)
+	public @ResponseBody List<DailyDaily> updateEmpCode(@RequestBody List<DailyDaily> dailyList) {
+
+		List<DailyDaily> dailyListRes = new ArrayList<>();
+		
+		try {
+
+			for(int x=0;x<dailyList.size();x++) {
+				int result=empRepo.submitupdateempcode(dailyList.get(x).getOtHr(),dailyList.get(x).getId());
+			}
+			 
+		} catch (Exception e) {
+			dailyListRes = new ArrayList<>();
+			e.printStackTrace();
+		}
+		
+		return dailyListRes;
+	}
+	
 	@RequestMapping(value = { "/deleteEmployeeStatus" }, method = RequestMethod.POST)
 	public Info deleteEmployeeStatus(@RequestParam int empId, @RequestParam int isActive) {
 

@@ -1341,7 +1341,7 @@ public class AttendanceApiControllerchange {
 				// System.out.println("case type
 				// -----------------"+dailyAttendanceList.get(i).getCasetype());
 				if (dailyAttendanceList.get(i).getByFileUpdated() == 1) {
-					dailyAttendanceList.get(i).setCommentsSupervisor("8");
+					//dailyAttendanceList.get(i).setCommentsSupervisor("8");
 
 					querysb.append("update\n" + "        tbl_attt_daily_daily \n" + "    set\n" + "        atsumm_uid='"
 							+ dailyAttendanceList.get(i).getAtsummUid() + "'," + "        att_date='"
