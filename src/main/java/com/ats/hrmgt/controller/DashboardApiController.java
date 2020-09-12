@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.model.DailyAttendance;
+import com.ats.hrmgt.model.DashboardLeavePending;
 import com.ats.hrmgt.model.EmpGraphDetail;
 import com.ats.hrmgt.model.EmpInfoForDashBoard;
 import com.ats.hrmgt.model.HolidayMaster;
@@ -55,6 +56,7 @@ import com.ats.hrmgt.model.repo.dash.PerformanceProdDashRepo;
 import com.ats.hrmgt.model.repo.dash.PreDayAttnDashRepo;
 import com.ats.hrmgt.repo.HolidayMasterRepo;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
+import com.ats.hrmgt.repository.DashboardLeavePendingRepo;
 import com.ats.hrmgt.repository.EmpGraphDetailRepository;
 import com.ats.hrmgt.repository.EmpInfoForDashBoardRepository;
 import com.ats.hrmgt.repository.LeaveAuthorityRepository;
@@ -227,7 +229,7 @@ public class DashboardApiController {
 			comDash.setLvDet(leavePenDash);
 
 			// 5 getAttnDash
-			PreDayAttnDash preDayAttn = new PreDayAttnDash();
+			/*PreDayAttnDash preDayAttn = new PreDayAttnDash();
 			DailyAttendance dailyAttn = new DailyAttendance();
 			List<DailyAttendance> dailyAttnList = new ArrayList<DailyAttendance>();
 			try {
@@ -248,7 +250,7 @@ public class DashboardApiController {
 
 				e.printStackTrace();
 			}
-			comDash.setAttnDet(preDayAttn);
+			comDash.setAttnDet(preDayAttn);*/
 
 			// 7 getAllPendingMasterDet
 
@@ -274,7 +276,7 @@ public class DashboardApiController {
 
 				advDash = loanAdvDashDetDashRepo.getAdvnceDetails(temp[0], temp[1]);
 				comDash.setAdvDet(advDash);
-				loanDash = loanAdvDashDetDashRepo.getLoanDetails(temp[0], temp[1], fiterdate);
+				loanDash = loanAdvDashDetDashRepo.getLoanDetails(fiterdate);
 				comDash.setLoanDet(loanDash);
 			} catch (Exception e) {
 
@@ -363,7 +365,7 @@ public class DashboardApiController {
 			List<DeptWiseWeekoffDash> list1 = new ArrayList<DeptWiseWeekoffDash>();
 			try {
 
-				//list1 = deptWiseWeekoffDashRepo.getLeavesAndAbsent(fiterdate);
+				// list1 = deptWiseWeekoffDashRepo.getLeavesAndAbsent(fiterdate);
 
 			} catch (Exception e) {
 
@@ -419,6 +421,31 @@ public class DashboardApiController {
 		}
 
 		return birthHoliDash;
+
+	}
+
+	@Autowired
+	DashboardLeavePendingRepo dashboardLeavePendingRepo;
+	
+	@RequestMapping(value = { "/getLeaveApprovalListForDashBoard" }, method = RequestMethod.POST)
+	public @ResponseBody List<DashboardLeavePending> getLeaveApprovalListForDashBoard(@RequestParam("type") int type) {
+
+		List<DashboardLeavePending> list = new ArrayList<DashboardLeavePending>();
+
+		try {
+
+			if(type==1) {
+				list = dashboardLeavePendingRepo.getLeaveIntialApprovalListForDashBoard();
+			}else {
+				list = dashboardLeavePendingRepo.getLeaveFinalApprovalListForDashBoard();
+			}
+			
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
 
 	}
 
@@ -603,7 +630,7 @@ public class DashboardApiController {
 				birthHoliDash = loanAdvDashDetDashRepo.getAdvnceDetails(temp[0], temp[1]);
 
 			} else {
-				birthHoliDash = loanAdvDashDetDashRepo.getLoanDetails(temp[0], temp[1], fiterdate);
+				birthHoliDash = loanAdvDashDetDashRepo.getLoanDetails(fiterdate);
 			}
 
 		} catch (Exception e) {
@@ -856,17 +883,17 @@ public class DashboardApiController {
 
 	@Autowired
 	EmpInfoForDashBoardRepository empInfoForDashBoardRepository;
-	
+
 	@Autowired
 	EmpGraphDetailRepository empGraphDetailRepository;
-	
+
 	@RequestMapping(value = { "/getEmpInfoForModelGraph" }, method = RequestMethod.POST)
 	public @ResponseBody EmpInfoForDashBoard getEmpInfoForModelGraph(@RequestParam("empId") int empId) {
 
 		EmpInfoForDashBoard emp = new EmpInfoForDashBoard();
 		try {
 
-			emp = empInfoForDashBoardRepository.getEmpInfoForModelGraph(empId); 
+			emp = empInfoForDashBoardRepository.getEmpInfoForModelGraph(empId);
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -875,15 +902,15 @@ public class DashboardApiController {
 		return emp;
 
 	}
-	
+
 	@RequestMapping(value = { "/getLateMarkGraph" }, method = RequestMethod.POST)
 	public @ResponseBody List<EmpGraphDetail> getLateMarkGraph(@RequestParam("empId") int empId) {
 
 		List<EmpGraphDetail> emp = new ArrayList<EmpGraphDetail>();
-		
+
 		try {
 
-			emp = empGraphDetailRepository.getLateMarkGraph(empId); 
+			emp = empGraphDetailRepository.getLateMarkGraph(empId);
 		} catch (Exception e) {
 
 			e.printStackTrace();

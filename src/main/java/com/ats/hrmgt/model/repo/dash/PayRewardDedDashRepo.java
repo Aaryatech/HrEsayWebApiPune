@@ -12,43 +12,31 @@ public interface PayRewardDedDashRepo extends JpaRepository<PayRewardDedDash, St
 	
 	
 
-	@Query(value = "\n" + 
-			"SELECT UUId() as uni_key,\n" + 
-			"    (\n" + 
-			"    SELECT\n" + 
-			"        COUNT(\n" + 
-			"            DISTINCT tblm_pay_deduction_details.emp_id\n" + 
-			"        )\n" + 
+	@Query(value = "SELECT\n" + 
+			"        UUId() as uni_key,\n" + 
+			"        COUNT(DISTINCT emp_id) as emp_count,\n" + 
+			"        ROUND(ifnull((SUM(tpd.ded_rate)),0),2) as tot     \n" + 
 			"    FROM\n" + 
-			"        tblm_pay_deduction_details\n" + 
+			"        tblm_pay_deduction_details tpd     \n" + 
 			"    WHERE\n" + 
-			"        tblm_pay_deduction_details.month = :month AND tblm_pay_deduction_details.year = :year AND tblm_pay_deduction_details.del_status = 1\n" + 
-			") AS emp_count,\n" + 
-			"        SUM(tpd.ded_rate) as tot\n" + 
-			"    FROM\n" + 
-			"        tblm_pay_deduction_details tpd\n" + 
-			"    WHERE\n" + 
-			"        tpd.month=:month AND tpd.year=:year AND tpd.del_status=1", nativeQuery = true)
+			"        tpd.month=:month \n" + 
+			"        AND tpd.year=:year \n" + 
+			"        AND tpd.del_status=1\n" + 
+			"        AND tpd.del_status = 1", nativeQuery = true)
 	PayRewardDedDash getDedDetails(@Param("year") String  year,@Param("month") String  month);
 	
 	
 	
-	@Query(value = "SELECT UUId() as uni_key,\n" + 
-			"    (\n" + 
-			"    SELECT\n" + 
-			"        COUNT(\n" + 
-			"            DISTINCT tblm_pay_bonus_details.emp_id\n" + 
-			"        )\n" + 
+	@Query(value = "SELECT\n" + 
+			"        UUId() as uni_key,\n" + 
+			"       COUNT(DISTINCT emp_id) AS emp_count,\n" + 
+			"        ROUND(ifnull((SUM(tpd.pay_rate)),0),2) as tot       \n" + 
 			"    FROM\n" + 
-			"        tblm_pay_bonus_details\n" + 
+			"        tblm_pay_bonus_details tpd     \n" + 
 			"    WHERE\n" + 
-			"        tblm_pay_bonus_details.month =:month AND tblm_pay_bonus_details.year =:year AND tblm_pay_bonus_details.del_status = 1\n" + 
-			") AS emp_count,\n" + 
-			"        SUM(tpd.pay_rate) as tot\n" + 
-			"    FROM\n" + 
-			"        tblm_pay_bonus_details tpd\n" + 
-			"    WHERE\n" + 
-			"        tpd.month=:month AND tpd.year=:year AND tpd.del_status=1", nativeQuery = true)
+			"        tpd.month=:month \n" + 
+			"        AND tpd.year=:year \n" + 
+			"        AND tpd.del_status=1", nativeQuery = true)
 	PayRewardDedDash getRewardDetails(@Param("year") String  year,@Param("month") String  month);
 
 }
