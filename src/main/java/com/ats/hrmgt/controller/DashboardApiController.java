@@ -102,10 +102,28 @@ public class DashboardApiController {
 
 		// for all
 		try {
+			GetBirthDaysForDash getBirthDaysForDash = getBirthDaysForDashRepo.loginUserBirthDay(fiterdate, empId);
+			Date dt = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(dt);
+			int month = cal.get(Calendar.MONTH) + 1;
+			int day = cal.get(Calendar.DAY_OF_MONTH);
 
-			holilist = holidayMasterRepo.getHolidaysForDash(fiterdate);
-			birthListToday = getBirthDaysForDashRepo.getTodaysBirth(fiterdate);
-			birthListUpcoming = getBirthDaysForDashRepo.getWeekBirth(fiterdate);
+			Calendar cal2 = Calendar.getInstance();
+			cal2.setTime(getBirthDaysForDash.getDob());
+			int month2 = cal2.get(Calendar.MONTH) + 1; // 9 - October!!!
+			int day2 = cal2.get(Calendar.DAY_OF_MONTH);
+
+			if (month == month2 && day == day2) {
+				birthHoliDash.setLoginUserBirthDay(1);
+			} else {
+				birthHoliDash.setLoginUserBirthDay(0);
+			}
+			if (userType == 2) {
+				holilist = holidayMasterRepo.getHolidaysForDash(fiterdate);
+				birthListToday = getBirthDaysForDashRepo.getTodaysBirth(fiterdate);
+				birthListUpcoming = getBirthDaysForDashRepo.getWeekBirth(fiterdate);
+			} 
 			birthHoliDash.setBirthListToday(birthListToday);
 			birthHoliDash.setBirthListUpcoming(birthListUpcoming);
 			birthHoliDash.setHoliList(holilist);
@@ -121,7 +139,7 @@ public class DashboardApiController {
 		List<GetLeaveHistForDash> leaveHistForDashlist = new ArrayList<GetLeaveHistForDash>();
 		try {
 
-			leaveHistForDashlist = getLeaveHistForDashRepo.getLeaveCnt(empId);
+			// leaveHistForDashlist = getLeaveHistForDashRepo.getLeaveCnt(empId);
 
 		} catch (Exception e) {
 
@@ -186,12 +204,15 @@ public class DashboardApiController {
 
 		try {
 
-			prod = performanceProdDashRepo.getPerformanceDetails(temp[0], temp[1], empId);
-
-			comDash.setPerfList(prod);
-			prod = performanceProdDashRepo.getProdDetails(temp[0], temp[1], empId);
-
-			comDash.setProdList(prod);
+			/*
+			 * prod = performanceProdDashRepo.getPerformanceDetails(temp[0], temp[1],
+			 * empId);
+			 * 
+			 * comDash.setPerfList(prod); prod =
+			 * performanceProdDashRepo.getProdDetails(temp[0], temp[1], empId);
+			 * 
+			 * comDash.setProdList(prod);
+			 */
 
 		} catch (Exception e) {
 
@@ -229,28 +250,24 @@ public class DashboardApiController {
 			comDash.setLvDet(leavePenDash);
 
 			// 5 getAttnDash
-			/*PreDayAttnDash preDayAttn = new PreDayAttnDash();
-			DailyAttendance dailyAttn = new DailyAttendance();
-			List<DailyAttendance> dailyAttnList = new ArrayList<DailyAttendance>();
-			try {
-
-				String fiterdateNew = new String();
-				dailyAttnList = dailyAttendanceRepository.dailyAttendanceListRec(fiterdate);
-				if (dailyAttnList.size() == 0) {
-					dailyAttn = dailyAttendanceRepository.dailyAttendanceListLastRec();
-					fiterdateNew = dailyAttn.getAttDate();
-				} else {
-					fiterdateNew = fiterdate;
-				}
-
-				preDayAttn = preDayAttnDashRepo.getAttendance(fiterdateNew);
-
-				preDayAttn.setAttnDate(DateConvertor.convertToDMY(fiterdateNew));
-			} catch (Exception e) {
-
-				e.printStackTrace();
-			}
-			comDash.setAttnDet(preDayAttn);*/
+			/*
+			 * PreDayAttnDash preDayAttn = new PreDayAttnDash(); DailyAttendance dailyAttn =
+			 * new DailyAttendance(); List<DailyAttendance> dailyAttnList = new
+			 * ArrayList<DailyAttendance>(); try {
+			 * 
+			 * String fiterdateNew = new String(); dailyAttnList =
+			 * dailyAttendanceRepository.dailyAttendanceListRec(fiterdate); if
+			 * (dailyAttnList.size() == 0) { dailyAttn =
+			 * dailyAttendanceRepository.dailyAttendanceListLastRec(); fiterdateNew =
+			 * dailyAttn.getAttDate(); } else { fiterdateNew = fiterdate; }
+			 * 
+			 * preDayAttn = preDayAttnDashRepo.getAttendance(fiterdateNew);
+			 * 
+			 * preDayAttn.setAttnDate(DateConvertor.convertToDMY(fiterdateNew)); } catch
+			 * (Exception e) {
+			 * 
+			 * e.printStackTrace(); } comDash.setAttnDet(preDayAttn);
+			 */
 
 			// 7 getAllPendingMasterDet
 
@@ -426,7 +443,7 @@ public class DashboardApiController {
 
 	@Autowired
 	DashboardLeavePendingRepo dashboardLeavePendingRepo;
-	
+
 	@RequestMapping(value = { "/getLeaveApprovalListForDashBoard" }, method = RequestMethod.POST)
 	public @ResponseBody List<DashboardLeavePending> getLeaveApprovalListForDashBoard(@RequestParam("type") int type) {
 
@@ -434,12 +451,12 @@ public class DashboardApiController {
 
 		try {
 
-			if(type==1) {
+			if (type == 1) {
 				list = dashboardLeavePendingRepo.getLeaveIntialApprovalListForDashBoard();
-			}else {
+			} else {
 				list = dashboardLeavePendingRepo.getLeaveFinalApprovalListForDashBoard();
 			}
-			
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -614,7 +631,6 @@ public class DashboardApiController {
 
 	}
 
-	
 	@Autowired
 	LoanAdvDashDetDashRepo loanAdvDashDetDashRepo;
 

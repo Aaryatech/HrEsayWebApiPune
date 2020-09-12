@@ -98,7 +98,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 			"    tblm_pay_deduction_details dedDet,\n" + 
 			"    tbl_pay_deduction payDed\n" + 
 			"WHERE\n" + 
-			"    dedDet.emp_id =:empId AND dedDet.ded_type_id = payDed.ded_type_id AND dedDet.del_status = 1\n" + 
+			"    dedDet.emp_id =:empId AND dedDet.ded_type_id = payDed.ded_type_id AND dedDet.del_status = 1 and is_deducted=0\n" + 
 			"GROUP BY\n" + 
 			"    payDed.ded_type_id", nativeQuery = true)
 	List<DeptWiseWeekoffDash> getDedTypewiseAmt(@Param("empId") int empId);
@@ -112,7 +112,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 			"    tblm_pay_bonus_details payDet,\n" + 
 			"    tbl_pay_bonus payreward\n" + 
 			"WHERE\n" + 
-			"    payDet.emp_id = :empId AND payDet.pay_type_id = payreward.pay_type_id AND payDet.del_status = 1\n" + 
+			"    payDet.emp_id = :empId AND payDet.pay_type_id = payreward.pay_type_id AND payDet.del_status = 1 and is_paid=0\n" + 
 			"GROUP BY\n" + 
 			"    payreward.pay_type_id", nativeQuery = true)
 	List<DeptWiseWeekoffDash> getRewardwiseAmt(@Param("empId") int empId);

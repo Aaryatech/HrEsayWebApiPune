@@ -1,11 +1,8 @@
 package com.ats.hrmgt.model.dashboard;
 
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+ 
+import javax.persistence.Entity; 
 import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -13,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 public class GetBirthDaysForDash {
 	@Id
-
+	private String uuid;
 	private int empId;
 
 	private String name;
@@ -23,6 +20,14 @@ public class GetBirthDaysForDash {
 	private String empCode;
 
 	private int age;
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 
 	public String getEmpCode() {
 		return empCode;
@@ -67,8 +72,8 @@ public class GetBirthDaysForDash {
 
 	@Override
 	public String toString() {
-		return "GetBirthDaysForDash [empId=" + empId + ", name=" + name + ", dob=" + dob + ", empCode=" + empCode
-				+ ", age=" + age + "]";
+		return "GetBirthDaysForDash [uuid=" + uuid + ", empId=" + empId + ", name=" + name + ", dob=" + dob
+				+ ", empCode=" + empCode + ", age=" + age + "]";
 	}
 
 }
