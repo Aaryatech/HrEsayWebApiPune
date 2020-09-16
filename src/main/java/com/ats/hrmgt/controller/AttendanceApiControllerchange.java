@@ -1088,15 +1088,38 @@ public class AttendanceApiControllerchange {
 									dailyAttendanceList.get(i).setWorkingHrs(monthlyOtMin);
 
 								} else {
+
+									
 									dailyAttendanceList.get(i)
-											.setWorkingHrs(Float.parseFloat(shiftMaster.getShiftHr()));
+									.setWorkingHrs(Float.parseFloat(shiftMaster.getShiftHr()));
+									/*
+									 * if (stsInfo.getNoOfLeave() == 0.5) { dailyAttendanceList.get(i)
+									 * .setWorkingHrs(Float.parseFloat(shiftMaster.getShiftHalfdayHr()));
+									 * 
+									 * } else { dailyAttendanceList.get(i)
+									 * .setWorkingHrs(Float.parseFloat(shiftMaster.getShiftHr())); }
+									 */
+
 								}
 
 							}
 
-							dailyAttendanceList.get(i).setAttStatus(stsInfo.getStsshortname());
-							dailyAttendanceList.get(i).setLvSumupId(stsInfo.getLvTypeId());
-							dailyAttendanceList.get(i).setAttsSdShow(stsInfo.getStsshortname());
+							if (stsInfo.getNoOfLeave() == 0.5) {
+
+								dailyAttendanceList.get(i).setAttStatus("HDPHDL");
+								for (int j = 0; j < lvTypeList.size(); j++) {
+									if (lvTypeList.get(j).getNameSd().equals("HDPHDL")) {
+										dailyAttendanceList.get(i).setLvSumupId(lvTypeList.get(j).getLvSumupId());
+										dailyAttendanceList.get(i).setAttsSdShow(lvTypeList.get(j).getNameSdShow());
+										break;
+									}
+								}
+
+							} else {
+								dailyAttendanceList.get(i).setAttStatus(stsInfo.getStsshortname());
+								dailyAttendanceList.get(i).setLvSumupId(stsInfo.getLvTypeId());
+								dailyAttendanceList.get(i).setAttsSdShow(stsInfo.getStsshortname());
+							}
 
 						} else if (atteanceCase.equals("1367") || atteanceCase.equals("1368")
 								|| atteanceCase.equals("1467") || atteanceCase.equals("1468")
@@ -1341,7 +1364,7 @@ public class AttendanceApiControllerchange {
 				// System.out.println("case type
 				// -----------------"+dailyAttendanceList.get(i).getCasetype());
 				if (dailyAttendanceList.get(i).getByFileUpdated() == 1) {
-					//dailyAttendanceList.get(i).setCommentsSupervisor("8");
+					// dailyAttendanceList.get(i).setCommentsSupervisor("8");
 
 					querysb.append("update\n" + "        tbl_attt_daily_daily \n" + "    set\n" + "        atsumm_uid='"
 							+ dailyAttendanceList.get(i).getAtsummUid() + "'," + "        att_date='"
@@ -3101,7 +3124,8 @@ public class AttendanceApiControllerchange {
 							+ dailyAttendanceList.get(i).getCasetype() + "'," + "        comments_supervisor='"
 							+ dailyAttendanceList.get(i).getCommentsSupervisor() + "'," + "        company_id='"
 							+ dailyAttendanceList.get(i).getCompanyId() + "'," + "        current_shiftid='"
-							+ dailyAttendanceList.get(i).getCurrentShiftid() + "'," + "        current_shiftname='FLEXIBLE SHIFT'," + "        early_going_mark='"
+							+ dailyAttendanceList.get(i).getCurrentShiftid() + "',"
+							+ "        current_shiftname='FLEXIBLE SHIFT'," + "        early_going_mark='"
 							+ dailyAttendanceList.get(i).getEarlyGoingMark() + "'," + "        early_going_min='"
 							+ dailyAttendanceList.get(i).getEarlyGoingMin() + "'," + "        emp_code='"
 							+ dailyAttendanceList.get(i).getEmpCode() + "'," + "        emp_id='"
