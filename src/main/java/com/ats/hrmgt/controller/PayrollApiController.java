@@ -682,9 +682,14 @@ public class PayrollApiController {
 			String fromDate = sf.format(firstDay);
 			String toDate = sf.format(lastDay);
 
-			List<RoasterSummeryDetail> roasterSummeryDetailList = roasterSummeryDetailRepository
-					.getRoasterSummeryDetailForPayRoll(fromDate, toDate, Integer.parseInt(setting.getValue()));
+			List<RoasterSummeryDetail> roasterSummeryDetailList = new ArrayList<>();
 
+			try {
+				roasterSummeryDetailList = roasterSummeryDetailRepository.getRoasterSummeryDetailForPayRoll(fromDate,
+						toDate, Integer.parseInt(setting.getValue()));
+			} catch (Exception e) {
+
+			}
 			Date dt = new Date();
 			String date = sf.format(dt);
 			String[] dates = date.split("-");
@@ -1969,9 +1974,9 @@ public class PayrollApiController {
 			List<GetPayrollGeneratedList> list = new ArrayList<>();
 
 			if (companyId == 0) {
-				list = getPayrollGeneratedListRepo.getPayrollGenratedListLocId(month, year,locId);
+				list = getPayrollGeneratedListRepo.getPayrollGenratedListLocId(month, year, locId);
 			} else {
-				list = getPayrollGeneratedListRepo.getPayrollGenratedListLocId(month, year, companyId,locId);
+				list = getPayrollGeneratedListRepo.getPayrollGenratedListLocId(month, year, companyId, locId);
 			}
 
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
