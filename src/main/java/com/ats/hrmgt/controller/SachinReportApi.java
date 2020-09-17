@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.model.DailyDaily;
 import com.ats.hrmgt.model.InfoForUploadAttendance;
+import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.report.HodDashboard;
 import com.ats.hrmgt.model.report.HodDeptDashb;
 import com.ats.hrmgt.repo.DailyDailyRepo;
 import com.ats.hrmgt.repo.report.HodDashboardRepo;
 import com.ats.hrmgt.repo.report.HodDeptDashbRepo;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
+import com.ats.hrmgt.repository.SettingRepo;
 
 @RestController
 public class SachinReportApi {
@@ -103,7 +105,8 @@ public class SachinReportApi {
 		}
 		
 		
-		
+		@Autowired
+		SettingRepo settingRepo;
 		
 		@RequestMapping(value = { "/saveDailyOTUpdate" }, method = RequestMethod.POST)
 		public @ResponseBody List<DailyDaily> saveDailyOTUpdate(@RequestBody List<DailyDaily> dailyList) {
@@ -113,9 +116,14 @@ public class SachinReportApi {
 			try {
 
 				//dailyListRes = dailyDailyRepo.saveAll(dailyList);
-				
+				Setting auto_approve_ot_hr = settingRepo.findByKey("auto_approve_ot_hr");
 				for(int x=0;x<dailyList.size();x++) {
-					int result=dailyrRepo.updateOTById(dailyList.get(x).getOtHr(),dailyList.get(x).getId());
+					if (Integer.parseInt(auto_approve_ot_hr.getValue()) == 1) {
+						int result=dailyrRepo.updateOTByIdAndApprove(dailyList.get(x).getOtHr(),dailyList.get(x).getId());
+					}else {
+						int result=dailyrRepo.updateOTById(dailyList.get(x).getOtHr(),dailyList.get(x).getId());
+					}
+					
 				}
 				System.err.println(" dailyListRes " +dailyListRes.toString());
 			} catch (Exception e) {

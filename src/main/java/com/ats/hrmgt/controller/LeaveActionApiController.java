@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
- 
+
 import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.common.Firebase;
 import com.ats.hrmgt.model.AuthorityInformation;
@@ -281,6 +281,24 @@ public class LeaveActionApiController {
 
 	}
 
+	@RequestMapping(value = { "/saveLeaveApplyList" }, method = RequestMethod.POST)
+	public @ResponseBody List<LeaveApply> saveLeaveApplyList(@RequestBody List<LeaveApply> leave) {
+
+		List<LeaveApply> save = new ArrayList<>();
+		try {
+
+			save = leaveApplyRepository.saveAll(leave);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return save;
+
+	} 
+	
+	
 	@RequestMapping(value = { "/saveLeaveApply" }, method = RequestMethod.POST)
 	public @ResponseBody LeaveApply saveLeaveApply(@RequestBody LeaveApply leave) {
 
@@ -797,8 +815,8 @@ public class LeaveActionApiController {
 	@Autowired
 	AttendanceApiControllerchange attendanceApiControllerchange;
 
-	/*@Scheduled(cron = "0/20 * * * * ? ")*/
-	 @Scheduled(cron = "0 0 23 * * ? ")  
+	/* @Scheduled(cron = "0/20 * * * * ? ") */
+	@Scheduled(cron = "0 0 23 * * ? ")
 	public void applyLWPofInactiveEmployee() {
 
 		try {
@@ -843,7 +861,8 @@ public class LeaveActionApiController {
 					leaveSummary.setExVar1("NA");
 
 					leaveSummary.setExVar2("0");/*
-					leaveSummary.setExVar3("");*/
+												 * leaveSummary.setExVar3("");
+												 */
 					leaveSummary.setIsActive(1);
 					leaveSummary.setDelStatus(1);
 					leaveSummary.setMakerUserId(1);
@@ -852,31 +871,29 @@ public class LeaveActionApiController {
 					LeaveApply save = leaveApplyRepository.saveAndFlush(leaveSummary);
 
 					if (save != null) {
-						  
 
-							List<FileUploadedData> fileUploadedDataList = new ArrayList<>();
+						List<FileUploadedData> fileUploadedDataList = new ArrayList<>();
 
-							FileUploadedData fileUploadedData = new FileUploadedData();
-							fileUploadedData.setEmpCode(empList.get(i).getEmpCode());
-							fileUploadedData.setEmpName("XYZ");
-							fileUploadedData.setLogDate(DateConvertor.convertToDMY(sf.format(dt)));
-							fileUploadedData.setInTime("00:00:00");
-							fileUploadedData.setOutTime("00:00:00");
+						FileUploadedData fileUploadedData = new FileUploadedData();
+						fileUploadedData.setEmpCode(empList.get(i).getEmpCode());
+						fileUploadedData.setEmpName("XYZ");
+						fileUploadedData.setLogDate(DateConvertor.convertToDMY(sf.format(dt)));
+						fileUploadedData.setInTime("00:00:00");
+						fileUploadedData.setOutTime("00:00:00");
 
-							fileUploadedDataList.add(fileUploadedData);
-							DataForUpdateAttendance dataForUpdateAttendance = new DataForUpdateAttendance();
-							dataForUpdateAttendance.setFromDate(sf.format(dt));
-							dataForUpdateAttendance.setToDate(sf.format(dt));
-							dataForUpdateAttendance.setMonth(0);
-							dataForUpdateAttendance.setYear(0);
-							dataForUpdateAttendance.setUserId(1);
-							dataForUpdateAttendance.setFileUploadedDataList(fileUploadedDataList);
-							dataForUpdateAttendance.setEmpId(empList.get(i).getEmpId());
-							// System.out.println(dataForUpdateAttendance);
-							Info dailydailyinfo = attendanceApiControllerchange
-									.getVariousListForUploadAttendace(dataForUpdateAttendance);
+						fileUploadedDataList.add(fileUploadedData);
+						DataForUpdateAttendance dataForUpdateAttendance = new DataForUpdateAttendance();
+						dataForUpdateAttendance.setFromDate(sf.format(dt));
+						dataForUpdateAttendance.setToDate(sf.format(dt));
+						dataForUpdateAttendance.setMonth(0);
+						dataForUpdateAttendance.setYear(0);
+						dataForUpdateAttendance.setUserId(1);
+						dataForUpdateAttendance.setFileUploadedDataList(fileUploadedDataList);
+						dataForUpdateAttendance.setEmpId(empList.get(i).getEmpId());
+						// System.out.println(dataForUpdateAttendance);
+						Info dailydailyinfo = attendanceApiControllerchange
+								.getVariousListForUploadAttendace(dataForUpdateAttendance);
 
-						 
 					}
 				}
 			}

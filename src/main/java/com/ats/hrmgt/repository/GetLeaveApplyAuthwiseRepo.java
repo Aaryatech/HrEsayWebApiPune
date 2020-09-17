@@ -197,6 +197,17 @@ public interface GetLeaveApplyAuthwiseRepo extends JpaRepository<GetLeaveApplyAu
 
 	GetLeaveApplyAuthwise getLeaveApplyDetails(@Param("leaveId") int leaveId);
 
+	@Query(value = " SELECT\n" + 
+			"            count('') as count          \n" + 
+			"        FROM\n" + 
+			"            tbl_attt_daily_daily        \n" + 
+			"        where\n" + 
+			"            att_date between :fromDate and :toDate \n" + 
+			"            and emp_id =:empId \n" + 
+			"            and is_fixed=1 \n" + 
+			"            and rec_status='F'", nativeQuery = true)
+	int getStatusForFreezeMonth(int empId, String fromDate, String toDate);
+
 	
 	
 	

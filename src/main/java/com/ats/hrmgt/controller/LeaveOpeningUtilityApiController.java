@@ -19,21 +19,21 @@ import com.ats.hrmgt.repository.OpeningPendingLeaveEmployeeListRepo;
 
 @RestController
 public class LeaveOpeningUtilityApiController {
-	
+
 	@Autowired
 	OpeningPendingLeaveEmployeeListRepo openingPendingLeaveEmployeeListRepo;
-	
+
 	@RequestMapping(value = { "/getEmplistForOpeningLeave" }, method = RequestMethod.POST)
-	public @ResponseBody List<OpeningPendingLeaveEmployeeList> getEmplistForOpeningLeave(@RequestParam("locId") int locId) {
+	public @ResponseBody List<OpeningPendingLeaveEmployeeList> getEmplistForOpeningLeave(
+			@RequestParam("locId") int locId, @RequestParam("yearId") int yearId) {
 
 		List<OpeningPendingLeaveEmployeeList> list = new ArrayList<>();
 		try {
 
-			list = openingPendingLeaveEmployeeListRepo.getEmplistForOpeningLeave(locId);
- 
+			list = openingPendingLeaveEmployeeListRepo.getEmplistForOpeningLeave(locId,yearId);
 
 		} catch (Exception e) {
-			 
+
 			e.printStackTrace();
 		}
 

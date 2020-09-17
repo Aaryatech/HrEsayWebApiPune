@@ -589,6 +589,26 @@ public class LeaveStructureApiController {
 
 	}
 
+	@RequestMapping(value = { "/getStatusForFreezeMonth" }, method = RequestMethod.POST)
+	public @ResponseBody Info getStatusForFreezeMonth(@RequestParam("empId") int empId,
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
+		Info info = new Info();
+
+		try {
+
+			int count = getLeaveApplyAuthwiseRepo.getStatusForFreezeMonth(empId, fromDate, toDate);
+			info.setMsg(String.valueOf(count));
+			info.setError(false);
+		} catch (Exception e) {
+			info.setMsg("0");
+			info.setError(true);
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
 	@RequestMapping(value = { "/getEmpInfoListByTrailEmpId" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetLeaveStatus> getEmpInfoListByTrailEmpId(@RequestParam("leaveId") int leaveId) {
 
@@ -704,7 +724,7 @@ public class LeaveStructureApiController {
 
 		try {
 
-			list = leaveCashReportRepository.getPaidListOfleaveCashLocId(yearId,locId);
+			list = leaveCashReportRepository.getPaidListOfleaveCashLocId(yearId, locId);
 
 		} catch (Exception e) {
 

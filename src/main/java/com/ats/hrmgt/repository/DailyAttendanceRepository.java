@@ -427,4 +427,10 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 	@Query("UPDATE DailyAttendance set ot_hr=:otHr  WHERE id=:id")
 	int updateOTById(@Param("otHr") String otHr,@Param("id") int id );
 
+	//akshay 17-09-2020
+	@Transactional
+	@Modifying
+	@Query("UPDATE DailyAttendance set ot_hr=:otHr,freeze_by_supervisor=2  WHERE id=:id")
+	int updateOTByIdAndApprove(String otHr, int id);
+
 }
