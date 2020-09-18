@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.DashboardLeavePending;
+import com.ats.hrmgt.model.EmpDeptWise;
 import com.ats.hrmgt.model.EmpGraphDetail;
 import com.ats.hrmgt.model.EmpInfoForDashBoard;
 import com.ats.hrmgt.model.HolidayMaster;
@@ -57,6 +58,7 @@ import com.ats.hrmgt.model.repo.dash.PreDayAttnDashRepo;
 import com.ats.hrmgt.repo.HolidayMasterRepo;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
 import com.ats.hrmgt.repository.DashboardLeavePendingRepo;
+import com.ats.hrmgt.repository.EmpDeptWiseRepository;
 import com.ats.hrmgt.repository.EmpGraphDetailRepository;
 import com.ats.hrmgt.repository.EmpInfoForDashBoardRepository;
 import com.ats.hrmgt.repository.LeaveAuthorityRepository;
@@ -86,6 +88,9 @@ public class DashboardApiController {
 	@Autowired
 	SummaryDailyAttendanceRepository summaryDailyAttendanceRepository;
 
+	@Autowired
+	EmpDeptWiseRepository empDeptWiseRepository;
+	
 	@RequestMapping(value = { "/getCommonDash" }, method = RequestMethod.POST)
 	public @ResponseBody CommonDash getCommonDash(@RequestParam("fiterdate") String fiterdate,
 			@RequestParam("empId") int empId, @RequestParam("userType") int userType,
@@ -928,6 +933,23 @@ public class DashboardApiController {
 		try {
 
 			emp = empGraphDetailRepository.getLateMarkGraph(empId);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return emp;
+
+	}
+	
+	@RequestMapping(value = { "/getDeparmentWiseEmpCount" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmpDeptWise> getDeparmentWiseEmpCount(@RequestParam("locId") int locId) {
+
+		List<EmpDeptWise> emp = new ArrayList<EmpDeptWise>();
+
+		try {
+
+			emp = empDeptWiseRepository.getDeparmentWiseEmpCount(locId);
 		} catch (Exception e) {
 
 			e.printStackTrace();
