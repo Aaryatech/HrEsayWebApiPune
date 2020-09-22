@@ -82,6 +82,19 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
+	
+	@RequestMapping(value = { "/getAllEmployeeDetailAccesibleLocBylocationId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailAccesibleLocBylocationId(@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailAccesibleLocBylocationId(locId);
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployeeDetail : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 
 	@RequestMapping(value = { "/getAllEmployeeDetailSkillRate" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailSkillRate() {

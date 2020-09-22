@@ -1153,9 +1153,13 @@ public class PayrollApiController {
 							if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
 								epf_wages_employeR = employer_eps_ceiling_limit;
 
+								System.out.println("************** iffff");
 							} else {
 								epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
+								System.out.println("************** else");
 							}
+							
+							
 
 							double employer_eps_default = getSalaryTempList.get(i).getEpfWages()
 									* employer_eps_percentage;
@@ -2290,7 +2294,12 @@ public class PayrollApiController {
 			}
 
 			if (payroll_loan_show == 1) {
-				getBhattaList = getAdvanceDetailsRepo.getBhattaListSaparate(month, year, empIds);
+				try {
+					getBhattaList = getAdvanceDetailsRepo.getBhattaListSaparate(month, year, empIds);
+				} catch (Exception e) {
+					getBhattaList = new ArrayList<>();
+				}
+
 			}
 
 			if (payroll_bhatta_show == 1) {
