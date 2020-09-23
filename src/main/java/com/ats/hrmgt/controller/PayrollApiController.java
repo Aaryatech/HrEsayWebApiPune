@@ -717,6 +717,7 @@ public class PayrollApiController {
 
 			double epf_wages_employee = 0;
 			double epf_wages_employeR = 0;
+			double employeePfOnAmt = 0;
 			double epf_percentage = 0;
 			double cealing_limit_eps_wages = 0;
 			double employer_eps_percentage = 0;
@@ -729,8 +730,10 @@ public class PayrollApiController {
 			double tot_pf_admin_ch_percentage = 0;
 			double tot_edli_ch_percentage = 0;
 			double tot_edli_admin_ch_percentage = 0;
+			double employee_ceiling_limit = 0;
 			float ab_deduction = 0;
 			int febmonthptamount_condtioncheck = 0;
+			int add_pf_other = 0;
 			double febmonthptamount = 0;
 			int amount_round = 0;
 			double employee_mlwf = 0;
@@ -781,6 +784,10 @@ public class PayrollApiController {
 					ot_rate = Integer.parseInt(settingList.get(k).getValue());
 				} else if (settingList.get(k).getKey().equalsIgnoreCase("ot_per_min")) {
 					ot_per_min = Integer.parseInt(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("employee_eps_ceiling_limit")) {
+					employee_ceiling_limit = Float.parseFloat(settingList.get(k).getValue());
+				} else if (settingList.get(k).getKey().equalsIgnoreCase("add_pf_other")) {
+					add_pf_other = Integer.parseInt(settingList.get(k).getValue());
 				}
 			}
 
@@ -1124,22 +1131,22 @@ public class PayrollApiController {
 
 						getSalaryTempList.get(i).setPfStatus(1);
 						epf_wages_employee = getSalaryTempList.get(i).getEpfWages();
-						try {
-							if (getSalaryTempList.get(i).getPfType().equalsIgnoreCase("voluntary")) {
-								getSalaryTempList.get(i).setEmployeePf(castNumber(
-										(epf_wages_employee * getSalaryTempList.get(i).getPfEmpPer()), amount_round));
-								getSalaryTempList.get(i).setEpfPercentage(getSalaryTempList.get(i).getPfEmpPer());
 
-							} else {
-
-								getSalaryTempList.get(i)
-										.setEmployeePf(castNumber((epf_wages_employee * epf_percentage), amount_round));
-								getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
-							}
-
-						} catch (Exception e) {
-							// e.printStackTrace();
-						}
+						/*
+						 * try { if (getSalaryTempList.get(i).getPfType().equalsIgnoreCase("voluntary"))
+						 * { getSalaryTempList.get(i).setEmployeePf(castNumber( (epf_wages_employee *
+						 * getSalaryTempList.get(i).getPfEmpPer()), amount_round));
+						 * getSalaryTempList.get(i).setEpfPercentage(getSalaryTempList.get(i).
+						 * getPfEmpPer());
+						 * 
+						 * } else {
+						 * 
+						 * getSalaryTempList.get(i) .setEmployeePf(castNumber((epf_wages_employee *
+						 * epf_percentage), amount_round));
+						 * getSalaryTempList.get(i).setEpfPercentage(epf_percentage); }
+						 * 
+						 * } catch (Exception e) { e.printStackTrace(); }
+						 */
 
 						String[] dob = getSalaryTempList.get(i).getDob().split("-");
 
@@ -1149,17 +1156,157 @@ public class PayrollApiController {
 								Integer.parseInt(dates[1]), Integer.parseInt(dates[2])));
 
 						if (age <= eps_age_limit) {
+							try {
 
-							if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
-								epf_wages_employeR = employer_eps_ceiling_limit;
+								System.out.println(" ** employee "
+										+ getSalaryTempList.get(i).getCeilingLimitEmpApplicable() + " ** employer "
+										+ getSalaryTempList.get(i).getCeilingLimitEmployerApplicable());
+								if (getSalaryTempList.get(i).getCeilingLimitEmpApplicable().equalsIgnoreCase("yes")
+										&& getSalaryTempList.get(i).getCeilingLimitEmployerApplicable()
+												.equalsIgnoreCase("yes")) {
 
-								System.out.println("************** iffff");
-							} else {
-								epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
-								System.out.println("************** else");
+									int isAddOther = 0;
+
+									// employer pf
+									if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
+										epf_wages_employeR = employer_eps_ceiling_limit;
+
+									} else {
+										epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
+									}
+
+									// employee pf
+									if (getSalaryTempList.get(i).getEpfWages() > employee_ceiling_limit) {
+										employeePfOnAmt = employee_ceiling_limit;
+										isAddOther = 1;
+
+									} else {
+										employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
+
+									}
+
+									double pfAmt = employeePfOnAmt * epf_percentage;
+									getSalaryTempList.get(i).setEmployeePf(castNumber(pfAmt, amount_round));
+									getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
+									System.out.println("isAddOther " + isAddOther + " add_pf_other " + add_pf_other);
+									if (isAddOther == 1 && add_pf_other == 1) {
+										double pfAmtDefault = getSalaryTempList.get(i).getEpfWages() * epf_percentage;
+										System.out.println("innnnnnnnnnn "
+												+ (getSalaryTempList.get(i).getEpfWages() * epf_percentage));
+										if (pfAmt < pfAmtDefault) {
+
+											for (int k = 0; k < getSalaryTempList.get(i).getGetAllowanceTempList()
+													.size(); k++) {
+
+												if (getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
+														.getShortName().equals("OTH")) {
+													getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
+															.setAllowanceValueCal(pfAmtDefault - pfAmt);
+													System.out.println("innnnnnnnnnn if");
+													break;
+												}
+
+											}
+
+										}
+									}
+
+								} else if (getSalaryTempList.get(i).getCeilingLimitEmpApplicable()
+										.equalsIgnoreCase("no")
+										&& getSalaryTempList.get(i).getCeilingLimitEmployerApplicable()
+												.equalsIgnoreCase("yes")) {
+									// employer pf
+									if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
+										epf_wages_employeR = employer_eps_ceiling_limit;
+
+									} else {
+										epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
+									}
+
+									// employee pf
+
+									employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
+									getSalaryTempList.get(i).setEmployeePf(
+											castNumber((employeePfOnAmt * epf_percentage), amount_round));
+									getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
+
+								} else if (getSalaryTempList.get(i).getCeilingLimitEmpApplicable()
+										.equalsIgnoreCase("yes")
+										&& getSalaryTempList.get(i).getCeilingLimitEmployerApplicable()
+												.equalsIgnoreCase("no")) {
+
+									int isAddOther = 0;
+
+									// employer pf
+									epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
+									// employee pf
+									if (getSalaryTempList.get(i).getEpfWages() > employee_ceiling_limit) {
+										employeePfOnAmt = employee_ceiling_limit;
+										isAddOther = 1;
+
+									} else {
+										employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
+									}
+
+									double pfAmt = employeePfOnAmt * epf_percentage;
+									getSalaryTempList.get(i).setEmployeePf(castNumber(pfAmt, amount_round));
+									getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
+
+									if (isAddOther == 1 && add_pf_other == 1) {
+										double pfAmtDefault = getSalaryTempList.get(i).getEpfWages() * epf_percentage;
+
+										if (pfAmt < pfAmtDefault) {
+
+											for (int k = 0; k < getSalaryTempList.get(i).getGetAllowanceTempList()
+													.size(); k++) {
+
+												if (getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
+														.getShortName().equals("OTH")) {
+													getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
+															.setAllowanceValueCal(pfAmtDefault - pfAmt);
+
+													break;
+												}
+
+											}
+
+										}
+									}
+								} else {
+									epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
+									employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
+
+									getSalaryTempList.get(i).setEmployeePf(
+											castNumber((employeePfOnAmt * epf_percentage), amount_round));
+									getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+
+								// employer pf
+								if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
+									epf_wages_employeR = employer_eps_ceiling_limit;
+
+								} else {
+									epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
+								}
+
+								// employee pf
+
+								employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
+								getSalaryTempList.get(i)
+										.setEmployeePf(castNumber((employeePfOnAmt * epf_percentage), amount_round));
+								getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
 							}
-							
-							
+
+							/*
+							 * if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
+							 * epf_wages_employeR = employer_eps_ceiling_limit;
+							 * 
+							 * } else { epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
+							 * 
+							 * }
+							 */
 
 							double employer_eps_default = getSalaryTempList.get(i).getEpfWages()
 									* employer_eps_percentage;
@@ -1188,6 +1335,7 @@ public class PayrollApiController {
 							getSalaryTempList.get(i)
 									.setEmployerPf(castNumber(getSalaryTempList.get(i).getEpmloyerEpfDefault()
 											+ getSalaryTempList.get(i).getEpmloyerEpfExtra(), amount_round));
+
 						} else {
 							getSalaryTempList.get(i).setEpsWages(0);
 							getSalaryTempList.get(i).setEpsDefault(0);
