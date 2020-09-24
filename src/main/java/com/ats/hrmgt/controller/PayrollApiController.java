@@ -1137,14 +1137,15 @@ public class PayrollApiController {
 
 				if (getSalaryTempList.get(i).getMlwfApplicable().equalsIgnoreCase("yes")) {
 
-					//System.out.println("mlwf applicable");
+					// System.out.println("mlwf applicable");
 					for (int k = 0; k < mlwfMasterList.size(); k++) {
 
-						//System.out.println(mlwfMasterList.get(k).getLocationId() + " location " + getSalaryTempList.get(i).getCurrentLoc());
-						//System.out.println(mlwfMasterList.get(k).getMonth() + " month " + month);
+						// System.out.println(mlwfMasterList.get(k).getLocationId() + " location " +
+						// getSalaryTempList.get(i).getCurrentLoc());
+						// System.out.println(mlwfMasterList.get(k).getMonth() + " month " + month);
 						if (mlwfMasterList.get(k).getLocationId() == getSalaryTempList.get(i).getCurrentLoc()
 								&& mlwfMasterList.get(k).getMonth() == month) {
-							//System.out.println("in if");
+							// System.out.println("in if");
 							getSalaryTempList.get(i).setMlwf(mlwfMasterList.get(k).getEmployeeValue());
 							getSalaryTempList.get(i).setEmployerMlwf(mlwfMasterList.get(k).getEmployerValue());
 							break;
@@ -1195,9 +1196,11 @@ public class PayrollApiController {
 						if (age <= eps_age_limit) {
 							try {
 
-								/*System.out.println(" ** employee "
-										+ getSalaryTempList.get(i).getCeilingLimitEmpApplicable() + " ** employer "
-										+ getSalaryTempList.get(i).getCeilingLimitEmployerApplicable());*/
+								/*
+								 * System.out.println(" ** employee " +
+								 * getSalaryTempList.get(i).getCeilingLimitEmpApplicable() + " ** employer " +
+								 * getSalaryTempList.get(i).getCeilingLimitEmployerApplicable());
+								 */
 								if (getSalaryTempList.get(i).getCeilingLimitEmpApplicable().equalsIgnoreCase("yes")
 										&& getSalaryTempList.get(i).getCeilingLimitEmployerApplicable()
 												.equalsIgnoreCase("yes")) {
@@ -1376,9 +1379,11 @@ public class PayrollApiController {
 									.setEmployerPf(castNumber(getSalaryTempList.get(i).getEpmloyerEpfDefault()
 											+ getSalaryTempList.get(i).getEpmloyerEpfExtra(), amount_round));
 
-							/*System.out.println(getSalaryTempList.get(i).getEmpName() + " "
-									+ getSalaryTempList.get(i).getEmployeePf() + " "
-									+ getSalaryTempList.get(i).getPfApplicable());*/
+							/*
+							 * System.out.println(getSalaryTempList.get(i).getEmpName() + " " +
+							 * getSalaryTempList.get(i).getEmployeePf() + " " +
+							 * getSalaryTempList.get(i).getPfApplicable());
+							 */
 
 						} else {
 							getSalaryTempList.get(i).setEpsWages(0);
@@ -1787,9 +1792,9 @@ public class PayrollApiController {
 			double workingHour, float otHr, double ammt, MstEmpType mstEmpType, double rate, int ot_rate,
 			String monthlyTargetHr, int amount_round) {
 
-		String[] monthlyTargetHrarr = monthlyTargetHr.split("\\.");
 		int monthlyTargetMin = 0;
 		try {
+			String[] monthlyTargetHrarr = monthlyTargetHr.split("\\.");
 			if (monthlyTargetHrarr.length > 1) {
 
 				monthlyTargetMin = (Integer.parseInt(monthlyTargetHrarr[0]) * 60)
@@ -1808,16 +1813,16 @@ public class PayrollApiController {
 
 			if (ot_rate == 0) {
 
-				val = ((ammt / workingHour) * otHr);
+				val = ((ammt / workingHour) * otHr) * Integer.parseInt(mstEmpType.getOtType());
 
 				if (salBasis.equalsIgnoreCase("monthly")) {
-					val = (((ammt / totalDays) / workingHour) * otHr);
+					val = (((ammt / totalDays) / workingHour) * otHr) * Integer.parseInt(mstEmpType.getOtType());
 				} else if (salBasis.equalsIgnoreCase("hour")) {
 
-					val = (((ammt / monthlyTargetMin)) * otHr);
+					val = (((ammt / monthlyTargetMin)) * otHr) * Integer.parseInt(mstEmpType.getOtType());
 
 				} else {
-					val = (((ammt / workingDays) / workingHour) * otHr);
+					val = (((ammt / workingDays) / workingHour) * otHr) * Integer.parseInt(mstEmpType.getOtType());
 				}
 
 			} else {
