@@ -194,6 +194,9 @@ public class EmpSalInfoDaiyInfoTempInfo {
 	private String monthlyMinimumTarget;
 	private String monthlyOtHr;
 	
+	private int currentLoc; 
+	private String gender;
+	
 	@Transient
 	private List<SalAllownceTemp> getAllowanceTempList;
 	
@@ -1182,6 +1185,18 @@ public class EmpSalInfoDaiyInfoTempInfo {
 	public void setBhatta(double bhatta) {
 		this.bhatta = bhatta;
 	}
+	public int getCurrentLoc() {
+		return currentLoc;
+	}
+	public void setCurrentLoc(int currentLoc) {
+		this.currentLoc = currentLoc;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 	@Override
 	public String toString() {
 		return "EmpSalInfoDaiyInfoTempInfo [uuid=" + uuid + ", id=" + id + ", cmpId=" + cmpId + ", empId=" + empId
@@ -1242,7 +1257,8 @@ public class EmpSalInfoDaiyInfoTempInfo {
 				+ totEarlyGoing + ", atsummUid=" + atsummUid + ", calculationDone=" + calculationDone + ", dob=" + dob
 				+ ", skillId=" + skillId + ", rate=" + rate + ", dailyHr=" + dailyHr + ", monthlyHrTarget="
 				+ monthlyHrTarget + ", monthlyMinimumTarget=" + monthlyMinimumTarget + ", monthlyOtHr=" + monthlyOtHr
-				+ ", getAllowanceTempList=" + getAllowanceTempList + "]";
+				+ ", currentLoc=" + currentLoc + ", gender=" + gender + ", getAllowanceTempList=" + getAllowanceTempList
+				+ "]";
 	}
 	 
 }

@@ -906,16 +906,22 @@ public class PayrollApiController {
 
 							if (getSalaryTempList.get(i).getPtApplicable().equalsIgnoreCase("yes")) {
 
-								tempVal = tempVal + getSalaryTempList.get(i).getOtWages()
-										+ getSalaryTempList.get(i).getProductionInsentive()
-										+ getSalaryTempList.get(i).getNightAllow();
+								/*
+								 * tempVal = tempVal + getSalaryTempList.get(i).getOtWages() +
+								 * getSalaryTempList.get(i).getProductionInsentive() +
+								 * getSalaryTempList.get(i).getNightAllow();
+								 */
 
 								for (int k = 0; k < slabMasterList.size(); k++) {
 
-									if (slabMasterList.get(k).getSalTermId() == salaryTermList.get(j).getSalTermId()) {
+									if (slabMasterList.get(k).getSalTermId() == salaryTermList.get(j).getSalTermId()
+											&& slabMasterList.get(k).getExInt1() == getSalaryTempList.get(i)
+													.getCurrentLoc()) {
 
 										if (tempVal >= slabMasterList.get(k).getMinVal()
-												&& tempVal <= slabMasterList.get(k).getMaxVal()) {
+												&& tempVal <= slabMasterList.get(k).getMaxVal()
+												&& getSalaryTempList.get(i).getGender().equalsIgnoreCase("male")
+												&& slabMasterList.get(k).getGender() == 1) {
 
 											if (getSalaryTempList.get(i).getMonth() == 2 && slabMasterList.get(k)
 													.getAmount() == febmonthptamount_condtioncheck) {
@@ -924,6 +930,20 @@ public class PayrollApiController {
 											else {
 												tempValNew = slabMasterList.get(k).getAmount();
 											}
+											break;
+										} else if (tempVal >= slabMasterList.get(k).getMinVal()
+												&& tempVal <= slabMasterList.get(k).getMaxVal()
+												&& getSalaryTempList.get(i).getGender().equalsIgnoreCase("female")
+												&& slabMasterList.get(k).getGender() == 2) {
+
+											if (getSalaryTempList.get(i).getMonth() == 2 && slabMasterList.get(k)
+													.getAmount() == febmonthptamount_condtioncheck) {
+												tempValNew = febmonthptamount;
+											} // $calc_month == "2" && $amt == "200"
+											else {
+												tempValNew = slabMasterList.get(k).getAmount();
+											}
+											break;
 										}
 									}
 
@@ -1037,13 +1057,8 @@ public class PayrollApiController {
 								salaryTermList.get(j).setValue(tempVal);
 
 								getSalaryTempList.get(i).setOtRate(getSalaryTempList.get(i).getRate());
+								// System.out.println("tempVal " + tempVal);
 							}
-							/*
-							 * System.out.println(getSalaryTempList.get(i).getEmpId() + " " + ammt +
-							 * " termid " + salaryTermList.get(j).getSalTermId() + " value " +
-							 * salaryTermList.get(j).getValue() + " basic" +
-							 * getSalaryTempList.get(i).getBasic());
-							 */
 
 							break;
 						case "OTFD":
@@ -1188,11 +1203,10 @@ public class PayrollApiController {
 									double pfAmt = employeePfOnAmt * epf_percentage;
 									getSalaryTempList.get(i).setEmployeePf(castNumber(pfAmt, amount_round));
 									getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
-									System.out.println("isAddOther " + isAddOther + " add_pf_other " + add_pf_other);
+
 									if (isAddOther == 1 && add_pf_other == 1) {
 										double pfAmtDefault = getSalaryTempList.get(i).getEpfWages() * epf_percentage;
-										System.out.println("innnnnnnnnnn "
-												+ (getSalaryTempList.get(i).getEpfWages() * epf_percentage));
+
 										if (pfAmt < pfAmtDefault) {
 
 											for (int k = 0; k < getSalaryTempList.get(i).getGetAllowanceTempList()
@@ -1202,7 +1216,9 @@ public class PayrollApiController {
 														.getShortName().equals("OTH")) {
 													getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
 															.setAllowanceValueCal(pfAmtDefault - pfAmt);
-													System.out.println("innnnnnnnnnn if");
+													getSalaryTempList.get(i).setGrossSalaryDytemp(
+															getSalaryTempList.get(i).getGrossSalaryDytemp()
+																	+ (pfAmtDefault - pfAmt));
 													break;
 												}
 
@@ -1264,7 +1280,9 @@ public class PayrollApiController {
 														.getShortName().equals("OTH")) {
 													getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
 															.setAllowanceValueCal(pfAmtDefault - pfAmt);
-
+													getSalaryTempList.get(i).setGrossSalaryDytemp(
+															getSalaryTempList.get(i).getGrossSalaryDytemp()
+																	+ (pfAmtDefault - pfAmt));
 													break;
 												}
 
@@ -1281,7 +1299,7 @@ public class PayrollApiController {
 									getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
 								}
 							} catch (Exception e) {
-								e.printStackTrace();
+								// e.printStackTrace();
 
 								// employer pf
 								if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
@@ -1335,6 +1353,10 @@ public class PayrollApiController {
 							getSalaryTempList.get(i)
 									.setEmployerPf(castNumber(getSalaryTempList.get(i).getEpmloyerEpfDefault()
 											+ getSalaryTempList.get(i).getEpmloyerEpfExtra(), amount_round));
+
+							System.out.println(getSalaryTempList.get(i).getEmpName() + " "
+									+ getSalaryTempList.get(i).getEmployeePf() + " "
+									+ getSalaryTempList.get(i).getPfApplicable());
 
 						} else {
 							getSalaryTempList.get(i).setEpsWages(0);
@@ -1396,19 +1418,19 @@ public class PayrollApiController {
 							getSalaryTempList.get(i).setEsic(0);
 						} else {
 
-							getSalaryTempList.get(i).setEmployerEsic(castNumber(
-									((getSalaryTempList.get(i).getEsicWagesCal() + getSalaryTempList.get(i).getOtWages()
-											+ getSalaryTempList.get(i).getProductionInsentive()
-											+ getSalaryTempList.get(i).getNightAllow()) * employer_esic_percentage),
-									amount_round));
-							getSalaryTempList.get(i).setEsic(castNumber(
-									((getSalaryTempList.get(i).getEsicWagesCal() + getSalaryTempList.get(i).getOtWages()
-											+ getSalaryTempList.get(i).getProductionInsentive()
-											+ getSalaryTempList.get(i).getNightAllow()) * employee_esic_percentage),
-									amount_round));
+							getSalaryTempList.get(i)
+									.setEmployerEsic(castNumber(
+											((getSalaryTempList.get(i).getEsicWagesCal()) * employer_esic_percentage),
+											amount_round));
+							getSalaryTempList.get(i)
+									.setEsic(castNumber(
+											((getSalaryTempList.get(i).getEsicWagesCal()) * employee_esic_percentage),
+											amount_round));
 						}
-						// System.out.println("ESIC ==== " + getSalaryTempList.get(i).getEsicWagesCal()
-						// + "##" + employee_esic_percentage);
+						/*
+						 * System.out.println("ESIC ==== " + getSalaryTempList.get(i).getEsicWagesCal()
+						 * + "##" + employee_esic_percentage);
+						 */
 
 					}
 				} catch (Exception e) {
