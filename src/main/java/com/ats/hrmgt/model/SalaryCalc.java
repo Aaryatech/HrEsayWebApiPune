@@ -96,6 +96,7 @@ public class SalaryCalc {
 	private double nightRate;
 	private double otRate;
 	private double bhatta;
+	private double other1;
 	
 	public int getId() {
 		return id;
@@ -596,6 +597,12 @@ public class SalaryCalc {
 	public void setBhatta(double bhatta) {
 		this.bhatta = bhatta;
 	}
+	public double getOther1() {
+		return other1;
+	}
+	public void setOther1(double other1) {
+		this.other1 = other1;
+	}
 	@Override
 	public String toString() {
 		return "SalaryCalc [id=" + id + ", cmpId=" + cmpId + ", empId=" + empId + ", empCode=" + empCode + ", empType="
@@ -626,7 +633,7 @@ public class SalaryCalc {
 				+ employerEsicPercentage + ", employeeEsicPercentage=" + employeeEsicPercentage + ", employerMlwf="
 				+ employerMlwf + ", grossSalDefault=" + grossSalDefault + ", adjustMinus=" + adjustMinus
 				+ ", adjustPlus=" + adjustPlus + ", reward=" + reward + ", nightRate=" + nightRate + ", otRate="
-				+ otRate + ", bhatta=" + bhatta + "]";
+				+ otRate + ", bhatta=" + bhatta + ", other1=" + other1 + "]";
 	}
 	 
 	 

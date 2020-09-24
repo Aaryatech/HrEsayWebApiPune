@@ -76,6 +76,7 @@ public class SalaryCalcTemp {
 	private double adjustPlus;
 	private double reward;
 	private double bhatta;
+	private double other1;
 	
 	public int getId() {
 		return id;
@@ -463,6 +464,12 @@ public class SalaryCalcTemp {
 	public void setBhatta(double bhatta) {
 		this.bhatta = bhatta;
 	}
+	public double getOther1() {
+		return other1;
+	}
+	public void setOther1(double other1) {
+		this.other1 = other1;
+	}
 	@Override
 	public String toString() {
 		return "SalaryCalcTemp [id=" + id + ", cmpId=" + cmpId + ", empId=" + empId + ", empCode=" + empCode
@@ -485,7 +492,7 @@ public class SalaryCalcTemp {
 				+ ", commentsForItBonus=" + commentsForItBonus + ", societyContribution=" + societyContribution
 				+ ", empCategory=" + empCategory + ", basicDefault=" + basicDefault + ", abDeduction=" + abDeduction
 				+ ", adjustMinus=" + adjustMinus + ", adjustPlus=" + adjustPlus + ", reward=" + reward + ", bhatta="
-				+ bhatta + "]";
+				+ bhatta + ", other1=" + other1 + "]";
 	}
 	 
 }

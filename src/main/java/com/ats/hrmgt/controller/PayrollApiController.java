@@ -612,12 +612,13 @@ public class PayrollApiController {
 
 	@RequestMapping(value = { "/updateBonusAmt" }, method = RequestMethod.POST)
 	public Info updateBonusAmt(@RequestParam("tempSalDaynamicId") int tempSalDaynamicId,
-			@RequestParam("itAmt") float itAmt, @RequestParam("perBonus") float perBonus) {
+			@RequestParam("itAmt") float itAmt, @RequestParam("perBonus") float perBonus,
+			@RequestParam("other1") float other1) {
 
 		Info info = new Info();
 
 		try {
-			int update = salaryCalcTempRepo.updateBonusAmt(tempSalDaynamicId, itAmt, perBonus);
+			int update = salaryCalcTempRepo.updateBonusAmt(tempSalDaynamicId, itAmt, perBonus, other1);
 			info.setError(false);
 			info.setMsg("success");
 
@@ -1493,7 +1494,7 @@ public class PayrollApiController {
 						+ getSalaryTempList.get(i).getPerformanceBonus() + getSalaryTempList.get(i).getMiscExpAdd()
 						+ getSalaryTempList.get(i).getReward() + getSalaryTempList.get(i).getOtWages()
 						+ getSalaryTempList.get(i).getProductionInsentive() + getSalaryTempList.get(i).getNightAllow()
-						+ getSalaryTempList.get(i).getBhatta())
+						+ getSalaryTempList.get(i).getBhatta() + getSalaryTempList.get(i).getOther1())
 						- (getSalaryTempList.get(i).getAdvanceDed() + getSalaryTempList.get(i).getLoanDed()
 								+ getSalaryTempList.get(i).getPayDed() + getSalaryTempList.get(i).getEsic()
 								+ getSalaryTempList.get(i).getEmployeePf() + getSalaryTempList.get(i).getPtDed()
@@ -1993,7 +1994,7 @@ public class PayrollApiController {
 				SalaryCalc.setNightRate(salList.get(i).getNightRate());
 				SalaryCalc.setOtRate(salList.get(i).getOtRate());
 				SalaryCalc.setBhatta(salList.get(i).getBhatta());
-
+				SalaryCalc.setOther1(salList.get(i).getOther1());
 				SalaryCalc saveres = salaryCalcRepo.save(SalaryCalc);
 
 				List<SalAllownceCal> allowlist = new ArrayList<>();
