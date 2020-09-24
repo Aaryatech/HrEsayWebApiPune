@@ -37,6 +37,7 @@ import com.ats.hrmgt.model.GetPayrollGeneratedList;
 import com.ats.hrmgt.model.GetSalDynamicTempRecord;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.LateMarkListForInsertAdvance;
+import com.ats.hrmgt.model.MlwfMaster;
 import com.ats.hrmgt.model.MstEmpType;
 import com.ats.hrmgt.model.PayRollDataForProcessing;
 import com.ats.hrmgt.model.ProductionIncentiveList;
@@ -72,6 +73,7 @@ import com.ats.hrmgt.repository.GetPayDedListRepo;
 import com.ats.hrmgt.repository.GetPayrollGeneratedListRepo;
 import com.ats.hrmgt.repository.GetSalDynamicTempRecordRepository;
 import com.ats.hrmgt.repository.LateMarkListForInsertAdvanceRepository;
+import com.ats.hrmgt.repository.MlwfMasterRepository;
 import com.ats.hrmgt.repository.MstEmpTypeRepository;
 import com.ats.hrmgt.repository.PayDeductionDetailsRepo;
 import com.ats.hrmgt.repository.ProductionIncentiveListRepo;
@@ -181,6 +183,9 @@ public class PayrollApiController {
 
 	@Autowired
 	GetEmpDetailForFullPayslipRepo getEmpDetailForFullPayslipRepo;
+
+	@Autowired
+	MlwfMasterRepository mlwfMasterRepository;
 
 	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForPayRoll" }, method = RequestMethod.POST)
 	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForPayRoll(@RequestParam("month") int month,
@@ -698,6 +703,7 @@ public class PayrollApiController {
 			List<SalaryTypesMaster> salaryTypeList = salaryTypesMasterRepo.findAllByDelStatus(1);
 			List<MstEmpType> mstEmpTypeList = mstEmpTypeRepository.findAll();
 			List<SlabMaster> slabMasterList = slabMasterRepository.findAll();// slab
+			List<MlwfMaster> mlwfMasterList = mlwfMasterRepository.findAll();
 			List<SalaryTerm> salaryTermList = salaryTermRepository.getSalaryTermList();// salary tem
 			List<Setting> settingList = settingRepo.findByGroup("PAYROLL");
 			List<SalAllownceTemp> getAllowanceTempList = salAllownceTempRepo.getAllowanceTempList(month, year, empIds);
@@ -1130,10 +1136,26 @@ public class PayrollApiController {
 				}
 
 				if (getSalaryTempList.get(i).getMlwfApplicable().equalsIgnoreCase("yes")) {
-					if (month == 6 || month == 12) {
-						getSalaryTempList.get(i).setMlwf(employee_mlwf);
-						getSalaryTempList.get(i).setEmployerMlwf(employer_mlwf);
+
+					//System.out.println("mlwf applicable");
+					for (int k = 0; k < mlwfMasterList.size(); k++) {
+
+						//System.out.println(mlwfMasterList.get(k).getLocationId() + " location " + getSalaryTempList.get(i).getCurrentLoc());
+						//System.out.println(mlwfMasterList.get(k).getMonth() + " month " + month);
+						if (mlwfMasterList.get(k).getLocationId() == getSalaryTempList.get(i).getCurrentLoc()
+								&& mlwfMasterList.get(k).getMonth() == month) {
+							//System.out.println("in if");
+							getSalaryTempList.get(i).setMlwf(mlwfMasterList.get(k).getEmployeeValue());
+							getSalaryTempList.get(i).setEmployerMlwf(mlwfMasterList.get(k).getEmployerValue());
+							break;
+						}
+
 					}
+					/*
+					 * if (month == 6 || month == 12) {
+					 * getSalaryTempList.get(i).setMlwf(employee_mlwf);
+					 * getSalaryTempList.get(i).setEmployerMlwf(employer_mlwf); }
+					 */
 				} else {
 					getSalaryTempList.get(i).setMlwf(0);
 					getSalaryTempList.get(i).setEmployerMlwf(0);
@@ -1173,9 +1195,9 @@ public class PayrollApiController {
 						if (age <= eps_age_limit) {
 							try {
 
-								System.out.println(" ** employee "
+								/*System.out.println(" ** employee "
 										+ getSalaryTempList.get(i).getCeilingLimitEmpApplicable() + " ** employer "
-										+ getSalaryTempList.get(i).getCeilingLimitEmployerApplicable());
+										+ getSalaryTempList.get(i).getCeilingLimitEmployerApplicable());*/
 								if (getSalaryTempList.get(i).getCeilingLimitEmpApplicable().equalsIgnoreCase("yes")
 										&& getSalaryTempList.get(i).getCeilingLimitEmployerApplicable()
 												.equalsIgnoreCase("yes")) {
@@ -1354,9 +1376,9 @@ public class PayrollApiController {
 									.setEmployerPf(castNumber(getSalaryTempList.get(i).getEpmloyerEpfDefault()
 											+ getSalaryTempList.get(i).getEpmloyerEpfExtra(), amount_round));
 
-							System.out.println(getSalaryTempList.get(i).getEmpName() + " "
+							/*System.out.println(getSalaryTempList.get(i).getEmpName() + " "
 									+ getSalaryTempList.get(i).getEmployeePf() + " "
-									+ getSalaryTempList.get(i).getPfApplicable());
+									+ getSalaryTempList.get(i).getPfApplicable());*/
 
 						} else {
 							getSalaryTempList.get(i).setEpsWages(0);
