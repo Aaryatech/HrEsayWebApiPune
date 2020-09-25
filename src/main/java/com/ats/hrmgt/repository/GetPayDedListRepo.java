@@ -85,4 +85,21 @@ public interface GetPayDedListRepo extends JpaRepository<GetPayDedList, Integer>
 	List<GetPayDedList> getLoanListSaparate(@Param("month") int month, @Param("year") int year,
 	@Param("empIds") List<Integer> empIds);
 
+	@Query(value = "select\n" + 
+			"        uuid() as id,\n" + 
+			"        lm.emp_id,\n" + 
+			"        sum(ld.amount_emi) as amt \n" + 
+			"    from\n" + 
+			"        tbl_loan_main lm,\n" + 
+			"        tbl_loan_details ld\n" + 
+			"    where\n" + 
+			"        lm.emp_id in (:empIds)\n" + 
+			"        and ld.loan_main_id=lm.id\n" + 
+			"        and months=:month\n" + 
+			"        and years=:year\n" + 
+			"    group by\n" + 
+			"        lm.emp_id", nativeQuery = true)
+	List<GetPayDedList> getPartialLoanList(@Param("month") int month, @Param("year") int year,
+			@Param("empIds") List<Integer> empIds);
+
 }

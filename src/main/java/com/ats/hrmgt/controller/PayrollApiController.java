@@ -444,7 +444,7 @@ public class PayrollApiController {
 			List<GetPayDedList> getPayDedList = new ArrayList<>();
 			List<GetPayDedList> getRewardList = new ArrayList<>();
 			List<GetPayDedList> getLoanList = new ArrayList<>();
-
+			List<GetPayDedList> getPartialLoanList = new ArrayList<>();
 			if (payroll_advance_show == 1) {
 				getAdvanceList = getAdvanceListRepo.getAdvanceList(month, year, empIds);
 			}
@@ -462,6 +462,7 @@ public class PayrollApiController {
 
 			if (payroll_loan_show == 1) {
 				getLoanList = getPayDedListRepo.getLoanList(year + "-" + month + "-01", empIds);
+				getPartialLoanList = getPayDedListRepo.getPartialLoanList(month, year, empIds);
 			}
 
 			/*
@@ -538,6 +539,18 @@ public class PayrollApiController {
 					}
 
 				}
+
+				for (int j = 0; j < getPartialLoanList.size(); j++) {
+
+					if (getPartialLoanList.get(j).getEmpId() == listForUpdatedValue.get(i).getEmpId()) {
+						listForUpdatedValue.get(i).setLoanDed(
+								listForUpdatedValue.get(i).getLoanDed() + getPartialLoanList.get(j).getAmt());
+						flag = 1;
+						break;
+					}
+
+				}
+
 				if (flag == 0) {
 					listForUpdatedValue.get(i).setLoanDed(0);
 				}
@@ -1197,15 +1210,14 @@ public class PayrollApiController {
 						if (age <= eps_age_limit) {
 							try {
 
-								/*
-								 * System.out.println(" ** employee " +
-								 * getSalaryTempList.get(i).getCeilingLimitEmpApplicable() + " ** employer " +
-								 * getSalaryTempList.get(i).getCeilingLimitEmployerApplicable());
-								 */
+								System.out.println(" ** employee "
+										+ getSalaryTempList.get(i).getCeilingLimitEmpApplicable() + " ** employer "
+										+ getSalaryTempList.get(i).getCeilingLimitEmployerApplicable());
+
 								if (getSalaryTempList.get(i).getCeilingLimitEmpApplicable().equalsIgnoreCase("yes")
 										&& getSalaryTempList.get(i).getCeilingLimitEmployerApplicable()
 												.equalsIgnoreCase("yes")) {
-
+									System.out.println("innnn if");
 									int isAddOther = 0;
 
 									// employer pf
@@ -1225,7 +1237,7 @@ public class PayrollApiController {
 										employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
 
 									}
-
+									System.out.println("isAddOther" + isAddOther + " add_pf_other " + add_pf_other);
 									double pfAmt = employeePfOnAmt * epf_percentage;
 									getSalaryTempList.get(i).setEmployeePf(castNumber(pfAmt, amount_round));
 									getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
@@ -1240,6 +1252,7 @@ public class PayrollApiController {
 
 												if (getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
 														.getShortName().equals("OTH")) {
+													System.out.println("innnn");
 													getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
 															.setAllowanceValueCal(pfAmtDefault - pfAmt);
 													getSalaryTempList.get(i).setGrossSalaryDytemp(
@@ -1325,7 +1338,7 @@ public class PayrollApiController {
 									getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
 								}
 							} catch (Exception e) {
-								// e.printStackTrace();
+								e.printStackTrace();
 
 								// employer pf
 								if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
@@ -2491,7 +2504,7 @@ public class PayrollApiController {
 				getRewardList = getAdvanceDetailsRepo.getBonusListSaparate(month, year, empIds);
 			}
 
-			if (payroll_loan_show == 1) {
+			if (payroll_bhatta_show == 1) {
 				try {
 					getBhattaList = getAdvanceDetailsRepo.getBhattaListSaparate(month, year, empIds);
 				} catch (Exception e) {
@@ -2500,9 +2513,9 @@ public class PayrollApiController {
 
 			}
 
-			if (payroll_bhatta_show == 1) {
+			/*if (payroll_bhatta_show == 1) {
 				getClaimList = getAdvanceDetailsRepo.getClaimListSaparate(month, year, empIds);
-			}
+			}*/
 
 			List<ProductionIncentiveList> performanceIncentiveList = productionIncentiveListRepo
 					.getPerformanceIncentiveList(month, year, empIds, wootsts);

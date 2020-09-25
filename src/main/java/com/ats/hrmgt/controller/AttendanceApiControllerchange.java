@@ -458,6 +458,7 @@ public class AttendanceApiControllerchange {
 
 			for (int i = 0; i < dailyAttendanceList.size(); i++) {
 
+				int update = 0;
 				int groupType = 0;
 				int flagLatemarkHd = 0;
 				possibleShiftList = new ArrayList<>();
@@ -589,6 +590,7 @@ public class AttendanceApiControllerchange {
 
 							// System.out.println("DSfsdfdsf" + fileUploadedDataList.get(j).getOutTime());
 							dailyAttendanceList.get(i).setByFileUpdated(1);
+							update = 1;
 							if (dataForUpdateAttendance.getEmpId() == 0) {
 								dailyAttendanceList.get(i).setRowId(j + 1);
 							}
@@ -1089,9 +1091,8 @@ public class AttendanceApiControllerchange {
 
 								} else {
 
-									
 									dailyAttendanceList.get(i)
-									.setWorkingHrs(Float.parseFloat(shiftMaster.getShiftHr()));
+											.setWorkingHrs(Float.parseFloat(shiftMaster.getShiftHr()));
 									/*
 									 * if (stsInfo.getNoOfLeave() == 0.5) { dailyAttendanceList.get(i)
 									 * .setWorkingHrs(Float.parseFloat(shiftMaster.getShiftHalfdayHr()));
@@ -1363,7 +1364,7 @@ public class AttendanceApiControllerchange {
 				dailyAttendanceList.get(i).setLoginName(dataForUpdateAttendance.getUserId() + ": import Exel");
 				// System.out.println("case type
 				// -----------------"+dailyAttendanceList.get(i).getCasetype());
-				if (dailyAttendanceList.get(i).getByFileUpdated() == 1) {
+				if (dailyAttendanceList.get(i).getByFileUpdated() == 1 && update == 1) {
 					// dailyAttendanceList.get(i).setCommentsSupervisor("8");
 
 					querysb.append("update\n" + "        tbl_attt_daily_daily \n" + "    set\n" + "        atsumm_uid='"
