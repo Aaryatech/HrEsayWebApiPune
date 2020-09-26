@@ -529,11 +529,13 @@ public class PayrollApiController {
 					listForUpdatedValue.get(i).setReward(0);
 				}
 
+				double loanamt = 0;
 				flag = 0;
 				for (int j = 0; j < getLoanList.size(); j++) {
 
 					if (getLoanList.get(j).getEmpId() == listForUpdatedValue.get(i).getEmpId()) {
-						listForUpdatedValue.get(i).setLoanDed(getLoanList.get(j).getAmt());
+						loanamt = loanamt + getLoanList.get(j).getAmt();
+						listForUpdatedValue.get(i).setLoanDed(loanamt);
 						flag = 1;
 						break;
 					}
@@ -543,8 +545,8 @@ public class PayrollApiController {
 				for (int j = 0; j < getPartialLoanList.size(); j++) {
 
 					if (getPartialLoanList.get(j).getEmpId() == listForUpdatedValue.get(i).getEmpId()) {
-						listForUpdatedValue.get(i).setLoanDed(
-								listForUpdatedValue.get(i).getLoanDed() + getPartialLoanList.get(j).getAmt());
+						loanamt = loanamt + getPartialLoanList.get(j).getAmt();
+						listForUpdatedValue.get(i).setLoanDed(loanamt);
 						flag = 1;
 						break;
 					}
@@ -1237,34 +1239,33 @@ public class PayrollApiController {
 										employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
 
 									}
-									System.out.println("isAddOther" + isAddOther + " add_pf_other " + add_pf_other);
+									// System.out.println("isAddOther" + isAddOther + " add_pf_other " +
+									// add_pf_other);
 									double pfAmt = employeePfOnAmt * epf_percentage;
 									getSalaryTempList.get(i).setEmployeePf(castNumber(pfAmt, amount_round));
 									getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
 
-									if (isAddOther == 1 && add_pf_other == 1) {
-										double pfAmtDefault = getSalaryTempList.get(i).getEpfWages() * epf_percentage;
-
-										if (pfAmt < pfAmtDefault) {
-
-											for (int k = 0; k < getSalaryTempList.get(i).getGetAllowanceTempList()
-													.size(); k++) {
-
-												if (getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
-														.getShortName().equals("OTH")) {
-													System.out.println("innnn");
-													getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
-															.setAllowanceValueCal(pfAmtDefault - pfAmt);
-													getSalaryTempList.get(i).setGrossSalaryDytemp(
-															getSalaryTempList.get(i).getGrossSalaryDytemp()
-																	+ (pfAmtDefault - pfAmt));
-													break;
-												}
-
-											}
-
-										}
-									}
+									/*
+									 * if (isAddOther == 1 && add_pf_other == 1) { double pfAmtDefault =
+									 * getSalaryTempList.get(i).getEpfWages() * epf_percentage;
+									 * 
+									 * if (pfAmt < pfAmtDefault) {
+									 * 
+									 * for (int k = 0; k < getSalaryTempList.get(i).getGetAllowanceTempList()
+									 * .size(); k++) {
+									 * 
+									 * if (getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
+									 * .getShortName().equals("OTH")) { System.out.println("innnn");
+									 * getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
+									 * .setAllowanceValueCal(pfAmtDefault - pfAmt);
+									 * getSalaryTempList.get(i).setGrossSalaryDytemp(
+									 * getSalaryTempList.get(i).getGrossSalaryDytemp() + (pfAmtDefault - pfAmt));
+									 * break; }
+									 * 
+									 * }
+									 * 
+									 * } }
+									 */
 
 								} else if (getSalaryTempList.get(i).getCeilingLimitEmpApplicable()
 										.equalsIgnoreCase("no")
@@ -1307,28 +1308,27 @@ public class PayrollApiController {
 									getSalaryTempList.get(i).setEmployeePf(castNumber(pfAmt, amount_round));
 									getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
 
-									if (isAddOther == 1 && add_pf_other == 1) {
-										double pfAmtDefault = getSalaryTempList.get(i).getEpfWages() * epf_percentage;
-
-										if (pfAmt < pfAmtDefault) {
-
-											for (int k = 0; k < getSalaryTempList.get(i).getGetAllowanceTempList()
-													.size(); k++) {
-
-												if (getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
-														.getShortName().equals("OTH")) {
-													getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
-															.setAllowanceValueCal(pfAmtDefault - pfAmt);
-													getSalaryTempList.get(i).setGrossSalaryDytemp(
-															getSalaryTempList.get(i).getGrossSalaryDytemp()
-																	+ (pfAmtDefault - pfAmt));
-													break;
-												}
-
-											}
-
-										}
-									}
+									/*
+									 * if (isAddOther == 1 && add_pf_other == 1) { double pfAmtDefault =
+									 * getSalaryTempList.get(i).getEpfWages() * epf_percentage;
+									 * 
+									 * if (pfAmt < pfAmtDefault) {
+									 * 
+									 * for (int k = 0; k < getSalaryTempList.get(i).getGetAllowanceTempList()
+									 * .size(); k++) {
+									 * 
+									 * if (getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
+									 * .getShortName().equals("OTH")) {
+									 * getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
+									 * .setAllowanceValueCal(pfAmtDefault - pfAmt);
+									 * getSalaryTempList.get(i).setGrossSalaryDytemp(
+									 * getSalaryTempList.get(i).getGrossSalaryDytemp() + (pfAmtDefault - pfAmt));
+									 * break; }
+									 * 
+									 * }
+									 * 
+									 * } }
+									 */
 								} else {
 									epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
 									employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
