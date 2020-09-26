@@ -40,7 +40,13 @@ public class OpeningPendingLeaveEmployeeList {
 	
 	@Column(name="leave_num_days")
 	private float leaveNumDays;
-
+	
+	@Column(name="op_bal")
+	private float opBal;
+	
+	@Column(name="lvbal_id")
+	private int lvbalId; 
+	
 	public String getId() {
 		return id;
 	}
@@ -121,12 +127,28 @@ public class OpeningPendingLeaveEmployeeList {
 		this.leaveNumDays = leaveNumDays;
 	}
 
+	public float getOpBal() {
+		return opBal;
+	}
+
+	public void setOpBal(float opBal) {
+		this.opBal = opBal;
+	}
+
+	public int getLvbalId() {
+		return lvbalId;
+	}
+
+	public void setLvbalId(int lvbalId) {
+		this.lvbalId = lvbalId;
+	}
+
 	@Override
 	public String toString() {
 		return "OpeningPendingLeaveEmployeeList [id=" + id + ", empId=" + empId + ", empCode=" + empCode + ", empName="
 				+ empName + ", lvsId=" + lvsId + ", lvTitle=" + lvTitle + ", lvTypeId=" + lvTypeId
 				+ ", lvs_alloted_leaves=" + lvs_alloted_leaves + ", leaveId=" + leaveId + ", leaveNumDays="
-				+ leaveNumDays + "]";
+				+ leaveNumDays + ", opBal=" + opBal + ", lvbalId=" + lvbalId + "]";
 	} 
 	 
 	

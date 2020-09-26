@@ -27,6 +27,7 @@ import com.ats.hrmgt.model.LeaveCashReport;
 import com.ats.hrmgt.model.LeaveStructureDetails;
 import com.ats.hrmgt.model.LeaveStructureHeader;
 import com.ats.hrmgt.model.LeavesAllotment;
+import com.ats.hrmgt.model.OpbalAndId;
 import com.ats.hrmgt.repo.LeaveCashReportRepository;
 import com.ats.hrmgt.repository.CalculateYearRepository;
 import com.ats.hrmgt.repository.EmployeeLeaveDetailRepo;
@@ -101,6 +102,24 @@ public class LeaveStructureApiController {
 		}
 
 		return save;
+
+	}
+
+	@RequestMapping(value = { "/updateOpning" }, method = RequestMethod.POST)
+	public @ResponseBody List<OpbalAndId> updateOpning(@RequestBody List<OpbalAndId> list) {
+
+		try {
+
+			for (int i = 0; i < list.size(); i++) {
+				int update = leaveBalanceCalRepo.updateOp(list.get(i).getBalId(),list.get(i).getOpBal());
+			}
+
+		} catch (Exception e) {
+			 
+			e.printStackTrace();
+		}
+
+		return list;
 
 	}
 
