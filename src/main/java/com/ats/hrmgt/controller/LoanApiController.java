@@ -277,7 +277,7 @@ public class LoanApiController {
 		List<GetLoan> list = new ArrayList<GetLoan>();
 		try {
 
-			list = getLoanRepo.getLoanHistoryEmpWiseLocId(companyId, status, calYrId,locId);
+			list = getLoanRepo.getLoanHistoryEmpWiseLocId(companyId, status, calYrId, locId);
 
 		} catch (Exception e) {
 
@@ -287,7 +287,7 @@ public class LoanApiController {
 		return list;
 
 	}
-	
+
 	@RequestMapping(value = { "/getLoanHistoryEmpWiseForCompany" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetLoan> getLoanHistoryEmpWise(@RequestParam("companyId") int companyId) {
 
@@ -304,9 +304,10 @@ public class LoanApiController {
 		return list;
 
 	}
-	
+
 	@RequestMapping(value = { "/getLoanHistoryEmpWiseForCompanyLocId" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetLoan> getLoanHistoryEmpWiseForCompanyLocId(@RequestParam("locId") List<Integer> locId) {
+	public @ResponseBody List<GetLoan> getLoanHistoryEmpWiseForCompanyLocId(
+			@RequestParam("locId") List<Integer> locId) {
 
 		List<GetLoan> list = new ArrayList<GetLoan>();
 		try {
@@ -447,7 +448,8 @@ public class LoanApiController {
 	@RequestMapping(value = { "/calDatePartialPay" }, method = RequestMethod.POST)
 	public @ResponseBody Info calDatePartialPay(@RequestParam("currentOutstanding") String currentOutstanding,
 			@RequestParam("loanEmi") String loanEmi, @RequestParam("partialAmt") String partialAmt,
-			@RequestParam("endDate") String endDate, @RequestParam("loanId") int loanId) {
+			@RequestParam("endDate") String endDate, @RequestParam("loanId") int loanId,
+			@RequestParam("empId") int empId) {
 
 		Info info = new Info();
 		LoanDetails dt = new LoanDetails();
@@ -455,48 +457,43 @@ public class LoanApiController {
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 		try {
 
-			String day = null;
-			Date date = new Date();
-			Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(endDate);
-			int x = date1.getDay();
+			/*
+			 * String day = null; Date date = new Date(); Date date1 = new
+			 * SimpleDateFormat("yyyy-MM-dd").parse(endDate); int x = date1.getDay();
+			 * 
+			 * if (String.valueOf(x).length() == 1) { day = "0".concat(String.valueOf(x)); }
+			 * else { day = String.valueOf(x); }
+			 * 
+			 * dt = loanDetailsRepo.getRecord(loanId); String month = null; String calDate =
+			 * null; if (dt != null) { if (String.valueOf(dt.getMonths()).length() == 1) {
+			 * month = "0".concat(String.valueOf(dt.getMonths())); } else { month =
+			 * String.valueOf(dt.getMonths()); } calDate =
+			 * String.valueOf(dt.getYears()).concat("-").concat(month).concat("-").concat(
+			 * day);
+			 * 
+			 * } else { calDate = sf.format(date1); }
+			 * 
+			 * // System.err.println("cal" + calDate); int currentOutstanding1 =
+			 * Integer.parseInt(currentOutstanding); int loanEmi1 =
+			 * Integer.parseInt(loanEmi); int partialAmt1 = Integer.parseInt(partialAmt);
+			 * 
+			 * int n = currentOutstanding1 - partialAmt1; int y = n / loanEmi1; LocalDate
+			 * localDate = LocalDate.parse(calDate);
+			 * 
+			 * // System.out.println("bef" + localDate); // System.out.println("y" + y);
+			 * LocalDate oneMonthLater = localDate.plusMonths(y); //
+			 * System.out.println("aft" + oneMonthLater); info.setError(false);
+			 * info.setMsg(String.valueOf(oneMonthLater));
+			 */
 
-			if (String.valueOf(x).length() == 1) {
-				day = "0".concat(String.valueOf(x));
+			String[] monthsplt = endDate.split("-");
+			int count = loanDetailsRepo.getCount(monthsplt[0], monthsplt[1], empId);
+
+			if (count == 0) {
+				info.setError(false);
 			} else {
-				day = String.valueOf(x);
+				info.setError(true);
 			}
-
-			dt = loanDetailsRepo.getRecord(loanId);
-			String month = null;
-			String calDate = null;
-			if (dt != null) {
-				if (String.valueOf(dt.getMonths()).length() == 1) {
-					month = "0".concat(String.valueOf(dt.getMonths()));
-				} else {
-					month = String.valueOf(dt.getMonths());
-				}
-				calDate = String.valueOf(dt.getYears()).concat("-").concat(month).concat("-").concat(day);
-
-			} else {
-				calDate = sf.format(date1);
-			}
-
-			// System.err.println("cal" + calDate);
-			int currentOutstanding1 = Integer.parseInt(currentOutstanding);
-			int loanEmi1 = Integer.parseInt(loanEmi);
-			int partialAmt1 = Integer.parseInt(partialAmt);
-
-			int n = currentOutstanding1 - partialAmt1;
-			int y = n / loanEmi1;
-			LocalDate localDate = LocalDate.parse(calDate);
-
-			// System.out.println("bef" + localDate);
-			// System.out.println("y" + y);
-			LocalDate oneMonthLater = localDate.plusMonths(y);
-			// System.out.println("aft" + oneMonthLater);
-			info.setError(false);
-			info.setMsg(String.valueOf(oneMonthLater));
-
 		} catch (Exception e) {
 
 			e.printStackTrace();

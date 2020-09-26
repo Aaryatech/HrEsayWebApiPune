@@ -25,6 +25,9 @@ public interface LoanDetailsRepo extends JpaRepository<LoanDetails, Integer>{
 			"DESC\n" + 
 			"LIMIT 1 ",nativeQuery=true)
 	LoanDetails getRecord(@Param("loanId") int loanId);
+
+	@Query(value=" select count('') as count from tbl_salary_calc where emp_id=:empId and calc_month=:month and calc_year=:year",nativeQuery=true)
+	int getCount(String year, String month, int empId);
 	
 
 }
