@@ -100,7 +100,9 @@ public interface OpeningPendingLeaveEmployeeListRepo extends JpaRepository<Openi
 			"                and cal_yr_id=:yearId\n" + 
 			"        ) lv     \n" + 
 			"            on lv.emp_id=data.emp_id \n" + 
-			"            and lv.lv_type_id=data.lv_type_id", nativeQuery = true)
+			"            and lv.lv_type_id=data.lv_type_id"
+			+ "   order by emp_id asc,\n" + 
+			"            lv_type_id asc", nativeQuery = true)
 	List<OpeningPendingLeaveEmployeeList> getEmplistForOpeningLeave(int locationId, int yearId);
 
 }
