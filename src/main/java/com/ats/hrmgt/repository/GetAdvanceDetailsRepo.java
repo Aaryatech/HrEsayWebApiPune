@@ -98,8 +98,7 @@ public interface GetAdvanceDetailsRepo extends JpaRepository<GetAdvanceDetails, 
 	 		"        and ld.years=:year         \n" + 
 	 		"        and lm.del_status=1          \n" + 
 	 		"        and lm.emp_id in (:empIds) \n" + 
-	 		"        and ld.loan_main_id=lm.id         \n" + 
-	 		"        and ld.pay_type='SP'", nativeQuery = true)
+	 		"        and ld.loan_main_id=lm.id", nativeQuery = true)
 	List<GetAdvanceDetails> getLoanListSaparate(@Param("month") int month, @Param("year") int year,
 			@Param("empIds") List<Integer> empIds);
 

@@ -2513,9 +2513,9 @@ public class PayrollApiController {
 
 			}
 
-			/*if (payroll_bhatta_show == 1) {
-				getClaimList = getAdvanceDetailsRepo.getClaimListSaparate(month, year, empIds);
-			}*/
+			if (payroll_loan_show == 1) {
+				getLoanList = getAdvanceDetailsRepo.getLoanListSaparate(month, year, empIds);
+			}
 
 			List<ProductionIncentiveList> performanceIncentiveList = productionIncentiveListRepo
 					.getPerformanceIncentiveList(month, year, empIds, wootsts);
