@@ -2,6 +2,8 @@ package com.ats.hrmgt.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,8 +28,10 @@ import com.ats.hrmgt.model.HolidayMaster;
 import com.ats.hrmgt.model.LeaveApply;
 import com.ats.hrmgt.model.LeaveAuthority;
 import com.ats.hrmgt.model.LeaveHistory;
+import com.ats.hrmgt.model.MonthWithOT;
 import com.ats.hrmgt.model.SummaryDailyAttendance;
 import com.ats.hrmgt.model.TblEmpInfo;
+import com.ats.hrmgt.model.TotalOT;
 import com.ats.hrmgt.model.bonus.BonusMaster;
 import com.ats.hrmgt.model.dashboard.AgeDiversityDash;
 import com.ats.hrmgt.model.dashboard.BirthHoliDash;
@@ -64,6 +68,7 @@ import com.ats.hrmgt.repository.EmpInfoForDashBoardRepository;
 import com.ats.hrmgt.repository.LeaveAuthorityRepository;
 import com.ats.hrmgt.repository.SummaryDailyAttendanceRepository;
 import com.ats.hrmgt.repository.TblEmpInfoRepo;
+import com.ats.hrmgt.repository.TotalOTRepository;
 
 import ch.qos.logback.classic.pattern.DateConverter;
 
@@ -952,6 +957,53 @@ public class DashboardApiController {
 		try {
 
 			emp = empDeptWiseRepository.getDeparmentWiseEmpCount(locId);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return emp;
+
+	}
+
+	@Autowired
+	TotalOTRepository totalOTRepository;
+
+	@RequestMapping(value = { "/totalOtPrevioussixMonth" }, method = RequestMethod.POST)
+	public @ResponseBody List<TotalOT> totalOtPrevioussixMonth(@RequestParam("locId") int locId) {
+
+		List<TotalOT> emp = new ArrayList<TotalOT>();
+
+		try {
+			YearMonth thisMonth = YearMonth.now();
+			DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MM-yyyy");
+
+			List<MonthWithOT> list = new ArrayList<>();
+			/*MonthWithOT monthWithOT = new MonthWithOT();
+			monthWithOT.setMonth(thisMonth.format(monthYearFormatter));
+			list.add(monthWithOT);*/
+
+			/*
+			 * YearMonth lastMonth = thisMonth.minusMonths(1); YearMonth twoMonthsAgo =
+			 * thisMonth.minusMonths(5);
+			 */
+
+			for (int i = 0; i < 6; i++) {
+				YearMonth lastMonth = thisMonth.minusMonths(i);
+				MonthWithOT monthWithOT = new MonthWithOT();
+				monthWithOT.setMonth(lastMonth.format(monthYearFormatter));
+				list.add(monthWithOT);
+			}
+
+			/*
+			 * System.out.printf("Today: %s\n", thisMonth.format(monthYearFormatter));
+			 * System.out.printf("Last Month: %s\n", lastMonth.format(monthYearFormatter));
+			 * System.out.printf("Two Months Ago: %s\n",
+			 * twoMonthsAgo.format(monthYearFormatter));
+			 */
+			System.out.println(list);
+			emp = totalOTRepository.totalOtPrevioussixMonth(locId);
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
