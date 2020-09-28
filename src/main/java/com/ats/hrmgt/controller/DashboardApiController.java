@@ -970,18 +970,20 @@ public class DashboardApiController {
 	TotalOTRepository totalOTRepository;
 
 	@RequestMapping(value = { "/totalOtPrevioussixMonth" }, method = RequestMethod.POST)
-	public @ResponseBody List<TotalOT> totalOtPrevioussixMonth(@RequestParam("locId") int locId) {
+	public @ResponseBody List<MonthWithOT> totalOtPrevioussixMonth(@RequestParam("locId") int locId) {
 
-		List<TotalOT> emp = new ArrayList<TotalOT>();
+		List<MonthWithOT> list = new ArrayList<>();
 
 		try {
 			YearMonth thisMonth = YearMonth.now();
 			DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MM-yyyy");
+			SimpleDateFormat sf = new SimpleDateFormat("MM-yyyy");
 
-			List<MonthWithOT> list = new ArrayList<>();
-			/*MonthWithOT monthWithOT = new MonthWithOT();
-			monthWithOT.setMonth(thisMonth.format(monthYearFormatter));
-			list.add(monthWithOT);*/
+			/*
+			 * MonthWithOT monthWithOT = new MonthWithOT();
+			 * monthWithOT.setMonth(thisMonth.format(monthYearFormatter));
+			 * list.add(monthWithOT);
+			 */
 
 			/*
 			 * YearMonth lastMonth = thisMonth.minusMonths(1); YearMonth twoMonthsAgo =
@@ -993,6 +995,10 @@ public class DashboardApiController {
 				MonthWithOT monthWithOT = new MonthWithOT();
 				monthWithOT.setMonth(lastMonth.format(monthYearFormatter));
 				list.add(monthWithOT);
+
+				Date dt = sf.parse(lastMonth.format(monthYearFormatter));
+
+				System.out.println(dt);
 			}
 
 			/*
@@ -1002,14 +1008,31 @@ public class DashboardApiController {
 			 * twoMonthsAgo.format(monthYearFormatter));
 			 */
 			System.out.println(list);
-			emp = totalOTRepository.totalOtPrevioussixMonth(locId);
+			List<TotalOT> emp = totalOTRepository.totalOtPrevioussixMonth(locId);
+			SimpleDateFormat yy = new SimpleDateFormat("yyyy-MM-dd");
+			for (int j = 0; j < list.size(); j++) {
+
+				List<TotalOT> otlist = new ArrayList<>();
+
+				Date dt = sf.parse(list.get(j).getMonth());
+				for (int i = 0; i < emp.size(); i++) {
+
+					Date date = yy.parse(emp.get(i).getDateMo());
+
+					if (dt.compareTo(date) == 0) {
+						otlist.add(emp.get(i));
+					}
+
+				}
+				list.get(j).setOtlist(otlist);
+			}
 
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
 
-		return emp;
+		return list;
 
 	}
 
