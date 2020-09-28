@@ -20,7 +20,8 @@ public class GetBirthDaysForDash {
 	private String empCode;
 
 	private int age;
-
+	private String dateMonth;
+	
 	public String getUuid() {
 		return uuid;
 	}
@@ -70,10 +71,18 @@ public class GetBirthDaysForDash {
 		this.dob = dob;
 	}
 
+	public String getDateMonth() {
+		return dateMonth;
+	}
+
+	public void setDateMonth(String dateMonth) {
+		this.dateMonth = dateMonth;
+	}
+
 	@Override
 	public String toString() {
 		return "GetBirthDaysForDash [uuid=" + uuid + ", empId=" + empId + ", name=" + name + ", dob=" + dob
-				+ ", empCode=" + empCode + ", age=" + age + "]";
+				+ ", empCode=" + empCode + ", age=" + age + ", dateMonth=" + dateMonth + "]";
 	}
 
 }

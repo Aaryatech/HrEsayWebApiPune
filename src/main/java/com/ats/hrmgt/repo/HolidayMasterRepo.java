@@ -38,7 +38,7 @@ public interface HolidayMasterRepo extends JpaRepository<HolidayMaster, Integer>
 			"    FROM\n" + 
 			"        m_holiday \n" + 
 			"    WHERE\n" + 
-			"        m_holiday.holiday_fromdt BETWEEN '2020-09-11' AND DATE_ADD('2020-09-11', INTERVAL 30 DAY) \n" + 
+			"        m_holiday.holiday_fromdt BETWEEN :currDate AND DATE_ADD(:currDate, INTERVAL 30 DAY) \n" + 
 			"        AND m_holiday.del_status = 1\n" + 
 			"    group by \n" + 
 			"        m_holiday.ex_int2\n" + 

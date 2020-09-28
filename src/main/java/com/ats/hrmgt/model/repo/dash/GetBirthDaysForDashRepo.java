@@ -14,13 +14,13 @@ public interface GetBirthDaysForDashRepo extends JpaRepository<GetBirthDaysForDa
 	
 	@Query(value = "SELECT\n" + 
 			"   UUID() as uuid,emp_code,  dob,te.emp_id,\n" + 
-			"    CONCAT(first_name, ' ', surname) AS name,  TIMESTAMPDIFF(YEAR, dob, :currDate) AS age \n" + 
+			"    CONCAT(first_name, ' ', surname) AS name,  TIMESTAMPDIFF(YEAR, dob, :currDate) AS age,DATE_FORMAT(dob, '%d-%m') as date_month \n" + 
 			"FROM\n" + 
 			"    tbl_emp_info tei\n" + 
 			"INNER JOIN m_employees te ON\n" + 
 			"    tei.emp_id = te.emp_id\n" + 
 			"WHERE\n" + 
-			"    DATE_FORMAT(dob, '%m-%d') = DATE_FORMAT( :currDate, '%m-%d') AND tei.del_status=1", nativeQuery = true)
+			"    DATE_FORMAT(dob, '%m-%d') = DATE_FORMAT( :currDate, '%m-%d') AND tei.del_status=1 order by NAME asc", nativeQuery = true)
 	List<GetBirthDaysForDash> getTodaysBirth(@Param("currDate") String currDate);
 	
 	
@@ -29,7 +29,7 @@ public interface GetBirthDaysForDashRepo extends JpaRepository<GetBirthDaysForDa
 			"    UUID() as uuid,emp_code,te.emp_id,\n" + 
 			"    dob,\n" + 
 			"    CONCAT(first_name, ' ', surname) AS NAME,\n" + 
-			"    TIMESTAMPDIFF(YEAR, dob, :currDate) AS age\n" + 
+			"    TIMESTAMPDIFF(YEAR, dob, :currDate) AS age,DATE_FORMAT(dob, '%d-%m') as date_month\n" + 
 			"FROM\n" + 
 			"    tbl_emp_info tei\n" + 
 			"INNER JOIN m_employees te ON\n" + 
@@ -38,7 +38,7 @@ public interface GetBirthDaysForDashRepo extends JpaRepository<GetBirthDaysForDa
 			"    DATE_FORMAT(dob, '%m-%d') BETWEEN DATE_FORMAT(DATE_ADD(:currDate, INTERVAL 1 DAY), '%m-%d') AND DATE_FORMAT(\n" + 
 			"        DATE_ADD(:currDate, INTERVAL 6 DAY),\n" + 
 			"        '%m-%d'\n" + 
-			"    )  AND tei.del_status=1", nativeQuery = true)
+			"    )  AND tei.del_status=1 order by NAME asc", nativeQuery = true)
 	List<GetBirthDaysForDash> getWeekBirth(@Param("currDate") String currDate);
 
 
@@ -51,7 +51,7 @@ public interface GetBirthDaysForDashRepo extends JpaRepository<GetBirthDaysForDa
 			"        surname) AS name,\n" + 
 			"        TIMESTAMPDIFF(YEAR,\n" + 
 			"        dob,\n" + 
-			"        :fiterdate) AS age  \n" + 
+			"        :fiterdate) AS age,DATE_FORMAT(dob, '%d-%m') as date_month  \n" + 
 			"    FROM\n" + 
 			"        tbl_emp_info tei \n" + 
 			"    INNER JOIN\n" + 

@@ -90,7 +90,7 @@ public class DashboardApiController {
 
 	@Autowired
 	EmpDeptWiseRepository empDeptWiseRepository;
-	
+
 	@RequestMapping(value = { "/getCommonDash" }, method = RequestMethod.POST)
 	public @ResponseBody CommonDash getCommonDash(@RequestParam("fiterdate") String fiterdate,
 			@RequestParam("empId") int empId, @RequestParam("userType") int userType,
@@ -128,7 +128,7 @@ public class DashboardApiController {
 				holilist = holidayMasterRepo.getHolidaysForDash(fiterdate);
 				birthListToday = getBirthDaysForDashRepo.getTodaysBirth(fiterdate);
 				birthListUpcoming = getBirthDaysForDashRepo.getWeekBirth(fiterdate);
-			} 
+			}
 			birthHoliDash.setBirthListToday(birthListToday);
 			birthHoliDash.setBirthListUpcoming(birthListUpcoming);
 			birthHoliDash.setHoliList(holilist);
@@ -458,8 +458,10 @@ public class DashboardApiController {
 
 			if (type == 1) {
 				list = dashboardLeavePendingRepo.getLeaveIntialApprovalListForDashBoard();
-			} else {
+			} else if (type == 2) {
 				list = dashboardLeavePendingRepo.getLeaveFinalApprovalListForDashBoard();
+			} else if (type == 3) {
+				list = dashboardLeavePendingRepo.getOptionalHolidatApprovalListForDashBoard();
 			}
 
 		} catch (Exception e) {
@@ -941,7 +943,7 @@ public class DashboardApiController {
 		return emp;
 
 	}
-	
+
 	@RequestMapping(value = { "/getDeparmentWiseEmpCount" }, method = RequestMethod.POST)
 	public @ResponseBody List<EmpDeptWise> getDeparmentWiseEmpCount(@RequestParam("locId") int locId) {
 

@@ -11,23 +11,28 @@ public interface LeavePenDashRepo extends JpaRepository<LeavePenDash,String>{
 	
 	
 
-	@Query(value = "SELECT UUID() as uni_key,\n" + 
-			"    (\n" + 
-			"    SELECT\n" + 
-			"        COUNT(lv.leave_id)\n" + 
-			"    FROM\n" + 
-			"        leave_apply lv\n" + 
-			"    WHERE\n" + 
-			"        lv.ex_int1 = 1 AND lv.del_status = 1\n" + 
-			") AS new_app,\n" + 
-			"(\n" + 
-			"    SELECT\n" + 
-			"        COUNT(lv1.leave_id)\n" + 
-			"    FROM\n" + 
-			"        leave_apply lv1\n" + 
-			"    WHERE\n" + 
-			"        lv1.ex_int1 = 2 AND lv1.del_status = 1\n" + 
-			") AS final_pending", nativeQuery = true)
+	@Query(value = "SELECT\n" + 
+			"        UUID() as uni_key,\n" + 
+			"        (     SELECT\n" + 
+			"            COUNT(lv.leave_id)     \n" + 
+			"        FROM\n" + 
+			"            leave_apply lv     \n" + 
+			"        WHERE\n" + 
+			"            lv.ex_int1 = 1 \n" + 
+			"            AND lv.del_status = 1 ) AS new_app,\n" + 
+			"        (     SELECT\n" + 
+			"            COUNT(lv1.leave_id)     \n" + 
+			"        FROM\n" + 
+			"            leave_apply lv1     \n" + 
+			"        WHERE\n" + 
+			"            lv1.ex_int1 = 2 \n" + 
+			"            AND lv1.del_status = 1 ) AS final_pending,\n" + 
+			"        (     SELECT\n" + 
+			"            COUNT('')     \n" + 
+			"        FROM\n" + 
+			"            t_optional_holiday oh     \n" + 
+			"        WHERE\n" + 
+			"            oh.status = 0 ) AS oh_pending", nativeQuery = true)
 	LeavePenDash getLeaveCnt();
 	
 	

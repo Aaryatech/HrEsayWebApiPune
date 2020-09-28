@@ -10,7 +10,8 @@ import org.springframework.data.repository.query.Param;
 public interface IncentivesAmtDashRepo extends JpaRepository<IncentivesAmtDash,String> {
 	
 	
-	@Query(value = "SELECT UUID() as uni_key,b.perf_incentive,c.prod_incentive\n" + 
+	@Query(value = "SELECT UUID() as uni_key,ifnull(b.perf_incentive,0) as perf_incentive,\n" + 
+			"        ifnull(c.prod_incentive,0) as prod_incentive\n" + 
 			"    FROM\n" + 
 			"        (select emp_id from m_employees where emp_id=:empId) emp\n" + 
 			"        \n" + 

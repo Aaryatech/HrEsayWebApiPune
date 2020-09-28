@@ -137,4 +137,29 @@ public interface DashboardLeavePendingRepo extends JpaRepository<DashboardLeaveP
 			"            on d.lv_type_id=leave_data.lv_type_id", nativeQuery = true)
 	List<DashboardLeavePending> getLeaveFinalApprovalListForDashBoard();
 
+	@Query(value = "SELECT\n" + 
+			"        leave_data.*,\n" + 
+			"        ' ' as initial_auth_name,\n" + 
+			"        ' ' as final_auth_name         \n" + 
+			"    FROM\n" + 
+			"        ( SELECT\n" + 
+			"            oh.id as leave_id,\n" + 
+			"            oh.emp_id,\n" + 
+			"            oh.holiday_id as lv_type_id,\n" + 
+			"            oh.holidate as leave_fromdt,\n" + 
+			"            oh.holidate as leave_todt,\n" + 
+			"            1 as leave_num_days,\n" + 
+			"            CONCAT(e.surname,\n" + 
+			"            ' ',\n" + 
+			"            e.first_name) AS emp_name,\n" + 
+			"            h.ex_var2 as leave_title \n" + 
+			"        FROM\n" + 
+			"            t_optional_holiday oh,\n" + 
+			"            m_employees e,\n" + 
+			"            m_holiday h\n" + 
+			"        WHERE\n" + 
+			"            e.emp_id=oh.emp_id  and oh.status=0 and h.holiday_id=oh.holiday_id) leave_data      \n" + 
+			"     ", nativeQuery = true)
+	List<DashboardLeavePending> getOptionalHolidatApprovalListForDashBoard();
+
 }
