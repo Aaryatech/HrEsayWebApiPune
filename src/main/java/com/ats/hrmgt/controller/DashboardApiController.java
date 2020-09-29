@@ -1011,9 +1011,9 @@ public class DashboardApiController {
 			 * System.out.printf("Two Months Ago: %s\n",
 			 * twoMonthsAgo.format(monthYearFormatter));
 			 */
-			System.out.println(list);
-			List<TotalOT> emp = totalOTRepository.totalOtPrevioussixMonth(locId);
-			List<TotalOT> deptList = totalOTRepository.deptList(locId);
+			String defaltdt = year+"-"+month+"-01";
+			List<TotalOT> emp = totalOTRepository.totalOtPrevioussixMonth(locId,defaltdt);
+			List<TotalOT> deptList = totalOTRepository.deptList(locId,defaltdt);
 
 			for (int i = 0; i < deptList.size(); i++) {
 				deptList.get(i).setId("0");
