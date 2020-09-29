@@ -9,7 +9,11 @@ import com.ats.hrmgt.model.PresentAttendaceList;
 
 public interface PresentAttendaceListRepository extends JpaRepository<PresentAttendaceList, Integer>{
 	@Query(value=" select UUID() as id,e.emp_id,concat(e.first_name,' ',e.surname) as emp_name,d.att_status,late_min from tbl_attt_daily_daily d, "
-			+ "m_employees e where d.att_date = :date and d.lv_sumup_id in (5,13,14,15,20,21,18) and e.emp_id=d.emp_id and e.location_id in (:locId) ", nativeQuery=true)
+			+ "m_employees e where d.att_date = :date and d.lv_sumup_id in (5,13,14,15,20,21,18,22,7,11) and e.emp_id=d.emp_id and e.location_id in (:locId) ", nativeQuery=true)
 	 List<PresentAttendaceList> presentList(int locId, String date);
+
+	@Query(value=" select UUID() as id,e.emp_id,concat(e.first_name,' ',e.surname) as emp_name,d.att_status,late_min from tbl_attt_daily_daily d, "
+			+ "m_employees e where d.att_date = :date and late_mark=1 and e.emp_id=d.emp_id and e.location_id in (:locId) ", nativeQuery=true)
+	List<PresentAttendaceList> lateListList(int locId, String date);
 
 }

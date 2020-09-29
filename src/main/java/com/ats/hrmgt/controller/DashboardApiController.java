@@ -1133,6 +1133,11 @@ public class DashboardApiController {
 			attendaceLiveData.setCountData(countData);
 			
 			List<PresentAttendaceList> presentList = presentAttendaceListRepository.presentList(locId, date); 
+			attendaceLiveData.setPresentList(presentList);
+			
+			List<PresentAttendaceList> lateList = presentAttendaceListRepository.lateListList(locId, date); 
+			attendaceLiveData.setLateList(lateList);
+			
 		} catch (Exception e) {
 
 			e.printStackTrace();
