@@ -28,6 +28,7 @@ import com.ats.hrmgt.model.HolidayMaster;
 import com.ats.hrmgt.model.LeaveApply;
 import com.ats.hrmgt.model.LeaveAuthority;
 import com.ats.hrmgt.model.LeaveHistory;
+import com.ats.hrmgt.model.LineGraphData;
 import com.ats.hrmgt.model.MonthWithOT;
 import com.ats.hrmgt.model.SummaryDailyAttendance;
 import com.ats.hrmgt.model.TblEmpInfo;
@@ -970,12 +971,17 @@ public class DashboardApiController {
 	TotalOTRepository totalOTRepository;
 
 	@RequestMapping(value = { "/totalOtPrevioussixMonth" }, method = RequestMethod.POST)
-	public @ResponseBody List<MonthWithOT> totalOtPrevioussixMonth(@RequestParam("locId") int locId) {
+	public @ResponseBody LineGraphData totalOtPrevioussixMonth(@RequestParam("locId") int locId,
+			@RequestParam("month") int month, @RequestParam("year") int year) {
+
+		LineGraphData lineGraphData = new LineGraphData();
 
 		List<MonthWithOT> list = new ArrayList<>();
 
 		try {
-			YearMonth thisMonth = YearMonth.now();
+			// YearMonth thisMonth = YearMonth.now();
+
+			YearMonth thisMonth = YearMonth.of(year, month);
 			DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MM-yyyy");
 			SimpleDateFormat sf = new SimpleDateFormat("MM-yyyy");
 
@@ -990,15 +996,13 @@ public class DashboardApiController {
 			 * thisMonth.minusMonths(5);
 			 */
 
-			for (int i = 0; i < 6; i++) {
+			for (int i = 5; i >= 0; i--) {
+				 
 				YearMonth lastMonth = thisMonth.minusMonths(i);
 				MonthWithOT monthWithOT = new MonthWithOT();
 				monthWithOT.setMonth(lastMonth.format(monthYearFormatter));
 				list.add(monthWithOT);
-
-				Date dt = sf.parse(lastMonth.format(monthYearFormatter));
-
-				System.out.println(dt);
+  
 			}
 
 			/*
@@ -1009,11 +1013,20 @@ public class DashboardApiController {
 			 */
 			System.out.println(list);
 			List<TotalOT> emp = totalOTRepository.totalOtPrevioussixMonth(locId);
+			List<TotalOT> deptList = totalOTRepository.deptList(locId);
+
+			for (int i = 0; i < deptList.size(); i++) {
+				deptList.get(i).setId("0");
+				deptList.get(i).setDateMo("-");
+				deptList.get(i).setMonth("-");
+				deptList.get(i).setOt(0);
+			}
+
 			SimpleDateFormat yy = new SimpleDateFormat("yyyy-MM-dd");
 			for (int j = 0; j < list.size(); j++) {
 
 				List<TotalOT> otlist = new ArrayList<>();
-
+				int flag = 0;
 				Date dt = sf.parse(list.get(j).getMonth());
 				for (int i = 0; i < emp.size(); i++) {
 
@@ -1021,18 +1034,30 @@ public class DashboardApiController {
 
 					if (dt.compareTo(date) == 0) {
 						otlist.add(emp.get(i));
+						flag = 1;
 					}
 
 				}
+				if (flag == 0) {
+					for (int i = 0; i < deptList.size(); i++) {
+						/*
+						 * TotalOT totalOT = new TotalOT();
+						 * totalOT.setDepartId(deptList.get(i).getDepartId());
+						 * totalOT.setName(deptList.get(i).getName()); totalOT.setOt(0);
+						 */
+						otlist.add(deptList.get(i));
+					}
+				}
 				list.get(j).setOtlist(otlist);
 			}
-
+			lineGraphData.setList(list);
+			lineGraphData.setDeptList(deptList);
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
 
-		return list;
+		return lineGraphData;
 
 	}
 

@@ -22,14 +22,14 @@ public interface GetBirthDaysForDashRepo extends JpaRepository<GetBirthDaysForDa
 			"        surname) AS name,\n" + 
 			"        TIMESTAMPDIFF(YEAR,\n" + 
 			"        dob,\n" + 
-			"        '2020-09-28') AS age,\n" + 
+			"        :currDate) AS age,\n" + 
 			"        DATE_FORMAT(dob,\n" + 
 			"        '%d-%m') as date_month  \n" + 
 			"    FROM\n" + 
 			"        tbl_emp_info tei,\n" + 
 			"        m_employees te \n" + 
 			"    WHERE\n" + 
-			"        DATE_FORMAT(dob, '%m-%d') = DATE_FORMAT('2020-09-28', '%m-%d') \n" + 
+			"        DATE_FORMAT(dob, '%m-%d') = DATE_FORMAT(:currDate, '%m-%d') \n" + 
 			"        AND tei.del_status=1\n" + 
 			"        and tei.emp_id = te.emp_id\n" + 
 			"        AND te.del_status=1\n" + 
