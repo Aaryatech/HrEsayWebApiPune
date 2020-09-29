@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.common.DateConvertor;
+import com.ats.hrmgt.model.AdvaceAmtGraph;
+import com.ats.hrmgt.model.AttendaceLiveData;
+import com.ats.hrmgt.model.CountData;
 import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.DashboardLeavePending;
 import com.ats.hrmgt.model.EmpDeptWise;
@@ -29,7 +32,9 @@ import com.ats.hrmgt.model.LeaveApply;
 import com.ats.hrmgt.model.LeaveAuthority;
 import com.ats.hrmgt.model.LeaveHistory;
 import com.ats.hrmgt.model.LineGraphData;
+import com.ats.hrmgt.model.MonthWiseDisbusedAmt;
 import com.ats.hrmgt.model.MonthWithOT;
+import com.ats.hrmgt.model.PresentAttendaceList;
 import com.ats.hrmgt.model.SummaryDailyAttendance;
 import com.ats.hrmgt.model.TblEmpInfo;
 import com.ats.hrmgt.model.TotalOT;
@@ -61,12 +66,15 @@ import com.ats.hrmgt.model.repo.dash.PayRewardDedDashRepo;
 import com.ats.hrmgt.model.repo.dash.PerformanceProdDashRepo;
 import com.ats.hrmgt.model.repo.dash.PreDayAttnDashRepo;
 import com.ats.hrmgt.repo.HolidayMasterRepo;
+import com.ats.hrmgt.repository.AdvaceAmtGraphRepository;
+import com.ats.hrmgt.repository.CountDataRepository;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
 import com.ats.hrmgt.repository.DashboardLeavePendingRepo;
 import com.ats.hrmgt.repository.EmpDeptWiseRepository;
 import com.ats.hrmgt.repository.EmpGraphDetailRepository;
 import com.ats.hrmgt.repository.EmpInfoForDashBoardRepository;
 import com.ats.hrmgt.repository.LeaveAuthorityRepository;
+import com.ats.hrmgt.repository.PresentAttendaceListRepository;
 import com.ats.hrmgt.repository.SummaryDailyAttendanceRepository;
 import com.ats.hrmgt.repository.TblEmpInfoRepo;
 import com.ats.hrmgt.repository.TotalOTRepository;
@@ -979,41 +987,23 @@ public class DashboardApiController {
 		List<MonthWithOT> list = new ArrayList<>();
 
 		try {
-			// YearMonth thisMonth = YearMonth.now();
 
 			YearMonth thisMonth = YearMonth.of(year, month);
 			DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MM-yyyy");
 			SimpleDateFormat sf = new SimpleDateFormat("MM-yyyy");
 
-			/*
-			 * MonthWithOT monthWithOT = new MonthWithOT();
-			 * monthWithOT.setMonth(thisMonth.format(monthYearFormatter));
-			 * list.add(monthWithOT);
-			 */
-
-			/*
-			 * YearMonth lastMonth = thisMonth.minusMonths(1); YearMonth twoMonthsAgo =
-			 * thisMonth.minusMonths(5);
-			 */
-
 			for (int i = 5; i >= 0; i--) {
-				 
+
 				YearMonth lastMonth = thisMonth.minusMonths(i);
 				MonthWithOT monthWithOT = new MonthWithOT();
 				monthWithOT.setMonth(lastMonth.format(monthYearFormatter));
 				list.add(monthWithOT);
-  
+
 			}
 
-			/*
-			 * System.out.printf("Today: %s\n", thisMonth.format(monthYearFormatter));
-			 * System.out.printf("Last Month: %s\n", lastMonth.format(monthYearFormatter));
-			 * System.out.printf("Two Months Ago: %s\n",
-			 * twoMonthsAgo.format(monthYearFormatter));
-			 */
-			String defaltdt = year+"-"+month+"-01";
-			List<TotalOT> emp = totalOTRepository.totalOtPrevioussixMonth(locId,defaltdt);
-			List<TotalOT> deptList = totalOTRepository.deptList(locId,defaltdt);
+			String defaltdt = year + "-" + month + "-01";
+			List<TotalOT> emp = totalOTRepository.totalOtPrevioussixMonth(locId, defaltdt);
+			List<TotalOT> deptList = totalOTRepository.deptList(locId, defaltdt);
 
 			for (int i = 0; i < deptList.size(); i++) {
 				deptList.get(i).setId("0");
@@ -1040,11 +1030,7 @@ public class DashboardApiController {
 				}
 				if (flag == 0) {
 					for (int i = 0; i < deptList.size(); i++) {
-						/*
-						 * TotalOT totalOT = new TotalOT();
-						 * totalOT.setDepartId(deptList.get(i).getDepartId());
-						 * totalOT.setName(deptList.get(i).getName()); totalOT.setOt(0);
-						 */
+
 						otlist.add(deptList.get(i));
 					}
 				}
@@ -1058,6 +1044,101 @@ public class DashboardApiController {
 		}
 
 		return lineGraphData;
+
+	}
+
+	@Autowired
+	AdvaceAmtGraphRepository advaceAmtGraphRepository;
+
+	@RequestMapping(value = { "/disbusedAmtMonthWise" }, method = RequestMethod.POST)
+	public @ResponseBody List<MonthWiseDisbusedAmt> disbusedAmtMonthWise(@RequestParam("locId") int locId,
+			@RequestParam("month") int month, @RequestParam("year") int year) {
+
+		// LineGraphData lineGraphData = new LineGraphData();
+
+		List<MonthWiseDisbusedAmt> list = new ArrayList<>();
+
+		try {
+
+			YearMonth thisMonth = YearMonth.of(year, month);
+			DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MM-yyyy");
+			SimpleDateFormat sf = new SimpleDateFormat("MM-yyyy");
+
+			for (int i = 5; i >= 0; i--) {
+
+				YearMonth lastMonth = thisMonth.minusMonths(i);
+				MonthWiseDisbusedAmt monthWithOT = new MonthWiseDisbusedAmt();
+				monthWithOT.setMonth(lastMonth.format(monthYearFormatter));
+				list.add(monthWithOT);
+
+			}
+
+			String defaltdt = year + "-" + month + "-01";
+			List<AdvaceAmtGraph> advanceList = advaceAmtGraphRepository.getAdvanceMonthAmt(locId, defaltdt);
+			List<AdvaceAmtGraph> loanList = advaceAmtGraphRepository.getLoanMonthAmt(locId, defaltdt);
+
+			// System.out.println(advanceList);
+			// SimpleDateFormat yy = new SimpleDateFormat("yyyy-MM-dd");
+			for (int j = 0; j < list.size(); j++) {
+
+				Date dt = sf.parse(list.get(j).getMonth());
+
+				for (int i = 0; i < advanceList.size(); i++) {
+
+					Date date = sf.parse(advanceList.get(i).getMonth());
+
+					if (dt.compareTo(date) == 0) {
+						list.get(j).setAdvAmt(advanceList.get(i).getAdvTot());
+						break;
+					}
+
+				}
+
+				for (int i = 0; i < loanList.size(); i++) {
+
+					Date date = sf.parse(loanList.get(i).getMonth());
+
+					if (dt.compareTo(date) == 0) {
+						list.get(j).setLoanAmt(loanList.get(i).getAdvTot());
+						break;
+					}
+
+				}
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@Autowired
+	CountDataRepository countDataRepository;
+	
+	@Autowired
+	PresentAttendaceListRepository presentAttendaceListRepository;
+	
+	@RequestMapping(value = { "/liveAttendaceDashboardData" }, method = RequestMethod.POST)
+	public @ResponseBody AttendaceLiveData liveAttendaceDashboardData(@RequestParam("locId") int locId,
+			@RequestParam("date") String date) {
+
+		AttendaceLiveData attendaceLiveData = new AttendaceLiveData();
+
+		try {
+			CountData countData = countDataRepository.countData(locId, date);
+			attendaceLiveData.setCountData(countData);
+			
+			List<PresentAttendaceList> presentList = presentAttendaceListRepository.presentList(locId, date); 
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return attendaceLiveData;
 
 	}
 
