@@ -14,6 +14,16 @@ public class PresentAttendaceList {
 	private String empName;
 	private String attStatus;
 	private int lateMin;
+	private int lvSumupId;
+	private String deptName;
+	
+	
+	public String getDeptName() {
+		return deptName;
+	}
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
+	}
 	public String getId() {
 		return id;
 	}
@@ -44,10 +54,16 @@ public class PresentAttendaceList {
 	public void setLateMin(int lateMin) {
 		this.lateMin = lateMin;
 	}
+	public int getLvSumupId() {
+		return lvSumupId;
+	}
+	public void setLvSumupId(int lvSumupId) {
+		this.lvSumupId = lvSumupId;
+	}
 	@Override
 	public String toString() {
 		return "PresentAttendaceList [id=" + id + ", empId=" + empId + ", empName=" + empName + ", attStatus="
-				+ attStatus + ", lateMin=" + lateMin + "]";
+				+ attStatus + ", lateMin=" + lateMin + ", lvSumupId=" + lvSumupId + ", deptName=" + deptName + "]";
 	}
 	
 	
