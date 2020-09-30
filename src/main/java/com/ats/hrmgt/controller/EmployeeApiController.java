@@ -25,6 +25,7 @@ import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.EmployeeRelatedTbls;
 import com.ats.hrmgt.model.GetEmployeeDetails;
 import com.ats.hrmgt.model.Info;
+import com.ats.hrmgt.model.SalaryRateData;
 import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.TblEmpBankInfo;
 import com.ats.hrmgt.model.TblEmpInfo;
@@ -213,21 +214,21 @@ public class EmployeeApiController {
 	public @ResponseBody List<DailyDaily> updateEmpCode(@RequestBody List<DailyDaily> dailyList) {
 
 		List<DailyDaily> dailyListRes = new ArrayList<>();
-		
+
 		try {
 
-			for(int x=0;x<dailyList.size();x++) {
-				int result=empRepo.submitupdateempcode(dailyList.get(x).getOtHr(),dailyList.get(x).getId());
+			for (int x = 0; x < dailyList.size(); x++) {
+				int result = empRepo.submitupdateempcode(dailyList.get(x).getOtHr(), dailyList.get(x).getId());
 			}
-			 
+
 		} catch (Exception e) {
 			dailyListRes = new ArrayList<>();
 			e.printStackTrace();
 		}
-		
+
 		return dailyListRes;
 	}
-	
+
 	@RequestMapping(value = { "/deleteEmployeeStatus" }, method = RequestMethod.POST)
 	public Info deleteEmployeeStatus(@RequestParam int empId, @RequestParam int isActive) {
 
@@ -603,6 +604,44 @@ public class EmployeeApiController {
 		}
 
 		return empAllowance;
+
+	}
+
+	@RequestMapping(value = { "/getEmployeeSalAllowancesInfo" }, method = RequestMethod.POST)
+	public List<EmpSalAllowance> getEmployeeSalAllowancesInfo(@RequestParam int empId) {
+		List<EmpSalAllowance> empAllowance = new ArrayList<EmpSalAllowance>();
+
+		try {
+			empAllowance = empSalAllowanceRepo.getEmployeeSalAllowancesInfo(empId);
+
+			// System.out.println(empAllowance.size());
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return empAllowance;
+
+	}
+
+	@RequestMapping(value = { "/getSalaryDetailRate" }, method = RequestMethod.POST)
+	public SalaryRateData getSalaryDetailRate(@RequestParam List<Integer> locId) {
+		SalaryRateData salaryRateData = new SalaryRateData();
+
+		try {
+			List<GetEmployeeDetails> list = getEmployeeDetailsRepo.getSalaryDetailRate(locId);
+			List<EmpSalAllowance> alloList = empSalAllowanceRepo.getEmployeeSalAllowancesInfoAll(locId); 
+			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1); 
+			salaryRateData.setAllowancelist(allowancelist);
+			salaryRateData.setAlloList(alloList);
+			salaryRateData.setList(list);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return salaryRateData;
 
 	}
 

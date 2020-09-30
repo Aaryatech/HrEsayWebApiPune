@@ -2397,4 +2397,49 @@ public interface GetEmployeeDetailsRepo extends JpaRepository<GetEmployeeDetails
 			"            '%Y-%m'\n" + 
 			"        ) >= DATE_FORMAT(CURDATE(), '%Y-%m')) and emp.location_id in (:locId)	order by loc_name ", nativeQuery = true)
 	List<GetEmployeeDetails> getAllEmployeeDetailAccesibleLocBylocationId(List<Integer> locId);
+
+
+	@Query(value = "SELECT\n" + 
+			"    emp.*,\n" + 
+			"    dep.name_sd AS dept_name,\n" + 
+			"    salinfo.ceiling_limit_emp_applicable AS emp_desgn,\n" + 
+			"    loc.loc_name_short as  loc_name,\n" + 
+			"    salinfo.pf_applicable as org_name,\n" + 
+			"    salinfo.esic_applicable as shiftname,\n" + 
+			"    salinfo.mlwf_applicable  AS emp_type_name,\n" + 
+			"    saltype.sal_type_name,\n" + 
+			"    salinfo.pt_applicable  AS sub_comp_name,\n" + 
+			"    salinfo.basic as wo_cat_name,\n" + 
+			"    salinfo.ceiling_limit_employer_applicable as ho_cat_name, salinfo.gross_salary\n" + 
+			"FROM\n" + 
+			"    m_employees emp\n" + 
+			"INNER JOIN tbl_emp_salary_info salinfo ON\n" + 
+			"    emp.emp_id = salinfo.emp_id\n" + 
+			"LEFT JOIN m_designation dg ON\n" + 
+			"    emp.designation_id = dg.desig_id\n" + 
+			"LEFT JOIN m_department dep ON\n" + 
+			"    emp.depart_id = dep.depart_id\n" + 
+			"LEFT JOIN m_contractor con ON\n" + 
+			"    emp.contractor_id = con.contractor_id\n" + 
+			"LEFT JOIN m_location loc ON\n" + 
+			"    emp.location_id = loc.loc_id\n" + 
+			"LEFT JOIN tbl_mst_emp_types emptyp ON\n" + 
+			"    emp.emp_type = emptyp.emp_type_id\n" + 
+			"LEFT JOIN tbl_shift_timming sht ON\n" + 
+			"    emp.current_shiftid = sht.id\n" + 
+			"LEFT JOIN mst_salary_types saltype ON\n" + 
+			"    salinfo.salary_type_id = saltype.sal_type_id\n" + 
+			"LEFT JOIN tbl_mst_sub_company succomp ON\n" + 
+			"    succomp.company_id = emp.sub_cmp_id\n" + 
+			"LEFT JOIN weekoff_category wocat ON\n" + 
+			"    wocat.wo_cat_id = emp.weekend_category\n" + 
+			"LEFT JOIN holiday_category holidaycat ON\n" + 
+			"    holidaycat.ho_cat_id = emp.holiday_category\n" + 
+			"WHERE\n" + 
+			"    emp.del_status = 1 AND(\n" + 
+			"        salinfo.cmp_leaving_date IS NULL OR salinfo.cmp_leaving_date = '' OR salinfo.cmp_leaving_date = 1970 -00 -00 OR DATE_FORMAT(\n" + 
+			"            salinfo.cmp_leaving_date,\n" + 
+			"            '%Y-%m'\n" + 
+			"        ) >= DATE_FORMAT(CURDATE(), '%Y-%m'))  AND emp.location_id IN(:locId)", nativeQuery = true) 
+	List<GetEmployeeDetails> getSalaryDetailRate(List<Integer> locId);
 }
