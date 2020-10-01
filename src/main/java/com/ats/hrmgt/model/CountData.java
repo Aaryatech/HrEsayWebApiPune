@@ -15,6 +15,9 @@ public class CountData {
 	private int absent;
 	private int leavecount;
 	private int latemark;
+	private int holiday;
+	private int weeklyoff;
+	
 	public String getId() {
 		return id;
 	}
@@ -45,10 +48,22 @@ public class CountData {
 	public void setLatemark(int latemark) {
 		this.latemark = latemark;
 	}
+	public int getHoliday() {
+		return holiday;
+	}
+	public void setHoliday(int holiday) {
+		this.holiday = holiday;
+	}
+	public int getWeeklyoff() {
+		return weeklyoff;
+	}
+	public void setWeeklyoff(int weeklyoff) {
+		this.weeklyoff = weeklyoff;
+	}
 	@Override
 	public String toString() {
 		return "CountData [id=" + id + ", present=" + present + ", absent=" + absent + ", leavecount=" + leavecount
-				+ ", latemark=" + latemark + "]";
+				+ ", latemark=" + latemark + ", holiday=" + holiday + ", weeklyoff=" + weeklyoff + "]";
 	}
 	
 	
