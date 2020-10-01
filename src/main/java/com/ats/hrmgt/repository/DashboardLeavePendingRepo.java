@@ -30,7 +30,7 @@ public interface DashboardLeavePendingRepo extends JpaRepository<DashboardLeaveP
 			"         e.emp_id=la.emp_id \n" + 
 			"        and la.ex_int1 = 1  \n" + 
 			"        and cy.cal_yr_id=la.cal_yr_id \n" + 
-			"        AND cy.is_current =1\n" + 
+			"        AND cy.is_current =1 and e.location_id=:locId\n" + 
 			"         ) leave_data \n" + 
 			"    LEFT JOIN\n" + 
 			"        (\n" + 
@@ -71,7 +71,7 @@ public interface DashboardLeavePendingRepo extends JpaRepository<DashboardLeaveP
 			"                leave_type lt \n" + 
 			"        ) d              \n" + 
 			"            on d.lv_type_id=leave_data.lv_type_id", nativeQuery = true)
-	List<DashboardLeavePending> getLeaveIntialApprovalListForDashBoard();
+	List<DashboardLeavePending> getLeaveIntialApprovalListForDashBoard(int locId);
 
 	@Query(value = "SELECT\n" + 
 			"         leave_data.*,b.initial_auth_name,c.final_auth_name,d.leave_title          \n" + 
@@ -94,7 +94,7 @@ public interface DashboardLeavePendingRepo extends JpaRepository<DashboardLeaveP
 			"         e.emp_id=la.emp_id \n" + 
 			"        and la.ex_int1 = 2  \n" + 
 			"        and cy.cal_yr_id=la.cal_yr_id \n" + 
-			"        AND cy.is_current =1\n" + 
+			"        AND cy.is_current =1 and e.location_id=:locId\n" + 
 			"         ) leave_data \n" + 
 			"    LEFT JOIN\n" + 
 			"        (\n" + 
@@ -135,7 +135,7 @@ public interface DashboardLeavePendingRepo extends JpaRepository<DashboardLeaveP
 			"                leave_type lt \n" + 
 			"        ) d              \n" + 
 			"            on d.lv_type_id=leave_data.lv_type_id", nativeQuery = true)
-	List<DashboardLeavePending> getLeaveFinalApprovalListForDashBoard();
+	List<DashboardLeavePending> getLeaveFinalApprovalListForDashBoard(int locId);
 
 	@Query(value = "SELECT\n" + 
 			"        leave_data.*,\n" + 
@@ -158,8 +158,8 @@ public interface DashboardLeavePendingRepo extends JpaRepository<DashboardLeaveP
 			"            m_employees e,\n" + 
 			"            m_holiday h\n" + 
 			"        WHERE\n" + 
-			"            e.emp_id=oh.emp_id  and oh.status=0 and h.holiday_id=oh.holiday_id) leave_data      \n" + 
+			"            e.emp_id=oh.emp_id  and oh.status=0 and h.holiday_id=oh.holiday_id and e.location_id=:locId) leave_data      \n" + 
 			"     ", nativeQuery = true)
-	List<DashboardLeavePending> getOptionalHolidatApprovalListForDashBoard();
+	List<DashboardLeavePending> getOptionalHolidatApprovalListForDashBoard(int locId);
 
 }
