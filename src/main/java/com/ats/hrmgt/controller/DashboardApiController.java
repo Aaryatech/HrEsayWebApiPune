@@ -35,6 +35,7 @@ import com.ats.hrmgt.model.LineGraphData;
 import com.ats.hrmgt.model.MonthWiseDisbusedAmt;
 import com.ats.hrmgt.model.MonthWithOT;
 import com.ats.hrmgt.model.PresentAttendaceList;
+import com.ats.hrmgt.model.SelfAttendanceDetail;
 import com.ats.hrmgt.model.SummaryDailyAttendance;
 import com.ats.hrmgt.model.TblEmpInfo;
 import com.ats.hrmgt.model.TotalOT;
@@ -75,6 +76,7 @@ import com.ats.hrmgt.repository.EmpGraphDetailRepository;
 import com.ats.hrmgt.repository.EmpInfoForDashBoardRepository;
 import com.ats.hrmgt.repository.LeaveAuthorityRepository;
 import com.ats.hrmgt.repository.PresentAttendaceListRepository;
+import com.ats.hrmgt.repository.SelfAttendanceDetailRepository;
 import com.ats.hrmgt.repository.SummaryDailyAttendanceRepository;
 import com.ats.hrmgt.repository.TblEmpInfoRepo;
 import com.ats.hrmgt.repository.TotalOTRepository;
@@ -104,6 +106,9 @@ public class DashboardApiController {
 
 	@Autowired
 	EmpDeptWiseRepository empDeptWiseRepository;
+
+	@Autowired
+	SelfAttendanceDetailRepository selfAttendanceDetailRepository;
 
 	@RequestMapping(value = { "/getCommonDash" }, method = RequestMethod.POST)
 	public @ResponseBody CommonDash getCommonDash(@RequestParam("fiterdate") String fiterdate,
@@ -167,19 +172,19 @@ public class DashboardApiController {
 		comDash.setLvApplList(leaveHistForDashlist);
 
 		// getDashDeptWiseEmpCount
+		if (userType == 2) {
+			List<DeptWiseWeekoffDash> listEmpDiv = new ArrayList<DeptWiseWeekoffDash>();
+			try {
 
-		List<DeptWiseWeekoffDash> listEmpDiv = new ArrayList<DeptWiseWeekoffDash>();
-		try {
+				listEmpDiv = deptWiseWeekoffDashRepo.getDeptWiseEmpDiversity(locId);
 
-			listEmpDiv = deptWiseWeekoffDashRepo.getDeptWiseEmpDiversity(locId);
+			} catch (Exception e) {
 
-		} catch (Exception e) {
+				e.printStackTrace();
+			}
 
-			e.printStackTrace();
+			comDash.setDeptWiseEmpCntList(listEmpDiv);
 		}
-
-		comDash.setDeptWiseEmpCntList(listEmpDiv);
-
 		// getDedTypewiseDeduction
 
 		List<DeptWiseWeekoffDash> listDedTypewiseAm = new ArrayList<DeptWiseWeekoffDash>();
@@ -368,7 +373,7 @@ public class DashboardApiController {
 
 		// for HR and Authority
 
-		if (userType == 2 || isAuth > 0) {
+		if (userType == 2) {
 
 			// 6 getDashDeptWiseWeekoff
 			List<DeptWiseWeekoffDash> list = new ArrayList<DeptWiseWeekoffDash>();
@@ -416,7 +421,9 @@ public class DashboardApiController {
 
 			try {
 
-				summlist = summaryDailyAttendanceRepository.summaryDailyAttendanceList1(temp[1], temp[0], empId);
+				// summlist =
+				// summaryDailyAttendanceRepository.summaryDailyAttendanceList1(temp[1],
+				// temp[0], empId);
 
 			} catch (Exception e) {
 
@@ -426,7 +433,6 @@ public class DashboardApiController {
 
 		}
 
-		System.err.println("----------" + comDash.toString());
 		return comDash;
 
 	}
@@ -482,9 +488,9 @@ public class DashboardApiController {
 				list = dashboardLeavePendingRepo.getLeaveFinalApprovalListForDashBoard(locId);
 			} else if (type == 3) {
 				list = dashboardLeavePendingRepo.getOptionalHolidatApprovalListForDashBoard(locId);
-			}else if (type == 4) {
+			} else if (type == 4) {
 				list = dashboardLeavePendingRepo.getClaimIntialApprovalListForDashBoard(locId);
-			}else if (type == 5) {
+			} else if (type == 5) {
 				list = dashboardLeavePendingRepo.getClaimFinalApprovalListForDashBoard(locId);
 			}
 
@@ -818,6 +824,26 @@ public class DashboardApiController {
 
 	}
 
+	@RequestMapping(value = { "/getSelfAttendaceForDashboard" }, method = RequestMethod.POST)
+	public @ResponseBody List<SelfAttendanceDetail> getSelfAttendaceForDashboard(
+			@RequestParam("fromDate") String fromDate, @RequestParam("empId") int empId,
+			@RequestParam("toDate") String toDate) {
+
+		List<SelfAttendanceDetail> list = new ArrayList<>();
+
+		try {
+
+			list = selfAttendanceDetailRepository.getSelfAttendaceForDashboard(fromDate, empId, toDate);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
 	// ends
 
 	@RequestMapping(value = { "/getEmpLastMonthAttn" }, method = RequestMethod.POST)
@@ -1132,6 +1158,28 @@ public class DashboardApiController {
 		}
 
 		return list;
+
+	}
+
+	@RequestMapping(value = { "/getAttendaceByMonth" }, method = RequestMethod.POST)
+	public @ResponseBody SummaryDailyAttendance getAttendaceByMonth(@RequestParam("empId") int empId,
+			@RequestParam("month") String month, @RequestParam("year") String year) {
+
+		SummaryDailyAttendance summlist = new SummaryDailyAttendance();
+
+		try {
+
+			summlist = summaryDailyAttendanceRepository.summaryDailyAttendanceList1(month, year, empId);
+
+			if (summlist == null) {
+				summlist = new SummaryDailyAttendance();
+			}
+		} catch (Exception e) {
+			summlist = new SummaryDailyAttendance();
+			e.printStackTrace();
+		}
+
+		return summlist;
 
 	}
 
