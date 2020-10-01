@@ -1131,6 +1131,72 @@ public class DashboardApiController {
 
 	}
 
+	@RequestMapping(value = { "/rewardAndClaimAmtMonthWise" }, method = RequestMethod.POST)
+	public @ResponseBody List<MonthWiseDisbusedAmt> rewardAndClaimAmtMonthWise(@RequestParam("locId") int locId,
+			@RequestParam("month") int month, @RequestParam("year") int year) {
+
+		// LineGraphData lineGraphData = new LineGraphData();
+
+		List<MonthWiseDisbusedAmt> list = new ArrayList<>();
+
+		try {
+
+			YearMonth thisMonth = YearMonth.of(year, month);
+			DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MM-yyyy");
+			SimpleDateFormat sf = new SimpleDateFormat("MM-yyyy");
+
+			for (int i = 5; i >= 0; i--) {
+
+				YearMonth lastMonth = thisMonth.minusMonths(i);
+				MonthWiseDisbusedAmt monthWithOT = new MonthWiseDisbusedAmt();
+				monthWithOT.setMonth(lastMonth.format(monthYearFormatter));
+				list.add(monthWithOT);
+
+			}
+
+			String defaltdt = year + "-" + month + "-01";
+			List<AdvaceAmtGraph> rewardList = advaceAmtGraphRepository.getrewardMonthAmt(locId, defaltdt);
+			List<AdvaceAmtGraph> claimList = advaceAmtGraphRepository.getClaimMonthAmt(locId, defaltdt);
+
+			// System.out.println(advanceList);
+			// SimpleDateFormat yy = new SimpleDateFormat("yyyy-MM-dd");
+			for (int j = 0; j < list.size(); j++) {
+
+				Date dt = sf.parse(list.get(j).getMonth());
+
+				for (int i = 0; i < rewardList.size(); i++) {
+
+					Date date = sf.parse(rewardList.get(i).getMonth());
+
+					if (dt.compareTo(date) == 0) {
+						list.get(j).setAdvAmt(rewardList.get(i).getAdvTot());
+						break;
+					}
+
+				}
+
+				for (int i = 0; i < claimList.size(); i++) {
+
+					Date date = sf.parse(claimList.get(i).getMonth());
+
+					if (dt.compareTo(date) == 0) {
+						list.get(j).setLoanAmt(claimList.get(i).getAdvTot());
+						break;
+					}
+
+				}
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
 	@Autowired
 	CountDataRepository countDataRepository;
 
