@@ -82,56 +82,56 @@ public interface GetAllPendingMasterDetRepo  extends JpaRepository<GetAllPending
 			"            m_employees     \n" + 
 			"        WHERE\n" + 
 			"            m_employees.sub_cmp_id = 0 \n" + 
-			"            AND m_employees.del_status = 1 ) AS comp_pending,\n" + 
+			"            AND m_employees.del_status = 1 and m_employees.location_id=:locId) AS comp_pending,\n" + 
 			"        (     SELECT\n" + 
 			"            COUNT('')     \n" + 
 			"        FROM\n" + 
 			"            m_employees     \n" + 
 			"        WHERE\n" + 
 			"            m_employees.emp_type = 0 \n" + 
-			"            AND m_employees.del_status = 1 ) AS type_pending,\n" + 
+			"            AND m_employees.del_status = 1 and m_employees.location_id=:locId) AS type_pending,\n" + 
 			"        (     SELECT\n" + 
 			"            COUNT('')     \n" + 
 			"        FROM\n" + 
 			"            m_employees     \n" + 
 			"        WHERE\n" + 
 			"            m_employees.depart_id = 0 \n" + 
-			"            AND m_employees.del_status = 1 ) AS dept_pending,\n" + 
+			"            AND m_employees.del_status = 1 and m_employees.location_id=:locId) AS dept_pending,\n" + 
 			"        (     SELECT\n" + 
 			"            COUNT('')     \n" + 
 			"        FROM\n" + 
 			"            m_employees     \n" + 
 			"        WHERE\n" + 
 			"            m_employees.designation_id = 0 \n" + 
-			"            AND m_employees.del_status = 1 ) AS desn_pending,\n" + 
+			"            AND m_employees.del_status = 1 and m_employees.location_id=:locId) AS desn_pending,\n" + 
 			"        (     SELECT\n" + 
 			"            COUNT('')     \n" + 
 			"        FROM\n" + 
 			"            m_employees     \n" + 
 			"        WHERE\n" + 
 			"            m_employees.current_shiftid = 0 \n" + 
-			"            AND m_employees.del_status = 1 ) AS shift_pending,\n" + 
+			"            AND m_employees.del_status = 1 and m_employees.location_id=:locId) AS shift_pending,\n" + 
 			"        (     SELECT\n" + 
 			"            COUNT('')     \n" + 
 			"        FROM\n" + 
 			"            m_employees     \n" + 
 			"        WHERE\n" + 
 			"            m_employees.location_id = 0 \n" + 
-			"            AND m_employees.del_status = 1 ) AS loc_pending,\n" + 
+			"            AND m_employees.del_status = 1 and m_employees.location_id=:locId) AS loc_pending,\n" + 
 			"        (     SELECT\n" + 
 			"            COUNT('')     \n" + 
 			"        FROM\n" + 
 			"            m_employees     \n" + 
 			"        WHERE\n" + 
 			"            m_employees.holiday_category = 0 \n" + 
-			"            AND m_employees.del_status = 1 ) AS hocat_pending,\n" + 
+			"            AND m_employees.del_status = 1 and m_employees.location_id=:locId) AS hocat_pending,\n" + 
 			"        (     SELECT\n" + 
 			"            COUNT('')     \n" + 
 			"        FROM\n" + 
 			"            m_employees     \n" + 
 			"        WHERE\n" + 
 			"            m_employees.weekend_category = 0 \n" + 
-			"            AND m_employees.del_status = 1 ) AS wocat_pending,\n" + 
+			"            AND m_employees.del_status = 1 and m_employees.location_id=:locId) AS wocat_pending,\n" + 
 			"        (     SELECT\n" + 
 			"            COUNT('')     \n" + 
 			"        FROM\n" + 
@@ -145,7 +145,7 @@ public interface GetAllPendingMasterDetRepo  extends JpaRepository<GetAllPending
 			"                WHERE\n" + 
 			"                    leave_structure_allotment.del_status = 1\n" + 
 			"                and cal_yr_id=3\n" + 
-			"            )   and m_employees.del_status = 1        \n" + 
+			"            )   and m_employees.del_status = 1  and m_employees.location_id=:locId      \n" + 
 			"        ) AS lv_struvt_pending,         (\n" + 
 			"            SELECT\n" + 
 			"                COUNT('')         \n" + 
@@ -159,8 +159,8 @@ public interface GetAllPendingMasterDetRepo  extends JpaRepository<GetAllPending
 			"                        leave_authority \n" + 
 			"                    WHERE\n" + 
 			"                        leave_authority.del_status = 1\n" + 
-			"                ) and m_employees.del_status = 1             \n" + 
+			"                ) and m_employees.del_status = 1   and m_employees.location_id=:locId          \n" + 
 			"            ) AS lv_auth_pending", nativeQuery = true)
-	 GetAllPendingMasterDet  getDet();
+	 GetAllPendingMasterDet  getDet(int locId);
 	
 }

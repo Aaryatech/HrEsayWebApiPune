@@ -32,10 +32,10 @@ public interface GetBirthDaysForDashRepo extends JpaRepository<GetBirthDaysForDa
 			"        DATE_FORMAT(dob, '%m-%d') = DATE_FORMAT(:currDate, '%m-%d') \n" + 
 			"        AND tei.del_status=1\n" + 
 			"        and tei.emp_id = te.emp_id\n" + 
-			"        AND te.del_status=1\n" + 
+			"        AND te.del_status=1 and te.location_id=:locId\n" + 
 			"    order by\n" + 
 			"        NAME asc", nativeQuery = true)
-	List<GetBirthDaysForDash> getTodaysBirth(@Param("currDate") String currDate);
+	List<GetBirthDaysForDash> getTodaysBirth(@Param("currDate") String currDate, @Param("locId") int locId);
 	
 	
 	
@@ -49,8 +49,8 @@ public interface GetBirthDaysForDashRepo extends JpaRepository<GetBirthDaysForDa
 			"    DATE_FORMAT(dob, '%m-%d') BETWEEN DATE_FORMAT(DATE_ADD(:currDate, INTERVAL 1 DAY), '%m-%d') AND DATE_FORMAT(\n" + 
 			"        DATE_ADD(:currDate, INTERVAL 6 DAY),\n" + 
 			"        '%m-%d'\n" + 
-			"    )  AND tei.del_status=1 and tei.emp_id = te.emp_id AND te.del_status=1 order by NAME asc", nativeQuery = true)
-	List<GetBirthDaysForDash> getWeekBirth(@Param("currDate") String currDate);
+			"    )  AND tei.del_status=1 and tei.emp_id = te.emp_id AND te.del_status=1 and te.location_id=:locId order by NAME asc", nativeQuery = true)
+	List<GetBirthDaysForDash> getWeekBirth(@Param("currDate") String currDate, @Param("locId") int locId);
 
 
 	@Query(value = "SELECT\n" + 

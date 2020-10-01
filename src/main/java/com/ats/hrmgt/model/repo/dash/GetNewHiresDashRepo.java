@@ -19,29 +19,29 @@ public interface GetNewHiresDashRepo extends JpaRepository<GetNewHiresDash, Stri
 			"        COUNT(tei.salary_info_id)\n" + 
 			"    FROM\n" + 
 			"        tbl_emp_salary_info tei,\n" + 
-			"        tbl_emp_info einfo\n" + 
+			"        tbl_emp_info einfo,m_employees e\n" + 
 			"    WHERE\n" + 
-			"        einfo.gender = 'MALE' AND tei.emp_id = einfo.emp_id AND tei.cmp_joining_date BETWEEN DATE_ADD(:currDate, INTERVAL -30 DAY) AND :currDate AND tei.del_status = 1\n" + 
+			"        e.emp_id=einfo.emp_id and e.location_id=:locId and einfo.gender = 'MALE' AND tei.emp_id = einfo.emp_id AND tei.cmp_joining_date BETWEEN DATE_ADD(:currDate, INTERVAL -30 DAY) AND :currDate AND tei.del_status = 1\n" + 
 			") AS male_emp,\n" + 
 			"(\n" + 
 			"    SELECT\n" + 
 			"        COUNT(teiNew.salary_info_id)\n" + 
 			"    FROM\n" + 
 			"        tbl_emp_salary_info teiNew,\n" + 
-			"        tbl_emp_info einfoNew\n" + 
+			"        tbl_emp_info einfoNew,m_employees e\n" + 
 			"    WHERE\n" + 
-			"        einfoNew.gender = 'FEMALE' AND teiNew.emp_id = einfoNew.emp_id AND teiNew.cmp_joining_date BETWEEN DATE_ADD(:currDate, INTERVAL -30 DAY) AND :currDate AND teiNew.del_status = 1\n" + 
+			"        e.emp_id=einfoNew.emp_id and e.location_id=:locId and einfoNew.gender = 'FEMALE' AND teiNew.emp_id = einfoNew.emp_id AND teiNew.cmp_joining_date BETWEEN DATE_ADD(:currDate, INTERVAL -30 DAY) AND :currDate AND teiNew.del_status = 1\n" + 
 			") AS female_emp,\n" + 
 			"(\n" + 
 			"    SELECT\n" + 
 			"        COUNT(teiNew.salary_info_id)\n" + 
 			"    FROM\n" + 
 			"        tbl_emp_salary_info teiNew,\n" + 
-			"        tbl_emp_info einfoNew\n" + 
+			"        tbl_emp_info einfoNew,m_employees e\n" + 
 			"    WHERE\n" + 
-			"        einfoNew.gender = ! 'FEMALE' AND einfoNew.gender = ! 'MALE' AND teiNew.emp_id = einfoNew.emp_id AND teiNew.cmp_joining_date BETWEEN DATE_ADD(:currDate, INTERVAL -30 DAY) AND :currDate AND teiNew.del_status = 1\n" + 
+			"        e.emp_id=einfoNew.emp_id and e.location_id=:locId and einfoNew.gender = ! 'FEMALE' AND einfoNew.gender = ! 'MALE' AND teiNew.emp_id = einfoNew.emp_id AND teiNew.cmp_joining_date BETWEEN DATE_ADD(:currDate, INTERVAL -30 DAY) AND :currDate AND teiNew.del_status = 1\n" + 
 			") AS oth_emp", nativeQuery = true)
-	GetNewHiresDash getTodaysHire(@Param("currDate") String currDate);
+	GetNewHiresDash getTodaysHire(@Param("currDate") String currDate, int locId);
 	
 	
 	@Query(value = "SELECT UUID() as uni_key ,  \n" + 

@@ -77,7 +77,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 			"    FROM\n" + 
 			"        m_employees\n" + 
 			"    WHERE\n" + 
-			"        dep.depart_id = m_employees.depart_id AND m_employees.del_status = 1\n" + 
+			"        dep.depart_id = m_employees.depart_id AND m_employees.del_status = 1 and m_employees.location_id=:locId\n" + 
 			") AS emp_count\n" + 
 			"FROM\n" + 
 			"    m_department dep\n" + 
@@ -85,7 +85,7 @@ public interface DeptWiseWeekoffDashRepo extends JpaRepository<DeptWiseWeekoffDa
 			"    dep.del_status = 1\n" + 
 			"GROUP BY\n" + 
 			"    dep.depart_id", nativeQuery = true)
-	List<DeptWiseWeekoffDash> getDeptWiseEmpDiversity();
+	List<DeptWiseWeekoffDash> getDeptWiseEmpDiversity(int locId);
 	
 	
 	
