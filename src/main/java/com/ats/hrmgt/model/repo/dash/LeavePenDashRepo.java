@@ -32,7 +32,27 @@ public interface LeavePenDashRepo extends JpaRepository<LeavePenDash,String>{
 			"        FROM\n" + 
 			"            t_optional_holiday oh,m_employees e              \n" + 
 			"        WHERE\n" + 
-			"            oh.status = 0 and e.emp_id=oh.emp_id and e.location_id=:locId) AS oh_pending", nativeQuery = true)
+			"            oh.status = 0 and e.emp_id=oh.emp_id and e.location_id=:locId) AS oh_pending,"
+			+ "		(     SELECT\n" + 
+			"            COUNT(lv.ca_head_id)                       \n" + 
+			"        FROM\n" + 
+			"            claim_apply_header lv,\n" + 
+			"            m_employees e                       \n" + 
+			"        WHERE\n" + 
+			"            lv.del_status = 1 \n" + 
+			"            and e.emp_id=lv.emp_id \n" + 
+			"            and e.location_id=:locId\n" + 
+			"            and lv.claim_status=1) AS new_claim_app,\n" + 
+			"        (     SELECT\n" + 
+			"            COUNT(lv.ca_head_id)                       \n" + 
+			"        FROM\n" + 
+			"            claim_apply_header lv,\n" + 
+			"            m_employees e                       \n" + 
+			"        WHERE\n" + 
+			"            lv.del_status = 1 \n" + 
+			"            and e.emp_id=lv.emp_id \n" + 
+			"            and e.location_id=:locId\n" + 
+			"            and lv.claim_status=2) AS final_claim_app", nativeQuery = true)
 	LeavePenDash getLeaveCnt(int locId);
 	
 	

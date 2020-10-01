@@ -162,4 +162,112 @@ public interface DashboardLeavePendingRepo extends JpaRepository<DashboardLeaveP
 			"     ", nativeQuery = true)
 	List<DashboardLeavePending> getOptionalHolidatApprovalListForDashBoard(int locId);
 
+	@Query(value = "SELECT\n" + 
+			"        leave_data.*,\n" + 
+			"        b.initial_auth_name,\n" + 
+			"        c.final_auth_name                \n" + 
+			"    FROM\n" + 
+			"        ( SELECT\n" + 
+			"            la.ca_head_id as leave_id,\n" + 
+			"            la.emp_id,\n" + 
+			"            0 as lv_type_id,\n" + 
+			"            la.ca_from_dt as leave_fromdt,\n" + 
+			"            la.ca_to_dt as leave_todt,\n" + 
+			"            0 as leave_num_days,\n" + 
+			"            CONCAT(e.surname,\n" + 
+			"            \" \",\n" + 
+			"            e.first_name) AS emp_name,la.claim_amount as leave_title      \n" + 
+			"        FROM\n" + 
+			"            claim_apply_header la,\n" + 
+			"            m_employees e      \n" + 
+			"        WHERE\n" + 
+			"            e.emp_id=la.emp_id          \n" + 
+			"            and la.claim_status = 1 \n" + 
+			"            and e.location_id=:locId ) leave_data      \n" + 
+			"    LEFT JOIN\n" + 
+			"        (\n" + 
+			"            SELECT\n" + 
+			"                la.emp_id,\n" + 
+			"                la.ca_ini_auth_emp_id,\n" + 
+			"                CONCAT(e.surname,\n" + 
+			"                \" \",\n" + 
+			"                e.first_name) AS initial_auth_name              \n" + 
+			"            FROM\n" + 
+			"                claim_authority la,\n" + 
+			"                m_employees e             \n" + 
+			"            where\n" + 
+			"                e.emp_id=la.ca_ini_auth_emp_id          \n" + 
+			"        ) b                           \n" + 
+			"            on leave_data.emp_id=b.emp_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        (\n" + 
+			"            SELECT\n" + 
+			"                la.emp_id,\n" + 
+			"                la.ca_fin_auth_emp_id,\n" + 
+			"                CONCAT(e.surname,\n" + 
+			"                \" \",\n" + 
+			"                e.first_name) AS final_auth_name              \n" + 
+			"            FROM\n" + 
+			"                claim_authority la,\n" + 
+			"                m_employees e             \n" + 
+			"            where\n" + 
+			"                e.emp_id=la.ca_fin_auth_emp_id                                  \n" + 
+			"        ) c                           \n" + 
+			"            on leave_data.emp_id=c.emp_id   ", nativeQuery = true)
+	List<DashboardLeavePending> getClaimIntialApprovalListForDashBoard(int locId);
+
+	@Query(value = "SELECT\n" + 
+			"        leave_data.*,\n" + 
+			"        b.initial_auth_name,\n" + 
+			"        c.final_auth_name                \n" + 
+			"    FROM\n" + 
+			"        ( SELECT\n" + 
+			"            la.ca_head_id as leave_id,\n" + 
+			"            la.emp_id,\n" + 
+			"            0 as lv_type_id,\n" + 
+			"            la.ca_from_dt as leave_fromdt,\n" + 
+			"            la.ca_to_dt as leave_todt,\n" + 
+			"            0 as leave_num_days,\n" + 
+			"            CONCAT(e.surname,\n" + 
+			"            \" \",\n" + 
+			"            e.first_name) AS emp_name,la.claim_amount as leave_title      \n" + 
+			"        FROM\n" + 
+			"            claim_apply_header la,\n" + 
+			"            m_employees e      \n" + 
+			"        WHERE\n" + 
+			"            e.emp_id=la.emp_id          \n" + 
+			"            and la.claim_status = 2 \n" + 
+			"            and e.location_id=:locId ) leave_data      \n" + 
+			"    LEFT JOIN\n" + 
+			"        (\n" + 
+			"            SELECT\n" + 
+			"                la.emp_id,\n" + 
+			"                la.ca_ini_auth_emp_id,\n" + 
+			"                CONCAT(e.surname,\n" + 
+			"                \" \",\n" + 
+			"                e.first_name) AS initial_auth_name              \n" + 
+			"            FROM\n" + 
+			"                claim_authority la,\n" + 
+			"                m_employees e             \n" + 
+			"            where\n" + 
+			"                e.emp_id=la.ca_ini_auth_emp_id          \n" + 
+			"        ) b                           \n" + 
+			"            on leave_data.emp_id=b.emp_id      \n" + 
+			"    LEFT JOIN\n" + 
+			"        (\n" + 
+			"            SELECT\n" + 
+			"                la.emp_id,\n" + 
+			"                la.ca_fin_auth_emp_id,\n" + 
+			"                CONCAT(e.surname,\n" + 
+			"                \" \",\n" + 
+			"                e.first_name) AS final_auth_name              \n" + 
+			"            FROM\n" + 
+			"                claim_authority la,\n" + 
+			"                m_employees e             \n" + 
+			"            where\n" + 
+			"                e.emp_id=la.ca_fin_auth_emp_id                                  \n" + 
+			"        ) c                           \n" + 
+			"            on leave_data.emp_id=c.emp_id   ", nativeQuery = true)
+	List<DashboardLeavePending> getClaimFinalApprovalListForDashBoard(int locId);
+
 }

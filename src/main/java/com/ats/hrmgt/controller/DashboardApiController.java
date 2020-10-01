@@ -482,6 +482,10 @@ public class DashboardApiController {
 				list = dashboardLeavePendingRepo.getLeaveFinalApprovalListForDashBoard(locId);
 			} else if (type == 3) {
 				list = dashboardLeavePendingRepo.getOptionalHolidatApprovalListForDashBoard(locId);
+			}else if (type == 4) {
+				list = dashboardLeavePendingRepo.getClaimIntialApprovalListForDashBoard(locId);
+			}else if (type == 5) {
+				list = dashboardLeavePendingRepo.getClaimFinalApprovalListForDashBoard(locId);
 			}
 
 		} catch (Exception e) {
