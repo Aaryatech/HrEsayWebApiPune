@@ -393,7 +393,7 @@ public class DashboardApiController {
 			PayRewardDedDash rewardDet = new PayRewardDedDash();
 			try {
 				dedDet = payRewardDedDashRepo.getDedDetails(temp[0], temp[1], locId);
-				rewardDet = payRewardDedDashRepo.getRewardDetails(temp[0], temp[1], locId);
+				//rewardDet = payRewardDedDashRepo.getRewardDetails(temp[0], temp[1], locId);
 
 			} catch (Exception e) {
 

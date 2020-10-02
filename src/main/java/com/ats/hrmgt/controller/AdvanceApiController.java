@@ -93,14 +93,15 @@ public class AdvanceApiController {
 		return list;
 
 	}
-	
+
 	@RequestMapping(value = { "/getPendingAdvanceLocId" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetAdvance> getPendingAdvanceLocId(@RequestParam("companyId") int companyId,@RequestParam("locId") List<Integer> locId) {
+	public @ResponseBody List<GetAdvance> getPendingAdvanceLocId(@RequestParam("companyId") int companyId,
+			@RequestParam("locId") List<Integer> locId) {
 
 		List<GetAdvance> list = new ArrayList<GetAdvance>();
 		try {
 
-			list = getAdvanceRepo.getPendingAdvanceLocId(companyId,locId);
+			list = getAdvanceRepo.getPendingAdvanceLocId(companyId, locId);
 
 		} catch (Exception e) {
 
@@ -130,6 +131,23 @@ public class AdvanceApiController {
 			} else {
 				list = getAdvanceRepo.getAllAdv(companyId);
 			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/getAdvanceHistoryByEmpId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetAdvance> getAdvanceHistoryByEmpId(@RequestParam("empId") int empId) {
+
+		List<GetAdvance> list = new ArrayList<GetAdvance>();
+		try {
+
+			list = getAdvanceRepo.getAdvanceHistoryByEmpId(empId);
 
 		} catch (Exception e) {
 
@@ -356,16 +374,17 @@ public class AdvanceApiController {
 		return info;
 
 	}
-	//Sachin 05-05-2020
+
+	// Sachin 05-05-2020
 	@RequestMapping(value = { "/updateUserPassAndExInt1" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateUserPassAndExInt1(@RequestParam("empId") int empId,
-			@RequestParam("password") String password,@RequestParam("isVisit") int isVisit) {
+			@RequestParam("password") String password, @RequestParam("isVisit") int isVisit) {
 
 		Info info = new Info();
 
 		try {
 
-			int delete = userRepo.updateUserPassAndExInt1(empId, password,isVisit);
+			int delete = userRepo.updateUserPassAndExInt1(empId, password, isVisit);
 
 			if (delete > 0) {
 				info.setError(false);
