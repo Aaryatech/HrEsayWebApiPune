@@ -98,12 +98,12 @@ public interface ViewEmployeeRepo extends JpaRepository<ViewEmployee, Integer> {
 			") t1\n" + 
 			"LEFT JOIN(\n" + 
 			"    SELECT\n" + 
-			"        m_company.*\n" + 
+			"        tbl_mst_sub_company.*\n" + 
 			"    FROM\n" + 
-			"        m_company\n" + 
+			"        tbl_mst_sub_company\n" + 
 			") t2\n" + 
 			"ON\n" + 
-			"    t1.cmp_code = t2.company_id\n" + 
+			"    t1.sub_cmp_id = t2.company_id\n" + 
 			"LEFT JOIN(\n" + 
 			"    SELECT\n" + 
 			"        m_contractor.*\n" + 
