@@ -190,7 +190,7 @@ public class DashboardApiController {
 		List<DeptWiseWeekoffDash> listDedTypewiseAm = new ArrayList<DeptWiseWeekoffDash>();
 		try {
 
-			listDedTypewiseAm = deptWiseWeekoffDashRepo.getDedTypewiseAmt(empId);
+			//listDedTypewiseAm = deptWiseWeekoffDashRepo.getDedTypewiseAmt(empId);
 
 		} catch (Exception e) {
 
@@ -213,7 +213,7 @@ public class DashboardApiController {
 		IncentivesAmtDash incent = new IncentivesAmtDash();
 		try {
 
-			incent = incentivesAmtDashRepo.getWeekBirth(empId);
+			//incent = incentivesAmtDashRepo.getWeekBirth(empId);
 
 		} catch (Exception e) {
 

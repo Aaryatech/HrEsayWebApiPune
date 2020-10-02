@@ -66,4 +66,43 @@ public interface PayBonusDetailsRepo  extends JpaRepository<PayBonusDetails, Int
 			"    tbl_pay_bonus.pay_type_id = tblm_pay_bonus_details.pay_type_id AND m_employees.emp_id = tblm_pay_bonus_details.emp_id AND tblm_pay_bonus_details.del_status = 1 AND tblm_pay_bonus_details.is_paid = 0", nativeQuery = true)
 	List<PayBonusDetails> getAllUnpaid();
 
+	@Query(value = "SELECT\n" + 
+			"        tblm_pay_bonus_details.pay_id,\n" + 
+			"        tblm_pay_bonus_details.emp_id,\n" + 
+			"        tblm_pay_bonus_details.cmp_id,\n" + 
+			"        tblm_pay_bonus_details.pay_type_id,\n" + 
+			"        tblm_pay_bonus_details.pay_rate,\n" + 
+			"        tblm_pay_bonus_details.pay_occurence,\n" + 
+			"        tblm_pay_bonus_details.pay_total,\n" + 
+			"        tblm_pay_bonus_details.pay_remark,\n" + 
+			"        CONCAT(         m_employees.first_name,\n" + 
+			"        ' ',\n" + 
+			"        m_employees.middle_name,\n" + 
+			"        ' ',\n" + 
+			"        m_employees.surname     ) AS pay_login_name,\n" + 
+			"        tblm_pay_bonus_details.pay_login_date_time,\n" + 
+			"        tblm_pay_bonus_details.pay_approve_by,\n" + 
+			"        tbl_pay_bonus.type_name AS pay_approval_remark,\n" + 
+			"        tblm_pay_bonus_details.pay_approval_datetime,\n" + 
+			"        tblm_pay_bonus_details.is_paid,\n" + 
+			"        tblm_pay_bonus_details.final_status,\n" + 
+			"        tblm_pay_bonus_details.month,\n" + 
+			"        tblm_pay_bonus_details.year,\n" + 
+			"        tblm_pay_bonus_details.del_status,\n" + 
+			"        tblm_pay_bonus_details.maker_enter_datetime,\n" + 
+			"        tblm_pay_bonus_details.ex_int1,\n" + 
+			"        tblm_pay_bonus_details.ex_int2,\n" + 
+			"        tblm_pay_bonus_details.ex_var1,\n" + 
+			"        tblm_pay_bonus_details.ex_var2 \n" + 
+			"    FROM\n" + 
+			"        m_employees,\n" + 
+			"        tblm_pay_bonus_details,\n" + 
+			"        tbl_pay_bonus \n" + 
+			"    WHERE\n" + 
+			"        tbl_pay_bonus.pay_type_id = tblm_pay_bonus_details.pay_type_id \n" + 
+			"        AND m_employees.emp_id = tblm_pay_bonus_details.emp_id \n" + 
+			"        AND tblm_pay_bonus_details.del_status = 1 \n" + 
+			"        and m_employees.emp_id=:empId", nativeQuery = true)
+	List<PayBonusDetails> getAllPayPedingDetailsByEmpId(int empId);
+
 }

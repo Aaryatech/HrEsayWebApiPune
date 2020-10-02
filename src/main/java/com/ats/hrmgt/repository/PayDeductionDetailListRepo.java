@@ -76,5 +76,35 @@ public interface PayDeductionDetailListRepo extends JpaRepository<PayDeductionDe
 			"    payDeductDetail.ded_type_id=payDeductType.ded_type_id AND\n" + 
 			"    payDeductDetail.del_status=1 and emp.location_id in (:locId) Order By payDeductDetail.ded_id Desc",nativeQuery=true)
 	List<PayDeductionDetailList> getAllEmpPayDeductDetailLocId(@Param("locId") List<Integer> locId);
+
+	@Query(value="SELECT\n" + 
+			"        emp.emp_id,\n" + 
+			"        payDeductDetail.is_deducted as emp_code,\n" + 
+			"        CONCAT(emp.first_name,\n" + 
+			"        ' ',\n" + 
+			"        emp.middle_name,\n" + 
+			"        ' ',\n" + 
+			"        emp.surname) AS emp_name,\n" + 
+			"        payDeductDetail.ded_id,\n" + 
+			"        payDeductDetail.ded_rate,\n" + 
+			"        payDeductDetail.ded_remark,\n" + 
+			"        payDeductDetail.ded_occurence,\n" + 
+			"        payDeductDetail.ded_total,\n" + 
+			"        payDeductDetail.month,\n" + 
+			"        payDeductDetail.year,\n" + 
+			"        payDeductType.type_name,\n" + 
+			"        payDeductType.ded_type_id           \n" + 
+			"    FROM\n" + 
+			"        tblm_pay_deduction_details payDeductDetail,\n" + 
+			"        m_employees emp,\n" + 
+			"        tbl_pay_deduction payDeductType           \n" + 
+			"    WHERE\n" + 
+			"        payDeductDetail.emp_id=emp.emp_id                   \n" + 
+			"        AND       payDeductDetail.ded_type_id=payDeductType.ded_type_id          \n" + 
+			"        AND     payDeductDetail.del_status=1          \n" + 
+			"        and emp.emp_id=:empId    \n" + 
+			"    Order By\n" + 
+			"        payDeductDetail.ded_id Desc",nativeQuery=true)
+	List<PayDeductionDetailList> getAllEmpPayDeductDetailByEmpId(int empId);
 	
 }

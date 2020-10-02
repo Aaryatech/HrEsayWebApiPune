@@ -905,6 +905,22 @@ public class BonusApiController {
 		return detList;
 
 	}
+	
+	@RequestMapping(value = { "/getAllPayPedingDetailsByEmpId" }, method = RequestMethod.POST)
+	public @ResponseBody List<PayBonusDetails> getAllPayPedingDetailsByEmpId(@RequestParam("empId") int empId) {
+
+		List<PayBonusDetails> detList = new ArrayList<PayBonusDetails>();
+
+		try {
+			detList = payBonusDetailsRepo.getAllPayPedingDetailsByEmpId(empId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return detList;
+
+	}
 
 	@RequestMapping(value = { "/deletePayBonusDet" }, method = RequestMethod.POST)
 	public @ResponseBody Info deletePayBonusDet(@RequestParam("payId") int payId) {
