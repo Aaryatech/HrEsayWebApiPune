@@ -58,4 +58,24 @@ public interface HolidayMasterRepo extends JpaRepository<HolidayMaster, Integer>
 			"", nativeQuery = true)
 	Integer getCountOfHolidayByDateForEdit(@Param("holidayDate") String holidayDate,@Param("holidayId") int holidayId);
 
+	@Query(value = " SELECT\n" + 
+			"        ho.holiday_id,\n" + 
+			"        ho.holiday_fromdt as holiday_date,\n" + 
+			"        ho.ex_var2 as holiday_name,\n" + 
+			"        ho.ex_int3 as del_status     \n" + 
+			"    FROM\n" + 
+			"        m_holiday ho,\n" + 
+			"        m_employees e \n" + 
+			"    WHERE\n" + 
+			"        ho.holiday_fromdt BETWEEN :date AND DATE_ADD(:date, INTERVAL 30 DAY)          \n" + 
+			"        AND ho.del_status = 1 \n" + 
+			"        and ho.ex_int1=e.holiday_category\n" + 
+			"        and e.emp_id=:empId\n" + 
+			"        and ho.ex_int3 in (1,2)\n" + 
+			"    group by\n" + 
+			"        ho.ex_int2     \n" + 
+			"    ORDER BY\n" + 
+			"        ho.holiday_fromdt ASC", nativeQuery = true)
+	List<HolidayMaster> getUserApplicableHoliday(String date, int empId);
+
 }

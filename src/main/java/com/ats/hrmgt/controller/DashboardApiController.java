@@ -190,7 +190,7 @@ public class DashboardApiController {
 		List<DeptWiseWeekoffDash> listDedTypewiseAm = new ArrayList<DeptWiseWeekoffDash>();
 		try {
 
-			//listDedTypewiseAm = deptWiseWeekoffDashRepo.getDedTypewiseAmt(empId);
+			// listDedTypewiseAm = deptWiseWeekoffDashRepo.getDedTypewiseAmt(empId);
 
 		} catch (Exception e) {
 
@@ -213,7 +213,7 @@ public class DashboardApiController {
 		IncentivesAmtDash incent = new IncentivesAmtDash();
 		try {
 
-			//incent = incentivesAmtDashRepo.getWeekBirth(empId);
+			// incent = incentivesAmtDashRepo.getWeekBirth(empId);
 
 		} catch (Exception e) {
 
@@ -393,7 +393,7 @@ public class DashboardApiController {
 			PayRewardDedDash rewardDet = new PayRewardDedDash();
 			try {
 				dedDet = payRewardDedDashRepo.getDedDetails(temp[0], temp[1], locId);
-				//rewardDet = payRewardDedDashRepo.getRewardDetails(temp[0], temp[1], locId);
+				// rewardDet = payRewardDedDashRepo.getRewardDetails(temp[0], temp[1], locId);
 
 			} catch (Exception e) {
 
@@ -470,6 +470,24 @@ public class DashboardApiController {
 	 * 
 	 * }
 	 */
+	@RequestMapping(value = { "/getUserApplicableHoliday" }, method = RequestMethod.POST)
+	public @ResponseBody List<HolidayMaster> getUserApplicableHoliday(@RequestParam("empId") int empId,
+			@RequestParam("date") String date) {
+
+		List<HolidayMaster> list = new ArrayList<HolidayMaster>();
+
+		try {
+
+			list = holidayMasterRepo.getUserApplicableHoliday(date, empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
 
 	@Autowired
 	DashboardLeavePendingRepo dashboardLeavePendingRepo;

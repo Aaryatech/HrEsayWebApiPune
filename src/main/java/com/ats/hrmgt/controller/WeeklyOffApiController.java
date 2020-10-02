@@ -81,6 +81,23 @@ public class WeeklyOffApiController {
 
 	}
 
+	@RequestMapping(value = { "/getWeeklyOffListByEmpIdDashboard" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetWeeklyOff> getWeeklyOffListByEmpIdDashboard(@RequestParam("empId") int empId) {
+
+		List<GetWeeklyOff> list = new ArrayList<GetWeeklyOff>();
+		try {
+
+			list = getWeeklyOffRepo.getWeeklyOffListByEmpIdDashboard(empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
 	@RequestMapping(value = { "/saveWeeklyOff" }, method = RequestMethod.POST)
 	public @ResponseBody WeeklyOff saveWeeklyOff(@RequestBody WeeklyOff weeklyOff) {
 

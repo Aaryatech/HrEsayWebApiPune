@@ -39,4 +39,18 @@ public interface GetWeeklyOffRepo extends JpaRepository<GetWeeklyOff, Integer> {
 			"        AND c.company_id=w.company_id AND c.company_id=1 AND wcat.wo_cat_id=w.ex_int1 and w.ex_int1=:catId", nativeQuery = true)
 	List<GetWeeklyOff> getWeeklyOffListByCatId(@Param("catId") int catId);
 
+	@Query(value = "SELECT\n" + 
+			"        '' as company_name,\n" + 
+			"        w.*,\n" + 
+			"        '' as loc_name          ,\n" + 
+			"        '' as week_off_cat     \n" + 
+			"    FROM\n" + 
+			"        weekly_off w,  \n" + 
+			"        m_employees e     \n" + 
+			"    WHERE\n" + 
+			"        w.del_status=1  \n" + 
+			"        AND e.weekend_category=w.ex_int1 \n" + 
+			"        and e.emp_id=:empId", nativeQuery = true)
+	List<GetWeeklyOff> getWeeklyOffListByEmpIdDashboard(int empId);
+
 }
