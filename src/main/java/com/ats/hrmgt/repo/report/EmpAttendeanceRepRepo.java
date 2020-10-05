@@ -10,37 +10,39 @@ import com.ats.hrmgt.model.report.EmpAttendeanceRep;
  
 public interface EmpAttendeanceRepRepo extends JpaRepository<EmpAttendeanceRep, String> {
 	
-	@Query(value=" SELECT\n" + 
+	@Query(value="SELECT\n" + 
 			"        UUID() as unid,\n" + 
 			"        (     SELECT\n" + 
-			"            COUNT(tbl_attt_daily_daily.id)     \n" + 
+			"            COUNT('')              \n" + 
 			"        FROM\n" + 
-			"            tbl_attt_daily_daily     \n" + 
+			"            tbl_attt_daily_daily, m_employees e\n" + 
 			"        WHERE\n" + 
-			"            tbl_attt_daily_daily.lv_sumup_id = 5 \n" + 
-			"        AND tbl_attt_daily_daily.company_id=:companyId    AND tbl_attt_daily_daily.att_date BETWEEN :fromDate AND :toDate) AS emp_present,\n" + 
+			"            tbl_attt_daily_daily.lv_sumup_id in (5,13,14,15,20,21,18)     \n" + 
+			"            AND tbl_attt_daily_daily.att_date BETWEEN :fromDate and :toDate and e.emp_id=tbl_attt_daily_daily.emp_id and e.location_id=:locId) AS emp_present,\n" + 
 			"        (     SELECT\n" + 
-			"            COUNT(tbl_attt_daily_daily.id)     \n" + 
+			"            COUNT('')             \n" + 
 			"        FROM\n" + 
-			"            tbl_attt_daily_daily     \n" + 
+			"            tbl_attt_daily_daily,m_employees e              \n" + 
 			"        WHERE\n" + 
-			"            tbl_attt_daily_daily.lv_sumup_id = 12 \n" + 
-			"         AND tbl_attt_daily_daily.company_id=:companyId   AND tbl_attt_daily_daily.att_date BETWEEN :fromDate AND :toDate) AS week_off,\n" + 
+			"            tbl_attt_daily_daily.lv_sumup_id = 12     \n" + 
+			"            AND tbl_attt_daily_daily.att_date BETWEEN :fromDate and :toDate and e.emp_id=tbl_attt_daily_daily.emp_id and e.location_id=:locId) AS week_off,\n" + 
 			"        (     SELECT\n" + 
-			"            COUNT(tbl_attt_daily_daily.id)     \n" + 
+			"            COUNT('')         \n" + 
 			"        FROM\n" + 
-			"            tbl_attt_daily_daily     \n" + 
+			"            tbl_attt_daily_daily,m_employees e               \n" + 
 			"        WHERE\n" + 
-			"            tbl_attt_daily_daily.lv_sumup_id = 7 \n" + 
-			"         AND tbl_attt_daily_daily.company_id=:companyId   AND  tbl_attt_daily_daily.att_date BETWEEN :fromDate AND :toDate) AS paid_leave,\n" + 
+			"            tbl_attt_daily_daily.lv_sumup_id in ( 7,11)    \n" + 
+			"            AND  tbl_attt_daily_daily.att_date BETWEEN :fromDate and :toDate and e.emp_id=tbl_attt_daily_daily.emp_id and e.location_id=:locId) AS paid_leave,\n" + 
 			"        (     SELECT\n" + 
-			"            COUNT(tbl_attt_daily_daily.id)     \n" + 
+			"           COUNT('')        \n" + 
 			"        FROM\n" + 
-			"            tbl_attt_daily_daily     \n" + 
+			"            tbl_attt_daily_daily,m_employees e               \n" + 
 			"        WHERE\n" + 
-			"            tbl_attt_daily_daily.lv_sumup_id IN(11,22) \n" + 
-			"            AND tbl_attt_daily_daily.company_id=:companyId AND tbl_attt_daily_daily.att_date BETWEEN :fromDate AND :toDate) AS unpaid_leave",nativeQuery=true)
-	List<EmpAttendeanceRep> getSpecEmpAdvForReport(@Param("fromDate") String fromDate,@Param("toDate") String toDate, @Param("companyId") int companyId);
+			"            tbl_attt_daily_daily.lv_sumup_id IN(\n" + 
+			"                22\n" + 
+			"            )     \n" + 
+			"            AND tbl_attt_daily_daily.att_date BETWEEN :fromDate and :toDate and e.emp_id=tbl_attt_daily_daily.emp_id and e.location_id=:locId) AS unpaid_leave",nativeQuery=true)
+	List<EmpAttendeanceRep> getSpecEmpAdvForReport(@Param("fromDate") String fromDate,@Param("toDate") String toDate, @Param("locId") int locId);
 	
 
 }

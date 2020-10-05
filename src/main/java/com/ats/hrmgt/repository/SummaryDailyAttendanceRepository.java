@@ -76,8 +76,17 @@ public interface SummaryDailyAttendanceRepository extends JpaRepository<SummaryD
 	List<SummaryDailyAttendance> findAllByCompanyIdAndEmpId(@Param("companyId") int companyId, @Param("empId") int empId, @Param("fmonth") String fmonth, @Param("fyear") String fyear,
 			@Param("lmonth") String lmonth, @Param("lyear") String lyear);
 	
-	@Query(value = "SELECT * FROM `tbl_attt_summary_daily` WHERE company_id=:companyId AND month BETWEEN :fmonth AND :lmonth AND year BETWEEN :fyear AND :lyear", nativeQuery = true)
-	List<SummaryDailyAttendance> findAllByCompanyId(@Param("companyId") int companyId, @Param("fmonth") String fmonth, @Param("fyear") String fyear,
+	@Query(value = "SELECT\n" + 
+			"        d.* \n" + 
+			"    FROM\n" + 
+			"        `tbl_attt_summary_daily` d,\n" + 
+			"        m_employees e\n" + 
+			"    WHERE\n" + 
+			"          d.month BETWEEN :fmonth AND :lmonth \n" + 
+			"        AND d.year BETWEEN :fyear AND :lyear\n" + 
+			"        and e.emp_id=d.emp_id\n" + 
+			"        and e.location_id=:locId", nativeQuery = true)
+	List<SummaryDailyAttendance> findAllByCompanyId(@Param("locId") int locId, @Param("fmonth") String fmonth, @Param("fyear") String fyear,
 			@Param("lmonth") String lmonth, @Param("lyear") String lyear);
 	
 }

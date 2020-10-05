@@ -12,16 +12,29 @@ public interface EmpLateMarkDetailsRepo extends JpaRepository<EmpLateMarkDetails
 	
 
 	@Query(value="SELECT\n" + 
-			"    UUID() AS id, atd.emp_id, atd.emp_code, atd.emp_name AS emp_name, desg.name AS designation, atd.totlate_mins AS late_hr, MONTHNAME(STR_TO_DATE(atd.month, '%m')) AS MONTH\n" + 
-			"FROM\n" + 
-			"    tbl_attt_summary_daily atd,\n" + 
-			"    m_employees emp,\n" + 
-			"    m_designation desg\n" + 
-			"WHERE\n" + 
-			"    emp.emp_id = atd.emp_id AND atd.company_id = :companyId AND emp.designation_id = desg.desig_id AND atd.year BETWEEN :year AND :toyear AND atd.month BETWEEN :month AND :tomonth AND emp.del_status = 1\n" + 
-			"ORDER BY\n" + 
-			"    atd.month",nativeQuery=true)
-	List<EmpLateMarkDetails> getEmpLateMarkSummaryReport(@Param("companyId")int companyId, @Param("month")String month,
+			"        UUID() AS id,\n" + 
+			"        atd.emp_id,\n" + 
+			"        atd.emp_code,\n" + 
+			"        atd.emp_name AS emp_name,\n" + 
+			"        desg.name AS designation,\n" + 
+			"        atd.totlate_mins AS late_hr,\n" + 
+			"        MONTHNAME(STR_TO_DATE(atd.month,\n" + 
+			"        '%m')) AS MONTH \n" + 
+			"    FROM\n" + 
+			"        tbl_attt_summary_daily atd,\n" + 
+			"        m_employees emp,\n" + 
+			"        m_designation desg \n" + 
+			"    WHERE\n" + 
+			"        emp.emp_id = atd.emp_id  \n" + 
+			"        AND emp.designation_id = desg.desig_id \n" + 
+			"        AND atd.year BETWEEN :year AND :toyear\n" + 
+			"        AND atd.month BETWEEN :month AND :tomonth\n" + 
+			"        AND emp.del_status = 1\n" + 
+			"        and emp.location_id=:locId\n" + 
+			"        and atd.totlate_mins>0\n" + 
+			"    ORDER BY\n" + 
+			"        atd.month",nativeQuery=true)
+	List<EmpLateMarkDetails> getEmpLateMarkSummaryReport(@Param("locId")int locId, @Param("month")String month,
 			@Param("year") String year, @Param("tomonth") String tomonth, @Param("toyear") String toyear);
 	
 	@Query(value="SELECT\n" + 
@@ -38,12 +51,11 @@ public interface EmpLateMarkDetailsRepo extends JpaRepository<EmpLateMarkDetails
 			"        m_designation desg \n" + 
 			"    WHERE\n" + 
 			"        emp.emp_id = atd.emp_id \n" + 
-			"        AND atd.company_id = :companyId\n" + 
 			"        AND emp.designation_id = desg.desig_id \n" + 
-			"        AND atd.att_date BETWEEN :fromDate AND :toDate AND emp.del_status = 1  and atd.late_mark=1\n" + 
+			"        AND atd.att_date BETWEEN :fromDate AND :toDate AND emp.del_status = 1  and atd.late_mark=1 and emp.location_id=:locId\n" + 
 			"    ORDER BY\n" + 
 			"        atd.emp_id,atd.att_date",nativeQuery=true)
-	List<EmpLateMarkDetails> getEmpLateMarkDetailReport(int companyId, String fromDate, String toDate);
+	List<EmpLateMarkDetails> getEmpLateMarkDetailReport(int locId, String fromDate, String toDate);
 
 	
 	@Query(value="SELECT\n" + 

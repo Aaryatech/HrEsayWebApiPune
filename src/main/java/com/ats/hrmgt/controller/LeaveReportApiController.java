@@ -33,7 +33,7 @@ import com.ats.hrmgt.model.report.GetYearlyAdvance;
 import com.ats.hrmgt.model.report.GetYearlyAdvanceNew;
 import com.ats.hrmgt.model.report.GetYearlyLoan;
 import com.ats.hrmgt.model.report.LoanDedReport;
- import com.ats.hrmgt.model.report.StatutoryEsicRep;
+import com.ats.hrmgt.model.report.StatutoryEsicRep;
 import com.ats.hrmgt.repo.bonus.BonusCalcRepo;
 import com.ats.hrmgt.repo.report.EmpAttendeanceRepRepo;
 import com.ats.hrmgt.repo.report.EsiSumaryRepRepo;
@@ -65,12 +65,12 @@ public class LeaveReportApiController {
 
 	@RequestMapping(value = { "/getAdvanceReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetAdvance> getAdvanceReport(@RequestParam("companyId") int companyId,
-			@RequestParam("month") int month, @RequestParam("year") int year) {
+			@RequestParam("month") int month, @RequestParam("year") int year, @RequestParam("locId") int locId) {
 
 		List<GetAdvance> list = new ArrayList<GetAdvance>();
 		try {
 
-			list = getAdvanceRepo.getSpecEmpAdvForReport(companyId, month, year);
+			list = getAdvanceRepo.getSpecEmpAdvForReport(companyId, month, year, locId);
 
 			for (int i = 0; i < list.size(); i++) {
 				if (list.get(i).getIsDed() == 1) {
@@ -95,15 +95,15 @@ public class LeaveReportApiController {
 
 	@RequestMapping(value = { "/getAdvanceYearlyReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetYearlyAdvanceNew> getAdvanceYearlyReport(@RequestParam("companyId") int companyId,
-			@RequestParam("year") int year) {
+			@RequestParam("year") int year, @RequestParam("locId") int locId) {
 
 		List<GetYearlyAdvance> advYearList = new ArrayList<GetYearlyAdvance>();
 		List<GetYearlyAdvanceNew> newList = new ArrayList<GetYearlyAdvanceNew>();
 
 		try {
-			advYearList = getYearlyAdvanceRepo.getSpecEmpAdvForReport(companyId, year);
+			advYearList = getYearlyAdvanceRepo.getSpecEmpAdvForReport(companyId, year, locId);
 
-			List<EmployeeMaster> emplist = empRepo.findByDelStatusAndCmpCodeOrderByEmpIdDesc(1, companyId);
+			List<EmployeeMaster> emplist = empRepo.findByLocationIdAndDelStatus(locId, companyId);
 			// System.err.println("advYearList" + advYearList.toString());
 
 			for (int i = 0; i < emplist.size(); i++) {
@@ -205,13 +205,14 @@ public class LeaveReportApiController {
 
 	@RequestMapping(value = { "/getAttendenceRegReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetDailyDailyRecord> getAttendenceRegReport(@RequestParam("companyId") int companyId,
-			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
+			@RequestParam("locId") int locId) {
 
 		List<GetDailyDailyRecord> list = new ArrayList<GetDailyDailyRecord>();
 
 		try {
 
-			list = getDailyDailyRecordRepository.summaryDailyAttendanceListAll1(fromDate, toDate, companyId);
+			list = getDailyDailyRecordRepository.summaryDailyAttendanceListAll1(fromDate, toDate, locId);
 
 		} catch (Exception e) {
 
@@ -226,13 +227,15 @@ public class LeaveReportApiController {
 	EmpAttendeanceRepRepo empAttendeanceRepRepo;
 
 	@RequestMapping(value = { "/getDailyAttendenceReport" }, method = RequestMethod.POST)
-	public @ResponseBody List<EmpAttendeanceRep> getDailyAttendenceReport(@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,@RequestParam("companyId") int companyId) {
+	public @ResponseBody List<EmpAttendeanceRep> getDailyAttendenceReport(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("companyId") int companyId,
+			@RequestParam("locId") int locId) {
 
 		List<EmpAttendeanceRep> list = new ArrayList<EmpAttendeanceRep>();
 
 		try {
 
-			list = empAttendeanceRepRepo.getSpecEmpAdvForReport(fromDate, toDate,companyId);
+			list = empAttendeanceRepRepo.getSpecEmpAdvForReport(fromDate, toDate,locId);
 
 		} catch (Exception e) {
 
@@ -326,8 +329,8 @@ public class LeaveReportApiController {
 				advYearList = getSalaryCalcReportRepo.getSpecEmpPfForReport(from[2], from[1], to[2], to[1]);
 
 			} else {
-				advYearList = getSalaryCalcReportRepo.getSpecEmpPfForReportComp(companyId, from[2], from[1],
-						to[2], to[1]);
+				advYearList = getSalaryCalcReportRepo.getSpecEmpPfForReportComp(companyId, from[2], from[1], to[2],
+						to[1]);
 
 			}
 
@@ -374,7 +377,6 @@ public class LeaveReportApiController {
 		List<GetPtChallan> advYearList = new ArrayList<GetPtChallan>();
 		List<SlabMaster> slabList = new ArrayList<SlabMaster>();
 		List<GetPtChallan> advYearListNew = new ArrayList<GetPtChallan>();
-		
 
 		String from[] = fromDate.split("-");
 		String to[] = toDate.split("-");
@@ -396,8 +398,7 @@ public class LeaveReportApiController {
 			System.err.println("advYearList" + advYearList.toString());
 			System.out.println(advYearList.size());
 			if (advYearList.size() != 0) {
-				 
-				
+
 				for (int i = 0; i < slabList.size(); i++) {
 
 					GetPtChallan temp = new GetPtChallan();
@@ -429,10 +430,9 @@ public class LeaveReportApiController {
 					advYearListNew.add(temp);
 
 				}
-				
 
 			} else {
-				
+
 				System.err.println("in else");
 				for (int i = 0; i < slabList.size(); i++) {
 
@@ -457,8 +457,7 @@ public class LeaveReportApiController {
 		return advYearListNew;
 
 	}
-	
-	
+
 	@RequestMapping(value = { "/getMLWFStatement" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetSalaryCalcReport> getMLWFStatement(@RequestParam("companyId") int companyId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
@@ -474,7 +473,7 @@ public class LeaveReportApiController {
 				advYearList = getSalaryCalcReportRepo.getMlwfRepAllCmp(from[2], from[1], to[2], to[1]);
 
 			} else {
-				advYearList = getSalaryCalcReportRepo.getMlwfRep(from[2].trim(), from[1].trim(),to[2].trim(),
+				advYearList = getSalaryCalcReportRepo.getMlwfRep(from[2].trim(), from[1].trim(), to[2].trim(),
 						to[1].trim(), companyId);
 
 			}
@@ -487,39 +486,31 @@ public class LeaveReportApiController {
 		return advYearList;
 
 	}
-	
-	
-	
-	
+
 	@Autowired
 	PayDeductionDetailsRepo payDeductionDetailsRepo;
+
 	@RequestMapping(value = { "/getEmpPayDed" }, method = RequestMethod.POST)
 	public @ResponseBody List<PayDeductionDetails> getEmpPayDed(@RequestParam("empId") int empId,
-			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,int flag) {
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, int flag) {
 
 		List<PayDeductionDetails> advYearList = new ArrayList<PayDeductionDetails>();
 
-		
-
 		try {
-			
-			if(flag==0) {
-				
+
+			if (flag == 0) {
+
 				String from[] = fromDate.split("-");
 				String to[] = toDate.split("-");
-				advYearList = payDeductionDetailsRepo.getEmpPayDed(from[1].trim(), from[0].trim(),to[1].trim(),
+				advYearList = payDeductionDetailsRepo.getEmpPayDed(from[1].trim(), from[0].trim(), to[1].trim(),
 						to[0].trim(), empId);
 
-			}else {
+			} else {
 				String from[] = fromDate.split("-");
 				String to[] = toDate.split("-");
-				advYearList = payDeductionDetailsRepo.getEmpPayDedAllEmp(from[2].trim(), from[1].trim(),to[2].trim(),
+				advYearList = payDeductionDetailsRepo.getEmpPayDedAllEmp(from[2].trim(), from[1].trim(), to[2].trim(),
 						to[1].trim());
 			}
-
-		 
-			
-			 
 
 		} catch (Exception e) {
 
@@ -530,12 +521,9 @@ public class LeaveReportApiController {
 
 	}
 
-	
-	
-	
-	
 	@Autowired
 	StatutoryEsicRepRepo statutoryEsicRepRepo;
+
 	@RequestMapping(value = { "/getStatutoryEsic" }, method = RequestMethod.POST)
 	public @ResponseBody List<StatutoryEsicRep> getStatutoryEsic(@RequestParam("companyId") int companyId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
@@ -545,13 +533,11 @@ public class LeaveReportApiController {
 		String from[] = fromDate.split("-");
 		String to[] = toDate.split("-");
 
-		
-		System.err.println("fromDate"+fromDate);
-		System.err.println("toDate"+toDate);
-		
-		
-		fromDate=from[2].concat("-").concat(from[1]).concat("-").concat("01");
-		toDate=to[2].concat("-").concat(to[1]).concat("-").concat("01");
+		System.err.println("fromDate" + fromDate);
+		System.err.println("toDate" + toDate);
+
+		fromDate = from[2].concat("-").concat(from[1]).concat("-").concat("01");
+		toDate = to[2].concat("-").concat(to[1]).concat("-").concat("01");
 
 		try {
 
@@ -571,21 +557,21 @@ public class LeaveReportApiController {
 		return advYearList;
 
 	}
-	
-	//loan Reports
-	
-	
+
+	// loan Reports
+
 	@Autowired
 	LoanDedReportRepo loanDedReportRepo;
+
 	@RequestMapping(value = { "/getLoanDedReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<LoanDedReport> getLoanReport(@RequestParam("companyId") int companyId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
 
 		List<LoanDedReport> advYearList = new ArrayList<LoanDedReport>();
- 
+
 		try {
 
-			advYearList=loanDedReportRepo.getSpecEmpDedLoanReport(fromDate.trim(),toDate.trim());
+			advYearList = loanDedReportRepo.getSpecEmpDedLoanReport(fromDate.trim(), toDate.trim());
 
 		} catch (Exception e) {
 
@@ -595,20 +581,20 @@ public class LeaveReportApiController {
 		return advYearList;
 
 	}
-	
-	///bonus list
-	
-	
+
+	/// bonus list
+
 	@Autowired
 	BonusCalcRepo bonusCalcRepo;
+
 	@RequestMapping(value = { "/getBonusReportByBonusId" }, method = RequestMethod.POST)
 	public @ResponseBody List<BonusCalc> getBonusReportByRep(@RequestParam("bonusId") int bonusId) {
 
 		List<BonusCalc> advYearList = new ArrayList<BonusCalc>();
- 
+
 		try {
 
-			advYearList=bonusCalcRepo.findByDelStatusAndBonusId(1, bonusId);
+			advYearList = bonusCalcRepo.findByDelStatusAndBonusId(1, bonusId);
 
 		} catch (Exception e) {
 
@@ -618,12 +604,10 @@ public class LeaveReportApiController {
 		return advYearList;
 
 	}
-	
-	
+
 	@Autowired
 	EsiSumaryRepRepo esiSumaryRepRepo;
-	
-	 
+
 	@RequestMapping(value = { "/getEsiSummaryReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<EsiSumaryRep> getEsiSummaryReport(@RequestParam("companyId") int companyId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
@@ -633,21 +617,19 @@ public class LeaveReportApiController {
 		String from[] = fromDate.split("-");
 		String to[] = toDate.split("-");
 
-		
-		System.err.println("fromDate"+fromDate);
-		System.err.println("toDate"+toDate);
-		
-		
-		fromDate=from[2].concat("-").concat(from[1]).concat("-").concat("01");
-		toDate=to[2].concat("-").concat(to[1]).concat("-").concat("01");
+		System.err.println("fromDate" + fromDate);
+		System.err.println("toDate" + toDate);
+
+		fromDate = from[2].concat("-").concat(from[1]).concat("-").concat("01");
+		toDate = to[2].concat("-").concat(to[1]).concat("-").concat("01");
 
 		try {
 			if (companyId == 0) {
 				advYearList = esiSumaryRepRepo.getEsiSummAll(from[2], from[1], to[2], to[1]);
 
 			} else {
-				advYearList = esiSumaryRepRepo.getEsiSumm(from[2].trim(), from[1].trim(),to[2].trim(),
-						to[1].trim(), companyId);
+				advYearList = esiSumaryRepRepo.getEsiSumm(from[2].trim(), from[1].trim(), to[2].trim(), to[1].trim(),
+						companyId);
 
 			}
 
@@ -659,9 +641,7 @@ public class LeaveReportApiController {
 		return advYearList;
 
 	}
-	
-	
- 
+
 	@RequestMapping(value = { "/getLeaveApplicationEmpReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<LeaveApply> getLeaveApplicationEmpReport(@RequestParam("calYrId") int calYrId,
 			@RequestParam("empId") int empId) {
@@ -681,5 +661,4 @@ public class LeaveReportApiController {
 
 	}
 
-	 
 }

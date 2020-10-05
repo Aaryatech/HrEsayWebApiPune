@@ -89,7 +89,7 @@ public class ReportsApiController {
 	}
 
 	@RequestMapping(value = { "/getEmpOtRegSummary" }, method = RequestMethod.POST)
-	public @ResponseBody List<EmpOtReg> getEmpOtRegSummary(@RequestParam("companyId") int companyId,
+	public @ResponseBody List<EmpOtReg> getEmpOtRegSummary(@RequestParam("locId") int locId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
 
 		List<EmpOtReg> list = new ArrayList<EmpOtReg>();
@@ -113,7 +113,7 @@ public class ReportsApiController {
 
 			System.out.println("To Date After-----------" + year + "/" + month + "/" + date);
 
-			list = otRepo.getEmpOtSummary(companyId, month, year, tomonth, toyear);
+			list = otRepo.getEmpOtSummary(locId, month, year, tomonth, toyear);
 
 		} catch (Exception e) {
 
@@ -125,14 +125,14 @@ public class ReportsApiController {
 	}
 
 	@RequestMapping(value = { "/getEmpOtRegDetails" }, method = RequestMethod.POST)
-	public @ResponseBody List<EmpOtReg> getEmpOtRegDetails(@RequestParam("companyId") int companyId,
+	public @ResponseBody List<EmpOtReg> getEmpOtRegDetails(@RequestParam("locId") int locId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
 
 		List<EmpOtReg> list = new ArrayList<EmpOtReg>();
 
 		try {
 
-			list = otRepo.getEmpOtDetails(companyId, fromDate, toDate);
+			list = otRepo.getEmpOtDetails(locId, fromDate, toDate);
 
 		} catch (Exception e) {
 
@@ -144,7 +144,7 @@ public class ReportsApiController {
 	}
 
 	@RequestMapping(value = { "/getEmpLateMarkSummary" }, method = RequestMethod.POST)
-	public @ResponseBody List<EmpLateMarkDetails> getEmpLateMarkSummary(@RequestParam("companyId") int companyId,
+	public @ResponseBody List<EmpLateMarkDetails> getEmpLateMarkSummary(@RequestParam("locId") int locId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
 
 		List<EmpLateMarkDetails> list = new ArrayList<EmpLateMarkDetails>();
@@ -166,7 +166,7 @@ public class ReportsApiController {
 			String toyear = toparts[0];
 			// System.out.println("To Date After-----------"+todate+"/"+tomonth+"/"+toyear);
 
-			list = empLateRepo.getEmpLateMarkSummaryReport(companyId, month, year, tomonth, toyear);
+			list = empLateRepo.getEmpLateMarkSummaryReport(locId, month, year, tomonth, toyear);
 
 		} catch (Exception e) {
 
@@ -178,7 +178,7 @@ public class ReportsApiController {
 	}
 
 	@RequestMapping(value = { "/getEmpLateMarkDetails" }, method = RequestMethod.POST)
-	public @ResponseBody List<EmpLateMarkDetails> getEmpLateMarkDetails(@RequestParam("companyId") int companyId,
+	public @ResponseBody List<EmpLateMarkDetails> getEmpLateMarkDetails(@RequestParam("locId") int locId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
 
 		List<EmpLateMarkDetails> list = new ArrayList<EmpLateMarkDetails>();
@@ -200,7 +200,7 @@ public class ReportsApiController {
 			String toyear = toparts[0];
 			// System.out.println("To Date After-----------"+todate+"/"+tomonth+"/"+toyear);
 
-			list = empLateRepo.getEmpLateMarkDetailReport(companyId, fromDate, toDate);
+			list = empLateRepo.getEmpLateMarkDetailReport(locId, fromDate, toDate);
 
 		} catch (Exception e) {
 
