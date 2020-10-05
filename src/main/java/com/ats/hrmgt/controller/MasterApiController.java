@@ -20,6 +20,7 @@ import com.ats.hrmgt.model.Designation;
 import com.ats.hrmgt.model.EmployeeInfo;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.GetEmployeeDetails;
+import com.ats.hrmgt.model.GetShiftDetail;
 import com.ats.hrmgt.model.Holiday;
 import com.ats.hrmgt.model.HolidayCategory;
 import com.ats.hrmgt.model.Info;
@@ -40,6 +41,7 @@ import com.ats.hrmgt.repository.DepartmentRepo;
 import com.ats.hrmgt.repository.DesignationRepo;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.GetEmployeeDetailsRepo;
+import com.ats.hrmgt.repository.GetShiftDetailRepository;
 import com.ats.hrmgt.repository.HolidayCategoryRepo;
 import com.ats.hrmgt.repository.HolidayRepo;
 import com.ats.hrmgt.repository.LeaveStructureDetailsRepo;
@@ -77,6 +79,10 @@ public class MasterApiController {
 
 	@Autowired
 	HolidayCategoryRepo holidayCategoryRepo;
+	
+	@Autowired
+	GetShiftDetailRepository getShiftDetailRepository;
+	
 
 	@RequestMapping(value = { "/saveLeaveType" }, method = RequestMethod.POST)
 	public @ResponseBody LeaveType saveLeaveType(@RequestBody LeaveType leaveType) {
@@ -804,6 +810,23 @@ public class MasterApiController {
 		}
 
 		return shiftList;
+
+	}
+	
+	@RequestMapping(value = { "/getShiftListByShiftIdLpad" }, method = RequestMethod.POST)
+	public @ResponseBody GetShiftDetail getShiftListByShiftIdLpad(@RequestParam("shiftId") int shiftId) {
+
+		GetShiftDetail shiftMaster = new GetShiftDetail();
+		try {
+
+			shiftMaster = getShiftDetailRepository.getShiftListByShiftIdLpad(shiftId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return shiftMaster;
 
 	}
 
