@@ -68,9 +68,9 @@ public interface EmpLeaveHistoryRepRepo extends JpaRepository<EmpLeaveHistoryRep
 			"        AND leave_structure_details.lv_type_id = leave_type.lv_type_id \n" + 
 			"        AND m_employees.emp_id=:empId \n" + 
 			"        and leave_structure_allotment.cal_yr_id=:calYrId \n" + 
-			"        and leave_type.del_status=1 ", nativeQuery = true)
+			"        and leave_type.del_status=1 and m_employees.location_id=:locId", nativeQuery = true)
 
-	List<EmpLeaveHistoryRep> getEmpLeaveHistoryRep(@Param("empId") int empId,@Param("calYrId") int calYrId
+	List<EmpLeaveHistoryRep> getEmpLeaveHistoryRep(@Param("empId") int empId,@Param("calYrId") int calYrId, int locId
 			);
 
 	
@@ -133,9 +133,9 @@ public interface EmpLeaveHistoryRepRepo extends JpaRepository<EmpLeaveHistoryRep
 			"        AND leave_structure_header.lvs_id = leave_structure_details.lvs_id          \n" + 
 			"        AND leave_structure_details.lv_type_id = leave_type.lv_type_id                   \n" + 
 			"        and leave_structure_allotment.cal_yr_id=:calYrId          \n" + 
-			"        and leave_type.del_status=1", nativeQuery = true)
+			"        and leave_type.del_status=1 and m_employees.location_id=:locId", nativeQuery = true)
 
-	List<EmpLeaveHistoryRep> getEmpLeaveHistoryRepAll(@Param("calYrId") int calYrId
+	List<EmpLeaveHistoryRep> getEmpLeaveHistoryRepAll(@Param("calYrId") int calYrId, @Param("locId") int locId
 			);
 
 }

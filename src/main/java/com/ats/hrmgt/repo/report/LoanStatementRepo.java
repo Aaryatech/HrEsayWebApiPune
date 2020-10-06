@@ -39,8 +39,8 @@ public interface LoanStatementRepo extends JpaRepository<LoanStatementDetailsRep
 			"ON\n" + 
 			"    te.emp_id = tlm.emp_id\n" + 
 			"WHERE\n" + 
-			"    te.cmp_code = :companyId  AND tlm.loan_repay_start BETWEEN :fromDate AND :toDate",nativeQuery=true)
-	List<LoanStatementDetailsReport> getEmpLoanStateDetails(@Param("companyId") int companyId, @Param("fromDate") String fromDate, 
+			"     tlm.loan_repay_start BETWEEN :fromDate AND :toDate and te.location_id=:locId",nativeQuery=true)
+	List<LoanStatementDetailsReport> getEmpLoanStateDetails(@Param("locId") int locId, @Param("fromDate") String fromDate, 
 			@Param("toDate") String toDate);
 
 	

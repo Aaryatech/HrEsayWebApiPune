@@ -32,9 +32,9 @@ public interface LoanDedReportRepo  extends JpaRepository<LoanDedReport, String>
 			"ON\n" + 
 			"    te.emp_id = tlm.emp_id\n" + 
 			"WHERE\n" + 
-			"    cmp_id = 1 AND  tlm.loan_status = 'Paid'  AND  tlm.loan_repay_start BETWEEN :fromDate AND :toDate" + 
+			"    cmp_id = 1 AND  tlm.loan_status = 'Paid'  AND  tlm.loan_repay_start BETWEEN :fromDate AND :toDate and te.location_id=:locId" + 
 			"   ORDER BY  tlm.emp_id ASC ",nativeQuery=true)
-	List<LoanDedReport> getSpecEmpDedLoanReport(@Param("fromDate") String fromDate,@Param("toDate") String toDate);
+	List<LoanDedReport> getSpecEmpDedLoanReport(@Param("fromDate") String fromDate,@Param("toDate") String toDate, @Param("locId") int locId);
 
 	
 

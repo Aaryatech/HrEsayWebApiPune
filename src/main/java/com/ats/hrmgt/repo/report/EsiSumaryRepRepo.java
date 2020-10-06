@@ -52,7 +52,7 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 			"    ) <= DATE_FORMAT(\n" + 
 			"        CONCAT(:toYear, '-', :toMonth, '-01'),\n" + 
 			"        '%Y-%m-%d'\n" + 
-			"    ) AND tfc.emp_id = emp.emp_id\n" + 
+			"    ) AND tfc.emp_id = emp.emp_id and emp.location_id=:locId\n" + 
 			"GROUP BY\n" + 
 			"    tfc.emp_id,\n" + 
 			"    DATE_FORMAT(\n" + 
@@ -64,7 +64,7 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 			"        ),\n" + 
 			"        '%Y-%m'\n" + 
 			"    )",nativeQuery=true)
-	List<EsiSumaryRep> getEsiSumm(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,@Param("companyId") int companyId);
+	List<EsiSumaryRep> getEsiSumm(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,@Param("companyId") int companyId, int locId);
 
 	@Query(value="SELECT\n" + 
 			"    UUID() AS key_id, CONCAT(\n" + 
@@ -106,7 +106,7 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 			"    ) <= DATE_FORMAT(\n" + 
 			"        CONCAT(:toYear, '-', :toMonth, '-01'),\n" + 
 			"        '%Y-%m-%d'\n" + 
-			"    ) AND tfc.emp_id = emp.emp_id\n" + 
+			"    ) AND tfc.emp_id = emp.emp_id and emp.location_id=:locId\n" + 
 			"GROUP BY\n" + 
 			"    tfc.emp_id,\n" + 
 			"    DATE_FORMAT(\n" + 
@@ -118,7 +118,8 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 			"        ),\n" + 
 			"        '%Y-%m'\n" + 
 			"    )",nativeQuery=true)
-	List<EsiSumaryRep> getEsiSummAll(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth);
+	List<EsiSumaryRep> getEsiSummAll(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,
+			@Param("locId") int locId);
 
 
 }

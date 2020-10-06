@@ -65,9 +65,9 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"                    '%Y-%m-%d'\n" + 
 			"                ) <=:toDate)\n" + 
 			"            WHERE\n" + 
-			"                te.is_emp = '1' AND tsc.cmp_id =:companyId \n" + 
+			"                te.is_emp = '1' AND tsc.cmp_id =:companyId AND te.del_status=1 and te.location_id=:locId\n" + 
 			"            ) AS a",nativeQuery=true)
-	List<StatutoryEsicRep> getStatutoryEsic(@Param("fromDate") String fromDate,@Param("toDate") String toDate,@Param("companyId") int companyId);
+	List<StatutoryEsicRep> getStatutoryEsic(@Param("fromDate") String fromDate,@Param("toDate") String toDate,@Param("companyId") int companyId,@Param("locId") int locId);
 
 	
 	
@@ -93,7 +93,7 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"        tasd.year,\n" + 
 			"        tasd.month\n" + 
 			"    FROM\n" + 
-			"        m_employees AS te\n" + 
+			"        m_employees AS te \n" + 
 			"    INNER JOIN tbl_attt_summary_daily AS tasd\n" + 
 			"    ON\n" + 
 			"        tasd.emp_id = te.emp_id AND(\n" + 
@@ -125,8 +125,8 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"                    '%Y-%m-%d'\n" + 
 			"                ) <=:toDate )\n" + 
 			"            WHERE\n" + 
-			"                te.is_emp = '1'\n" + 
+			"                te.is_emp = '1' AND te.del_status=1 and te.location_id=:locId\n" + 
 			"            ) AS a",nativeQuery=true)
-	List<StatutoryEsicRep> getStatutoryEsicAll(@Param("fromDate") String fromDate,@Param("toDate") String toDate);
+	List<StatutoryEsicRep> getStatutoryEsicAll(@Param("fromDate") String fromDate,@Param("toDate") String toDate, @Param("locId")  int locId);
 
 }

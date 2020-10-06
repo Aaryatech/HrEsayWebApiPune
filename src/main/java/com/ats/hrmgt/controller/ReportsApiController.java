@@ -50,14 +50,14 @@ public class ReportsApiController {
 	EmpDetailForLettersRepo empDetailForLettersRepo;
 
 	@RequestMapping(value = { "/getEmpPendingLoanReport" }, method = RequestMethod.POST)
-	public @ResponseBody List<PendingLoanReport> getEmpPendingLoanReport(@RequestParam("companyId") int companyId,
+	public @ResponseBody List<PendingLoanReport> getEmpPendingLoanReport(@RequestParam("locId") int locId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
 
 		List<PendingLoanReport> list = new ArrayList<PendingLoanReport>();
 
 		try {
 
-			list = pendLoanRepo.getEmpPendingLoanDetails(companyId, fromDate, toDate);
+			list = pendLoanRepo.getEmpPendingLoanDetails(locId, fromDate, toDate);
 
 		} catch (Exception e) {
 
@@ -70,14 +70,14 @@ public class ReportsApiController {
 
 	@RequestMapping(value = { "/getLoanStatemnetReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<LoanStatementDetailsReport> getLoanStatemnetReport(
-			@RequestParam("companyId") int companyId, @RequestParam("fromDate") String fromDate,
+			@RequestParam("locId") int locId, @RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate) {
 
 		List<LoanStatementDetailsReport> list = new ArrayList<LoanStatementDetailsReport>();
 
 		try {
 
-			list = loanStatRepo.getEmpLoanStateDetails(companyId, fromDate, toDate);
+			list = loanStatRepo.getEmpLoanStateDetails(locId, fromDate, toDate);
 
 		} catch (Exception e) {
 

@@ -473,15 +473,15 @@ public class LeaveActionApiController {
 	EmpLeaveHistoryRepRepo empLeaveHistoryRepRepo;
 
 	@RequestMapping(value = { "/getLeaveHistoryRep" }, method = RequestMethod.POST)
-	public @ResponseBody List<EmpLeaveHistoryRep> getLeaveHistoryRep(@RequestParam("empId") int empId,
+	public @ResponseBody List<EmpLeaveHistoryRep> getLeaveHistoryRep(@RequestParam("empId") int empId,@RequestParam("locId") int locId,
 			@RequestParam("calYrId") int calYrId) {
 		List<EmpLeaveHistoryRep> list = new ArrayList<EmpLeaveHistoryRep>();
 
 		try {
 			if (empId == -1) {
-				list = empLeaveHistoryRepRepo.getEmpLeaveHistoryRepAll(calYrId);
+				list = empLeaveHistoryRepRepo.getEmpLeaveHistoryRepAll(calYrId,locId);
 			} else {
-				list = empLeaveHistoryRepRepo.getEmpLeaveHistoryRep(empId, calYrId);
+				list = empLeaveHistoryRepRepo.getEmpLeaveHistoryRep(empId, calYrId,locId);
 			}
 
 		} catch (Exception e) {
