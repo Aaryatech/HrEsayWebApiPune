@@ -1879,6 +1879,7 @@ public class AttendanceApiControllerchange {
 				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAlllocId(fromDate, toDate, locId);
 			}
 
+			System.out.println("OK");
 			List<String> dates = new ArrayList<>();
 			List<DateAndDay> dateAndDayList = new ArrayList<>();
 
