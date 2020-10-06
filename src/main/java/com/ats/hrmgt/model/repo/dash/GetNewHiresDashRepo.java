@@ -44,31 +44,10 @@ public interface GetNewHiresDashRepo extends JpaRepository<GetNewHiresDash, Stri
 	GetNewHiresDash getTodaysHire(@Param("currDate") String currDate, int locId);
 	
 	
-	@Query(value = "SELECT UUID() as uni_key ,  \n" + 
-			"    (\n" + 
-			"    SELECT\n" + 
-			"        COUNT(DISTINCT tbl_emp_info.emp_id)\n" + 
-			"    FROM\n" + 
-			"        tbl_emp_info\n" + 
-			"    WHERE\n" + 
-			"        tbl_emp_info.gender = 'MALE' AND tbl_emp_info.del_status = 1\n" + 
-			") AS male_emp,\n" + 
-			"(\n" + 
-			"    SELECT\n" + 
-			"        COUNT(DISTINCT tbl_emp_info.emp_id)\n" + 
-			"    FROM\n" + 
-			"        tbl_emp_info\n" + 
-			"    WHERE\n" + 
-			"        tbl_emp_info.gender = 'FEMALE' AND tbl_emp_info.del_status = 1\n" + 
-			") AS female_emp,\n" + 
-			"(\n" + 
-			"    SELECT\n" + 
-			"        COUNT(DISTINCT tbl_emp_info.emp_id)\n" + 
-			"    FROM\n" + 
-			"        tbl_emp_info\n" + 
-			"    WHERE\n" + 
-			"        tbl_emp_info.gender = ! 'MALE' AND tbl_emp_info.gender != 'FEMALE' AND tbl_emp_info.del_status = 1\n" + 
-			") AS oth_emp", nativeQuery = true)
-	GetNewHiresDash getAgeDiversity();
+	@Query(value = "SELECT UUID() as uni_key , ( SELECT COUNT(DISTINCT tbl_emp_info.emp_id) FROM tbl_emp_info,m_employees e WHERE tbl_emp_info.gender = 'MALE' AND "
+			+ "tbl_emp_info.del_status = 1 and e.emp_id=tbl_emp_info.emp_id and e.location_id = :locId) AS male_emp, ( SELECT COUNT(DISTINCT tbl_emp_info.emp_id) "
+			+ "FROM tbl_emp_info,m_employees e WHERE tbl_emp_info.gender = 'FEMALE' AND tbl_emp_info.del_status = 1 and e.emp_id=tbl_emp_info.emp_id and e.location_id = :locId) "
+			+ "AS female_emp, ( 0) AS oth_emp", nativeQuery = true)
+	GetNewHiresDash getAgeDiversity(int locId);
 
 }

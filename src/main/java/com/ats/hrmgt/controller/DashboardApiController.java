@@ -176,7 +176,7 @@ public class DashboardApiController {
 			List<DeptWiseWeekoffDash> listEmpDiv = new ArrayList<DeptWiseWeekoffDash>();
 			try {
 
-				listEmpDiv = deptWiseWeekoffDashRepo.getDeptWiseEmpDiversity(locId);
+				//listEmpDiv = deptWiseWeekoffDashRepo.getDeptWiseEmpDiversity(locId);
 
 			} catch (Exception e) {
 
@@ -345,7 +345,7 @@ public class DashboardApiController {
 
 			try {
 
-				ageDiv = getNewHiresDashRepo.getAgeDiversity();
+				ageDiv = getNewHiresDashRepo.getAgeDiversity(locId);
 
 			} catch (Exception e) {
 
@@ -357,11 +357,11 @@ public class DashboardApiController {
 			AgeDiversityDash tempList = new AgeDiversityDash();
 			try {
 
-				tempList = ageDiversityDashRepo.getAttendance(fiterdate);
+				tempList = ageDiversityDashRepo.getAttendance(fiterdate,locId);
 				comDash.setAgeDiversity(tempList);
-				tempList = ageDiversityDashRepo.getExperienceDiversity(fiterdate);
+				tempList = ageDiversityDashRepo.getExperienceDiversity(fiterdate,locId);
 				comDash.setExpDiversity(tempList);
-				tempList = ageDiversityDashRepo.getSalaryDiversity(fiterdate);
+				tempList = ageDiversityDashRepo.getSalaryDiversity(locId);
 				comDash.setSalDiversity(tempList);
 
 			} catch (Exception e) {
@@ -800,7 +800,7 @@ public class DashboardApiController {
 	 * }
 	 */
 
-	@RequestMapping(value = { "/getAgeDiversity" }, method = RequestMethod.GET)
+	/*@RequestMapping(value = { "/getAgeDiversity" }, method = RequestMethod.GET)
 	public @ResponseBody GetNewHiresDash getAgeDiversity() throws ParseException {
 
 		GetNewHiresDash birthHoliDash = new GetNewHiresDash();
@@ -816,9 +816,9 @@ public class DashboardApiController {
 
 		return birthHoliDash;
 
-	}
+	}*/
 
-	@RequestMapping(value = { "/getAgeDiversityDetail" }, method = RequestMethod.POST)
+	/*@RequestMapping(value = { "/getAgeDiversityDetail" }, method = RequestMethod.POST)
 	public @ResponseBody List<AgeDiversityDash> getAgeDiversityDetail(@RequestParam("fiterdate") String fiterdate)
 			throws ParseException {
 
@@ -840,7 +840,7 @@ public class DashboardApiController {
 
 		return list;
 
-	}
+	}*/
 
 	@RequestMapping(value = { "/getSelfAttendaceForDashboard" }, method = RequestMethod.POST)
 	public @ResponseBody List<SelfAttendanceDetail> getSelfAttendaceForDashboard(
