@@ -13,16 +13,9 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 	
 	
 	@Query(value="SELECT\n" + 
-			"    UUID() AS key_id, CONCAT(\n" + 
-			"        emp.first_name,\n" + 
-			"        ' ',\n" + 
-			"        emp.middle_name,\n" + 
-			"        ' ',\n" + 
-			"        emp.surname\n" + 
-			"    ) AS emp_name,\n" + 
-			"    emp.emp_code,\n" + 
+			"    UUID() AS key_new, count(emp.emp_id) as no_emp,\n" + 
 			"    SUM(tfc.esic) AS emp_contribution,\n" + 
-			"    SUM(tfc.esic_wages_cal) AS emper_contribution,\n" + 
+			"    SUM(tfc.employer_esic) AS emper_contribution,\n" + 
 			"    SUM(tfc.esic + tfc.employer_esic) AS total_contribution,\n" + 
 			"    tfc.calc_month,\n" + 
 			"    tfc.calc_year\n" + 
@@ -30,7 +23,7 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 			"    tbl_salary_calc tfc,\n" + 
 			"    m_employees emp\n" + 
 			"WHERE\n" + 
-			"    tfc.esic_status = 1 AND tfc.cmp_id =:companyId AND tfc.esic > 0 AND DATE_FORMAT(\n" + 
+			"    tfc.esic_status = 1 AND tfc.cmp_id =:companyId   AND DATE_FORMAT(\n" + 
 			"        CONCAT(\n" + 
 			"            tfc.calc_year,\n" + 
 			"            '-',\n" + 
@@ -54,7 +47,7 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 			"        '%Y-%m-%d'\n" + 
 			"    ) AND tfc.emp_id = emp.emp_id and emp.location_id=:locId\n" + 
 			"GROUP BY\n" + 
-			"    tfc.emp_id,\n" + 
+			"    \n" + 
 			"    DATE_FORMAT(\n" + 
 			"        CONCAT(\n" + 
 			"            tfc.calc_year,\n" + 
@@ -67,16 +60,9 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 	List<EsiSumaryRep> getEsiSumm(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,@Param("companyId") int companyId, int locId);
 
 	@Query(value="SELECT\n" + 
-			"    UUID() AS key_id, CONCAT(\n" + 
-			"        emp.first_name,\n" + 
-			"        ' ',\n" + 
-			"        emp.middle_name,\n" + 
-			"        ' ',\n" + 
-			"        emp.surname\n" + 
-			"    ) AS emp_name,\n" + 
-			"    emp.emp_code,\n" + 
+			"    UUID() AS key_new, count(emp.emp_id) as no_emp,\n" + 
 			"    SUM(tfc.esic) AS emp_contribution,\n" + 
-			"    SUM(tfc.esic_wages_cal) AS emper_contribution,\n" + 
+			"    SUM(tfc.employer_esic) AS emper_contribution,\n" + 
 			"    SUM(tfc.esic + tfc.employer_esic) AS total_contribution,\n" + 
 			"    tfc.calc_month,\n" + 
 			"    tfc.calc_year\n" + 
@@ -84,7 +70,7 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 			"    tbl_salary_calc tfc,\n" + 
 			"    m_employees emp\n" + 
 			"WHERE\n" + 
-			"    tfc.esic_status = 1  AND tfc.esic > 0 AND DATE_FORMAT(\n" + 
+			"    tfc.esic_status = 1   AND DATE_FORMAT(\n" + 
 			"        CONCAT(\n" + 
 			"            tfc.calc_year,\n" + 
 			"            '-',\n" + 
@@ -108,7 +94,7 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 			"        '%Y-%m-%d'\n" + 
 			"    ) AND tfc.emp_id = emp.emp_id and emp.location_id=:locId\n" + 
 			"GROUP BY\n" + 
-			"    tfc.emp_id,\n" + 
+			"     \n" + 
 			"    DATE_FORMAT(\n" + 
 			"        CONCAT(\n" + 
 			"            tfc.calc_year,\n" + 

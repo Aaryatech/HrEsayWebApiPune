@@ -31,7 +31,7 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"        tsc.employer_esic,\n" + 
 			"        tasd.present_days,\n" + 
 			"        tasd.year,\n" + 
-			"        tasd.month\n" + 
+			"        tasd.month,tsc.esic\n" + 
 			"    FROM\n" + 
 			"        m_employees AS te\n" + 
 			"    INNER JOIN tbl_attt_summary_daily AS tasd\n" + 
@@ -63,7 +63,7 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"                        '-01'\n" + 
 			"                    ),\n" + 
 			"                    '%Y-%m-%d'\n" + 
-			"                ) <=:toDate)\n" + 
+			"                ) <=:toDate) and tsc.esic_status=1\n" + 
 			"            WHERE\n" + 
 			"                te.is_emp = '1' AND tsc.cmp_id =:companyId AND te.del_status=1 and te.location_id=:locId\n" + 
 			"            ) AS a",nativeQuery=true)
@@ -91,7 +91,7 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"        tsc.employer_esic,\n" + 
 			"        tasd.present_days,\n" + 
 			"        tasd.year,\n" + 
-			"        tasd.month\n" + 
+			"        tasd.month,tsc.esic\n" + 
 			"    FROM\n" + 
 			"        m_employees AS te \n" + 
 			"    INNER JOIN tbl_attt_summary_daily AS tasd\n" + 
@@ -123,7 +123,7 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"                        '-01'\n" + 
 			"                    ),\n" + 
 			"                    '%Y-%m-%d'\n" + 
-			"                ) <=:toDate )\n" + 
+			"                ) <=:toDate ) and tsc.esic_status=1\n" + 
 			"            WHERE\n" + 
 			"                te.is_emp = '1' AND te.del_status=1 and te.location_id=:locId\n" + 
 			"            ) AS a",nativeQuery=true)

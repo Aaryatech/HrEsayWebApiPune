@@ -373,7 +373,8 @@ public class LeaveReportApiController {
 
 	@RequestMapping(value = { "/getPtChallanRep" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetPtChallan> getPtChallanRep(@RequestParam("companyId") int companyId,
-			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
+			@RequestParam("locId") int locId) {
 
 		List<GetPtChallan> advYearList = new ArrayList<GetPtChallan>();
 		List<SlabMaster> slabList = new ArrayList<SlabMaster>();
@@ -386,7 +387,7 @@ public class LeaveReportApiController {
 
 			if (companyId != 0) {
 				advYearList = getPtChallanRepo.getPtChallan(from[2].trim(), from[1].trim(), to[2].trim(), to[1].trim(),
-						companyId);
+						companyId,locId);
 
 			} else {
 				advYearList = getPtChallanRepo.getPtChallanAllCmp(from[2].trim(), from[1].trim(), to[2].trim(),
@@ -394,11 +395,11 @@ public class LeaveReportApiController {
 
 			}
 
-			slabList = slabMasterRepository.findAll();
+			//slabList = slabMasterRepository.findAll();
 
-			System.err.println("advYearList" + advYearList.toString());
-			System.out.println(advYearList.size());
-			if (advYearList.size() != 0) {
+			//System.err.println("advYearList" + advYearList.toString());
+			//System.out.println(advYearList.size());
+			/*if (advYearList.size() != 0) {
 
 				for (int i = 0; i < slabList.size(); i++) {
 
@@ -448,14 +449,14 @@ public class LeaveReportApiController {
 					advYearListNew.add(temp);
 
 				}
-			}
+			}*/
 
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
 
-		return advYearListNew;
+		return advYearList;
 
 	}
 
@@ -575,7 +576,7 @@ public class LeaveReportApiController {
 
 		try {
 
-			advYearList = loanDedReportRepo.getSpecEmpDedLoanReport(fromDate.trim(), toDate.trim(),locId);
+			advYearList = loanDedReportRepo.getSpecEmpDedLoanReport(fromDate.trim(), toDate.trim(), locId);
 
 		} catch (Exception e) {
 
