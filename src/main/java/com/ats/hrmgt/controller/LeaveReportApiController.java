@@ -1,8 +1,13 @@
 package com.ats.hrmgt.controller;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.hrmgt.advance.repository.GetAdvanceRepo;
 import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.model.DailyAttendance;
+import com.ats.hrmgt.model.DeductionAndLoanAMT;
+import com.ats.hrmgt.model.EmpOpningLoanList;
 import com.ats.hrmgt.model.EmpShiftDetails;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.GetDailyDailyRecord;
 import com.ats.hrmgt.model.GetDailyDailyRecordRepository;
 import com.ats.hrmgt.model.LeaveApply;
+import com.ats.hrmgt.model.LedgerDetailList;
+import com.ats.hrmgt.model.MonthWithOT;
 import com.ats.hrmgt.model.PayDeductionDetails;
 import com.ats.hrmgt.model.SlabMaster;
 import com.ats.hrmgt.model.advance.GetAdvance;
@@ -45,6 +54,8 @@ import com.ats.hrmgt.repo.report.GetYearlyLoanRepo;
 import com.ats.hrmgt.repo.report.LoanDedReportRepo;
 import com.ats.hrmgt.repo.report.StatutoryEsicRepRepo;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
+import com.ats.hrmgt.repository.DeductionAndLoanAmtRepo;
+import com.ats.hrmgt.repository.EmpOpningLoanListRepo;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.LeaveApplyRepository;
 import com.ats.hrmgt.repository.PayDeductionDetailsRepo;
@@ -577,6 +588,138 @@ public class LeaveReportApiController {
 		}
 
 		return advYearList;
+
+	}
+
+	@Autowired
+	EmpOpningLoanListRepo empOpningLoanListRepo;
+
+	@Autowired
+	DeductionAndLoanAmtRepo deductionAndLoanAmtRepo;
+
+	@RequestMapping(value = { "/payLoanLedgerReport" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmpOpningLoanList> payLoanLedgerReport(@RequestParam("fromMonth") String fromMonth,
+			@RequestParam("toMonth") String toMonth, @RequestParam("fromYear") String fromYear,
+			@RequestParam("toYear") String toYear, @RequestParam("locId") int locId) {
+
+		List<EmpOpningLoanList> list = new ArrayList<EmpOpningLoanList>();
+
+		try {
+
+			list = empOpningLoanListRepo.payLoanLedgerReport(fromYear + "-" + fromMonth + "-01",
+					toYear + "-" + toMonth + "-01", locId);
+
+			List<DeductionAndLoanAMT> deductionList = deductionAndLoanAmtRepo
+					.getDeductoinAmtList(fromYear + "-" + fromMonth + "-01", toYear + "-" + toMonth + "-01", locId);
+
+			List<DeductionAndLoanAMT> loanList = deductionAndLoanAmtRepo
+					.getLoanAmtList(fromYear + "-" + fromMonth + "-01", toYear + "-" + toMonth + "-01", locId);
+
+			SimpleDateFormat yy = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
+			Calendar startCalendar = new GregorianCalendar();
+			startCalendar.setTime(yy.parse(fromYear + "-" + fromMonth + "-01"));
+			Calendar endCalendar = new GregorianCalendar();
+			endCalendar.setTime(yy.parse(toYear + "-" + toMonth + "-01"));
+
+			int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
+			int diffMonth = diffYear * 12 + endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH) + 1;
+
+			YearMonth thisMonth = YearMonth.of(Integer.parseInt(fromYear), Integer.parseInt(fromMonth));
+			DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MM-yyyy");
+			SimpleDateFormat sf = new SimpleDateFormat("MM-yyyy");
+			SimpleDateFormat monthNameF = new SimpleDateFormat("MMM-yyyy");
+			List<MonthWithOT> monthList = new ArrayList<>();
+
+			for (int i = 0; i < diffMonth; i++) {
+
+				YearMonth lastMonth = thisMonth.plusMonths(i);
+				MonthWithOT monthWithOT = new MonthWithOT();
+				monthWithOT.setMonth(lastMonth.format(monthYearFormatter));
+				monthList.add(monthWithOT);
+
+			}
+
+			for (int i = 0; i < list.size(); i++) {
+
+				List<LedgerDetailList> ledgerList = new ArrayList<>();
+
+				if (list.get(i).getOpAmt() > 0) {
+
+					LedgerDetailList ledgerDetailList = new LedgerDetailList();
+					ledgerDetailList.setMonthYear(list.get(i).getMonthYear());
+					ledgerDetailList.setMonthName(monthNameF.format(dd.parse("01-" + list.get(i).getMonthYear())));
+					ledgerDetailList.setPaid(list.get(i).getOpAmt());
+					ledgerDetailList.setCaptionName("OPENING BALANCE");
+					ledgerList.add(ledgerDetailList);
+				}
+				for (int k = 0; k < monthList.size(); k++) {
+
+					Date dt = sf.parse(monthList.get(k).getMonth());
+
+					for (int j = 0; j < loanList.size(); j++) {
+
+						Date date = dd.parse("01-" + loanList.get(j).getMonthYear());
+
+						if (loanList.get(j).getEmpId() == list.get(i).getEmpId() && dt.compareTo(date) == 0) {
+							LedgerDetailList ledgerDetailList = new LedgerDetailList();
+							ledgerDetailList.setMonthYear(loanList.get(j).getMonthYear());
+							ledgerDetailList
+									.setMonthName(monthNameF.format(dd.parse("01-" + loanList.get(j).getMonthYear())));
+							ledgerDetailList.setPaid(loanList.get(j).getAmt());
+							ledgerDetailList.setCaptionName("LOAN");
+							ledgerList.add(ledgerDetailList);
+							break;
+						}
+
+					}
+
+					for (int j = 0; j < deductionList.size(); j++) {
+
+						Date date = dd.parse("01-" + deductionList.get(j).getMonthYear());
+
+						if (deductionList.get(j).getEmpId() == list.get(i).getEmpId() && dt.compareTo(date) == 0) {
+							LedgerDetailList ledgerDetailList = new LedgerDetailList();
+							ledgerDetailList.setMonthYear(deductionList.get(j).getMonthYear());
+							ledgerDetailList.setMonthName(
+									monthNameF.format(dd.parse("01-" + deductionList.get(j).getMonthYear())));
+							ledgerDetailList.setReturnAmt(deductionList.get(j).getAmt());
+							ledgerDetailList.setCaptionName("DEDUCTION");
+							ledgerList.add(ledgerDetailList);
+							break;
+						}
+
+					}
+				}
+				list.get(i).setLedgerList(ledgerList);
+				// System.out.println(ledgerList);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/getAdvanceDeductionReport" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmpOpningLoanList> getAdvanceDeductionReport(@RequestParam("month") String month,
+			@RequestParam("year") String year, @RequestParam("locId") int locId) {
+
+		List<EmpOpningLoanList> list = new ArrayList<EmpOpningLoanList>();
+
+		try {
+
+			list = empOpningLoanListRepo.getAdvanceDeductionReport(month, year, locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
 
 	}
 
