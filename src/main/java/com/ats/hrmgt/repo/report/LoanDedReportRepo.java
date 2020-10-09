@@ -11,30 +11,33 @@ import org.springframework.data.repository.query.Param;
 public interface LoanDedReportRepo  extends JpaRepository<LoanDedReport, String>{
 	
 
-	@Query(value=" SELECT\n" + 
-			"    UUID() AS unique_id, te.emp_id, te.emp_code, CONCAT(\n" + 
-			"        te.first_name,\n" + 
+	@Query(value="SELECT\n" + 
+			"        UUID() AS unique_id,\n" + 
+			"        te.emp_id,\n" + 
+			"        te.emp_code,\n" + 
+			"        CONCAT(         te.first_name,\n" + 
 			"        ' ',\n" + 
 			"        te.middle_name,\n" + 
 			"        ' ',\n" + 
-			"        te.surname\n" + 
-			"    ) AS emp_name,\n" + 
-			"    tlm.loan_amt,\n" + 
-			"    tlm.loan_emi,\n" + 
-			"    tlm.current_totpaid,\n" + 
-			"    tlm.loan_emi_intrest,\n" + 
-			"    tlm.current_outstanding,tlm.loan_emi_intrest ,\n" + 
-			"    DATE_FORMAT(tlm.loan_repay_end, '%d-%m-%Y') AS loan_repay_end,\n" + 
-			"    DATE_FORMAT(tlm.loan_repay_start, '%d-%m-%Y') AS loan_repay_start\n" + 
-			"FROM\n" + 
-			"    m_employees AS te\n" + 
-			"INNER JOIN tbl_loan_main AS tlm\n" + 
-			"ON\n" + 
-			"    te.emp_id = tlm.emp_id\n" + 
-			"WHERE\n" + 
-			"    cmp_id = 1 AND  tlm.loan_status = 'Paid'  AND  tlm.loan_repay_start BETWEEN :fromDate AND :toDate and te.location_id=:locId" + 
-			"   ORDER BY  tlm.emp_id ASC ",nativeQuery=true)
-	List<LoanDedReport> getSpecEmpDedLoanReport(@Param("fromDate") String fromDate,@Param("toDate") String toDate, @Param("locId") int locId);
+			"        te.surname     ) AS emp_name,\n" + 
+			"        dp.name as department_name,\n" + 
+			"        sum(ld.amount_emi) as amount_emi\n" + 
+			"    FROM\n" + 
+			"        m_employees AS te,  \n" + 
+			"        tbl_loan_main AS tlm,\n" + 
+			"        tbl_loan_details AS ld,\n" + 
+			"        m_department AS dp\n" + 
+			"    WHERE\n" + 
+			"        te.emp_id = tlm.emp_id \n" + 
+			"        and te.location_id=:locId   \n" + 
+			"        and tlm.id=ld.loan_main_id\n" + 
+			"        and ld.months=:month\n" + 
+			"        and ld.years=:year\n" + 
+			"        and dp.depart_id=te.depart_id\n" + 
+			"    group by tlm.emp_id\n" + 
+			"    ORDER BY\n" + 
+			"        department_name asc,emp_name ASC",nativeQuery=true)
+	List<LoanDedReport> getSpecEmpDedLoanReport(@Param("month") String month,@Param("year") String year, @Param("locId") int locId);
 
 	
 

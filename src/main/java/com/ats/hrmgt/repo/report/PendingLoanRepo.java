@@ -33,13 +33,10 @@ public interface PendingLoanRepo extends JpaRepository<PendingLoanReport, Intege
 			"WHERE	\n" + 
 			"	 emp.emp_id = loan.emp_id AND\n" + 
 			"    emp.designation_id=desig.desig_id AND\n" + 
-			"    emp.depart_id = dept.depart_id AND\n" + 
-			"    loan.loan_repay_start BETWEEN :fromDate AND :toDate AND\n" + 
-			"    loan.loan_status LIKE 'Active' AND\n" + 
+			"    emp.depart_id = dept.depart_id AND loan.loan_status LIKE 'Active' AND\n" + 
 			"    loan.del_status=1 AND emp.del_status=1 and emp.location_id=:locId\n" + 
 			"    ORDER BY loan.loan_repay_start DESC",nativeQuery=true)
-	List<PendingLoanReport> getEmpPendingLoanDetails(@Param("locId") int locId, @Param("fromDate") String fromDate, 
-			@Param("toDate") String toDate);
+	List<PendingLoanReport> getEmpPendingLoanDetails(@Param("locId") int locId);
 	
 	
 

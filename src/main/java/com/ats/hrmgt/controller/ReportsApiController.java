@@ -57,7 +57,7 @@ public class ReportsApiController {
 
 		try {
 
-			list = pendLoanRepo.getEmpPendingLoanDetails(locId, fromDate, toDate);
+			list = pendLoanRepo.getEmpPendingLoanDetails(locId);
 
 		} catch (Exception e) {
 
