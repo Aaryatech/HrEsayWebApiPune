@@ -152,3 +152,26 @@ SELECT `emp_id`, COUNT(`lv_type_id`) FROM leave_balance_cal WHERE `cal_yr_id`=3 
 
 
 select ds.id,ds.emp_id,concat(ds.month,'-',ds.year) as month from tbl_attt_summary_daily ds where date_format(concat(ds.year,'-',ds.month,'-01'),'%Y-%m')>=date_format(date_sub(now(),Interval 2 month),'%Y-%m') and ds.emp_id=1;
+
+ select UUID() as id,a.*,(ifnull(b.loan_amt,0) - ifnull(c.paid_amt,0) ) as op_amt,ifnull(d.loan_count,0) as loan_count from ( select e.emp_id,concat(e.first_name," ",e.surname ," (",e.emp_code,")") as emp_name from m_employees e where e.del_status=1 and e.location_id=7 ) a
+left join (select lm.emp_id, sum(lm.loan_amt)  as loan_amt from tbl_loan_main lm where lm.del_status=1 and DATE_FORMAT(loan_repay_start, '%Y-%m')<DATE_FORMAT('2020-09-01', '%Y-%m')  group by lm.emp_id) b on b.emp_id=a.emp_id
+left join (select lm.emp_id, sum(ld.amount_emi)  as paid_amt from tbl_loan_main lm,tbl_loan_details ld where lm.id=ld.loan_main_id and DATE_FORMAT(concat(ld.years,'-',ld.months,'-01'), '%Y-%m')<DATE_FORMAT('2020-09-01', '%Y-%m')  group by lm.emp_id) c on c.emp_id=a.emp_id 
+left join (select lm.emp_id, count('')  as loan_count from tbl_loan_main lm where loan_repay_start between '2020-09-01' and '2020-09-01' and lm.del_status=1   group by lm.emp_id) d on d.emp_id=a.emp_id 
+where (ifnull(b.loan_amt,0) - ifnull(c.paid_amt,0) )>0 or loan_count>0
+ 
+select sb.slab_id,sb.sal_term_id,sb.min_val,sb.max_val,sb.amount,sb.gender,sb.ex_int1, 
+CASE
+    WHEN sb.gender=1 
+        THEN (select 
+                count('')  from tbl_salary_calc s,m_employees e,tbl_emp_info ef where s.esic_status=1 and  s.calc_month=8 and  
+                s.calc_year=2020 and e.emp_id=s.emp_id and ef.emp_id=e.emp_id and ef.gender='male' and e.location_id=sb.ex_int1 and 
+                (s.gross_salary+s.production_insentive+s.ot_wages) >= sb.min_val and (s.gross_salary+s.production_insentive+s.ot_wages) <=sb.max_val)
+    WHEN sb.gender = 2 
+        THEN (select 
+                count('')  from tbl_salary_calc s,m_employees e,tbl_emp_info ef where s.esic_status=1 and  s.calc_month=8 and  
+                s.calc_year=2020 and e.emp_id=s.emp_id and ef.emp_id=e.emp_id and ef.gender='female' and e.location_id=sb.ex_int1 and 
+                (s.gross_salary+s.production_insentive+s.ot_wages) >= sb.min_val and (s.gross_salary+s.production_insentive+s.ot_wages) <=sb.max_val) 
+            
+    ELSE 0
+END as count from tbl_slabs  sb where sb.ex_int1=1
+

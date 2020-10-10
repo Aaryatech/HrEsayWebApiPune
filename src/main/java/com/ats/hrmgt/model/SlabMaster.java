@@ -20,10 +20,10 @@ public class SlabMaster {
 	private int salTermId ;
 	  
 	@Column(name="min_val")
-	private int minVal ;
+	private double minVal ;
 	
 	@Column(name="max_val")
-	private int maxVal;
+	private double maxVal;
 	
 	@Column(name="amount")
 	private int amount;
@@ -65,19 +65,19 @@ public class SlabMaster {
 		this.salTermId = salTermId;
 	}
 
-	public int getMinVal() {
+	public double getMinVal() {
 		return minVal;
 	}
 
-	public void setMinVal(int minVal) {
+	public void setMinVal(double minVal) {
 		this.minVal = minVal;
 	}
 
-	public int getMaxVal() {
+	public double getMaxVal() {
 		return maxVal;
 	}
 
-	public void setMaxVal(int maxVal) {
+	public void setMaxVal(double maxVal) {
 		this.maxVal = maxVal;
 	}
 
