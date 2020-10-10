@@ -26,6 +26,7 @@ import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.model.AttendaceLiveCount;
 import com.ats.hrmgt.model.AttendaceReturnInfo;
 import com.ats.hrmgt.model.AttendanceSheetData;
+import com.ats.hrmgt.model.DailyAttendaceReport;
 import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.DailyDailyInfomationForChart;
 import com.ats.hrmgt.model.DailyDailyInformation;
@@ -66,6 +67,7 @@ import com.ats.hrmgt.repo.EmpJsonDataRepository;
 import com.ats.hrmgt.repo.ShiftAssignDailyRepository;
 import com.ats.hrmgt.repository.AccessRightModuleRepository;
 import com.ats.hrmgt.repository.AttendaceLiveCountRepository;
+import com.ats.hrmgt.repository.DailyAttendaceReportRepository;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
 import com.ats.hrmgt.repository.DailyDailyInformationRepository;
 import com.ats.hrmgt.repository.EmpInfoRepository;
@@ -177,6 +179,9 @@ public class AttendanceApiControllerchange {
 
 	@Autowired
 	AttendaceLiveCountRepository attendaceLiveCountRepository;
+
+	@Autowired
+	DailyAttendaceReportRepository dailyAttendaceReportRepository;
 
 	@RequestMapping(value = { "/initiallyInsertDailyRecord" }, method = RequestMethod.POST)
 	public @ResponseBody Info initiallyInsertDailyRecord(@RequestParam("fromDate") String fromDate,
@@ -1961,6 +1966,61 @@ public class AttendanceApiControllerchange {
 		}
 
 		return info;
+
+	}
+
+	@RequestMapping(value = { "/getAttendanceSheetReport" }, method = RequestMethod.POST)
+	public @ResponseBody List<DateAndDay> getAttendanceSheetReport(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("locId") int locId) {
+
+		List<DateAndDay> dateAndDayList = new ArrayList<>();
+		try {
+
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			Date fmdt = df.parse(fromDate);
+			Date todt = df.parse(toDate);
+
+			List<DailyAttendaceReport> dailyAttendanceList = dailyAttendaceReportRepository
+					.dailyAttendanceListAlllocId(fromDate, toDate, locId);
+
+			// System.out.println("OK");
+			// List<String> dates = new ArrayList<>();
+
+			SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+
+			for (Date j = fmdt; j.compareTo(todt) <= 0;) {
+
+				// dates.add(sf.format(j));
+				Date dt = j;
+				DateAndDay dateAndDay = new DateAndDay();
+				String stringDate = sdf.format(j);
+				dateAndDay.setDate(sf.format(j));
+				dateAndDay.setDay(stringDate);
+
+				List<DailyAttendaceReport> finalDailyList = new ArrayList<>();
+
+				for (int k = 0; k < dailyAttendanceList.size(); k++) {
+
+					Date attsdt = dailyAttendanceList.get(k).getAttDate();
+					if (attsdt.compareTo(dt) == 0) {
+
+						finalDailyList.add(dailyAttendanceList.get(k));
+					}
+
+				}
+				dateAndDay.setFinalDailyList(finalDailyList);
+				dateAndDayList.add(dateAndDay);
+				/* System.out.println(sf.parse(sf.format(j))); */
+				j.setTime(j.getTime() + 1000 * 60 * 60 * 24);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return dateAndDayList;
 
 	}
 
