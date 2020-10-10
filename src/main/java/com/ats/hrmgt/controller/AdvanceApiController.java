@@ -25,6 +25,7 @@ import com.ats.hrmgt.repository.UserRepo;
 @RestController
 public class AdvanceApiController {
 
+	
 	@Autowired
 	AdvanceRepo advanceRepo;
 
