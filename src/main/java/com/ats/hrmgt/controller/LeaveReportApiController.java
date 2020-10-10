@@ -384,77 +384,13 @@ public class LeaveReportApiController {
 
 	@RequestMapping(value = { "/getPtChallanRep" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetPtChallan> getPtChallanRep(@RequestParam("companyId") int companyId,
-			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
-			@RequestParam("locId") int locId) {
+			@RequestParam("month") String month, @RequestParam("year") String year, @RequestParam("locId") int locId) {
 
 		List<GetPtChallan> advYearList = new ArrayList<GetPtChallan>();
-		List<SlabMaster> slabList = new ArrayList<SlabMaster>();
-		List<GetPtChallan> advYearListNew = new ArrayList<GetPtChallan>();
-
-		String from[] = fromDate.split("-");
-		String to[] = toDate.split("-");
 
 		try {
 
-			if (companyId != 0) {
-				advYearList = getPtChallanRepo.getPtChallan(from[2].trim(), from[1].trim(), to[2].trim(), to[1].trim(),
-						companyId, locId);
-
-			} else {
-				advYearList = getPtChallanRepo.getPtChallanAllCmp(from[2].trim(), from[1].trim(), to[2].trim(),
-						to[1].trim());
-
-			}
-
-			// slabList = slabMasterRepository.findAll();
-
-			// System.err.println("advYearList" + advYearList.toString());
-			// System.out.println(advYearList.size());
-			/*
-			 * if (advYearList.size() != 0) {
-			 * 
-			 * for (int i = 0; i < slabList.size(); i++) {
-			 * 
-			 * GetPtChallan temp = new GetPtChallan();
-			 * 
-			 * int flag = 0;
-			 * 
-			 * for (int j = 0; j < advYearList.size(); j++) {
-			 * 
-			 * if (slabList.get(i).getSlabId() == advYearList.get(j).getSlabId()) {
-			 * 
-			 * flag = 1; temp = advYearList.get(j); break;
-			 * 
-			 * }
-			 * 
-			 * }
-			 * 
-			 * if (flag != 1) {
-			 * 
-			 * temp.setEmpCount(0); temp.setMaxVal(slabList.get(i).getMaxVal());
-			 * temp.setMinVal(slabList.get(i).getMinVal());
-			 * temp.setSlabId(slabList.get(i).getSlabId()); temp.setTotal(0);
-			 * 
-			 * }
-			 * 
-			 * advYearListNew.add(temp);
-			 * 
-			 * }
-			 * 
-			 * } else {
-			 * 
-			 * System.err.println("in else"); for (int i = 0; i < slabList.size(); i++) {
-			 * 
-			 * GetPtChallan temp = new GetPtChallan();
-			 * 
-			 * temp.setEmpCount(0); temp.setMaxVal(slabList.get(i).getMaxVal());
-			 * temp.setMinVal(slabList.get(i).getMinVal());
-			 * temp.setSlabId(slabList.get(i).getSlabId()); temp.setTotal(0);
-			 * 
-			 * advYearListNew.add(temp);
-			 * 
-			 * } }
-			 */
+			advYearList = getPtChallanRepo.getPtChallan(month, year, companyId, locId);
 
 		} catch (Exception e) {
 
@@ -792,7 +728,7 @@ public class LeaveReportApiController {
 
 		try {
 
-			advYearList = statutoryEsicRepRepo.showEsicDataUpload(month, year, locId,companyId);
+			advYearList = statutoryEsicRepRepo.showEsicDataUpload(month, year, locId, companyId);
 
 		} catch (Exception e) {
 

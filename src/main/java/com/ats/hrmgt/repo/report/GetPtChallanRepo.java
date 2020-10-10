@@ -11,62 +11,28 @@ import com.ats.hrmgt.model.report.GetSalaryCalcReport;
 import com.ats.hrmgt.model.report.GetYearlyLoan;
 
 public interface GetPtChallanRepo extends JpaRepository<GetPtChallan, Integer> {
-	
-	
 
-	@Query(value="SELECT\n" + 
-			"        tbl_slabs.slab_id,\n" + 
-			"        tbl_slabs.min_val,\n" + 
-			"        tbl_slabs.max_val,\n" + 
-			"        COUNT(tbl_salary_calc.emp_id) as emp_count,\n" + 
-			"        SUM(tbl_salary_calc.pt_ded) AS total \n" + 
-			"    FROM\n" + 
-			"        tbl_salary_calc,\n" + 
-			"        tbl_slabs, m_employees e\n" + 
-			"    WHERE\n" + 
-			"        tbl_salary_calc.gross_salary BETWEEN tbl_slabs.min_val AND tbl_slabs.max_val \n" + 
-			"        AND tbl_salary_calc.cmp_id =:companyId\n" + 
-			"        AND DATE_FORMAT(         CONCAT(             tbl_salary_calc.calc_year,'-',tbl_salary_calc.calc_month,'-01'),'%Y-%m-%d') >= DATE_FORMAT(CONCAT(:fromYear, '-',:fromMonth, '-01'),'%Y-%m-%d') \n" + 
-			"        AND DATE_FORMAT(         CONCAT(             tbl_salary_calc.calc_year,             '-',             tbl_salary_calc.calc_month,             '-01'         ),         '%Y-%m-%d'     ) <= DATE_FORMAT(         CONCAT(:toYear, '-',:toMonth, '-01'),         '%Y-%m-%d'     ) \n" + 
-			"        and tbl_slabs.ex_int1=e.location_id and e.location_id=:locId and e.emp_id=tbl_salary_calc.emp_id\n" + 
-			"    group by slab_id",nativeQuery=true)
-	List<GetPtChallan> getPtChallan(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,
-			@Param("toMonth") String toMonth,@Param("companyId") int companyId,@Param("locId") int locId);
- 
 	
-	@Query(value=" SELECT\n" + 
-			"    tbl_slabs.slab_id,\n" + 
-			"    tbl_slabs.min_val,\n" + 
-			"    tbl_slabs.max_val,\n" + 
-			"    COUNT(tbl_salary_calc.emp_id) as emp_count,\n" + 
-			"    SUM(tbl_salary_calc.pt_ded) AS total\n" + 
-			"FROM\n" + 
-			"    tbl_salary_calc,\n" + 
-			"    tbl_slabs\n" + 
-			"WHERE\n" + 
-			"    tbl_salary_calc.gross_salary BETWEEN tbl_slabs.min_val AND tbl_slabs.max_val  AND DATE_FORMAT(\n" + 
-			"        CONCAT(\n" + 
-			"            tbl_salary_calc.calc_year,\n" + 
-			"            '-',\n" + 
-			"            tbl_salary_calc.calc_month,\n" + 
-			"            '-01'\n" + 
-			"        ),\n" + 
-			"        '%Y-%m-%d'\n" + 
-			"    ) >= DATE_FORMAT(\n" + 
-			"        CONCAT(:fromYear, '-',:fromMonth, '-01'),\n" + 
-			"        '%Y-%m-%d'\n" + 
-			"    ) AND DATE_FORMAT(\n" + 
-			"        CONCAT(\n" + 
-			"            tbl_salary_calc.calc_year,\n" + 
-			"            '-',\n" + 
-			"            tbl_salary_calc.calc_month,\n" + 
-			"            '-01'\n" + 
-			"        ),\n" + 
-			"        '%Y-%m-%d'\n" + 
-			"    ) <= DATE_FORMAT(\n" + 
-			"        CONCAT(:toYear, '-', :toMonth, '-01'),\n" + 
-			"        '%Y-%m-%d'\n" + 
-			"    )",nativeQuery=true)
-	List<GetPtChallan> getPtChallanAllCmp(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth);
-
+	@Query(value="select sb.slab_id,sb.sal_term_id,sb.min_val,sb.max_val,sb.amount,sb.gender,sb.ex_int1 as loc_id, \n" + 
+			"CASE\n" + 
+			"    WHEN sb.gender=1 \n" + 
+			"        THEN (select \n" + 
+			"                count('')  from tbl_salary_calc s,m_employees e,tbl_emp_info ef where s.esic_status=1 and  s.calc_month=:month and  \n" + 
+			"                s.calc_year=:year and e.emp_id=s.emp_id and ef.emp_id=e.emp_id and ef.gender='male' and e.location_id=sb.ex_int1 and \n" + 
+			"                (s.gross_salary+s.production_insentive+s.ot_wages) >= sb.min_val and (s.gross_salary+s.production_insentive+s.ot_wages) <=sb.max_val and s.cmp_id=:companyId)\n" + 
+			"    WHEN sb.gender = 2 \n" + 
+			"        THEN (select \n" + 
+			"                count('')  from tbl_salary_calc s,m_employees e,tbl_emp_info ef where s.esic_status=1 and  s.calc_month=:month and  \n" + 
+			"                s.calc_year=:year and e.emp_id=s.emp_id and ef.emp_id=e.emp_id and ef.gender='female' and e.location_id=sb.ex_int1 and \n" + 
+			"                (s.gross_salary+s.production_insentive+s.ot_wages) >= sb.min_val and (s.gross_salary+s.production_insentive+s.ot_wages) <=sb.max_val and s.cmp_id=:companyId) \n" + 
+			"            \n" + 
+			"    ELSE 0\n" + 
+			"END as count,CASE\n" + 
+			"    WHEN sb.gender=1 then 'MALE' \n" + 
+			"    WHEN sb.gender=2 then 'FEMALE' \n" + 
+			"    ELSE '-' \n" + 
+			"END AS gender_name from tbl_slabs  sb where sb.ex_int1=:locId",nativeQuery=true)
+	List<GetPtChallan> getPtChallan(@Param("month") String month, @Param("year") String year,@Param("companyId") int companyId,@Param("locId") int locId);
+	
+	 
 }
