@@ -29,7 +29,7 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"        tsc.net_salary,\n" + 
 			"        tsc.esic_wages_cal,\n" + 
 			"        tsc.employer_esic,\n" + 
-			"        tasd.present_days,\n" + 
+			"        tasd.payable_days as present_days,\n" + 
 			"        tasd.year,\n" + 
 			"        tasd.month,tsc.esic\n" + 
 			"    FROM\n" + 
@@ -89,7 +89,7 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"        tsc.net_salary,\n" + 
 			"        tsc.esic_wages_cal,\n" + 
 			"        tsc.employer_esic,\n" + 
-			"        tasd.present_days,\n" + 
+			"        tasd.payable_days as present_days,\n" + 
 			"        tasd.year,\n" + 
 			"        tasd.month,tsc.esic\n" + 
 			"    FROM\n" + 

@@ -95,28 +95,38 @@ public interface GetSalaryCalcReportRepo extends JpaRepository<GetSalaryCalcRepo
 	
 	
 	@Query(value="SELECT\n" + 
-			"    salc.*,\n" + 
-			"    CONCAT(\n" + 
-			"        emp.first_name,\n" + 
+			"        salc.*,\n" + 
+			"        CONCAT(         emp.first_name,\n" + 
 			"        ' ',\n" + 
 			"        emp.middle_name,\n" + 
 			"        ' ',\n" + 
-			"        emp.surname\n" + 
-			"    ) AS emp_name,\n" + 
-			"    inf.dob AS company_name,\n" + 
-			"    inf.middle_name name_sd\n" + 
-			"FROM\n" + 
-			"    tbl_salary_calc salc\n" + 
-			"LEFT JOIN tbl_emp_info inf ON\n" + 
-			"    inf.emp_id = salc.emp_id AND inf.middle_name_relation = 'father'\n" + 
-			"INNER JOIN m_employees emp ON\n" + 
-			"    salc.emp_id = emp.emp_id AND salc.cmp_id=:companyId AND emp.location_id=:locId \n" + 
-			"WHERE\n" + 
-			"    salc.mlwf > 0 AND(\n" + 
-			"        salc.calc_month >=:fromMonth AND salc.calc_year =:fromYear \n" + 
-			"    ) OR(\n" + 
-			"        salc.calc_month <=:toMonth AND salc.calc_year =:toYear \n" + 
-			"    ) ",nativeQuery=true)
+			"        emp.surname     ) AS emp_name,\n" + 
+			"        inf.dob AS company_name,\n" + 
+			"        dep.name as name_sd \n" + 
+			"    FROM\n" + 
+			"        tbl_salary_calc salc \n" + 
+			"    LEFT JOIN\n" + 
+			"        tbl_emp_info inf \n" + 
+			"            ON     inf.emp_id = salc.emp_id  \n" + 
+			"    INNER JOIN\n" + 
+			"        m_employees emp \n" + 
+			"            ON     salc.emp_id = emp.emp_id \n" + 
+			"            AND salc.cmp_id=:companyId\n" + 
+			"            AND emp.location_id=:locId  \n" + 
+			"    INNER JOIN\n" + 
+			"        m_department dep \n" + 
+			"            ON     dep.depart_id = emp.depart_id  \n" + 
+			"    WHERE\n" + 
+			"        salc.mlwf > 0 \n" + 
+			"        AND ((\n" + 
+			"            salc.calc_month >=:fromMonth\n" + 
+			"            AND salc.calc_year =:fromYear      \n" + 
+			"        ) \n" + 
+			"        OR(\n" + 
+			"            salc.calc_month <=:toMonth \n" + 
+			"            AND salc.calc_year =:toYear      \n" + 
+			"        )) \n" + 
+			"    order by name_sd,emp_name",nativeQuery=true)
 	List<GetSalaryCalcReport> getMlwfRep(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,@Param("companyId") int companyId, int locId);
 
 	
