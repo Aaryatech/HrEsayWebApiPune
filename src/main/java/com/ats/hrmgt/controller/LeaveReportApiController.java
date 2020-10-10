@@ -784,6 +784,25 @@ public class LeaveReportApiController {
 
 	}
 
+	@RequestMapping(value = { "/showEsicDataUpload" }, method = RequestMethod.POST)
+	public @ResponseBody List<StatutoryEsicRep> showEsicDataUpload(@RequestParam("companyId") int companyId,
+			@RequestParam("year") String year, @RequestParam("month") String month, @RequestParam("locId") int locId) {
+
+		List<StatutoryEsicRep> advYearList = new ArrayList<StatutoryEsicRep>();
+
+		try {
+
+			advYearList = statutoryEsicRepRepo.showEsicDataUpload(month, year, locId,companyId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return advYearList;
+
+	}
+
 	@RequestMapping(value = { "/getLeaveApplicationEmpReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<LeaveApply> getLeaveApplicationEmpReport(@RequestParam("calYrId") int calYrId,
 			@RequestParam("empId") int empId) {
