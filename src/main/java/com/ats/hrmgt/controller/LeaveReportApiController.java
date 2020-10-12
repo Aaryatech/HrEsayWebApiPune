@@ -21,6 +21,7 @@ import com.ats.hrmgt.advance.repository.GetAdvanceRepo;
 import com.ats.hrmgt.common.DateConvertor;
 import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.DeductionAndLoanAMT;
+import com.ats.hrmgt.model.EcrFileData;
 import com.ats.hrmgt.model.EmpOpningLoanList;
 import com.ats.hrmgt.model.EmpShiftDetails;
 import com.ats.hrmgt.model.EmployeeMaster;
@@ -28,6 +29,7 @@ import com.ats.hrmgt.model.GetDailyDailyRecord;
 import com.ats.hrmgt.model.GetDailyDailyRecordRepository;
 import com.ats.hrmgt.model.LeaveApply;
 import com.ats.hrmgt.model.LedgerDetailList;
+import com.ats.hrmgt.model.LwfChallanData;
 import com.ats.hrmgt.model.MonthWithOT;
 import com.ats.hrmgt.model.PayDeductionDetails;
 import com.ats.hrmgt.model.SlabMaster;
@@ -55,9 +57,11 @@ import com.ats.hrmgt.repo.report.LoanDedReportRepo;
 import com.ats.hrmgt.repo.report.StatutoryEsicRepRepo;
 import com.ats.hrmgt.repository.DailyAttendanceRepository;
 import com.ats.hrmgt.repository.DeductionAndLoanAmtRepo;
+import com.ats.hrmgt.repository.EcrFileDataRepo;
 import com.ats.hrmgt.repository.EmpOpningLoanListRepo;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.LeaveApplyRepository;
+import com.ats.hrmgt.repository.LwfChallanDataRepo;
 import com.ats.hrmgt.repository.PayDeductionDetailsRepo;
 import com.ats.hrmgt.repository.SlabMasterRepository;
 
@@ -355,6 +359,30 @@ public class LeaveReportApiController {
 
 	}
 
+	@RequestMapping(value = { "/getPtStatement" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetSalaryCalcReport> getPtStatement(@RequestParam("companyId") int companyId,
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
+			@RequestParam("locId") int locId) {
+
+		List<GetSalaryCalcReport> advYearList = new ArrayList<GetSalaryCalcReport>();
+
+		String from[] = fromDate.split("-");
+		String to[] = toDate.split("-");
+
+		try {
+
+			advYearList = getSalaryCalcReportRepo.getSpecEmpPTForReportComp(companyId, from[2], from[1], to[2], to[1],
+					locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return advYearList;
+
+	}
+
 	@RequestMapping(value = { "/getEmpPfStatement" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetSalaryCalcReport> getEmpPfStatement(@RequestParam("empId") int empId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate) {
@@ -373,6 +401,27 @@ public class LeaveReportApiController {
 		}
 
 		return advYearList;
+
+	}
+
+	@Autowired
+	LwfChallanDataRepo lwfChallanDataRepo;
+
+	@RequestMapping(value = { "/getLwfDataForChallan" }, method = RequestMethod.POST)
+	public @ResponseBody LwfChallanData getLwfDataForChallan(@RequestParam("locId") int locId,
+			@RequestParam("month") String month, @RequestParam("year") String year) {
+
+		LwfChallanData lwfChallanData = new LwfChallanData();
+
+		try {
+			lwfChallanData = lwfChallanDataRepo.getLwfDataForChallan(locId, month, year);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return lwfChallanData;
 
 	}
 
@@ -481,8 +530,8 @@ public class LeaveReportApiController {
 		System.err.println("fromDate" + fromDate);
 		System.err.println("toDate" + toDate);
 
-		fromDate = from[2].concat("-").concat(from[1]).concat("-").concat("01");
-		toDate = to[2].concat("-").concat(to[1]).concat("-").concat("01");
+		fromDate = from[2].trim().concat("-").concat(from[1].trim()).concat("-").concat("01");
+		toDate = to[2].trim().concat("-").concat(to[1].trim()).concat("-").concat("01");
 
 		try {
 
@@ -524,6 +573,28 @@ public class LeaveReportApiController {
 		}
 
 		return advYearList;
+
+	}
+
+	@Autowired
+	EcrFileDataRepo ecrFileDataRepo;
+
+	@RequestMapping(value = { "/getEcrFileData" }, method = RequestMethod.POST)
+	public @ResponseBody List<EcrFileData> getEcrFileData(@RequestParam("cmpId") int cmpId,
+			@RequestParam("month") String month, @RequestParam("year") String year, @RequestParam("locId") int locId) {
+
+		List<EcrFileData> ecrFileDataList = new ArrayList<EcrFileData>();
+
+		try {
+
+			ecrFileDataList = ecrFileDataRepo.getEcrFileData(cmpId, month, year, locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return ecrFileDataList;
 
 	}
 

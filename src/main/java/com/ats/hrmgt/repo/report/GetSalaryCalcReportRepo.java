@@ -155,6 +155,35 @@ public interface GetSalaryCalcReportRepo extends JpaRepository<GetSalaryCalcRepo
 			"    ) ",nativeQuery=true)
 	List<GetSalaryCalcReport> getMlwfRepAllCmp(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,
 			@Param("locId") int locId);
+
+
+	@Query(value="\n" + 
+			"\n" + 
+			"SELECT\n" + 
+			"    salc.*,\n" + 
+			"    CONCAT(\n" + 
+			"        emp.first_name,\n" + 
+			"        ' ',\n" + 
+			"        emp.middle_name,\n" + 
+			"        ' ',\n" + 
+			"        emp.surname\n" + 
+			"    ) AS emp_name,\n" + 
+			"    company_name,\n" + 
+			"    name_sd\n" + 
+			"FROM\n" + 
+			"    tbl_salary_calc salc\n" + 
+			"INNER JOIN m_employees emp ON\n" + 
+			"    salc.emp_id = emp.emp_id and emp.location_id=:locId\n" + 
+			"INNER JOIN tbl_mst_sub_company subcomp ON\n" + 
+			"    salc.cmp_id = subcomp.company_id AND salc.cmp_id =:companyId\n" + 
+			"WHERE\n" + 
+			"    salc.pt_applicable ='yes' AND(\n" + 
+			"        salc.calc_month >=:fromMonth AND salc.calc_year =:fromYear \n" + 
+			"    ) OR(\n" + 
+			"        salc.calc_month <=:toMonth AND salc.calc_year =:toYear \n" + 
+			"    )",nativeQuery=true)
+	List<GetSalaryCalcReport> getSpecEmpPTForReportComp(@Param("companyId") int companyId,@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,
+			@Param("locId") int locId);
 	
 	
 	
