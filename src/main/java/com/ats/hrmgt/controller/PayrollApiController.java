@@ -195,7 +195,7 @@ public class PayrollApiController {
 
 		try {
 			List<EmpSalaryInfoForPayroll> list = empSalaryInfoForPayrollRepository
-					.getEmployeeListWithEmpSalEnfoForPayRoll(month, year, locId);
+					.getEmployeeListWithEmpSalEnfoForPayRoll(month, year, locId,(year+"-"+month+"-01"));
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
 			List<EmpSalAllowance> empAllowanceList = empSalAllowanceRepo.findByDelStatus(1);
 
