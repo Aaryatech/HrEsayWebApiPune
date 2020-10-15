@@ -32,4 +32,8 @@ public interface GetDetailForGraduatyRepo extends JpaRepository<GetDetailForGrad
 			"        and ei.emp_id=e.emp_id ", nativeQuery = true)
 	GetDetailForGraduaty getdetailforgraduaty(@Param("empId") int empId);
 
+	@Query(value = "SELECT count('') as freeze_count FROM tbl_attt_daily_daily where att_date between :fromDate and :toDate and tbl_attt_daily_daily.emp_id=:empId "
+			+ " and is_fixed=1 and rec_status='F'", nativeQuery = true)
+	int getValidationOfFreezeMonth(@Param("fromDate")String fromDate,@Param("toDate") String toDate,@Param("empId") int empId);
+
 }

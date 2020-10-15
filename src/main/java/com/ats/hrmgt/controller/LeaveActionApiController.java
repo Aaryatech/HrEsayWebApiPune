@@ -296,9 +296,8 @@ public class LeaveActionApiController {
 
 		return save;
 
-	} 
-	
-	
+	}
+
 	@RequestMapping(value = { "/saveLeaveApply" }, method = RequestMethod.POST)
 	public @ResponseBody LeaveApply saveLeaveApply(@RequestBody LeaveApply leave) {
 
@@ -473,15 +472,15 @@ public class LeaveActionApiController {
 	EmpLeaveHistoryRepRepo empLeaveHistoryRepRepo;
 
 	@RequestMapping(value = { "/getLeaveHistoryRep" }, method = RequestMethod.POST)
-	public @ResponseBody List<EmpLeaveHistoryRep> getLeaveHistoryRep(@RequestParam("empId") int empId,@RequestParam("locId") int locId,
-			@RequestParam("calYrId") int calYrId) {
+	public @ResponseBody List<EmpLeaveHistoryRep> getLeaveHistoryRep(@RequestParam("empId") int empId,
+			@RequestParam("locId") int locId, @RequestParam("calYrId") int calYrId) {
 		List<EmpLeaveHistoryRep> list = new ArrayList<EmpLeaveHistoryRep>();
 
 		try {
 			if (empId == -1) {
-				list = empLeaveHistoryRepRepo.getEmpLeaveHistoryRepAll(calYrId,locId);
+				list = empLeaveHistoryRepRepo.getEmpLeaveHistoryRepAll(calYrId, locId);
 			} else {
-				list = empLeaveHistoryRepRepo.getEmpLeaveHistoryRep(empId, calYrId,locId);
+				list = empLeaveHistoryRepRepo.getEmpLeaveHistoryRep(empId, calYrId, locId);
 			}
 
 		} catch (Exception e) {
@@ -585,6 +584,33 @@ public class LeaveActionApiController {
 		}
 
 		return getDetailForGraduaty;
+
+	}
+
+	@RequestMapping(value = { "/getValidationOfFreezeMonth" }, method = RequestMethod.POST)
+	public @ResponseBody Info getValidationOfFreezeMonth(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("empId") int empId) {
+
+		Info info = new Info();
+		try {
+
+			int count = getDetailForGraduatyRepo.getValidationOfFreezeMonth(fromDate, toDate, empId);
+
+			if (count > 0) {
+				info.setError(true);
+			} else {
+				info.setError(false);
+			}
+			info.setMsg(String.valueOf(count));
+
+			// System.err.println("LeaveHistory" + list.toString());
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
 
 	}
 
