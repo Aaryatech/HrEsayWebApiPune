@@ -36,4 +36,14 @@ public interface GetDetailForGraduatyRepo extends JpaRepository<GetDetailForGrad
 			+ " and is_fixed=1 and rec_status='F'", nativeQuery = true)
 	int getValidationOfFreezeMonth(@Param("fromDate")String fromDate,@Param("toDate") String toDate,@Param("empId") int empId);
 
+	@Query(value = " SELECT\r\n" + 
+			"        count('') as freeze_count \r\n" + 
+			"    FROM\r\n" + 
+			"        tbl_salary_calc \r\n" + 
+			"    where\r\n" + 
+			"        calc_month=:month\r\n" + 
+			"        and calc_year=:year\r\n" + 
+			"        and emp_id=:empId", nativeQuery = true)
+	int getValidationOfFreezeMonthSalary(@Param("month")String month,@Param("year") String year,@Param("empId") int empId);
+
 }

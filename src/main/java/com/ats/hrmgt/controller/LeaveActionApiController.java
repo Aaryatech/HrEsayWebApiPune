@@ -613,6 +613,33 @@ public class LeaveActionApiController {
 		return info;
 
 	}
+	
+	@RequestMapping(value = { "/getValidationOfFreezeMonthSalary" }, method = RequestMethod.POST)
+	public @ResponseBody Info getValidationOfFreezeMonthSalary(@RequestParam("month") String month,
+			@RequestParam("year") String year, @RequestParam("empId") int empId) {
+
+		Info info = new Info();
+		try {
+
+			int count = getDetailForGraduatyRepo.getValidationOfFreezeMonthSalary(month, year, empId);
+
+			if (count > 0) {
+				info.setError(true);
+			} else {
+				info.setError(false);
+			}
+			info.setMsg(String.valueOf(count));
+
+			// System.err.println("LeaveHistory" + list.toString());
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
 
 	@RequestMapping(value = { "/checkDateForRepetedLeaveValidation" }, method = RequestMethod.POST)
 	public @ResponseBody InfoForCompOffList checkDateForRepetedLeaveValidation(
