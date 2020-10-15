@@ -165,6 +165,9 @@ public class EmpSalaryInfoForPayroll {
 	@Column(name="sub_cmp_id")
 	private int subCmpId;
 	
+	@Column(name="count_leave")
+	private int countLeave;
+	
 	@Transient
 	List<EmpAllowanceList> empAllowanceList;
 	
@@ -568,6 +571,14 @@ public class EmpSalaryInfoForPayroll {
 		this.subCmpId = subCmpId;
 	}
 
+	public int getCountLeave() {
+		return countLeave;
+	}
+
+	public void setCountLeave(int countLeave) {
+		this.countLeave = countLeave;
+	}
+
 	@Override
 	public String toString() {
 		return "EmpSalaryInfoForPayroll [empId=" + empId + ", salaryInfoId=" + salaryInfoId + ", salaryTypeId="
@@ -586,7 +597,8 @@ public class EmpSalaryInfoForPayroll {
 				+ ", salTypeName=" + salTypeName + ", designation=" + designation + ", deptName=" + deptName
 				+ ", empName=" + empName + ", locName=" + locName + ", empTypeId=" + empTypeId + ", locId=" + locId
 				+ ", departId=" + departId + ", contractorId=" + contractorId + ", desigId=" + desigId + ", sumId="
-				+ sumId + ", subCmpId=" + subCmpId + ", empAllowanceList=" + empAllowanceList + "]";
+				+ sumId + ", subCmpId=" + subCmpId + ", countLeave=" + countLeave + ", empAllowanceList="
+				+ empAllowanceList + "]";
 	}
 	
 	
