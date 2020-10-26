@@ -22,7 +22,17 @@ public interface AdvanceRepo extends JpaRepository<Advance, Integer> {
 	
 	 Advance findById(int i);
 
-	List<Advance> findByVoucherNoAndDelStatus(String voucherNo, int i);
+	 @Query(value=" select\n" + 
+	 		"        a.*\n" + 
+	 		"    from\n" + 
+	 		"        tbl_advance a,\n" + 
+	 		"        m_employees e\n" + 
+	 		"    where\n" + 
+	 		"        a.voucher_no=:voucherNo \n" + 
+	 		"        and a.del_status=:delStatus\n" + 
+	 		"        and e.location_id=:locationId\n" + 
+	 		"        and e.emp_id=a.emp_id",nativeQuery=true)
+	List<Advance> findByVoucherNoAndDelStatus(String voucherNo, int delStatus,int locationId);
 	
 	
 	List<Advance> findByEmpIdAndDelStatus(int empId,int i);

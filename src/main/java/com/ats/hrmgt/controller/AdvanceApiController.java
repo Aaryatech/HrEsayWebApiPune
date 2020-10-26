@@ -294,13 +294,13 @@ public class AdvanceApiController {
 	}
 
 	@RequestMapping(value = { "/checkCustPhone" }, method = RequestMethod.POST)
-	public @ResponseBody Info checkEmployeeEmail(@RequestParam String voucherNo) {
+	public @ResponseBody Info checkEmployeeEmail(@RequestParam("voucherNo") String voucherNo,@RequestParam("locId") int locId) {
 
 		Info info = new Info();
 		List<Advance> emp = new ArrayList<Advance>();
 		try {
 
-			emp = advanceRepo.findByVoucherNoAndDelStatus(voucherNo, 1);
+			emp = advanceRepo.findByVoucherNoAndDelStatus(voucherNo, 1,locId);
 			if (emp.size() > 0) {
 				info.setError(true);
 			} else {
