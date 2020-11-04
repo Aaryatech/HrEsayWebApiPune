@@ -195,7 +195,7 @@ public class PayrollApiController {
 
 		try {
 			List<EmpSalaryInfoForPayroll> list = empSalaryInfoForPayrollRepository
-					.getEmployeeListWithEmpSalEnfoForPayRoll(month, year, locId,(year+"-"+month+"-01"));
+					.getEmployeeListWithEmpSalEnfoForPayRoll(month, year, locId, (year + "-" + month + "-01"));
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
 			List<EmpSalAllowance> empAllowanceList = empSalAllowanceRepo.findByDelStatus(1);
 
@@ -1071,9 +1071,9 @@ public class PayrollApiController {
 										getSalaryTempList.get(i).getSalBasis(),
 										getSalaryTempList.get(i).getTotalDaysInmonth(),
 										getSalaryTempList.get(i).getPayableDays(),
-										getSalaryTempList.get(i).getWorkingDays(), ot_per_min,
-										getSalaryTempList.get(i).getTotOthr(), ammt, mstEmpType,
-										getSalaryTempList.get(i).getRate(), ot_rate,
+										getSalaryTempList.get(i).getWorkingDays(),
+										getSalaryTempList.get(i).getOtPerHr(), getSalaryTempList.get(i).getTotOthr(),
+										ammt, mstEmpType, getSalaryTempList.get(i).getRate(), ot_rate,
 										getSalaryTempList.get(i).getMonthlyHrTarget(), amount_round);
 								getSalaryTempList.get(i).setOtWages(tempVal);
 								salaryTermList.get(j).setValue(tempVal);
