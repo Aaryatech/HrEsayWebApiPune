@@ -210,9 +210,13 @@ public class AttendanceApiControllerchange {
 			// SummaryDailyAttendance summaryDailyAttendance = new SummaryDailyAttendance();
 			List<DailyAttendance> dailyAttendanceList = new ArrayList<>();
 
-			/*String dailyDailyQuery = "INSERT INTO tbl_attt_daily_daily (id, company_id, emp_code, emp_name, att_date, att_status,  lv_sumup_id, working_hrs, in_time, rec_status, login_name, login_time, import_date, cmp_code, emp_id, ot_hr,  current_shiftid, late_mark, late_min, reason, current_shiftname, freeze_by_supervisor, comments_supervisor, get_pass_used_count, get_pass_used_hour, get_pass_used_hour_reason, raw_data_inout, manual_ot_hr, full_night, half_night, out_time, early_going_mark, early_going_min, multiple_entries, casetype, is_fixed, by_file_updated, location_id, emp_type, emp_json, atsumm_uid, file_name, row_id,atts_sd_show) VALUES  ";
-			String dailyDailySummryQuery = "INSERT INTO tbl_attt_summary_daily (id, company_id, emp_id, emp_code, emp_name, month, year, working_days, present_days, weekly_off, paid_holiday, paid_leave, legal_strike, lay_off, unpaid_holiday, unpaid_leave, absent_days, payable_days, ncp_days, totlate_mins, totlate_days, totout_mins, totworking_hrs, totot_hrs, tot_othr, tot_late, rec_status, login_name, login_time, status, import_date, cmp_code, rec_status_paid, total_days_inmonth, late_ded_leave_paid, holiday_present, weekly_off_present, full_night, half_night, holiday_present_half, weekly_off_present_half, weekly_off_holiday_off, weekly_off_holiday_off_present, weekly_off_holiday_off_present_halfday, hdpresent_hdleave, tot_early_going, atsumm_uid, calculation_done) VALUES ";
-*/
+			/*
+			 * String dailyDailyQuery =
+			 * "INSERT INTO tbl_attt_daily_daily (id, company_id, emp_code, emp_name, att_date, att_status,  lv_sumup_id, working_hrs, in_time, rec_status, login_name, login_time, import_date, cmp_code, emp_id, ot_hr,  current_shiftid, late_mark, late_min, reason, current_shiftname, freeze_by_supervisor, comments_supervisor, get_pass_used_count, get_pass_used_hour, get_pass_used_hour_reason, raw_data_inout, manual_ot_hr, full_night, half_night, out_time, early_going_mark, early_going_min, multiple_entries, casetype, is_fixed, by_file_updated, location_id, emp_type, emp_json, atsumm_uid, file_name, row_id,atts_sd_show) VALUES  "
+			 * ; String dailyDailySummryQuery =
+			 * "INSERT INTO tbl_attt_summary_daily (id, company_id, emp_id, emp_code, emp_name, month, year, working_days, present_days, weekly_off, paid_holiday, paid_leave, legal_strike, lay_off, unpaid_holiday, unpaid_leave, absent_days, payable_days, ncp_days, totlate_mins, totlate_days, totout_mins, totworking_hrs, totot_hrs, tot_othr, tot_late, rec_status, login_name, login_time, status, import_date, cmp_code, rec_status_paid, total_days_inmonth, late_ded_leave_paid, holiday_present, weekly_off_present, full_night, half_night, holiday_present_half, weekly_off_present_half, weekly_off_holiday_off, weekly_off_holiday_off_present, weekly_off_holiday_off_present_halfday, hdpresent_hdleave, tot_early_going, atsumm_uid, calculation_done) VALUES "
+			 * ;
+			 */
 			for (int i = 0; i < empList.size(); i++) {
 
 				String dailyDailyQuery = "INSERT INTO tbl_attt_daily_daily (id, company_id, emp_code, emp_name, att_date, att_status,  lv_sumup_id, working_hrs, in_time, rec_status, login_name, login_time, import_date, cmp_code, emp_id, ot_hr,  current_shiftid, late_mark, late_min, reason, current_shiftname, freeze_by_supervisor, comments_supervisor, get_pass_used_count, get_pass_used_hour, get_pass_used_hour_reason, raw_data_inout, manual_ot_hr, full_night, half_night, out_time, early_going_mark, early_going_min, multiple_entries, casetype, is_fixed, by_file_updated, location_id, emp_type, emp_json, atsumm_uid, file_name, row_id,atts_sd_show) VALUES  ";
@@ -297,20 +301,25 @@ public class AttendanceApiControllerchange {
 
 				dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);
 				dailyDailySummryQuery = dailyDailySummryQuery.substring(0, dailyDailySummryQuery.length() - 1);
-				
+
 				jdbcTemplate.batchUpdate(dailyDailyQuery);
 				jdbcTemplate.batchUpdate(dailyDailySummryQuery);
 			}
-			/*dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);
-			dailyDailySummryQuery = dailyDailySummryQuery.substring(0, dailyDailySummryQuery.length() - 1);*/
+			/*
+			 * dailyDailyQuery = dailyDailyQuery.substring(0, dailyDailyQuery.length() - 1);
+			 * dailyDailySummryQuery = dailyDailySummryQuery.substring(0,
+			 * dailyDailySummryQuery.length() - 1);
+			 */
 
 			/*
 			 * Calendar cal1 = Calendar.getInstance(); SimpleDateFormat date_format = new
 			 * SimpleDateFormat("HH:mm:ss");
 			 * System.out.println(date_format.format(cal1.getTime()));
 			 */
-			/*jdbcTemplate.batchUpdate(dailyDailyQuery);
-			jdbcTemplate.batchUpdate(dailyDailySummryQuery);*/
+			/*
+			 * jdbcTemplate.batchUpdate(dailyDailyQuery);
+			 * jdbcTemplate.batchUpdate(dailyDailySummryQuery);
+			 */
 
 			// query=query.substring(0, query.length()-1);
 			// dailyAttendanceRepository.insert(query);
@@ -1727,12 +1736,11 @@ public class AttendanceApiControllerchange {
 
 					summaryDailyAttendanceList.get(i).setCalculationDone(1);
 				} catch (Exception e) {
-
+					e.printStackTrace();
 				}
 			}
 
-			// System.out.println("summaryDailyAttendanceList " +
-			// summaryDailyAttendanceList);
+			System.out.println("summaryDailyAttendanceList " + summaryDailyAttendanceList);
 
 			List<SummaryDailyAttendance> summaryDailyAttendanceSaveRes = summaryDailyAttendanceRepository
 					.saveAll(summaryDailyAttendanceList);
@@ -2349,21 +2357,33 @@ public class AttendanceApiControllerchange {
 				if (sts.equalsIgnoreCase("PH-OT")) {
 
 					dailyRecordById.setAttStatus("PH-CO");
+					dailyRecordById.setAttsSdShow("PH-CO");
 					DailyAttendance updateRes = dailyAttendanceRepository.save(dailyRecordById);
 
 				} else if (sts.equalsIgnoreCase("WO-OT")) {
 
 					dailyRecordById.setAttStatus("WO-CO");
+					dailyRecordById.setAttsSdShow("WO-CO");
 					DailyAttendance updateRes = dailyAttendanceRepository.save(dailyRecordById);
 
 				} else if (sts.equalsIgnoreCase("PH-WO-P")) {
 
 					dailyRecordById.setLvSumupId(14);
 					dailyRecordById.setAttStatus("WO-CO");
-
+					dailyRecordById.setAttsSdShow("WO-CO");
 					DailyAttendance updateRes = dailyAttendanceRepository.save(dailyRecordById);
 				}
 
+				System.out.println("Update Finalllllllllllll");
+				String[] othrsarry = dailyRecordById.getAttDate().split("-");
+				Date firstDay = new GregorianCalendar(Integer.parseInt(othrsarry[0]),
+						Integer.parseInt(othrsarry[1]) - 1, 1).getTime();
+				Date lastDay = new GregorianCalendar(Integer.parseInt(othrsarry[0]), Integer.parseInt(othrsarry[1]), 0)
+						.getTime();
+				SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+
+				info = finalUpdateDailySumaryRecord(sf.format(firstDay), sf.format(lastDay), 1,
+						Integer.parseInt(othrsarry[1]), Integer.parseInt(othrsarry[0]), dailyRecordById.getEmpId());
 			}
 
 			info.setError(false);

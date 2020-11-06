@@ -32,6 +32,7 @@ import com.ats.hrmgt.model.GetAdvanceList;
 import com.ats.hrmgt.model.GetClaimList;
 import com.ats.hrmgt.model.GetEmpDetail;
 import com.ats.hrmgt.model.GetEmpDetailForFullPayslip;
+import com.ats.hrmgt.model.GetOnelineReport;
 import com.ats.hrmgt.model.GetPayDedList;
 import com.ats.hrmgt.model.GetPayrollGeneratedList;
 import com.ats.hrmgt.model.GetSalDynamicTempRecord;
@@ -69,6 +70,7 @@ import com.ats.hrmgt.repository.GetAdvanceDetailsRepo;
 import com.ats.hrmgt.repository.GetAdvanceListRepo;
 import com.ats.hrmgt.repository.GetClaimListRepo;
 import com.ats.hrmgt.repository.GetEmpDetailForFullPayslipRepo;
+import com.ats.hrmgt.repository.GetOnelineReportRepo;
 import com.ats.hrmgt.repository.GetPayDedListRepo;
 import com.ats.hrmgt.repository.GetPayrollGeneratedListRepo;
 import com.ats.hrmgt.repository.GetSalDynamicTempRecordRepository;
@@ -186,6 +188,9 @@ public class PayrollApiController {
 
 	@Autowired
 	MlwfMasterRepository mlwfMasterRepository;
+	
+	@Autowired
+	GetOnelineReportRepo getOnelineReportRepo;
 
 	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForPayRoll" }, method = RequestMethod.POST)
 	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForPayRoll(@RequestParam("month") int month,
@@ -2195,7 +2200,7 @@ public class PayrollApiController {
 			}
 
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
-			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceList(month, year);
+			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceListlocId(month, year,locId);
 
 			for (int i = 0; i < list.size(); i++) {
 
@@ -2213,6 +2218,48 @@ public class PayrollApiController {
 			}
 
 			payRollDataForProcessing.setPayrollGeneratedList(list);
+			payRollDataForProcessing.setAllowancelist(allowancelist);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return payRollDataForProcessing;
+	}
+
+	@RequestMapping(value = { "/getPayOneLineReport" }, method = RequestMethod.POST)
+	@ResponseBody
+	public PayRollDataForProcessing getPayOneLineReport(@RequestParam("month") int month,
+			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId) {
+
+		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
+
+		try {
+
+			List<GetOnelineReport> onelinereportlist = new ArrayList<>();
+
+			onelinereportlist = getOnelineReportRepo.getPayOneLineReport(month, year, locId);
+
+			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
+			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceListlocId(month, year,locId);
+
+			
+			for (int i = 0; i < onelinereportlist.size(); i++) {
+
+				List<SalAllownceCal> assignAllownceList = new ArrayList<>();
+
+				for (int k = 0; k < getPayrollAllownceList.size(); k++) {
+
+					if (onelinereportlist.get(i).getId() == getPayrollAllownceList.get(k).getSalaryCalcId()) {
+						assignAllownceList.add(getPayrollAllownceList.get(k));
+
+					}
+				}
+
+				onelinereportlist.get(i).setPayrollAllownceList(assignAllownceList);
+			}
+
+			payRollDataForProcessing.setOnelinereportlist(onelinereportlist);
 			payRollDataForProcessing.setAllowancelist(allowancelist);
 
 		} catch (Exception e) {
