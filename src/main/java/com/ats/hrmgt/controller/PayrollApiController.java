@@ -30,6 +30,7 @@ import com.ats.hrmgt.model.EmpSalaryInfoForPayroll;
 import com.ats.hrmgt.model.GetAdvanceDetails;
 import com.ats.hrmgt.model.GetAdvanceList;
 import com.ats.hrmgt.model.GetClaimList;
+import com.ats.hrmgt.model.GetDeptPayReport;
 import com.ats.hrmgt.model.GetEmpDetail;
 import com.ats.hrmgt.model.GetEmpDetailForFullPayslip;
 import com.ats.hrmgt.model.GetOnelineReport;
@@ -69,6 +70,7 @@ import com.ats.hrmgt.repository.EmpSalaryInfoRepo;
 import com.ats.hrmgt.repository.GetAdvanceDetailsRepo;
 import com.ats.hrmgt.repository.GetAdvanceListRepo;
 import com.ats.hrmgt.repository.GetClaimListRepo;
+import com.ats.hrmgt.repository.GetDeptPayReportRepo;
 import com.ats.hrmgt.repository.GetEmpDetailForFullPayslipRepo;
 import com.ats.hrmgt.repository.GetOnelineReportRepo;
 import com.ats.hrmgt.repository.GetPayDedListRepo;
@@ -188,9 +190,12 @@ public class PayrollApiController {
 
 	@Autowired
 	MlwfMasterRepository mlwfMasterRepository;
-	
+
 	@Autowired
 	GetOnelineReportRepo getOnelineReportRepo;
+
+	@Autowired
+	GetDeptPayReportRepo getDeptPayReportRepo;
 
 	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForPayRoll" }, method = RequestMethod.POST)
 	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForPayRoll(@RequestParam("month") int month,
@@ -1468,10 +1473,8 @@ public class PayrollApiController {
 									.setEmployerEsic(castNumber(
 											((getSalaryTempList.get(i).getEsicWagesCal()) * employer_esic_percentage),
 											amount_round));
-							getSalaryTempList.get(i)
-									.setEsic(castNumber(
-											((getSalaryTempList.get(i).getEsicWagesCal()) * employee_esic_percentage),
-											amount_round));
+							getSalaryTempList.get(i).setEsic(castNumber(
+									((getSalaryTempList.get(i).getEsicWagesCal()) * employee_esic_percentage), 3));
 						}
 						/*
 						 * System.out.println("ESIC ==== " + getSalaryTempList.get(i).getEsicWagesCal()
@@ -2200,7 +2203,8 @@ public class PayrollApiController {
 			}
 
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
-			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceListlocId(month, year,locId);
+			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceListlocId(month, year,
+					locId);
 
 			for (int i = 0; i < list.size(); i++) {
 
@@ -2241,9 +2245,9 @@ public class PayrollApiController {
 			onelinereportlist = getOnelineReportRepo.getPayOneLineReport(month, year, locId);
 
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
-			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceListlocId(month, year,locId);
+			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceListlocId(month, year,
+					locId);
 
-			
 			for (int i = 0; i < onelinereportlist.size(); i++) {
 
 				List<SalAllownceCal> assignAllownceList = new ArrayList<>();
@@ -2260,6 +2264,48 @@ public class PayrollApiController {
 			}
 
 			payRollDataForProcessing.setOnelinereportlist(onelinereportlist);
+			payRollDataForProcessing.setAllowancelist(allowancelist);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return payRollDataForProcessing;
+	}
+
+	@RequestMapping(value = { "/departmentwisePayrollReport" }, method = RequestMethod.POST)
+	@ResponseBody
+	public PayRollDataForProcessing departmentwisePayrollReport(@RequestParam("month") int month,
+			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId) {
+
+		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
+
+		try {
+
+			List<GetDeptPayReport> onelinereportlist = new ArrayList<>();
+
+			onelinereportlist = getDeptPayReportRepo.departmentwisePayrollReport(month, year, locId);
+
+			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
+			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceListlocIdDept(month,
+					year, locId);
+
+			for (int i = 0; i < onelinereportlist.size(); i++) {
+
+				List<SalAllownceCal> assignAllownceList = new ArrayList<>();
+
+				for (int k = 0; k < getPayrollAllownceList.size(); k++) {
+
+					if (onelinereportlist.get(i).getDepartId() == getPayrollAllownceList.get(k).getEmpId()) {
+						assignAllownceList.add(getPayrollAllownceList.get(k));
+
+					}
+				}
+
+				onelinereportlist.get(i).setPayrollAllownceList(assignAllownceList);
+			}
+
+			payRollDataForProcessing.setDeptreportlist(onelinereportlist);
 			payRollDataForProcessing.setAllowancelist(allowancelist);
 
 		} catch (Exception e) {
