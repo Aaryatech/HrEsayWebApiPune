@@ -29,6 +29,9 @@ public class RoasterSummeryDetail {
 	@Column(name = "off_day_count ")
 	private int offDayCount;
 	
+	@Column(name = "night_count ")
+	private int nightCount;
+	
 	@Column(name = "ff_count")
 	private int ffCount;
 	  
@@ -43,7 +46,7 @@ public class RoasterSummeryDetail {
 
 	@Column(name = "incentive ")
 	private float incentive;
-
+	
 	public int getEmpId() {
 		return empId;
 	}
@@ -132,12 +135,20 @@ public class RoasterSummeryDetail {
 		this.incentive = incentive;
 	}
 
+	public int getNightCount() {
+		return nightCount;
+	}
+
+	public void setNightCount(int nightCount) {
+		this.nightCount = nightCount;
+	}
+
 	@Override
 	public String toString() {
 		return "RoasterSummeryDetail [empId=" + empId + ", empCode=" + empCode + ", firstName=" + firstName
-				+ ", middleName=" + middleName + ", surname=" + surname + ", offDayCount=" + offDayCount + ", ffCount="
-				+ ffCount + ", lateMark=" + lateMark + ", lateMin=" + lateMin + ", km=" + km + ", incentive="
-				+ incentive + "]";
+				+ ", middleName=" + middleName + ", surname=" + surname + ", offDayCount=" + offDayCount
+				+ ", nightCount=" + nightCount + ", ffCount=" + ffCount + ", lateMark=" + lateMark + ", lateMin="
+				+ lateMin + ", km=" + km + ", incentive=" + incentive + "]";
 	}
 	 
 	

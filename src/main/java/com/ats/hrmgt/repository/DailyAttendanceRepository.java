@@ -377,7 +377,7 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 			"        d.current_shiftid ,\n" + 
 			"        d.late_mark ,\n" + 
 			"        d.late_min ,\n" + 
-			"        d.reason ,\n" + 
+			"        case when e.contractor_id>0 then (select m.org_name from m_contractor m where m.contractor_id=e.contractor_id) else (select m.company_name from tbl_mst_sub_company m where m.company_id=e.sub_cmp_id)  end as reason ,\n" + 
 			"        d.current_shiftname ,\n" + 
 			"        d.freeze_by_supervisor ,\n" + 
 			"        d.comments_supervisor ,\n" + 

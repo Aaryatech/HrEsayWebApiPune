@@ -16,7 +16,7 @@ public interface EmpSalInfoDaiyInfoTempInfoRepo extends JpaRepository<EmpSalInfo
 			"        sdt.cmp_id,\n" + 
 			"        sdt.emp_id,\n" + 
 			"        sdt.emp_code,\n" + 
-			"        sdt.emp_type,\n" + 
+			"        e.emp_type,\n" + 
 			"        sdt.contractor_id,\n" + 
 			"        sdt.depart_id,\n" + 
 			"        sdt.designation_id,\n" + 

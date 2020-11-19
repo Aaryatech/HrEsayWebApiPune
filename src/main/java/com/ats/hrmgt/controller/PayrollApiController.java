@@ -1853,6 +1853,7 @@ public class PayrollApiController {
 				val = otHr * rateofmin;
 			}
 		}
+		System.out.println(val + "***" + mstEmpType.getOtType());
 		val = castNumber(val, amount_round);
 		return val;
 	}
