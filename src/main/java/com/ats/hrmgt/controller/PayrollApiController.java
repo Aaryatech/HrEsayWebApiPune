@@ -254,6 +254,62 @@ public class PayrollApiController {
 		return payRollDataForProcessing;
 	}
 
+	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForArrear" }, method = RequestMethod.POST)
+	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForArrear(@RequestParam("locId") List<Integer> locId) {
+
+		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
+
+		try {
+			List<EmpSalaryInfoForPayroll> list = empSalaryInfoForPayrollRepository
+					.getEmployeeListWithEmpSalEnfoForArrear(locId);
+			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
+			List<EmpSalAllowance> empAllowanceList = empSalAllowanceRepo.findByDelStatus(1);
+
+			for (int i = 0; i < list.size(); i++) {
+
+				List<EmpAllowanceList> allowlist = new ArrayList<>();
+
+				for (int j = 0; j < allowancelist.size(); j++) {
+
+					int flag = 0;
+
+					for (int k = 0; k < empAllowanceList.size(); k++) {
+
+						if (empAllowanceList.get(k).getEmpId() == list.get(i).getEmpId()
+								&& empAllowanceList.get(k).getAllowanceId() == allowancelist.get(j).getAllowanceId()) {
+
+							EmpAllowanceList empAllowance = new EmpAllowanceList();
+							empAllowance.setAllowanceId(allowancelist.get(j).getAllowanceId());
+							empAllowance.setAllowanceName(allowancelist.get(j).getName());
+							empAllowance.setValue(empAllowanceList.get(k).getAllowanceValue());
+							allowlist.add(empAllowance);
+							flag = 1;
+							break;
+
+						}
+					}
+					if (flag == 0) {
+						EmpAllowanceList empAllowance = new EmpAllowanceList();
+						empAllowance.setAllowanceId(allowancelist.get(j).getAllowanceId());
+						empAllowance.setAllowanceName(allowancelist.get(j).getName());
+						empAllowance.setValue(0);
+						allowlist.add(empAllowance);
+					}
+				}
+				list.get(i).setEmpAllowanceList(allowlist);
+			}
+
+			payRollDataForProcessing.setAllowancelist(allowancelist);
+			payRollDataForProcessing.setList(list);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return payRollDataForProcessing;
+	}
+
 	@RequestMapping(value = { "/updateAllowAmtInSalTemp" }, method = RequestMethod.POST)
 	public Info updateAllowAmtInSalTemp(@RequestParam("month") int month, @RequestParam("year") int year,
 			@RequestParam("empIds") List<Integer> empIds, @RequestParam("userId") int userId) {
@@ -1229,65 +1285,22 @@ public class PayrollApiController {
 								if (getSalaryTempList.get(i).getCeilingLimitEmpApplicable().equalsIgnoreCase("yes")
 										&& getSalaryTempList.get(i).getCeilingLimitEmployerApplicable()
 												.equalsIgnoreCase("yes")) {
-									System.out.println("innnn if");
-									int isAddOther = 0;
-
-									// employer pf
-									if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
-										epf_wages_employeR = employer_eps_ceiling_limit;
-
-									} else {
-										epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
-									}
 
 									// employee pf
 									if (getSalaryTempList.get(i).getEpfWages() > employee_ceiling_limit) {
 										employeePfOnAmt = employee_ceiling_limit;
-										isAddOther = 1;
-
-									} else {
-										employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
-
-									}
-									// System.out.println("isAddOther" + isAddOther + " add_pf_other " +
-									// add_pf_other);
+										getSalaryTempList.get(i).setEpfWages(employee_ceiling_limit);
+									}  
+									
+									employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
 									double pfAmt = employeePfOnAmt * epf_percentage;
 									getSalaryTempList.get(i).setEmployeePf(castNumber(pfAmt, amount_round));
 									getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
-
-									/*
-									 * if (isAddOther == 1 && add_pf_other == 1) { double pfAmtDefault =
-									 * getSalaryTempList.get(i).getEpfWages() * epf_percentage;
-									 * 
-									 * if (pfAmt < pfAmtDefault) {
-									 * 
-									 * for (int k = 0; k < getSalaryTempList.get(i).getGetAllowanceTempList()
-									 * .size(); k++) {
-									 * 
-									 * if (getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
-									 * .getShortName().equals("OTH")) { System.out.println("innnn");
-									 * getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
-									 * .setAllowanceValueCal(pfAmtDefault - pfAmt);
-									 * getSalaryTempList.get(i).setGrossSalaryDytemp(
-									 * getSalaryTempList.get(i).getGrossSalaryDytemp() + (pfAmtDefault - pfAmt));
-									 * break; }
-									 * 
-									 * }
-									 * 
-									 * } }
-									 */
 
 								} else if (getSalaryTempList.get(i).getCeilingLimitEmpApplicable()
 										.equalsIgnoreCase("no")
 										&& getSalaryTempList.get(i).getCeilingLimitEmployerApplicable()
 												.equalsIgnoreCase("yes")) {
-									// employer pf
-									if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
-										epf_wages_employeR = employer_eps_ceiling_limit;
-
-									} else {
-										epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
-									}
 
 									// employee pf
 
@@ -1301,46 +1314,18 @@ public class PayrollApiController {
 										&& getSalaryTempList.get(i).getCeilingLimitEmployerApplicable()
 												.equalsIgnoreCase("no")) {
 
-									int isAddOther = 0;
-
-									// employer pf
-									epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
-									// employee pf
 									if (getSalaryTempList.get(i).getEpfWages() > employee_ceiling_limit) {
 										employeePfOnAmt = employee_ceiling_limit;
-										isAddOther = 1;
-
-									} else {
-										employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
-									}
-
+										getSalaryTempList.get(i).setEpfWages(employee_ceiling_limit);
+									}  
+									
+									employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
 									double pfAmt = employeePfOnAmt * epf_percentage;
 									getSalaryTempList.get(i).setEmployeePf(castNumber(pfAmt, amount_round));
 									getSalaryTempList.get(i).setEpfPercentage(epf_percentage);
 
-									/*
-									 * if (isAddOther == 1 && add_pf_other == 1) { double pfAmtDefault =
-									 * getSalaryTempList.get(i).getEpfWages() * epf_percentage;
-									 * 
-									 * if (pfAmt < pfAmtDefault) {
-									 * 
-									 * for (int k = 0; k < getSalaryTempList.get(i).getGetAllowanceTempList()
-									 * .size(); k++) {
-									 * 
-									 * if (getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
-									 * .getShortName().equals("OTH")) {
-									 * getSalaryTempList.get(i).getGetAllowanceTempList().get(k)
-									 * .setAllowanceValueCal(pfAmtDefault - pfAmt);
-									 * getSalaryTempList.get(i).setGrossSalaryDytemp(
-									 * getSalaryTempList.get(i).getGrossSalaryDytemp() + (pfAmtDefault - pfAmt));
-									 * break; }
-									 * 
-									 * }
-									 * 
-									 * } }
-									 */
 								} else {
-									epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
+
 									employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
 
 									getSalaryTempList.get(i).setEmployeePf(
@@ -1349,14 +1334,6 @@ public class PayrollApiController {
 								}
 							} catch (Exception e) {
 								e.printStackTrace();
-
-								// employer pf
-								if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
-									epf_wages_employeR = employer_eps_ceiling_limit;
-
-								} else {
-									epf_wages_employeR = getSalaryTempList.get(i).getEpfWages();
-								}
 
 								// employee pf
 
@@ -1375,7 +1352,14 @@ public class PayrollApiController {
 							 * }
 							 */
 
-							double employer_eps_default = getSalaryTempList.get(i).getEpfWages()
+							if (getSalaryTempList.get(i).getEpsWages() > employer_eps_ceiling_limit) {
+								epf_wages_employeR = employer_eps_ceiling_limit;
+
+							} else {
+								epf_wages_employeR = getSalaryTempList.get(i).getEpsWages();
+							}
+
+							double employer_eps_default = getSalaryTempList.get(i).getEpsWages()
 									* employer_eps_percentage;
 							double employer_eps = epf_wages_employeR * employer_eps_percentage;
 
@@ -1399,16 +1383,25 @@ public class PayrollApiController {
 								getSalaryTempList.get(i).setEpmloyerEpfExtra(
 										castNumber((employer_eps_default - employer_eps), amount_round));
 							}
-							getSalaryTempList.get(i)
-									.setEmployerPf(castNumber(getSalaryTempList.get(i).getEpmloyerEpfDefault()
-											+ getSalaryTempList.get(i).getEpmloyerEpfExtra(), amount_round));
 
-							/*
-							 * System.out.println(getSalaryTempList.get(i).getEmpName() + " " +
-							 * getSalaryTempList.get(i).getEmployeePf() + " " +
-							 * getSalaryTempList.get(i).getPfApplicable());
-							 */
+							double epfCalOn = getSalaryTempList.get(i).getEpfWages();
 
+							if (getSalaryTempList.get(i).getCeilingLimitEmployerApplicable().equalsIgnoreCase("yes")) {
+
+								if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
+									epfCalOn = employee_ceiling_limit;
+								}
+							}
+							double empoyerpf = epfCalOn * epf_percentage;
+
+							getSalaryTempList.get(i).setEmployerPf(castNumber(empoyerpf - employer_eps, amount_round));
+							
+
+							System.out.println(getSalaryTempList.get(i).getEpsWages() + " --- getEpsWages");
+							System.out.println(getSalaryTempList.get(i).getEpfWages() + " --- getEpfWages");
+							System.out.println(getSalaryTempList.get(i).getEmployeePf() + " --- getEmployeePf");
+							System.out.println(getSalaryTempList.get(i).getEmployerEps() + " --- getEmployerEps");
+							System.out.println(getSalaryTempList.get(i).getEmployerPf() + " --- getEmployerPf");
 						} else {
 							getSalaryTempList.get(i).setEpsWages(0);
 							getSalaryTempList.get(i).setEpsDefault(0);
@@ -2803,6 +2796,83 @@ public class PayrollApiController {
 		}
 
 		return list;
+	}
+
+	@RequestMapping(value = { "/getPayrollGenratedListforarear" }, method = RequestMethod.POST)
+	@ResponseBody
+	public PayRollDataForProcessing getPayrollGenratedListforarear(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("empIds") List<Integer> empIds) {
+
+		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
+
+		try {
+
+			List<EmpSalaryInfoForPayroll> empList = empSalaryInfoForPayrollRepository
+					.getEmployeeListWithEmpSalEnfoForArrearEmpId(empIds);
+
+			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
+			List<EmpSalAllowance> empAllowanceList = empSalAllowanceRepo.findByDelStatus(1);
+
+			for (int i = 0; i < empList.size(); i++) {
+
+				List<EmpAllowanceList> allowlist = new ArrayList<>();
+
+				for (int j = 0; j < allowancelist.size(); j++) {
+
+					int flag = 0;
+
+					for (int k = 0; k < empAllowanceList.size(); k++) {
+
+						if (empAllowanceList.get(k).getEmpId() == empList.get(i).getEmpId()
+								&& empAllowanceList.get(k).getAllowanceId() == allowancelist.get(j).getAllowanceId()) {
+
+							EmpAllowanceList empAllowance = new EmpAllowanceList();
+							empAllowance.setAllowanceId(allowancelist.get(j).getAllowanceId());
+							empAllowance.setAllowanceName(allowancelist.get(j).getName());
+							empAllowance.setValue(empAllowanceList.get(k).getAllowanceValue());
+							allowlist.add(empAllowance);
+							flag = 1;
+							break;
+
+						}
+					}
+					if (flag == 0) {
+						EmpAllowanceList empAllowance = new EmpAllowanceList();
+						empAllowance.setAllowanceId(allowancelist.get(j).getAllowanceId());
+						empAllowance.setAllowanceName(allowancelist.get(j).getName());
+						empAllowance.setValue(0);
+						allowlist.add(empAllowance);
+					}
+				}
+				empList.get(i).setEmpAllowanceList(allowlist);
+			}
+
+			List<GetPayrollGeneratedList> generatedPayrollList = getPayrollGeneratedListRepo
+					.generatedPayrollList(empIds, fromDate, toDate);
+
+			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceListlocId(empIds,
+					fromDate, toDate);
+
+			for (int i = 0; i < generatedPayrollList.size(); i++) {
+
+				List<SalAllownceCal> assignAllownceList = new ArrayList<>();
+
+				for (int k = 0; k < getPayrollAllownceList.size(); k++) {
+
+					if (generatedPayrollList.get(i).getId() == getPayrollAllownceList.get(k).getSalaryCalcId()) {
+						assignAllownceList.add(getPayrollAllownceList.get(k));
+
+					}
+				}
+
+				generatedPayrollList.get(i).setPayrollAllownceList(assignAllownceList);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return payRollDataForProcessing;
 	}
 
 }
