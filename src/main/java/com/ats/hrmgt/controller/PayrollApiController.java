@@ -21,8 +21,10 @@ import com.ats.hrmgt.advance.repository.AdvanceRepo;
 import com.ats.hrmgt.claim.repository.ClaimHeaderRepo;
 import com.ats.hrmgt.common.EmailUtility;
 import com.ats.hrmgt.common.EnglishNumberToWords;
+import com.ats.hrmgt.model.AllowanceWithDifferenceForArear;
 import com.ats.hrmgt.model.Allowances;
 import com.ats.hrmgt.model.EmpAllowanceList;
+import com.ats.hrmgt.model.EmpInfoForArear;
 import com.ats.hrmgt.model.EmpSalAllowance;
 import com.ats.hrmgt.model.EmpSalInfoDaiyInfoTempInfo;
 import com.ats.hrmgt.model.EmpSalaryInfo;
@@ -36,6 +38,7 @@ import com.ats.hrmgt.model.GetEmpDetailForFullPayslip;
 import com.ats.hrmgt.model.GetOnelineReport;
 import com.ats.hrmgt.model.GetPayDedList;
 import com.ats.hrmgt.model.GetPayrollGeneratedList;
+import com.ats.hrmgt.model.GetPayrollGeneratedListForArear;
 import com.ats.hrmgt.model.GetSalDynamicTempRecord;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.LateMarkListForInsertAdvance;
@@ -63,6 +66,7 @@ import com.ats.hrmgt.repo.bonus.PayBonusDetailsRepo;
 import com.ats.hrmgt.repo.loan.LoanDetailsRepo;
 import com.ats.hrmgt.repo.loan.LoanMainRepo;
 import com.ats.hrmgt.repository.AllowancesRepo;
+import com.ats.hrmgt.repository.EmpInfoForArearRepository;
 import com.ats.hrmgt.repository.EmpSalAllowanceRepo;
 import com.ats.hrmgt.repository.EmpSalInfoDaiyInfoTempInfoRepo;
 import com.ats.hrmgt.repository.EmpSalaryInfoForPayrollRepository;
@@ -74,6 +78,7 @@ import com.ats.hrmgt.repository.GetDeptPayReportRepo;
 import com.ats.hrmgt.repository.GetEmpDetailForFullPayslipRepo;
 import com.ats.hrmgt.repository.GetOnelineReportRepo;
 import com.ats.hrmgt.repository.GetPayDedListRepo;
+import com.ats.hrmgt.repository.GetPayrollGeneratedListForArearRepo;
 import com.ats.hrmgt.repository.GetPayrollGeneratedListRepo;
 import com.ats.hrmgt.repository.GetSalDynamicTempRecordRepository;
 import com.ats.hrmgt.repository.LateMarkListForInsertAdvanceRepository;
@@ -196,6 +201,12 @@ public class PayrollApiController {
 
 	@Autowired
 	GetDeptPayReportRepo getDeptPayReportRepo;
+
+	@Autowired
+	EmpInfoForArearRepository empInfoForArearRepository;
+
+	@Autowired
+	GetPayrollGeneratedListForArearRepo getPayrollGeneratedListForArearRepo;
 
 	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForPayRoll" }, method = RequestMethod.POST)
 	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForPayRoll(@RequestParam("month") int month,
@@ -1290,8 +1301,8 @@ public class PayrollApiController {
 									if (getSalaryTempList.get(i).getEpfWages() > employee_ceiling_limit) {
 										employeePfOnAmt = employee_ceiling_limit;
 										getSalaryTempList.get(i).setEpfWages(employee_ceiling_limit);
-									}  
-									
+									}
+
 									employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
 									double pfAmt = employeePfOnAmt * epf_percentage;
 									getSalaryTempList.get(i).setEmployeePf(castNumber(pfAmt, amount_round));
@@ -1317,8 +1328,8 @@ public class PayrollApiController {
 									if (getSalaryTempList.get(i).getEpfWages() > employee_ceiling_limit) {
 										employeePfOnAmt = employee_ceiling_limit;
 										getSalaryTempList.get(i).setEpfWages(employee_ceiling_limit);
-									}  
-									
+									}
+
 									employeePfOnAmt = getSalaryTempList.get(i).getEpfWages();
 									double pfAmt = employeePfOnAmt * epf_percentage;
 									getSalaryTempList.get(i).setEmployeePf(castNumber(pfAmt, amount_round));
@@ -1395,7 +1406,6 @@ public class PayrollApiController {
 							double empoyerpf = epfCalOn * epf_percentage;
 
 							getSalaryTempList.get(i).setEmployerPf(castNumber(empoyerpf - employer_eps, amount_round));
-							
 
 							System.out.println(getSalaryTempList.get(i).getEpsWages() + " --- getEpsWages");
 							System.out.println(getSalaryTempList.get(i).getEpfWages() + " --- getEpfWages");
@@ -2800,15 +2810,14 @@ public class PayrollApiController {
 
 	@RequestMapping(value = { "/getPayrollGenratedListforarear" }, method = RequestMethod.POST)
 	@ResponseBody
-	public PayRollDataForProcessing getPayrollGenratedListforarear(@RequestParam("fromDate") String fromDate,
+	public List<EmpInfoForArear> getPayrollGenratedListforarear(@RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("empIds") List<Integer> empIds) {
 
-		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
+		List<EmpInfoForArear> empList = new ArrayList<>();
 
 		try {
 
-			List<EmpSalaryInfoForPayroll> empList = empSalaryInfoForPayrollRepository
-					.getEmployeeListWithEmpSalEnfoForArrearEmpId(empIds);
+			empList = empInfoForArearRepository.getEmployeeListWithEmpSalEnfoForArrearEmpId(empIds);
 
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
 			List<EmpSalAllowance> empAllowanceList = empSalAllowanceRepo.findByDelStatus(1);
@@ -2847,7 +2856,7 @@ public class PayrollApiController {
 				empList.get(i).setEmpAllowanceList(allowlist);
 			}
 
-			List<GetPayrollGeneratedList> generatedPayrollList = getPayrollGeneratedListRepo
+			List<GetPayrollGeneratedListForArear> generatedPayrollList = getPayrollGeneratedListForArearRepo
 					.generatedPayrollList(empIds, fromDate, toDate);
 
 			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceListlocId(empIds,
@@ -2861,18 +2870,79 @@ public class PayrollApiController {
 
 					if (generatedPayrollList.get(i).getId() == getPayrollAllownceList.get(k).getSalaryCalcId()) {
 						assignAllownceList.add(getPayrollAllownceList.get(k));
-
 					}
 				}
 
 				generatedPayrollList.get(i).setPayrollAllownceList(assignAllownceList);
 			}
 
+			for (int i = 0; i < empList.size(); i++) {
+				List<GetPayrollGeneratedListForArear> generated = new ArrayList<GetPayrollGeneratedListForArear>();
+
+				for (int j = 0; j < generatedPayrollList.size(); j++) {
+					
+					List<AllowanceWithDifferenceForArear> difAlloList = new ArrayList<AllowanceWithDifferenceForArear>();
+					double totalDiff = 0;
+					
+					if (empList.get(i).getEmpId() == generatedPayrollList.get(j).getEmpId()) {
+
+						if (generatedPayrollList.get(j).getBasicDefault() < empList.get(i).getBasic()) {
+							generatedPayrollList.get(j).setSalBasicDiff(
+									empList.get(i).getBasic() - generatedPayrollList.get(j).getBasicDefault());
+							totalDiff = totalDiff + generatedPayrollList.get(j).getSalBasicDiff();
+						}
+
+						for (int k = 0; k < empList.get(i).getEmpAllowanceList().size(); k++) {
+
+							for (int m = 0; m < generatedPayrollList.get(j).getPayrollAllownceList().size(); m++) {
+
+								if (generatedPayrollList.get(j).getPayrollAllownceList().get(m)
+										.getAllowanceId() == empList.get(i).getEmpAllowanceList().get(k)
+												.getAllowanceId()) {
+									AllowanceWithDifferenceForArear allowanceWithDifferenceForArear = new AllowanceWithDifferenceForArear();
+									allowanceWithDifferenceForArear.setAllowanceId(
+											empList.get(i).getEmpAllowanceList().get(k).getAllowanceId());
+									allowanceWithDifferenceForArear
+											.setName(empList.get(i).getEmpAllowanceList().get(k).getAllowanceName());
+									allowanceWithDifferenceForArear
+											.setAllowanceValue(empList.get(i).getEmpAllowanceList().get(k).getValue());
+									allowanceWithDifferenceForArear.setAllowanceValueCal(generatedPayrollList.get(j)
+											.getPayrollAllownceList().get(m).getAllowanceValue());
+									if (allowanceWithDifferenceForArear
+											.getAllowanceValue() > allowanceWithDifferenceForArear
+													.getAllowanceValueCal()) {
+										allowanceWithDifferenceForArear.setAllowanceDifference(
+												allowanceWithDifferenceForArear.getAllowanceValue()
+														- allowanceWithDifferenceForArear.getAllowanceValueCal());
+										totalDiff = totalDiff
+												+ allowanceWithDifferenceForArear.getAllowanceDifference();
+									}
+									difAlloList.add(allowanceWithDifferenceForArear);
+									break;
+								}
+
+							}
+						}
+						generatedPayrollList.get(j).setDifAlloList(difAlloList);
+						generatedPayrollList.get(j).setSalTotalDiff(totalDiff); 
+						generated.add(generatedPayrollList.get(j));
+					}
+				}
+				empList.get(i).setGeneratedPayrollList(generated);
+			}
+
+			/*
+			 * for (int i = 0; i < empList.size(); i++) { for (int i = 0; i <
+			 * empList.size(); i++) {
+			 * 
+			 * } }
+			 */
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return payRollDataForProcessing;
+		return empList;
 	}
 
 }

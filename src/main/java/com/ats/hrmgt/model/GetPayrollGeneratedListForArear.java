@@ -1,6 +1,5 @@
 package com.ats.hrmgt.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -10,8 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 
 @Entity
-public class GetPayrollGeneratedList {
-
+public class GetPayrollGeneratedListForArear {
+	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
@@ -116,43 +116,16 @@ public class GetPayrollGeneratedList {
 
 	@Transient
 	List<SalAllownceCal> payrollAllownceList;
-
-	@Transient
-	List<GetAdvanceDetails> getAdvanceList;
-
-	@Transient
-	List<ProductionIncentiveList> getAbsentDedList;
-	
-	@Transient
-	List<ProductionIncentiveList> getLateMarkDedList;
-
-	@Transient
-	List<GetAdvanceDetails> getClaimList;
-
-	@Transient
-	List<GetAdvanceDetails> getBhattaList;
-	
-	@Transient
-	List<GetAdvanceDetails> getPayDedList;
-
-	@Transient
-	List<GetAdvanceDetails> getRewardList;
-
-	@Transient
-	List<GetAdvanceDetails> getLoanList;
-
-	@Transient
-	List<ProductionIncentiveList> performance;
-
-	@Transient
-	List<ProductionIncentiveList> production;
-
-	@Transient
-	private String moneyInword;
-	
+ 
 	@Transient
 	List<AllowanceWithDifferenceForArear> difAlloList;
 
+	@Transient
+	private double salBasicDiff;
+	
+	@Transient
+	private double salTotalDiff;
+	
 	public int getId() {
 		return id;
 	}
@@ -625,102 +598,6 @@ public class GetPayrollGeneratedList {
 		this.basicDefault = basicDefault;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getEmpTypeName() {
-		return empTypeName;
-	}
-
-	public void setEmpTypeName(String empTypeName) {
-		this.empTypeName = empTypeName;
-	}
-
-	public String getDepartName() {
-		return departName;
-	}
-
-	public void setDepartName(String departName) {
-		this.departName = departName;
-	}
-
-	public String getDesignName() {
-		return designName;
-	}
-
-	public void setDesignName(String designName) {
-		this.designName = designName;
-	}
-
-	public List<SalAllownceCal> getPayrollAllownceList() {
-		return payrollAllownceList;
-	}
-
-	public void setPayrollAllownceList(List<SalAllownceCal> payrollAllownceList) {
-		this.payrollAllownceList = payrollAllownceList;
-	}
-
-	public float getPayableDays() {
-		return payableDays;
-	}
-
-	public void setPayableDays(float payableDays) {
-		this.payableDays = payableDays;
-	}
-
-	public float getPresentDays() {
-		return presentDays;
-	}
-
-	public void setPresentDays(float presentDays) {
-		this.presentDays = presentDays;
-	}
-
-	public float getWeeklyOff() {
-		return weeklyOff;
-	}
-
-	public void setWeeklyOff(float weeklyOff) {
-		this.weeklyOff = weeklyOff;
-	}
-
-	public float getPaidHoliday() {
-		return paidHoliday;
-	}
-
-	public void setPaidHoliday(float paidHoliday) {
-		this.paidHoliday = paidHoliday;
-	}
-
-	public float getPaidLeave() {
-		return paidLeave;
-	}
-
-	public void setPaidLeave(float paidLeave) {
-		this.paidLeave = paidLeave;
-	}
-
-	public float getUnpaidLeave() {
-		return unpaidLeave;
-	}
-
-	public void setUnpaidLeave(float unpaidLeave) {
-		this.unpaidLeave = unpaidLeave;
-	}
-
-	public String getMoneyInword() {
-		return moneyInword;
-	}
-
-	public void setMoneyInword(String moneyInword) {
-		this.moneyInword = moneyInword;
-	}
-
 	public double getAbDeduction() {
 		return abDeduction;
 	}
@@ -889,12 +766,108 @@ public class GetPayrollGeneratedList {
 		this.reward = reward;
 	}
 
+	public double getBhatta() {
+		return bhatta;
+	}
+
+	public void setBhatta(double bhatta) {
+		this.bhatta = bhatta;
+	}
+
+	public double getOther1() {
+		return other1;
+	}
+
+	public void setOther1(double other1) {
+		this.other1 = other1;
+	}
+
 	public int getSubCmpId() {
 		return subCmpId;
 	}
 
 	public void setSubCmpId(int subCmpId) {
 		this.subCmpId = subCmpId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmpTypeName() {
+		return empTypeName;
+	}
+
+	public void setEmpTypeName(String empTypeName) {
+		this.empTypeName = empTypeName;
+	}
+
+	public String getDepartName() {
+		return departName;
+	}
+
+	public void setDepartName(String departName) {
+		this.departName = departName;
+	}
+
+	public String getDesignName() {
+		return designName;
+	}
+
+	public void setDesignName(String designName) {
+		this.designName = designName;
+	}
+
+	public float getPayableDays() {
+		return payableDays;
+	}
+
+	public void setPayableDays(float payableDays) {
+		this.payableDays = payableDays;
+	}
+
+	public float getPresentDays() {
+		return presentDays;
+	}
+
+	public void setPresentDays(float presentDays) {
+		this.presentDays = presentDays;
+	}
+
+	public float getWeeklyOff() {
+		return weeklyOff;
+	}
+
+	public void setWeeklyOff(float weeklyOff) {
+		this.weeklyOff = weeklyOff;
+	}
+
+	public float getPaidHoliday() {
+		return paidHoliday;
+	}
+
+	public void setPaidHoliday(float paidHoliday) {
+		this.paidHoliday = paidHoliday;
+	}
+
+	public float getPaidLeave() {
+		return paidLeave;
+	}
+
+	public void setPaidLeave(float paidLeave) {
+		this.paidLeave = paidLeave;
+	}
+
+	public float getUnpaidLeave() {
+		return unpaidLeave;
+	}
+
+	public void setUnpaidLeave(float unpaidLeave) {
+		this.unpaidLeave = unpaidLeave;
 	}
 
 	public float getAbsentDays() {
@@ -913,100 +886,12 @@ public class GetPayrollGeneratedList {
 		this.email = email;
 	}
 
-	public List<GetAdvanceDetails> getGetAdvanceList() {
-		return getAdvanceList;
+	public List<SalAllownceCal> getPayrollAllownceList() {
+		return payrollAllownceList;
 	}
 
-	public void setGetAdvanceList(List<GetAdvanceDetails> getAdvanceList) {
-		this.getAdvanceList = getAdvanceList;
-	}
-
-	public List<ProductionIncentiveList> getGetAbsentDedList() {
-		return getAbsentDedList;
-	}
-
-	public void setGetAbsentDedList(List<ProductionIncentiveList> getAbsentDedList) {
-		this.getAbsentDedList = getAbsentDedList;
-	}
-
-	public List<GetAdvanceDetails> getGetClaimList() {
-		return getClaimList;
-	}
-
-	public void setGetClaimList(List<GetAdvanceDetails> getClaimList) {
-		this.getClaimList = getClaimList;
-	}
-
-	public List<GetAdvanceDetails> getGetPayDedList() {
-		return getPayDedList;
-	}
-
-	public void setGetPayDedList(List<GetAdvanceDetails> getPayDedList) {
-		this.getPayDedList = getPayDedList;
-	}
-
-	public List<GetAdvanceDetails> getGetRewardList() {
-		return getRewardList;
-	}
-
-	public void setGetRewardList(List<GetAdvanceDetails> getRewardList) {
-		this.getRewardList = getRewardList;
-	}
-
-	public List<GetAdvanceDetails> getGetLoanList() {
-		return getLoanList;
-	}
-
-	public void setGetLoanList(List<GetAdvanceDetails> getLoanList) {
-		this.getLoanList = getLoanList;
-	}
-
-	public List<ProductionIncentiveList> getPerformance() {
-		return performance;
-	}
-
-	public void setPerformance(List<ProductionIncentiveList> performance) {
-		this.performance = performance;
-	}
-
-	public List<ProductionIncentiveList> getProduction() {
-		return production;
-	}
-
-	public void setProduction(List<ProductionIncentiveList> production) {
-		this.production = production;
-	}
-
-	public List<ProductionIncentiveList> getGetLateMarkDedList() {
-		return getLateMarkDedList;
-	}
-
-	public void setGetLateMarkDedList(List<ProductionIncentiveList> getLateMarkDedList) {
-		this.getLateMarkDedList = getLateMarkDedList;
-	}
-
-	public double getBhatta() {
-		return bhatta;
-	}
-
-	public void setBhatta(double bhatta) {
-		this.bhatta = bhatta;
-	}
-
-	public List<GetAdvanceDetails> getGetBhattaList() {
-		return getBhattaList;
-	}
-
-	public void setGetBhattaList(List<GetAdvanceDetails> getBhattaList) {
-		this.getBhattaList = getBhattaList;
-	}
-
-	public double getOther1() {
-		return other1;
-	}
-
-	public void setOther1(double other1) {
-		this.other1 = other1;
+	public void setPayrollAllownceList(List<SalAllownceCal> payrollAllownceList) {
+		this.payrollAllownceList = payrollAllownceList;
 	}
 
 	public List<AllowanceWithDifferenceForArear> getDifAlloList() {
@@ -1017,10 +902,26 @@ public class GetPayrollGeneratedList {
 		this.difAlloList = difAlloList;
 	}
 
+	public double getSalBasicDiff() {
+		return salBasicDiff;
+	}
+
+	public void setSalBasicDiff(double salBasicDiff) {
+		this.salBasicDiff = salBasicDiff;
+	}
+
+	public double getSalTotalDiff() {
+		return salTotalDiff;
+	}
+
+	public void setSalTotalDiff(double salTotalDiff) {
+		this.salTotalDiff = salTotalDiff;
+	}
+
 	@Override
 	public String toString() {
-		return "GetPayrollGeneratedList [id=" + id + ", cmpId=" + cmpId + ", empId=" + empId + ", empCode=" + empCode
-				+ ", empType=" + empType + ", contractorId=" + contractorId + ", departId=" + departId
+		return "GetPayrollGeneratedListForArear [id=" + id + ", cmpId=" + cmpId + ", empId=" + empId + ", empCode="
+				+ empCode + ", empType=" + empType + ", contractorId=" + contractorId + ", departId=" + departId
 				+ ", designationId=" + designationId + ", locationId=" + locationId + ", calcMonth=" + calcMonth
 				+ ", calcYear=" + calcYear + ", salTypeId=" + salTypeId + ", attSumId=" + attSumId + ", basicCal="
 				+ basicCal + ", performanceBonus=" + performanceBonus + ", otWages=" + otWages + ", miscExpAdd="
@@ -1052,11 +953,10 @@ public class GetPayrollGeneratedList {
 				+ designName + ", payableDays=" + payableDays + ", presentDays=" + presentDays + ", weeklyOff="
 				+ weeklyOff + ", paidHoliday=" + paidHoliday + ", paidLeave=" + paidLeave + ", unpaidLeave="
 				+ unpaidLeave + ", absentDays=" + absentDays + ", email=" + email + ", payrollAllownceList="
-				+ payrollAllownceList + ", getAdvanceList=" + getAdvanceList + ", getAbsentDedList=" + getAbsentDedList
-				+ ", getLateMarkDedList=" + getLateMarkDedList + ", getClaimList=" + getClaimList + ", getBhattaList="
-				+ getBhattaList + ", getPayDedList=" + getPayDedList + ", getRewardList=" + getRewardList
-				+ ", getLoanList=" + getLoanList + ", performance=" + performance + ", production=" + production
-				+ ", moneyInword=" + moneyInword + ", difAlloList=" + difAlloList + "]";
+				+ payrollAllownceList + ", difAlloList=" + difAlloList + ", salBasicDiff=" + salBasicDiff
+				+ ", salTotalDiff=" + salTotalDiff + "]";
 	}
+	
+	
 
 }
