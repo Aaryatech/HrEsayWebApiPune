@@ -5,6 +5,7 @@ public class EmpAllowanceList {
 	private int allowanceId;
 	private String allowanceName;
 	private double value;
+	private String shortName; 
 	public int getAllowanceId() {
 		return allowanceId;
 	}
@@ -23,10 +24,16 @@ public class EmpAllowanceList {
 	public void setValue(double value) {
 		this.value = value;
 	}
+	public String getShortName() {
+		return shortName;
+	}
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
 	@Override
 	public String toString() {
 		return "EmpAllowanceList [allowanceId=" + allowanceId + ", allowanceName=" + allowanceName + ", value=" + value
-				+ "]";
+				+ ", shortName=" + shortName + "]";
 	}
 
 	

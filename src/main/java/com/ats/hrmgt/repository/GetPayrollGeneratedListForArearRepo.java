@@ -25,7 +25,7 @@ public interface GetPayrollGeneratedListForArearRepo extends JpaRepository<GetPa
 			"        dd.paid_leave,\n" + 
 			"        dd.unpaid_leave,\n" + 
 			"        dd.absent_days,\n" + 
-			"        MONTHNAME(concat(sc.calc_year,'-',sc.calc_month,'-01')) as email\n" + 
+			"        MONTHNAME(concat(sc.calc_year,'-',sc.calc_month,'-01')) as email,dd.working_days,dd.total_days_inmonth,si.monthly_hr_target,si.monthly_minimum_target,si.monthly_ot_hr,si.daily_hr,dd.totworking_hrs\n" + 
 			"    from\n" + 
 			"        tbl_salary_calc sc,\n" + 
 			"        m_employees e,\n" + 
@@ -33,7 +33,7 @@ public interface GetPayrollGeneratedListForArearRepo extends JpaRepository<GetPa
 			"        m_department d,\n" + 
 			"        m_designation dg,\n" + 
 			"        tbl_attt_summary_daily dd,\n" + 
-			"        tbl_emp_info ei     \n" + 
+			"        tbl_emp_info ei,tbl_emp_salary_info si     \n" + 
 			"    where\n" + 
 			"                 \n" + 
 			"        date_format(concat(sc.calc_year,'-',sc.calc_month,'-01'),'%Y-%m-%d') between :fromDate and :toDate\n" + 
@@ -43,7 +43,7 @@ public interface GetPayrollGeneratedListForArearRepo extends JpaRepository<GetPa
 			"        and dg.desig_id=e.designation_id \n" + 
 			"        and ei.emp_id=e.emp_id         \n" + 
 			"        and dd.id=sc.att_sum_id \n" + 
-			"        and e.emp_id in (:empIds) \n" + 
+			"        and e.emp_id in (:empIds) and e.emp_id=si.emp_id \n" + 
 			"    order by\n" + 
 			"        e.emp_id asc", nativeQuery = true) 
 	List<GetPayrollGeneratedListForArear> generatedPayrollList(List<Integer> empIds, String fromDate, String toDate);

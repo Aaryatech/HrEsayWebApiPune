@@ -10,8 +10,7 @@ import javax.persistence.Transient;
 
 @Entity
 public class GetPayrollGeneratedListForArear {
-	
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
@@ -96,7 +95,7 @@ public class GetPayrollGeneratedListForArear {
 	private double reward;
 	private double bhatta;
 	private double other1;
-	
+
 	private int subCmpId;
 
 	private String name;
@@ -112,20 +111,36 @@ public class GetPayrollGeneratedListForArear {
 	private float unpaidLeave;
 	private float absentDays;
 
+	private String dailyHr;
+	private String monthlyHrTarget;
+	private String monthlyMinimumTarget;
+	private String monthlyOtHr;
+	private int totalDaysInmonth;
+	private float workingDays;
+	private float totworkingHrs;
 	private String email;
-
+	
+	@Transient
+	private double grossSalaryDytemp; 
+	@Transient
+	private double esicArear;
+	@Transient
+	private double pfArear;
 	@Transient
 	List<SalAllownceCal> payrollAllownceList;
- 
+
 	@Transient
 	List<AllowanceWithDifferenceForArear> difAlloList;
 
 	@Transient
 	private double salBasicDiff;
-	
+
 	@Transient
 	private double salTotalDiff;
-	
+
+	@Transient
+	private double basicCalArear;
+
 	public int getId() {
 		return id;
 	}
@@ -918,6 +933,94 @@ public class GetPayrollGeneratedListForArear {
 		this.salTotalDiff = salTotalDiff;
 	}
 
+	public double getBasicCalArear() {
+		return basicCalArear;
+	}
+
+	public void setBasicCalArear(double basicCalArear) {
+		this.basicCalArear = basicCalArear;
+	}
+
+	public String getDailyHr() {
+		return dailyHr;
+	}
+
+	public void setDailyHr(String dailyHr) {
+		this.dailyHr = dailyHr;
+	}
+
+	public String getMonthlyHrTarget() {
+		return monthlyHrTarget;
+	}
+
+	public void setMonthlyHrTarget(String monthlyHrTarget) {
+		this.monthlyHrTarget = monthlyHrTarget;
+	}
+
+	public String getMonthlyMinimumTarget() {
+		return monthlyMinimumTarget;
+	}
+
+	public void setMonthlyMinimumTarget(String monthlyMinimumTarget) {
+		this.monthlyMinimumTarget = monthlyMinimumTarget;
+	}
+
+	public String getMonthlyOtHr() {
+		return monthlyOtHr;
+	}
+
+	public void setMonthlyOtHr(String monthlyOtHr) {
+		this.monthlyOtHr = monthlyOtHr;
+	}
+
+	public int getTotalDaysInmonth() {
+		return totalDaysInmonth;
+	}
+
+	public void setTotalDaysInmonth(int totalDaysInmonth) {
+		this.totalDaysInmonth = totalDaysInmonth;
+	}
+
+	public float getWorkingDays() {
+		return workingDays;
+	}
+
+	public void setWorkingDays(float workingDays) {
+		this.workingDays = workingDays;
+	}
+
+	public float getTotworkingHrs() {
+		return totworkingHrs;
+	}
+
+	public void setTotworkingHrs(float totworkingHrs) {
+		this.totworkingHrs = totworkingHrs;
+	}
+
+	public double getGrossSalaryDytemp() {
+		return grossSalaryDytemp;
+	}
+
+	public void setGrossSalaryDytemp(double grossSalaryDytemp) {
+		this.grossSalaryDytemp = grossSalaryDytemp;
+	}
+ 
+	public double getEsicArear() {
+		return esicArear;
+	}
+
+	public void setEsicArear(double esicArear) {
+		this.esicArear = esicArear;
+	}
+
+	public double getPfArear() {
+		return pfArear;
+	}
+
+	public void setPfArear(double pfArear) {
+		this.pfArear = pfArear;
+	}
+
 	@Override
 	public String toString() {
 		return "GetPayrollGeneratedListForArear [id=" + id + ", cmpId=" + cmpId + ", empId=" + empId + ", empCode="
@@ -952,11 +1055,13 @@ public class GetPayrollGeneratedListForArear {
 				+ ", name=" + name + ", empTypeName=" + empTypeName + ", departName=" + departName + ", designName="
 				+ designName + ", payableDays=" + payableDays + ", presentDays=" + presentDays + ", weeklyOff="
 				+ weeklyOff + ", paidHoliday=" + paidHoliday + ", paidLeave=" + paidLeave + ", unpaidLeave="
-				+ unpaidLeave + ", absentDays=" + absentDays + ", email=" + email + ", payrollAllownceList="
-				+ payrollAllownceList + ", difAlloList=" + difAlloList + ", salBasicDiff=" + salBasicDiff
-				+ ", salTotalDiff=" + salTotalDiff + "]";
+				+ unpaidLeave + ", absentDays=" + absentDays + ", dailyHr=" + dailyHr + ", monthlyHrTarget="
+				+ monthlyHrTarget + ", monthlyMinimumTarget=" + monthlyMinimumTarget + ", monthlyOtHr=" + monthlyOtHr
+				+ ", totalDaysInmonth=" + totalDaysInmonth + ", workingDays=" + workingDays + ", totworkingHrs="
+				+ totworkingHrs + ", email=" + email + ", grossSalaryDytemp=" + grossSalaryDytemp + ", esicArear="
+				+ esicArear + ", pfArear=" + pfArear + ", payrollAllownceList=" + payrollAllownceList + ", difAlloList="
+				+ difAlloList + ", salBasicDiff=" + salBasicDiff + ", salTotalDiff=" + salTotalDiff + ", basicCalArear="
+				+ basicCalArear + "]";
 	}
-	
-	
 
 }
