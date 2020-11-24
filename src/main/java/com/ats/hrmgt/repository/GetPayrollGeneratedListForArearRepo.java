@@ -46,7 +46,7 @@ public interface GetPayrollGeneratedListForArearRepo extends JpaRepository<GetPa
 			"        and dg.desig_id=e.designation_id \n" + 
 			"        and ei.emp_id=e.emp_id         \n" + 
 			"        and dd.id=sc.att_sum_id \n" + 
-			"        and e.emp_id in (:empIds) and e.emp_id=si.emp_id \n" + 
+			"        and e.emp_id in (:empIds) and e.emp_id=si.emp_id  and  sc.id not in (select att_sum_id from t_arear_header ar where date_format(concat(ar.calc_year,'-',ar.calc_month,'-01'),'%Y-%m-%d') between :fromDate and :toDate and  ar.emp_id in (:empIds) )\n" + 
 			"    order by\n" + 
 			"        e.emp_id asc", nativeQuery = true) 
 	List<GetPayrollGeneratedListForArear> generatedPayrollList(List<Integer> empIds, String fromDate, String toDate);
