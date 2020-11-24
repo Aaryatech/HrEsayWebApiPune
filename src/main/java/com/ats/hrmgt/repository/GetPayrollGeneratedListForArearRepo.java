@@ -25,7 +25,10 @@ public interface GetPayrollGeneratedListForArearRepo extends JpaRepository<GetPa
 			"        dd.paid_leave,\n" + 
 			"        dd.unpaid_leave,\n" + 
 			"        dd.absent_days,\n" + 
-			"        MONTHNAME(concat(sc.calc_year,'-',sc.calc_month,'-01')) as email,dd.working_days,dd.total_days_inmonth,si.monthly_hr_target,si.monthly_minimum_target,si.monthly_ot_hr,si.daily_hr,dd.totworking_hrs\n" + 
+			"       concat(MONTHNAME(concat(sc.calc_year,\n" + 
+			"        '-',\n" + 
+			"        sc.calc_month,\n" + 
+			"        '-01')),'-',sc.calc_year) as email,dd.working_days,dd.total_days_inmonth,si.monthly_hr_target,si.monthly_minimum_target,si.monthly_ot_hr,si.daily_hr,dd.totworking_hrs\n" + 
 			"    from\n" + 
 			"        tbl_salary_calc sc,\n" + 
 			"        m_employees e,\n" + 

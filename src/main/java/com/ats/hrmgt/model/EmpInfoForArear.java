@@ -174,6 +174,9 @@ public class EmpInfoForArear {
 	@Transient
 	List<GetPayrollGeneratedListForArear> generatedPayrollList;
 	
+	@Transient
+	private double totalDiffCal;
+	
 	public int getEmpId() {
 		return empId;
 	}
@@ -598,6 +601,14 @@ public class EmpInfoForArear {
 		this.generatedPayrollList = generatedPayrollList;
 	}
 
+	public double getTotalDiffCal() {
+		return totalDiffCal;
+	}
+
+	public void setTotalDiffCal(double totalDiffCal) {
+		this.totalDiffCal = totalDiffCal;
+	}
+
 	@Override
 	public String toString() {
 		return "EmpInfoForArear [empId=" + empId + ", salaryInfoId=" + salaryInfoId + ", salaryTypeId=" + salaryTypeId
@@ -617,7 +628,8 @@ public class EmpInfoForArear {
 				+ locName + ", empTypeId=" + empTypeId + ", locId=" + locId + ", departId=" + departId
 				+ ", contractorId=" + contractorId + ", desigId=" + desigId + ", sumId=" + sumId + ", subCmpId="
 				+ subCmpId + ", countLeave=" + countLeave + ", canGenerateSal=" + canGenerateSal + ", empAllowanceList="
-				+ empAllowanceList + ", generatedPayrollList=" + generatedPayrollList + "]";
+				+ empAllowanceList + ", generatedPayrollList=" + generatedPayrollList + ", totalDiffCal=" + totalDiffCal
+				+ "]";
 	}
 	
 	

@@ -140,6 +140,9 @@ public class GetPayrollGeneratedListForArear {
 
 	@Transient
 	private double basicCalArear;
+	
+	@Transient
+	private double netCalArear;
 
 	public int getId() {
 		return id;
@@ -1021,6 +1024,14 @@ public class GetPayrollGeneratedListForArear {
 		this.pfArear = pfArear;
 	}
 
+	public double getNetCalArear() {
+		return netCalArear;
+	}
+
+	public void setNetCalArear(double netCalArear) {
+		this.netCalArear = netCalArear;
+	}
+
 	@Override
 	public String toString() {
 		return "GetPayrollGeneratedListForArear [id=" + id + ", cmpId=" + cmpId + ", empId=" + empId + ", empCode="
@@ -1061,7 +1072,7 @@ public class GetPayrollGeneratedListForArear {
 				+ totworkingHrs + ", email=" + email + ", grossSalaryDytemp=" + grossSalaryDytemp + ", esicArear="
 				+ esicArear + ", pfArear=" + pfArear + ", payrollAllownceList=" + payrollAllownceList + ", difAlloList="
 				+ difAlloList + ", salBasicDiff=" + salBasicDiff + ", salTotalDiff=" + salTotalDiff + ", basicCalArear="
-				+ basicCalArear + "]";
+				+ basicCalArear + ", netCalArear=" + netCalArear + "]";
 	}
 
 }

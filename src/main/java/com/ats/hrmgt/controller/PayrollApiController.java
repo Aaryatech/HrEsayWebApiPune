@@ -1289,9 +1289,9 @@ public class PayrollApiController {
 						if (age <= eps_age_limit) {
 							try {
 
-								System.out.println(" ** employee "
+								/*System.out.println(" ** employee "
 										+ getSalaryTempList.get(i).getCeilingLimitEmpApplicable() + " ** employer "
-										+ getSalaryTempList.get(i).getCeilingLimitEmployerApplicable());
+										+ getSalaryTempList.get(i).getCeilingLimitEmployerApplicable());*/
 
 								if (getSalaryTempList.get(i).getCeilingLimitEmpApplicable().equalsIgnoreCase("yes")
 										&& getSalaryTempList.get(i).getCeilingLimitEmployerApplicable()
@@ -1407,11 +1407,11 @@ public class PayrollApiController {
 
 							getSalaryTempList.get(i).setEmployerPf(castNumber(empoyerpf - employer_eps, amount_round));
 
-							System.out.println(getSalaryTempList.get(i).getEpsWages() + " --- getEpsWages");
+							/*System.out.println(getSalaryTempList.get(i).getEpsWages() + " --- getEpsWages");
 							System.out.println(getSalaryTempList.get(i).getEpfWages() + " --- getEpfWages");
 							System.out.println(getSalaryTempList.get(i).getEmployeePf() + " --- getEmployeePf");
 							System.out.println(getSalaryTempList.get(i).getEmployerEps() + " --- getEmployerEps");
-							System.out.println(getSalaryTempList.get(i).getEmployerPf() + " --- getEmployerPf");
+							System.out.println(getSalaryTempList.get(i).getEmployerPf() + " --- getEmployerPf");*/
 						} else {
 							getSalaryTempList.get(i).setEpsWages(0);
 							getSalaryTempList.get(i).setEpsDefault(0);
@@ -1856,7 +1856,7 @@ public class PayrollApiController {
 				val = otHr * rateofmin;
 			}
 		}
-		System.out.println(val + "***" + mstEmpType.getOtType());
+		//System.out.println(val + "***" + mstEmpType.getOtType());
 		val = castNumber(val, amount_round);
 		return val;
 	}
@@ -2929,7 +2929,10 @@ public class PayrollApiController {
 						}
 						generatedPayrollList.get(j).setDifAlloList(difAlloList);
 						generatedPayrollList.get(j).setSalTotalDiff(totalDiff);
-						generated.add(generatedPayrollList.get(j));
+						if (totalDiff > 0) {
+							generated.add(generatedPayrollList.get(j));
+						}
+
 					}
 				}
 				empList.get(i).setGeneratedPayrollList(generated);
@@ -3022,6 +3025,9 @@ public class PayrollApiController {
 			SalaryTypesMaster salaryType = new SalaryTypesMaster();
 
 			for (int i = 0; i < empList.size(); i++) {
+
+				double netAmt = 0;
+
 				for (int m = 0; m < empList.get(i).getGeneratedPayrollList().size(); m++) {
 
 					if (empList.get(i).getPfEmpPer() > 0) {
@@ -3041,6 +3047,15 @@ public class PayrollApiController {
 
 					}
 
+					for (int j = 0; j < salaryTypeList.size(); j++) {
+
+						if (salaryTypeList.get(j).getSalTypeId() == empList.get(i).getSalaryTypeId()) {
+							salaryType = salaryTypeList.get(j);
+							break;
+						}
+
+					}
+
 					for (int j = 0; j < salaryTermList.size(); j++) {
 
 						if (salaryTermList.get(j).getSalTypeId() == salaryType.getSalTypeId()) {
@@ -3050,7 +3065,7 @@ public class PayrollApiController {
 							int findAll = 0;
 							if (!salaryTermList.get(j).getFromColumn().equals("")) {
 								if (salaryTermList.get(j).getFromColumn().equals("basic")) {
-									ammt = empList.get(i).getBasic();
+									ammt = empList.get(i).getGeneratedPayrollList().get(m).getSalBasicDiff();
 									// System.out.println(ammt);
 								} else {
 
@@ -3082,6 +3097,8 @@ public class PayrollApiController {
 										empList.get(i).getGeneratedPayrollList().get(m).getTotworkingHrs(),
 										amount_round);
 								empList.get(i).getGeneratedPayrollList().get(m).setBasicCalArear(calculatedValue);
+
+								//System.out.println(calculatedValue + "--------------");
 								salaryTermList.get(j).setValue(calculatedValue);
 
 								break;
@@ -3135,23 +3152,11 @@ public class PayrollApiController {
 								}
 
 								break;
-							case "Y":
-								// tempVal = castNumber(ammt);
-								if (salaryTermList.get(j).getFieldName().equals("basic_default")) {
-									empList.get(i).getGeneratedPayrollList().get(m).setBasicCalArear(ammt);
-								}
-								salaryTermList.get(j).setValue(ammt);
-
-								// System.out.println(salaryTermList.get(j).getFieldName()+ " " +
-								// getSalaryTempList.get(i).getBasicDefault());
-
-								/* System.out.println(salaryTermList); */
-								break;
 							case "XA":
 
 								if (findAll == 1) {
 									salaryTermList.get(j).setValue(empList.get(i).getGeneratedPayrollList().get(m)
-											.getDifAlloList().get(index).getAllowanceValue());
+											.getDifAlloList().get(index).getAllowanceDifference());
 								}
 								break;
 							default:
@@ -3165,14 +3170,15 @@ public class PayrollApiController {
 					}
 
 					empList.get(i).getGeneratedPayrollList().get(m)
-							.setNetSalary(castNumber(
+							.setNetCalArear(castNumber(
 									empList.get(i).getGeneratedPayrollList().get(m).getGrossSalaryDytemp()
 											- (empList.get(i).getGeneratedPayrollList().get(m).getEsicArear()
 													+ empList.get(i).getGeneratedPayrollList().get(m).getPfArear()),
 									amount_round));
-
-					// System.out.println(salaryTermList);
+					netAmt = netAmt + empList.get(i).getGeneratedPayrollList().get(m).getNetCalArear();
+					//System.out.println(netAmt);
 				}
+				empList.get(i).setTotalDiffCal(netAmt);
 			}
 
 		} catch (
