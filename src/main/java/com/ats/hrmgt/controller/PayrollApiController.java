@@ -214,7 +214,7 @@ public class PayrollApiController {
 
 	@Autowired
 	ArearSalaryCalcRepo arearSalaryCalcRepo;
-	
+
 	@Autowired
 	ArearAllownceCalRepo arearAllownceCalRepo;
 
@@ -3345,5 +3345,48 @@ public class PayrollApiController {
 		}
 
 		return info;
+	}
+
+	@RequestMapping(value = { "/getArearsGenratedList" }, method = RequestMethod.POST)
+	@ResponseBody
+	public PayRollDataForProcessing getArearsGenratedList(@RequestParam("month") int month,
+			@RequestParam("year") int year, @RequestParam("companyId") int companyId,
+			@RequestParam("locId") List<Integer> locId) {
+
+		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
+
+		try {
+
+			List<GetPayrollGeneratedList> list = new ArrayList<>();
+
+			list = getPayrollGeneratedListRepo.getArearsGenratedListLocId(month, year, companyId, locId);
+
+			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
+			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getArearsAllownceListlocId(month, year,
+					locId);
+
+			for (int i = 0; i < list.size(); i++) {
+
+				List<SalAllownceCal> assignAllownceList = new ArrayList<>();
+
+				for (int k = 0; k < getPayrollAllownceList.size(); k++) {
+
+					if (list.get(i).getId() == getPayrollAllownceList.get(k).getSalaryCalcId()) {
+						assignAllownceList.add(getPayrollAllownceList.get(k));
+
+					}
+				}
+
+				list.get(i).setPayrollAllownceList(assignAllownceList);
+			}
+
+			payRollDataForProcessing.setPayrollGeneratedList(list);
+			payRollDataForProcessing.setAllowancelist(allowancelist);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return payRollDataForProcessing;
 	}
 }

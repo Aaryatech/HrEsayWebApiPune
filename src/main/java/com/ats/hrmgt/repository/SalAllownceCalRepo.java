@@ -68,4 +68,8 @@ public interface SalAllownceCalRepo extends JpaRepository<SalAllownceCal, Intege
 			"        and e.emp_id in (:empIds) ", nativeQuery = true)
 	List<SalAllownceCal> getPayrollAllownceListlocId(List<Integer> empIds, String fromDate, String toDate);
 
+	@Query(value = "select sa.* from t_arear_detail sa,t_arear_header sc,m_employees e where sa.salary_calc_id=sc.id and "
+			+ "sc.calc_month=:month and calc_year=:year and sc.emp_id=e.emp_id and e.location_id in (:locId) ", nativeQuery = true)
+	List<SalAllownceCal> getArearsAllownceListlocId(int month, int year, List<Integer> locId);
+
 }

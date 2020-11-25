@@ -31,11 +31,8 @@ public interface GetSalaryCalcReportRepo extends JpaRepository<GetSalaryCalcRepo
 			"LEFT JOIN tbl_mst_sub_company subcomp ON\n" + 
 			"    salc.cmp_id = subcomp.company_id \n" + 
 			"WHERE\n" + 
-			"    salc.pf_status = 1 AND(\n" + 
-			"        salc.calc_month >=:fromMonth AND salc.calc_year =:fromYear \n" + 
-			"    ) OR(\n" + 
-			"        salc.calc_month <=:toMonth AND salc.calc_year =:toYear \n" + 
-			"    )   ",nativeQuery=true)
+			"    salc.pf_status = 1 "
+			+ " and date_format(concat(salc.calc_year,'-',salc.calc_month,'-01'),'%Y-%m-%d') between concat(:fromYear,'-',:fromMonth,'-01') and concat(:toYear,'-',:toMonth,'-01')",nativeQuery=true)
 	List<GetSalaryCalcReport> getSpecEmpPfForReport(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth, @Param("locId") int locId);
 	
 	
@@ -59,11 +56,8 @@ public interface GetSalaryCalcReportRepo extends JpaRepository<GetSalaryCalcRepo
 			"INNER JOIN tbl_mst_sub_company subcomp ON\n" + 
 			"    salc.cmp_id = subcomp.company_id AND salc.cmp_id =:companyId\n" + 
 			"WHERE\n" + 
-			"    salc.pf_status = 1 AND(\n" + 
-			"        salc.calc_month >=:fromMonth AND salc.calc_year =:fromYear \n" + 
-			"    ) OR(\n" + 
-			"        salc.calc_month <=:toMonth AND salc.calc_year =:toYear \n" + 
-			"    )",nativeQuery=true)
+			"    salc.pf_status = 1 "
+			+ "and date_format(concat(salc.calc_year,'-',salc.calc_month,'-01'),'%Y-%m-%d') between concat(:fromYear,'-',:fromMonth,'-01') and concat(:toYear,'-',:toMonth,'-01')",nativeQuery=true)
 	List<GetSalaryCalcReport> getSpecEmpPfForReportComp(@Param("companyId") int companyId,@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,
 			@Param("locId") int locId);
 	
@@ -183,6 +177,54 @@ public interface GetSalaryCalcReportRepo extends JpaRepository<GetSalaryCalcRepo
 			"        salc.calc_month <=:toMonth AND salc.calc_year =:toYear \n" + 
 			"    )",nativeQuery=true)
 	List<GetSalaryCalcReport> getSpecEmpPTForReportComp(@Param("companyId") int companyId,@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,
+			@Param("locId") int locId);
+
+
+	@Query(value=" SELECT\n" + 
+			"    salc.*,\n" + 
+			"    CONCAT(\n" + 
+			"        emp.first_name,\n" + 
+			"        ' ',\n" + 
+			"        emp.middle_name,\n" + 
+			"        ' ',\n" + 
+			"        emp.surname\n" + 
+			"    ) AS emp_name,\n" + 
+			"    company_name,\n" + 
+			"    name_sd\n" + 
+			"FROM\n" + 
+			"    t_arear_header salc\n" + 
+			"INNER JOIN m_employees emp ON\n" + 
+			"    salc.emp_id = emp.emp_id and emp.location_id=:locId\n" + 
+			"LEFT JOIN tbl_mst_sub_company subcomp ON\n" + 
+			"    salc.cmp_id = subcomp.company_id \n" + 
+			"WHERE\n" + 
+			"    salc.pf_status = 1 "
+			+ " and date_format(concat(salc.calc_year,'-',salc.calc_month,'-01'),'%Y-%m-%d') between concat(:fromYear,'-',:fromMonth,'-01') and concat(:toYear,'-',:toMonth,'-01')",nativeQuery=true)
+	List<GetSalaryCalcReport> getArrearsSpecEmpPfForReport(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth, @Param("locId") int locId);
+
+	@Query(value="\n" + 
+			"\n" + 
+			"SELECT\n" + 
+			"    salc.*,\n" + 
+			"    CONCAT(\n" + 
+			"        emp.first_name,\n" + 
+			"        ' ',\n" + 
+			"        emp.middle_name,\n" + 
+			"        ' ',\n" + 
+			"        emp.surname\n" + 
+			"    ) AS emp_name,\n" + 
+			"    company_name,\n" + 
+			"    name_sd\n" + 
+			"FROM\n" + 
+			"    t_arear_header salc\n" + 
+			"INNER JOIN m_employees emp ON\n" + 
+			"    salc.emp_id = emp.emp_id and emp.location_id=:locId\n" + 
+			"INNER JOIN tbl_mst_sub_company subcomp ON\n" + 
+			"    salc.cmp_id = subcomp.company_id AND salc.cmp_id =:companyId\n" + 
+			"WHERE\n" + 
+			"    salc.pf_status = 1 "
+			+ "and date_format(concat(salc.calc_year,'-',salc.calc_month,'-01'),'%Y-%m-%d') between concat(:fromYear,'-',:fromMonth,'-01') and concat(:toYear,'-',:toMonth,'-01')",nativeQuery=true)
+	List<GetSalaryCalcReport> getArrearsSpecEmpPfForReportComp(@Param("companyId") int companyId,@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,
 			@Param("locId") int locId);
 	
 	
