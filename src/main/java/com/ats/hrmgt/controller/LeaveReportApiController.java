@@ -342,11 +342,12 @@ public class LeaveReportApiController {
 		try {
 
 			if (companyId == 0) {
-				advYearList = getSalaryCalcReportRepo.getSpecEmpPfForReport(from[2].trim(), from[1].trim(), to[2].trim(), to[1].trim(), locId);
+				advYearList = getSalaryCalcReportRepo.getSpecEmpPfForReport(from[2].trim(), from[1].trim(),
+						to[2].trim(), to[1].trim(), locId);
 
 			} else {
-				advYearList = getSalaryCalcReportRepo.getSpecEmpPfForReportComp(companyId, from[2].trim(), from[1].trim(), to[2],
-						to[1], locId);
+				advYearList = getSalaryCalcReportRepo.getSpecEmpPfForReportComp(companyId, from[2].trim(),
+						from[1].trim(), to[2], to[1], locId);
 
 			}
 
@@ -358,7 +359,7 @@ public class LeaveReportApiController {
 		return advYearList;
 
 	}
-	
+
 	@RequestMapping(value = { "/getArrearsPfStatement" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetSalaryCalcReport> getArrearsPfStatement(@RequestParam("companyId") int companyId,
 			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
@@ -372,11 +373,12 @@ public class LeaveReportApiController {
 		try {
 
 			if (companyId == 0) {
-				advYearList = getSalaryCalcReportRepo.getArrearsSpecEmpPfForReport(from[2].trim(), from[1].trim(), to[2].trim(), to[1].trim(), locId);
+				advYearList = getSalaryCalcReportRepo.getArrearsSpecEmpPfForReport(from[2].trim(), from[1].trim(),
+						to[2].trim(), to[1].trim(), locId);
 
 			} else {
-				advYearList = getSalaryCalcReportRepo.getArrearsSpecEmpPfForReportComp(companyId, from[2].trim(), from[1].trim(), to[2],
-						to[1], locId);
+				advYearList = getSalaryCalcReportRepo.getArrearsSpecEmpPfForReportComp(companyId, from[2].trim(),
+						from[1].trim(), to[2], to[1], locId);
 
 			}
 
@@ -572,6 +574,32 @@ public class LeaveReportApiController {
 				advYearList = statutoryEsicRepRepo.getStatutoryEsic(fromDate, toDate, companyId, locId);
 
 			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return advYearList;
+
+	}
+
+	@RequestMapping(value = { "/getArearsStatutoryEsic" }, method = RequestMethod.POST)
+	public @ResponseBody List<StatutoryEsicRep> getArearsStatutoryEsic(@RequestParam("companyId") int companyId,
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
+			@RequestParam("locId") int locId) {
+
+		List<StatutoryEsicRep> advYearList = new ArrayList<StatutoryEsicRep>();
+
+		String from[] = fromDate.split("-");
+		String to[] = toDate.split("-");
+
+		fromDate = from[2].trim().concat("-").concat(from[1].trim()).concat("-").concat("01");
+		toDate = to[2].trim().concat("-").concat(to[1].trim()).concat("-").concat("01");
+
+		try {
+
+			advYearList = statutoryEsicRepRepo.getArearsStatutoryEsic(fromDate, toDate, companyId, locId);
 
 		} catch (Exception e) {
 

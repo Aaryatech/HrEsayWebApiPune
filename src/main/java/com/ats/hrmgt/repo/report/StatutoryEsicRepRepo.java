@@ -167,4 +167,63 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"                    and te.location_id=:locId) AS a",nativeQuery=true)
 	List<StatutoryEsicRep> showEsicDataUpload(@Param("month")String month, @Param("year") String year, @Param("locId") int locId, @Param("companyId") int companyId);
 
+
+
+	@Query(value="SELECT\n" + 
+			"    UUID() AS key_new, a.*\n" + 
+			"FROM\n" + 
+			"    (\n" + 
+			"    SELECT DISTINCT\n" + 
+			"        te.emp_code,te.emp_id,\n" + 
+			"        CONCAT(\n" + 
+			"            te.first_name,\n" + 
+			"            ' ',\n" + 
+			"            te.middle_name,\n" + 
+			"            ' ',\n" + 
+			"            te.surname\n" + 
+			"        ) AS emp_name,\n" + 
+			"        te.esic_no,\n" + 
+			"        tsc.net_salary,\n" + 
+			"        tsc.esic_wages_cal,\n" + 
+			"        tsc.employer_esic,\n" + 
+			"        tasd.payable_days as present_days,\n" + 
+			"        tasd.year,\n" + 
+			"        tasd.month,tsc.esic\n" + 
+			"    FROM\n" + 
+			"        m_employees AS te\n" + 
+			"    INNER JOIN tbl_attt_summary_daily AS tasd\n" + 
+			"    ON\n" + 
+			"        tasd.emp_id = te.emp_id AND(\n" + 
+			"            DATE_FORMAT(\n" + 
+			"                CONCAT(tasd.year, '-', tasd.month, '-01'),\n" + 
+			"                '%Y-%m-%d'\n" + 
+			"            ) >=:fromDate AND DATE_FORMAT(\n" + 
+			"                CONCAT(tasd.year, '-', tasd.month, '-01'),\n" + 
+			"                '%Y-%m-%d'\n" + 
+			"            ) <=:toDate)\n" + 
+			"        INNER JOIN t_arear_header AS tsc\n" + 
+			"        ON\n" + 
+			"            tsc.emp_id = te.emp_id AND(\n" + 
+			"                DATE_FORMAT(\n" + 
+			"                    CONCAT(\n" + 
+			"                        tsc.calc_year,\n" + 
+			"                        '-',\n" + 
+			"                        tsc.calc_month,\n" + 
+			"                        '-01'\n" + 
+			"                    ),\n" + 
+			"                    '%Y-%m-%d'\n" + 
+			"                ) >=:fromDate AND DATE_FORMAT(\n" + 
+			"                    CONCAT(\n" + 
+			"                        tsc.calc_year,\n" + 
+			"                        '-',\n" + 
+			"                        tsc.calc_month,\n" + 
+			"                        '-01'\n" + 
+			"                    ),\n" + 
+			"                    '%Y-%m-%d'\n" + 
+			"                ) <=:toDate) and tsc.esic_status=1\n" + 
+			"            WHERE\n" + 
+			"                te.is_emp = '1' AND tsc.cmp_id =:companyId AND te.del_status=1 and te.location_id=:locId\n" + 
+			"            ) AS a",nativeQuery=true)
+	List<StatutoryEsicRep> getArearsStatutoryEsic(@Param("fromDate") String fromDate,@Param("toDate") String toDate,@Param("companyId") int companyId,@Param("locId") int locId);
+
 }
