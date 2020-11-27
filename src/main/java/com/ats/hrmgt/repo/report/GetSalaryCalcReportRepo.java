@@ -22,8 +22,8 @@ public interface GetSalaryCalcReportRepo extends JpaRepository<GetSalaryCalcRepo
 			"        ' ',\n" + 
 			"        emp.surname\n" + 
 			"    ) AS emp_name,\n" + 
-			"    company_name,\n" + 
-			"    name_sd\n" + 
+			"    emp.pf_no as company_name,\n" + 
+			"    emp.uan as name_sd\n" + 
 			"FROM\n" + 
 			"    tbl_salary_calc salc\n" + 
 			"INNER JOIN m_employees emp ON\n" + 
@@ -47,8 +47,8 @@ public interface GetSalaryCalcReportRepo extends JpaRepository<GetSalaryCalcRepo
 			"        ' ',\n" + 
 			"        emp.surname\n" + 
 			"    ) AS emp_name,\n" + 
-			"    company_name,\n" + 
-			"    name_sd\n" + 
+			"    emp.pf_no as company_name,\n" + 
+			"    emp.uan as name_sd\n" + 
 			"FROM\n" + 
 			"    tbl_salary_calc salc\n" + 
 			"INNER JOIN m_employees emp ON\n" + 
@@ -71,8 +71,8 @@ public interface GetSalaryCalcReportRepo extends JpaRepository<GetSalaryCalcRepo
 			"        ' ',\n" + 
 			"        emp.surname\n" + 
 			"    ) AS emp_name,\n" + 
-			"    company_name,\n" + 
-			"    name_sd\n" + 
+			"    emp.pf_no as company_name,\n" + 
+			"    emp.uan as name_sd\n" + 
 			"FROM\n" + 
 			"    tbl_salary_calc salc\n" + 
 			"INNER JOIN m_employees emp ON\n" + 
@@ -189,8 +189,8 @@ public interface GetSalaryCalcReportRepo extends JpaRepository<GetSalaryCalcRepo
 			"        ' ',\n" + 
 			"        emp.surname\n" + 
 			"    ) AS emp_name,\n" + 
-			"    company_name,\n" + 
-			"    name_sd\n" + 
+			"    emp.pf_no as company_name,\n" + 
+			"    emp.uan as name_sd\n" + 
 			"FROM\n" + 
 			"    t_arear_header salc\n" + 
 			"INNER JOIN m_employees emp ON\n" + 
@@ -213,8 +213,8 @@ public interface GetSalaryCalcReportRepo extends JpaRepository<GetSalaryCalcRepo
 			"        ' ',\n" + 
 			"        emp.surname\n" + 
 			"    ) AS emp_name,\n" + 
-			"    company_name,\n" + 
-			"    name_sd\n" + 
+			"    emp.pf_no as company_name,\n" + 
+			"    emp.uan as name_sd\n" + 
 			"FROM\n" + 
 			"    t_arear_header salc\n" + 
 			"INNER JOIN m_employees emp ON\n" + 

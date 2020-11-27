@@ -1304,6 +1304,8 @@ public class PayrollApiController {
 								 * getSalaryTempList.get(i).getCeilingLimitEmpApplicable() + " ** employer " +
 								 * getSalaryTempList.get(i).getCeilingLimitEmployerApplicable());
 								 */
+								getSalaryTempList.get(i).setEpfWagesEmployer(
+										castNumber(getSalaryTempList.get(i).getEpfWages(), amount_round));
 
 								if (getSalaryTempList.get(i).getCeilingLimitEmpApplicable().equalsIgnoreCase("yes")
 										&& getSalaryTempList.get(i).getCeilingLimitEmployerApplicable()
@@ -1396,8 +1398,7 @@ public class PayrollApiController {
 							// employer_epf
 							double employer_epf_default = getSalaryTempList.get(i).getEpfWages()
 									* employer_epf_percentage;
-							getSalaryTempList.get(i).setEpfWagesEmployer(
-									castNumber(getSalaryTempList.get(i).getEpfWages(), amount_round));
+
 							getSalaryTempList.get(i)
 									.setEpmloyerEpfDefault(castNumber(employer_epf_default, amount_round));
 							getSalaryTempList.get(i).setEpfEmployerPercentage(employer_epf_percentage);
@@ -1407,19 +1408,24 @@ public class PayrollApiController {
 										castNumber((employer_eps_default - employer_eps), amount_round));
 							}
 
-							double epfCalOn = getSalaryTempList.get(i).getEpfWages();
+							double epfCalOn = getSalaryTempList.get(i).getEpfWagesEmployer();
 
 							if (getSalaryTempList.get(i).getCeilingLimitEmployerApplicable().equalsIgnoreCase("yes")) {
 
-								if (getSalaryTempList.get(i).getEpfWages() > employer_eps_ceiling_limit) {
+								if (getSalaryTempList.get(i).getEpfWagesEmployer() > employer_eps_ceiling_limit) {
 									epfCalOn = employee_ceiling_limit;
+									getSalaryTempList.get(i)
+											.setEpfWagesEmployer(castNumber(employee_ceiling_limit, amount_round));
 								}
 							}
 							double empoyerpf = epfCalOn * epf_percentage;
 
 							getSalaryTempList.get(i).setEmployerPf(castNumber(empoyerpf - employer_eps, amount_round));
 
+							System.out.println(getSalaryTempList.get(i).getEmpName() + " --- getEpsWages");
 							System.out.println(getSalaryTempList.get(i).getEpsWages() + " --- getEpsWages");
+							System.out.println(
+									getSalaryTempList.get(i).getEpfWagesEmployer() + " --- getEpfWagesEmployer");
 							System.out.println(getSalaryTempList.get(i).getEpfWages() + " --- getEpfWages");
 							System.out.println(getSalaryTempList.get(i).getEmployeePf() + " --- getEmployeePf");
 							System.out.println(getSalaryTempList.get(i).getEmployerEps() + " --- getEmployerEps");
@@ -1869,7 +1875,7 @@ public class PayrollApiController {
 				val = otHr * rateofmin;
 			}
 		}
-		 System.out.println(val + "***" + workingHour + " " +  otHr);
+		System.out.println(val + "***" + workingHour + " " + otHr);
 		val = castNumber(val, amount_round);
 		return val;
 	}
