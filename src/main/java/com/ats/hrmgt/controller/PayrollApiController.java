@@ -1419,18 +1419,12 @@ public class PayrollApiController {
 
 							getSalaryTempList.get(i).setEmployerPf(castNumber(empoyerpf - employer_eps, amount_round));
 
-							/*
-							 * System.out.println(getSalaryTempList.get(i).getEpsWages() +
-							 * " --- getEpsWages");
-							 * System.out.println(getSalaryTempList.get(i).getEpfWages() +
-							 * " --- getEpfWages");
-							 * System.out.println(getSalaryTempList.get(i).getEmployeePf() +
-							 * " --- getEmployeePf");
-							 * System.out.println(getSalaryTempList.get(i).getEmployerEps() +
-							 * " --- getEmployerEps");
-							 * System.out.println(getSalaryTempList.get(i).getEmployerPf() +
-							 * " --- getEmployerPf");
-							 */
+							System.out.println(getSalaryTempList.get(i).getEpsWages() + " --- getEpsWages");
+							System.out.println(getSalaryTempList.get(i).getEpfWages() + " --- getEpfWages");
+							System.out.println(getSalaryTempList.get(i).getEmployeePf() + " --- getEmployeePf");
+							System.out.println(getSalaryTempList.get(i).getEmployerEps() + " --- getEmployerEps");
+							System.out.println(getSalaryTempList.get(i).getEmployerPf() + " --- getEmployerPf");
+
 						} else {
 							getSalaryTempList.get(i).setEpsWages(0);
 							getSalaryTempList.get(i).setEpsDefault(0);
@@ -1875,7 +1869,7 @@ public class PayrollApiController {
 				val = otHr * rateofmin;
 			}
 		}
-		// System.out.println(val + "***" + mstEmpType.getOtType());
+		 System.out.println(val + "***" + workingHour + " " +  otHr);
 		val = castNumber(val, amount_round);
 		return val;
 	}
