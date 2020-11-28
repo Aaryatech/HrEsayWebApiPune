@@ -93,6 +93,8 @@ public class GetPayrollGeneratedListForArear {
 	private double adjustMinus;
 	private double adjustPlus;
 	private double reward;
+	private double nightRate;
+	private double otRate;
 	private double bhatta;
 	private double other1;
 
@@ -119,9 +121,9 @@ public class GetPayrollGeneratedListForArear {
 	private float workingDays;
 	private float totworkingHrs;
 	private String email;
-	
+
 	@Transient
-	private double grossSalaryDytemp; 
+	private double grossSalaryDytemp;
 	@Transient
 	private double esicArear;
 	@Transient
@@ -132,6 +134,7 @@ public class GetPayrollGeneratedListForArear {
 	@Transient
 	List<AllowanceWithDifferenceForArear> difAlloList;
 
+	// for Areares
 	@Transient
 	private double salBasicDiff;
 
@@ -140,9 +143,216 @@ public class GetPayrollGeneratedListForArear {
 
 	@Transient
 	private double basicCalArear;
-	
+
 	@Transient
 	private double netCalArear;
+
+	@Transient
+	private double arearEpfWages;
+
+	@Transient
+	private double arearEsicWages;
+
+	@Transient
+	private double arearEpsWages;
+
+	@Transient
+	private double arearEsicWagesDec;
+
+	@Transient
+	private double arearOtWages;
+	 
+	private int otPerHr;
+	private float totOthr;
+	private String atsummUid;
+	private float weeklyOffHolidayOffPresent;
+	private float holidayPresent;
+	private float weeklyOffPresent;
+	 
+	@Transient
+	private float arearEmployerEsic;
+	
+	@Transient
+	private double arearProductionInsentive;
+	
+	@Transient
+	private double epfArearWagesEmployer;
+	
+	private String ceilingLimitEmpApplicable;
+	private String ceilingLimitEmployerApplicable;
+	
+	@Transient
+	private double arearEmployerEps;
+	
+	@Transient
+	private double arearEmployerPf;
+	
+	private String gender;
+	
+	@Transient
+	private double arearPtDed;
+	
+	
+	
+	public double getArearPtDed() {
+		return arearPtDed;
+	}
+
+	public void setArearPtDed(double arearPtDed) {
+		this.arearPtDed = arearPtDed;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public double getArearEmployerEps() {
+		return arearEmployerEps;
+	}
+
+	public void setArearEmployerEps(double arearEmployerEps) {
+		this.arearEmployerEps = arearEmployerEps;
+	}
+
+	public double getArearEmployerPf() {
+		return arearEmployerPf;
+	}
+
+	public void setArearEmployerPf(double arearEmployerPf) {
+		this.arearEmployerPf = arearEmployerPf;
+	}
+
+	public String getCeilingLimitEmpApplicable() {
+		return ceilingLimitEmpApplicable;
+	}
+
+	public void setCeilingLimitEmpApplicable(String ceilingLimitEmpApplicable) {
+		this.ceilingLimitEmpApplicable = ceilingLimitEmpApplicable;
+	}
+
+	public String getCeilingLimitEmployerApplicable() {
+		return ceilingLimitEmployerApplicable;
+	}
+
+	public void setCeilingLimitEmployerApplicable(String ceilingLimitEmployerApplicable) {
+		this.ceilingLimitEmployerApplicable = ceilingLimitEmployerApplicable;
+	}
+
+	public double getEpfArearWagesEmployer() {
+		return epfArearWagesEmployer;
+	}
+
+	public void setEpfArearWagesEmployer(double epfArearWagesEmployer) {
+		this.epfArearWagesEmployer = epfArearWagesEmployer;
+	}
+
+	public float getArearEmployerEsic() {
+		return arearEmployerEsic;
+	}
+
+	public void setArearEmployerEsic(float arearEmployerEsic) {
+		this.arearEmployerEsic = arearEmployerEsic;
+	}
+
+	public String getAtsummUid() {
+		return atsummUid;
+	}
+
+	public void setAtsummUid(String atsummUid) {
+		this.atsummUid = atsummUid;
+	}
+
+	public float getWeeklyOffHolidayOffPresent() {
+		return weeklyOffHolidayOffPresent;
+	}
+
+	public void setWeeklyOffHolidayOffPresent(float weeklyOffHolidayOffPresent) {
+		this.weeklyOffHolidayOffPresent = weeklyOffHolidayOffPresent;
+	}
+
+	public float getHolidayPresent() {
+		return holidayPresent;
+	}
+
+	public void setHolidayPresent(float holidayPresent) {
+		this.holidayPresent = holidayPresent;
+	}
+
+	public float getWeeklyOffPresent() {
+		return weeklyOffPresent;
+	}
+
+	public void setWeeklyOffPresent(float weeklyOffPresent) {
+		this.weeklyOffPresent = weeklyOffPresent;
+	}
+
+	public double getArearProductionInsentive() {
+		return arearProductionInsentive;
+	}
+
+	public void setArearProductionInsentive(double arearProductionInsentive) {
+		this.arearProductionInsentive = arearProductionInsentive;
+	}
+
+	public float getTotOthr() {
+		return totOthr;
+	}
+
+	public void setTotOthr(float totOthr) {
+		this.totOthr = totOthr;
+	}
+
+	public int getOtPerHr() {
+		return otPerHr;
+	}
+
+	public void setOtPerHr(int otPerHr) {
+		this.otPerHr = otPerHr;
+	}
+
+	public double getArearOtWages() {
+		return arearOtWages;
+	}
+
+	public void setArearOtWages(double arearOtWages) {
+		this.arearOtWages = arearOtWages;
+	}
+
+	public double getArearEpfWages() {
+		return arearEpfWages;
+	}
+
+	public void setArearEpfWages(double arearEpfWages) {
+		this.arearEpfWages = arearEpfWages;
+	}
+
+	public double getArearEsicWages() {
+		return arearEsicWages;
+	}
+
+	public void setArearEsicWages(double arearEsicWages) {
+		this.arearEsicWages = arearEsicWages;
+	}
+
+	public double getArearEpsWages() {
+		return arearEpsWages;
+	}
+
+	public void setArearEpsWages(double arearEpsWages) {
+		this.arearEpsWages = arearEpsWages;
+	}
+
+	public double getArearEsicWagesDec() {
+		return arearEsicWagesDec;
+	}
+
+	public void setArearEsicWagesDec(double arearEsicWagesDec) {
+		this.arearEsicWagesDec = arearEsicWagesDec;
+	}
 
 	public int getId() {
 		return id;
@@ -1007,7 +1217,7 @@ public class GetPayrollGeneratedListForArear {
 	public void setGrossSalaryDytemp(double grossSalaryDytemp) {
 		this.grossSalaryDytemp = grossSalaryDytemp;
 	}
- 
+
 	public double getEsicArear() {
 		return esicArear;
 	}
@@ -1030,6 +1240,22 @@ public class GetPayrollGeneratedListForArear {
 
 	public void setNetCalArear(double netCalArear) {
 		this.netCalArear = netCalArear;
+	}
+
+	public double getNightRate() {
+		return nightRate;
+	}
+
+	public void setNightRate(double nightRate) {
+		this.nightRate = nightRate;
+	}
+
+	public double getOtRate() {
+		return otRate;
+	}
+
+	public void setOtRate(double otRate) {
+		this.otRate = otRate;
 	}
 
 	@Override

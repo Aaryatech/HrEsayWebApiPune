@@ -1486,15 +1486,13 @@ public class PayrollApiController {
 
 						// we have not add any code to avoid esci deduction. as it mendatory to deduct
 						// esic till some month, but kishore has changed the code to cut the esic
-						if (getSalaryTempList.get(i).getEsicWagesDec() >= esic_limit) {
+						if (getSalaryTempList.get(i).getEsicWagesCal() >= esic_limit) {
 							getSalaryTempList.get(i).setEmployerEsic(0);
 							getSalaryTempList.get(i).setEsic(0);
 						} else {
 
-							getSalaryTempList.get(i)
-									.setEmployerEsic(castNumber(
-											((getSalaryTempList.get(i).getEsicWagesCal()) * employer_esic_percentage),
-											amount_round));
+							getSalaryTempList.get(i).setEmployerEsic(castNumber(
+									((getSalaryTempList.get(i).getEsicWagesCal()) * employer_esic_percentage), 3));
 							getSalaryTempList.get(i).setEsic(castNumber(
 									((getSalaryTempList.get(i).getEsicWagesCal()) * employee_esic_percentage), 3));
 						}
@@ -1875,7 +1873,6 @@ public class PayrollApiController {
 				val = otHr * rateofmin;
 			}
 		}
-		System.out.println(val + "***" + workingHour + " " + otHr);
 		val = castNumber(val, amount_round);
 		return val;
 	}
@@ -2959,7 +2956,7 @@ public class PayrollApiController {
 
 			List<SalaryTypesMaster> salaryTypeList = salaryTypesMasterRepo.findAllByDelStatus(1);
 			List<MstEmpType> mstEmpTypeList = mstEmpTypeRepository.findAll();
-			// List<SlabMaster> slabMasterList = slabMasterRepository.findAll();// slab
+			List<SlabMaster> slabMasterList = slabMasterRepository.findAll();// slab
 			// List<MlwfMaster> mlwfMasterList = mlwfMasterRepository.findAll();
 			List<SalaryTerm> salaryTermList = salaryTermRepository.getSalaryTermList();
 			List<Setting> settingList = settingRepo.findByGroup("PAYROLL");
@@ -3093,10 +3090,12 @@ public class PayrollApiController {
 
 										if (empList.get(i).getGeneratedPayrollList().get(m).getDifAlloList().get(k)
 												.getShortName().equals(salaryTermList.get(j).getFromColumn())) {
+
 											findAll = 1;
 											index = k;
 											ammt = empList.get(i).getGeneratedPayrollList().get(m).getDifAlloList()
 													.get(k).getAllowanceDifference();
+											break;
 										}
 
 									}
@@ -3135,12 +3134,29 @@ public class PayrollApiController {
 											empList.get(i).getGeneratedPayrollList().get(m).getMonthlyHrTarget(),
 											empList.get(i).getGeneratedPayrollList().get(m).getTotworkingHrs(),
 											amount_round);
+									/*
+									 * System.out.println(ammt + " " + tempVal + " " + empList.get(i)
+									 * .getGeneratedPayrollList().get(m).getDifAlloList().get(index).getName());
+									 */
 									empList.get(i).getGeneratedPayrollList().get(m).getDifAlloList().get(index)
 											.setArearCal(tempVal);
 									salaryTermList.get(j).setValue(tempVal);
 
 								}
 
+								break;
+							case "Y":
+								// tempVal = castNumber(ammt);
+
+								if (salaryTermList.get(j).getFieldName().equals("basic_default")) {
+									// empList.get(i).getGeneratedPayrollList().get(m).setBasicDefault(ammt);
+									salaryTermList.get(j).setValue(ammt);
+								}
+
+								// System.out.println(salaryTermList.get(j).getFieldName()+ " " +
+								// getSalaryTempList.get(i).getBasicDefault());
+
+								/* System.out.println(salaryTermList); */
 								break;
 							case "P":
 								EmpSalInfoDaiyInfoTempInfo empSalInfoDaiyInfoTempInfo = new EmpSalInfoDaiyInfoTempInfo();
@@ -3150,25 +3166,124 @@ public class PayrollApiController {
 
 								if (salaryTermList.get(j).getFieldName().equals("gross_salary")) {
 									empList.get(i).getGeneratedPayrollList().get(m).setGrossSalaryDytemp(temp);
-
 									salaryTermList.get(j).setValue(temp);
-								} /*
-									 * else if (salaryTermList.get(j).getFieldName().equals("epf_wages")) {
-									 * 
-									 * getSalaryTempList.get(i).setEpfWages(temp);
-									 * salaryTermList.get(j).setValue(temp); } else if
-									 * (salaryTermList.get(j).getFieldName().equals("esic_wages_cal")) {
-									 * getSalaryTempList.get(i).setEsicWagesCal(temp);
-									 * salaryTermList.get(j).setValue(temp); } else if
-									 * (salaryTermList.get(j).getFieldName().equals("eps_wages_cal")) {
-									 * getSalaryTempList.get(i).setEpsWages(temp);
-									 * salaryTermList.get(j).setValue(temp); } else if
-									 * (salaryTermList.get(j).getFieldName().equals("esic_wages_dec_cal")) {
-									 * getSalaryTempList.get(i).setEsicWagesDec(temp);
-									 * salaryTermList.get(j).setValue(temp); }
-									 */ else {
+								} else if (salaryTermList.get(j).getFieldName().equals("epf_wages")) {
+									empList.get(i).getGeneratedPayrollList().get(m).setArearEpfWages(temp);
+									salaryTermList.get(j).setValue(temp);
+								} else if (salaryTermList.get(j).getFieldName().equals("esic_wages_cal")) {
+									empList.get(i).getGeneratedPayrollList().get(m).setArearEsicWages(temp);
+									salaryTermList.get(j).setValue(temp);
+								} else if (salaryTermList.get(j).getFieldName().equals("eps_wages_cal")) {
+									empList.get(i).getGeneratedPayrollList().get(m).setArearEpsWages(temp);
+									salaryTermList.get(j).setValue(temp);
+								} else if (salaryTermList.get(j).getFieldName().equals("esic_wages_dec_cal")) {
+									empList.get(i).getGeneratedPayrollList().get(m).setArearEsicWagesDec(temp);
+									salaryTermList.get(j).setValue(temp);
+								} else {
 									salaryTermList.get(j).setValue(temp);
 								}
+
+								break;
+							case "S":
+								empSalInfoDaiyInfoTempInfo = new EmpSalInfoDaiyInfoTempInfo();
+								double tempValNew = 0;
+								tempVal = calculatePdata(salaryTermList.get(j), salaryTermList,
+										empSalInfoDaiyInfoTempInfo, amount_round);
+
+								if (empList.get(i).getGeneratedPayrollList().get(m).getPtApplicable()
+										.equalsIgnoreCase("yes")) {
+
+									for (int k = 0; k < slabMasterList.size(); k++) {
+
+										if (slabMasterList.get(k).getSalTermId() == salaryTermList.get(j).getSalTermId()
+												&& slabMasterList.get(k).getExInt1() == empList.get(i)
+														.getGeneratedPayrollList().get(m).getLocationId()) {
+
+											if (tempVal >= slabMasterList.get(k).getMinVal()
+													&& tempVal <= slabMasterList.get(k).getMaxVal()
+													&& empList.get(i).getGeneratedPayrollList().get(m).getGender()
+															.equalsIgnoreCase("male")
+													&& slabMasterList.get(k).getGender() == 1) {
+
+												if (empList.get(i).getGeneratedPayrollList().get(m).getCalcMonth() == 2
+														&& slabMasterList.get(k)
+																.getAmount() == febmonthptamount_condtioncheck) {
+													tempValNew = febmonthptamount;
+												} // $calc_month == "2" && $amt == "200"
+												else {
+													tempValNew = slabMasterList.get(k).getAmount();
+												}
+												break;
+											} else if (tempVal >= slabMasterList.get(k).getMinVal()
+													&& tempVal <= slabMasterList.get(k).getMaxVal()
+													&& empList.get(i).getGeneratedPayrollList().get(m).getGender()
+															.equalsIgnoreCase("female")
+													&& slabMasterList.get(k).getGender() == 2) {
+
+												if (empList.get(i).getGeneratedPayrollList().get(m).getCalcMonth() == 2
+														&& slabMasterList.get(k)
+																.getAmount() == febmonthptamount_condtioncheck) {
+													tempValNew = febmonthptamount;
+												} // $calc_month == "2" && $amt == "200"
+												else {
+													tempValNew = slabMasterList.get(k).getAmount();
+												}
+												break;
+											}
+										}
+
+									}
+								}
+								// System.out.println("***" + tempValNew);
+								empList.get(i).getGeneratedPayrollList().get(m).setArearPtDed(tempValNew);
+								salaryTermList.get(j).setValue(tempValNew);
+
+								break;
+							case "OT":
+								empSalInfoDaiyInfoTempInfo = new EmpSalInfoDaiyInfoTempInfo();
+								if (mstEmpType.getOtApplicable().equalsIgnoreCase("yes")) {
+
+									ammt = calculatePdata(salaryTermList.get(j), salaryTermList,
+											empSalInfoDaiyInfoTempInfo, amount_round);
+
+									tempVal = otwages(salaryTermList.get(j).getPercentage(),
+											empList.get(i).getSalBasis(),
+											empList.get(i).getGeneratedPayrollList().get(m).getTotalDaysInmonth(),
+											empList.get(i).getGeneratedPayrollList().get(m).getPayableDays(),
+											empList.get(i).getGeneratedPayrollList().get(m).getWorkingDays(),
+											empList.get(i).getGeneratedPayrollList().get(m).getOtPerHr(),
+											empList.get(i).getGeneratedPayrollList().get(m).getTotOthr(), ammt,
+											mstEmpType, empList.get(i).getGeneratedPayrollList().get(m).getOtRate(),
+											ot_rate,
+											empList.get(i).getGeneratedPayrollList().get(m).getMonthlyHrTarget(),
+											amount_round);
+									empList.get(i).getGeneratedPayrollList().get(m).setArearOtWages(tempVal);
+									salaryTermList.get(j).setValue(tempVal);
+
+									// getSalaryTempList.get(i).setOtRate(empList.get(i).getGeneratedPayrollList().get(m).getOtRate());
+									// System.out.println("tempVal " + tempVal);
+								}
+
+								break;
+							case "OTFD":
+
+								break;
+							case "WOP":
+								empSalInfoDaiyInfoTempInfo = new EmpSalInfoDaiyInfoTempInfo();
+								ammt = calculatePdata(salaryTermList.get(j), salaryTermList, empSalInfoDaiyInfoTempInfo,
+										amount_round);
+
+								tempVal = otwageswo(salaryTermList.get(j).getPercentage(), empList.get(i).getSalBasis(),
+										empList.get(i).getGeneratedPayrollList().get(m).getTotalDaysInmonth(),
+										empList.get(i).getGeneratedPayrollList().get(m).getWeeklyOffPresent(),
+										empList.get(i).getGeneratedPayrollList().get(m).getHolidayPresent(),
+										empList.get(i).getGeneratedPayrollList().get(m).getWeeklyOffHolidayOffPresent(),
+										empList.get(i).getGeneratedPayrollList().get(m).getAtsummUid(),
+										empList.get(i).getGeneratedPayrollList().get(m).getWorkingDays(), ammt,
+										mstEmpType, amount_round);
+								empList.get(i).getGeneratedPayrollList().get(m).setArearProductionInsentive(tempVal);
+								salaryTermList.get(j).setValue(tempVal);
+								// System.out.println(ammt + " " + tempVal);
 
 								break;
 							case "XA":
@@ -3188,11 +3303,236 @@ public class PayrollApiController {
 
 					}
 
+					empList.get(i).getGeneratedPayrollList().get(m).setMlwf(0);
+					empList.get(i).getGeneratedPayrollList().get(m).setEmployerMlwf(0);
+
+					try {
+						// esic cal start
+						if (empList.get(i).getGeneratedPayrollList().get(m).getEsicStatus() == 1) {
+
+							empList.get(i).getGeneratedPayrollList().get(m)
+									.setArearEmployerEsic((float) castNumber(
+											((empList.get(i).getGeneratedPayrollList().get(m).getArearEsicWages())
+													* employer_esic_percentage),
+											3));
+							empList.get(i).getGeneratedPayrollList().get(m)
+									.setEsicArear((float) castNumber(
+											((empList.get(i).getGeneratedPayrollList().get(m).getArearEsicWages())
+													* employee_esic_percentage),
+											3));
+
+						} // strtolower($value->esic_applicable) == 'no'
+						else {
+
+							empList.get(i).getGeneratedPayrollList().get(m).setArearEmployerEsic(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setEsicArear(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setArearEsicWages(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setEsicStatus(0);
+						}
+					} catch (Exception e) {
+						// e.printStackTrace();
+					}
+
+					try {
+						// System.out.println("PF ==== " +
+						// getSalaryTempList.get(i).getPfApplicable()+"#"+getSalaryTempList.get(i).getEpfWages());
+						if (empList.get(i).getGeneratedPayrollList().get(m).getPfStatus() == 1) {
+
+							epf_wages_employee = empList.get(i).getGeneratedPayrollList().get(m).getArearEpfWages();
+
+							try {
+
+								empList.get(i).getGeneratedPayrollList().get(m)
+										.setEpfArearWagesEmployer(castNumber(
+												empList.get(i).getGeneratedPayrollList().get(m).getArearEpfWages(),
+												amount_round));
+
+								if (empList.get(i).getGeneratedPayrollList().get(m).getCeilingLimitEmpApplicable()
+										.equalsIgnoreCase("yes")) {
+
+									// employee pf
+									if (empList.get(i).getGeneratedPayrollList().get(m)
+											.getEpfWages() > employee_ceiling_limit) {
+										empList.get(i).getGeneratedPayrollList().get(m).setPfArear(0);
+										empList.get(i).getGeneratedPayrollList().get(m).setArearEpfWages(0);
+									} else if ((empList.get(i).getGeneratedPayrollList().get(m).getEpfWages()
+											+ empList.get(i).getGeneratedPayrollList().get(m)
+													.getArearEpfWages()) > employee_ceiling_limit) {
+
+										employeePfOnAmt = employee_ceiling_limit
+												- empList.get(i).getGeneratedPayrollList().get(m).getEpfWages();
+										empList.get(i).getGeneratedPayrollList().get(m)
+												.setArearEpfWages(employeePfOnAmt);
+										double pfAmt = employeePfOnAmt * epf_percentage;
+										empList.get(i).getGeneratedPayrollList().get(m)
+												.setPfArear(castNumber(pfAmt, amount_round));
+										empList.get(i).getGeneratedPayrollList().get(m)
+												.setEpfPercentage(epf_percentage);
+
+									} else {
+										employeePfOnAmt = empList.get(i).getGeneratedPayrollList().get(m)
+												.getArearEpfWages();
+
+										double pfAmt = employeePfOnAmt * epf_percentage;
+										empList.get(i).getGeneratedPayrollList().get(m)
+												.setPfArear(castNumber(pfAmt, amount_round));
+										empList.get(i).getGeneratedPayrollList().get(m)
+												.setEpfPercentage(epf_percentage);
+									}
+
+								} else {
+
+									employeePfOnAmt = empList.get(i).getGeneratedPayrollList().get(m)
+											.getArearEpfWages();
+
+									double pfAmt = employeePfOnAmt * epf_percentage;
+									empList.get(i).getGeneratedPayrollList().get(m)
+											.setPfArear(castNumber(pfAmt, amount_round));
+									empList.get(i).getGeneratedPayrollList().get(m).setEpfPercentage(epf_percentage);
+								}
+
+							} catch (Exception e) {
+								e.printStackTrace();
+
+								// employee pf
+
+								employeePfOnAmt = empList.get(i).getGeneratedPayrollList().get(m).getArearEpfWages();
+
+								double pfAmt = employeePfOnAmt * epf_percentage;
+								empList.get(i).getGeneratedPayrollList().get(m)
+										.setPfArear(castNumber(pfAmt, amount_round));
+								empList.get(i).getGeneratedPayrollList().get(m).setEpfPercentage(epf_percentage);
+							}
+
+							// employer_eps
+							double employer_eps = 0;
+
+							if (empList.get(i).getGeneratedPayrollList().get(m)
+									.getEpsWages() > employer_eps_ceiling_limit) {
+								employer_eps = 0 * employer_eps_percentage;
+								empList.get(i).getGeneratedPayrollList().get(m).setArearEpsWages(0);
+								empList.get(i).getGeneratedPayrollList().get(m).setArearEmployerEps(0);
+
+							} else if ((empList.get(i).getGeneratedPayrollList().get(m).getArearEpsWages()
+									+ empList.get(i).getGeneratedPayrollList().get(m)
+											.getEpsWages()) > employer_eps_ceiling_limit) {
+								epf_wages_employeR = employer_eps_ceiling_limit
+										- empList.get(i).getGeneratedPayrollList().get(m).getEpsWages();
+
+								employer_eps = epf_wages_employeR * employer_eps_percentage;
+								empList.get(i).getGeneratedPayrollList().get(m)
+										.setArearEpsWages(castNumber(epf_wages_employeR, amount_round));
+								empList.get(i).getGeneratedPayrollList().get(m).setArearEmployerEps(
+										castNumber(castNumber(employer_eps, amount_round), amount_round));
+								empList.get(i).getGeneratedPayrollList().get(m)
+										.setEpsEmployerPercentage(employer_eps_percentage);
+
+							} else {
+								epf_wages_employeR = empList.get(i).getGeneratedPayrollList().get(m).getArearEpsWages();
+								employer_eps = epf_wages_employeR * employer_eps_percentage;
+								empList.get(i).getGeneratedPayrollList().get(m)
+										.setArearEpsWages(castNumber(epf_wages_employeR, amount_round));
+								empList.get(i).getGeneratedPayrollList().get(m).setArearEmployerEps(
+										castNumber(castNumber(employer_eps, amount_round), amount_round));
+								empList.get(i).getGeneratedPayrollList().get(m)
+										.setEpsEmployerPercentage(employer_eps_percentage);
+							}
+
+							// employer_epf
+							double epfCalOn = empList.get(i).getGeneratedPayrollList().get(m)
+									.getEpfArearWagesEmployer();
+
+							if (empList.get(i).getGeneratedPayrollList().get(m).getCeilingLimitEmployerApplicable()
+									.equalsIgnoreCase("yes")) {
+
+								if (empList.get(i).getGeneratedPayrollList().get(m)
+										.getEpfWagesEmployer() > employer_eps_ceiling_limit) {
+									empList.get(i).getGeneratedPayrollList().get(m).setEpfArearWagesEmployer(0);
+									empList.get(i).getGeneratedPayrollList().get(m).setEpmloyerEpfDefault(0);
+									empList.get(i).getGeneratedPayrollList().get(m).setEpfEmployerPercentage(0);
+									empList.get(i).getGeneratedPayrollList().get(m).setEpmloyerEpfExtra(0);
+									empList.get(i).getGeneratedPayrollList().get(m).setArearEmployerPf(0);
+
+								} else if ((epfCalOn + empList.get(i).getGeneratedPayrollList().get(m)
+										.getEpfWagesEmployer()) > employer_eps_ceiling_limit) {
+									epfCalOn = employee_ceiling_limit
+											- empList.get(i).getGeneratedPayrollList().get(m).getEpfWagesEmployer();
+									empList.get(i).getGeneratedPayrollList().get(m)
+											.setEpfArearWagesEmployer(castNumber(epfCalOn, amount_round));
+									double empoyerpf = epfCalOn * epf_percentage;
+									empList.get(i).getGeneratedPayrollList().get(m)
+											.setArearEmployerPf(castNumber(empoyerpf - employer_eps, amount_round));
+
+								} else {
+									epfCalOn = empList.get(i).getGeneratedPayrollList().get(m)
+											.getEpfArearWagesEmployer();
+									empList.get(i).getGeneratedPayrollList().get(m)
+											.setEpfArearWagesEmployer(castNumber(epfCalOn, amount_round));
+									double empoyerpf = epfCalOn * epf_percentage;
+
+									empList.get(i).getGeneratedPayrollList().get(m)
+											.setArearEmployerPf(castNumber(empoyerpf - employer_eps, amount_round));
+
+								}
+							} else {
+								epfCalOn = empList.get(i).getGeneratedPayrollList().get(m).getEpfArearWagesEmployer();
+								empList.get(i).getGeneratedPayrollList().get(m)
+										.setEpfArearWagesEmployer(castNumber(epfCalOn, amount_round));
+								double empoyerpf = epfCalOn * epf_percentage;
+
+								empList.get(i).getGeneratedPayrollList().get(m)
+										.setArearEmployerPf(castNumber(empoyerpf - employer_eps, amount_round));
+
+							}
+							/*
+							 * System.out.println( empList.get(i).getGeneratedPayrollList().get(m).getName()
+							 * + " --- getEpsWages");
+							 * System.out.println(empList.get(i).getGeneratedPayrollList().get(m).
+							 * getArearEpfWages() + " --- getEpfWages");
+							 * System.out.println(empList.get(i).getGeneratedPayrollList().get(m).getPfArear
+							 * () + " --- getEmployeePf");
+							 * System.out.println(empList.get(i).getGeneratedPayrollList().get(m).
+							 * getArearEpsWages() + " --- getEpsWages"); System.out
+							 * .println(empList.get(i).getGeneratedPayrollList().get(m).
+							 * getEpfArearWagesEmployer() + " --- getEpfWagesEmployer");
+							 * 
+							 * System.out.println(empList.get(i).getGeneratedPayrollList().get(m).
+							 * getArearEmployerEps() + " --- getEmployerEps");
+							 * System.out.println(empList.get(i).getGeneratedPayrollList().get(m).
+							 * getArearEmployerPf() + " --- getEmployerPf");
+							 */
+
+						} else {
+							empList.get(i).getGeneratedPayrollList().get(m).setPfArear(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setEpfPercentage(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setPfStatus(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setArearEpfWages(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setEpsEmployeePercentage(0);
+
+							empList.get(i).getGeneratedPayrollList().get(m).setArearEpsWages(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setEpsDefault(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setArearEmployerEps(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setEpsEmployerPercentage(0);
+
+							empList.get(i).getGeneratedPayrollList().get(m).setEpfArearWagesEmployer(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setEpmloyerEpfDefault(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setEpfEmployerPercentage(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setEpmloyerEpfExtra(0);
+							empList.get(i).getGeneratedPayrollList().get(m).setArearEmployerPf(0);
+
+						}
+					} catch (Exception e) {
+						// e.printStackTrace();
+					}
 					empList.get(i).getGeneratedPayrollList().get(m)
 							.setNetCalArear(castNumber(
-									empList.get(i).getGeneratedPayrollList().get(m).getGrossSalaryDytemp()
+									(empList.get(i).getGeneratedPayrollList().get(m).getGrossSalaryDytemp()
+											+ empList.get(i).getGeneratedPayrollList().get(m).getArearOtWages()
+											+ empList.get(i).getGeneratedPayrollList().get(m)
+													.getArearProductionInsentive())
 											- (empList.get(i).getGeneratedPayrollList().get(m).getEsicArear()
-													+ empList.get(i).getGeneratedPayrollList().get(m).getPfArear()),
+													+ empList.get(i).getGeneratedPayrollList().get(m).getPfArear()
+													+ empList.get(i).getGeneratedPayrollList().get(m).getArearPtDed()),
 									amount_round));
 					netAmt = netAmt + empList.get(i).getGeneratedPayrollList().get(m).getNetCalArear();
 					// System.out.println(netAmt);
@@ -3238,25 +3578,26 @@ public class PayrollApiController {
 					SalaryCalc.setSalTypeId(salList.get(i).getSalaryTypeId());
 					SalaryCalc.setBasicCal(salList.get(i).getGeneratedPayrollList().get(j).getBasicCalArear());
 					SalaryCalc.setPerformanceBonus(0);
-					SalaryCalc.setOtWages(0);
+					SalaryCalc.setOtWages(salList.get(i).getGeneratedPayrollList().get(j).getArearOtWages());
 					SalaryCalc.setMiscExpAdd(0);
 					SalaryCalc.setBonusCal(0);
 					SalaryCalc.setExgretiaCal(0);
 					SalaryCalc.setDaArreasCal(0);
 					SalaryCalc.setIncrementArreasCal(0);
-					SalaryCalc.setEpfWages(0);
-					SalaryCalc.setEpfWagesEmployer(0);
-					SalaryCalc.setEsicWagesCal(0);
+					SalaryCalc.setEpfWages(salList.get(i).getGeneratedPayrollList().get(j).getArearEpfWages());
+					SalaryCalc.setEpfWagesEmployer(
+							salList.get(i).getGeneratedPayrollList().get(j).getEpfArearWagesEmployer());
+					SalaryCalc.setEsicWagesCal(salList.get(i).getGeneratedPayrollList().get(j).getArearEsicWages());
 					SalaryCalc.setGrossSalary(salList.get(i).getGeneratedPayrollList().get(j).getGrossSalaryDytemp());
-					SalaryCalc.setEpsWages(0);
-					SalaryCalc.setEsicWagesDec(0);
-					SalaryCalc.setEmployeePf(0);
-					SalaryCalc.setEmployerPf(0);
-					SalaryCalc.setEmployerEps(0);
-					SalaryCalc.setEsic(0);
-					SalaryCalc.setEmployerEsic(0);
-					SalaryCalc.setEsicStatus(0);
-					SalaryCalc.setPfStatus(0);
+					SalaryCalc.setEpsWages(salList.get(i).getGeneratedPayrollList().get(j).getArearEpsWages());
+					SalaryCalc.setEsicWagesDec(salList.get(i).getGeneratedPayrollList().get(j).getArearEsicWagesDec());
+					SalaryCalc.setEmployeePf(salList.get(i).getGeneratedPayrollList().get(j).getPfArear());
+					SalaryCalc.setEmployerPf(salList.get(i).getGeneratedPayrollList().get(j).getArearEmployerPf());
+					SalaryCalc.setEmployerEps(salList.get(i).getGeneratedPayrollList().get(j).getArearEmployerEps());
+					SalaryCalc.setEsic(salList.get(i).getGeneratedPayrollList().get(j).getEsicArear());
+					SalaryCalc.setEmployerEsic(salList.get(i).getGeneratedPayrollList().get(j).getArearEmployerEsic());
+					SalaryCalc.setEsicStatus(salList.get(i).getGeneratedPayrollList().get(j).getEsicStatus());
+					SalaryCalc.setPfStatus(salList.get(i).getGeneratedPayrollList().get(j).getPfStatus());
 					SalaryCalc.setMlwf(0);
 					SalaryCalc.setTds(0);
 					SalaryCalc.setItded(0);
@@ -3264,9 +3605,9 @@ public class PayrollApiController {
 					SalaryCalc.setTotPfAdminCh(0);
 					SalaryCalc.setTotEdliCh(0);
 					SalaryCalc.setTotEdliAdminCh(0);
-					SalaryCalc.setNcpDays(0);
-					SalaryCalc.setStatus(0);
-					SalaryCalc.setPtDed(0);
+					SalaryCalc.setNcpDays(salList.get(i).getGeneratedPayrollList().get(j).getNcpDays());
+					SalaryCalc.setStatus(salList.get(i).getGeneratedPayrollList().get(j).getStatus());
+					SalaryCalc.setPtDed(salList.get(i).getGeneratedPayrollList().get(j).getArearPtDed());
 					SalaryCalc.setAdvanceDed(0);
 					SalaryCalc.setLoanDed(0);
 					SalaryCalc.setMiscExpDed(0);
@@ -3275,8 +3616,8 @@ public class PayrollApiController {
 					SalaryCalc.setIsLocked("");
 					SalaryCalc.setLoginName("");
 					SalaryCalc.setLoginTime(sf.format(date));
-					SalaryCalc.setMlwfApplicable(salList.get(i).getMlwfApplicable());
-					SalaryCalc.setPtApplicable(salList.get(i).getPtApplicable());
+					SalaryCalc.setMlwfApplicable(salList.get(i).getGeneratedPayrollList().get(j).getMlwfApplicable());
+					SalaryCalc.setPtApplicable(salList.get(i).getGeneratedPayrollList().get(j).getPtApplicable());
 					SalaryCalc.setPayDed(0);
 					SalaryCalc.setCommentsForItBonus("");
 					SalaryCalc.setSocietyContribution(0);
@@ -3284,21 +3625,27 @@ public class PayrollApiController {
 					SalaryCalc.setBasicDefault(salList.get(i).getGeneratedPayrollList().get(j).getSalBasicDiff());
 					SalaryCalc.setCmpId(salList.get(i).getGeneratedPayrollList().get(j).getCmpId());
 					SalaryCalc.setAbDeduction(0);
-					SalaryCalc.setProductionInsentive(0);
+					SalaryCalc.setProductionInsentive(
+							salList.get(i).getGeneratedPayrollList().get(j).getArearProductionInsentive());
 					SalaryCalc.setPresentInsentive(0);
 					SalaryCalc.setNightAllow(0);
-					SalaryCalc.setEpfPercentage(0);
-					SalaryCalc.setEpsEmployeePercentage(0);
-					SalaryCalc.setEpfEmployerPercentage(0);
-					SalaryCalc.setEpsEmployerPercentage(0);
+					SalaryCalc.setEpfPercentage(salList.get(i).getGeneratedPayrollList().get(j).getEpfPercentage());
+					SalaryCalc.setEpsEmployeePercentage(
+							salList.get(i).getGeneratedPayrollList().get(j).getEpsEmployeePercentage());
+					SalaryCalc.setEpfEmployerPercentage(
+							salList.get(i).getGeneratedPayrollList().get(j).getEpfEmployerPercentage());
+					SalaryCalc.setEpsEmployerPercentage(
+							salList.get(i).getGeneratedPayrollList().get(j).getEpsEmployerPercentage());
 					SalaryCalc.setEpsDefault(0);
 					SalaryCalc.setEpmloyerEpfDefault(0);
 					SalaryCalc.setEpmloyerEpfExtra(0);
 					SalaryCalc.setPfAdminChPercentage(0);
 					SalaryCalc.setEdliPercentage(0);
 					SalaryCalc.setEdliAdminPercentage(0);
-					SalaryCalc.setEmployeeEsicPercentage(0);
-					SalaryCalc.setEmployerEsicPercentage(0);
+					SalaryCalc.setEmployeeEsicPercentage(
+							salList.get(i).getGeneratedPayrollList().get(j).getEmployeeEsicPercentage());
+					SalaryCalc.setEmployerEsicPercentage(
+							salList.get(i).getGeneratedPayrollList().get(j).getEmployerEsicPercentage());
 					SalaryCalc.setEmployerMlwf(0);
 					SalaryCalc.setGrossSalDefault(salList.get(i).getGeneratedPayrollList().get(j).getSalTotalDiff());
 					SalaryCalc.setAdjustMinus(0);
