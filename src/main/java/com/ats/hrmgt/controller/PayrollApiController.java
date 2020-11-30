@@ -1060,6 +1060,7 @@ public class PayrollApiController {
 							}
 
 							getSalaryTempList.get(i).setPtDed(tempValNew);
+							getSalaryTempList.get(i).setExgretiaCal(tempVal);
 							salaryTermList.get(j).setValue(tempValNew);
 
 							break;
@@ -3188,7 +3189,8 @@ public class PayrollApiController {
 								empSalInfoDaiyInfoTempInfo = new EmpSalInfoDaiyInfoTempInfo();
 								double tempValNew = 0;
 								tempVal = calculatePdata(salaryTermList.get(j), salaryTermList,
-										empSalInfoDaiyInfoTempInfo, amount_round);
+										empSalInfoDaiyInfoTempInfo, amount_round)
+										+ empList.get(i).getGeneratedPayrollList().get(m).getExgretiaCal();
 
 								if (empList.get(i).getGeneratedPayrollList().get(m).getPtApplicable()
 										.equalsIgnoreCase("yes")) {
@@ -3235,8 +3237,23 @@ public class PayrollApiController {
 									}
 								}
 								// System.out.println("***" + tempValNew);
-								empList.get(i).getGeneratedPayrollList().get(m).setArearPtDed(tempValNew);
-								salaryTermList.get(j).setValue(tempValNew);
+								/*
+								 * empList.get(i).getGeneratedPayrollList().get(m).setArearPtDed(
+								 * empList.get(i).getGeneratedPayrollList().get(m).getPtDed() - tempValNew);
+								 * salaryTermList.get(j).setValue(tempValNew);
+								 */
+
+								if (tempValNew > empList.get(i).getGeneratedPayrollList().get(m).getPtDed()) {
+									empList.get(i).getGeneratedPayrollList().get(m).setArearPtDed(
+											tempValNew - empList.get(i).getGeneratedPayrollList().get(m).getPtDed());
+									empList.get(i).getGeneratedPayrollList().get(m).setExgretiaCal(
+											tempVal - empList.get(i).getGeneratedPayrollList().get(m).getExgretiaCal());
+									salaryTermList.get(j).setValue(tempValNew);
+								} else {
+									empList.get(i).getGeneratedPayrollList().get(m).setArearPtDed(0);
+									salaryTermList.get(j).setValue(0);
+									empList.get(i).getGeneratedPayrollList().get(m).setExgretiaCal(0);
+								}
 
 								break;
 							case "OT":
@@ -3581,7 +3598,7 @@ public class PayrollApiController {
 					SalaryCalc.setOtWages(salList.get(i).getGeneratedPayrollList().get(j).getArearOtWages());
 					SalaryCalc.setMiscExpAdd(0);
 					SalaryCalc.setBonusCal(0);
-					SalaryCalc.setExgretiaCal(0);
+					SalaryCalc.setExgretiaCal(salList.get(i).getGeneratedPayrollList().get(j).getExgretiaCal());
 					SalaryCalc.setDaArreasCal(0);
 					SalaryCalc.setIncrementArreasCal(0);
 					SalaryCalc.setEpfWages(salList.get(i).getGeneratedPayrollList().get(j).getArearEpfWages());
