@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -3566,147 +3567,148 @@ public class PayrollApiController {
 		return empList;
 	}
 
+	@Transactional
 	@RequestMapping(value = { "/insertFinalArearsValue" }, method = RequestMethod.POST)
 	@ResponseBody
 	public Info insertFinalArearsValue(@RequestBody List<EmpInfoForArear> salList) {
 
 		Info info = new Info();
+		info.setError(true);
+		info.setMsg("failed");
+		// try {
 
-		try {
+		Date date = new Date();
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		for (int i = 0; i < salList.size(); i++) {
+			for (int j = 0; j < salList.get(i).getGeneratedPayrollList().size(); j++) {
 
-			Date date = new Date();
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			for (int i = 0; i < salList.size(); i++) {
-				for (int j = 0; j < salList.get(i).getGeneratedPayrollList().size(); j++) {
+				// empIds.add(salList.get(i).getEmpId());
 
-					// empIds.add(salList.get(i).getEmpId());
+				ArearSalaryCalc SalaryCalc = new ArearSalaryCalc();
+				SalaryCalc.setEmpId(salList.get(i).getEmpId());
+				SalaryCalc.setEmpCode(salList.get(i).getEmpCode());
+				SalaryCalc.setEmpType(salList.get(i).getGeneratedPayrollList().get(j).getEmpType());
+				SalaryCalc.setContractorId(salList.get(i).getContractorId());
+				SalaryCalc.setDepartId(salList.get(i).getDepartId());
+				SalaryCalc.setDesignationId(salList.get(i).getGeneratedPayrollList().get(j).getDesignationId());
+				SalaryCalc.setLocationId(salList.get(i).getGeneratedPayrollList().get(j).getLocationId());
+				SalaryCalc.setCalcMonth(salList.get(i).getGeneratedPayrollList().get(j).getCalcMonth());
+				SalaryCalc.setCalcYear(salList.get(i).getGeneratedPayrollList().get(j).getCalcYear());
+				SalaryCalc.setAttSumId(salList.get(i).getGeneratedPayrollList().get(j).getId());
+				SalaryCalc.setSalTypeId(salList.get(i).getSalaryTypeId());
+				SalaryCalc.setBasicCal(salList.get(i).getGeneratedPayrollList().get(j).getBasicCalArear());
+				SalaryCalc.setPerformanceBonus(0);
+				SalaryCalc.setOtWages(salList.get(i).getGeneratedPayrollList().get(j).getArearOtWages());
+				SalaryCalc.setMiscExpAdd(0);
+				SalaryCalc.setBonusCal(0);
+				SalaryCalc.setExgretiaCal(salList.get(i).getGeneratedPayrollList().get(j).getExgretiaCal());
+				SalaryCalc.setDaArreasCal(0);
+				SalaryCalc.setIncrementArreasCal(0);
+				SalaryCalc.setEpfWages(salList.get(i).getGeneratedPayrollList().get(j).getArearEpfWages());
+				SalaryCalc.setEpfWagesEmployer(
+						salList.get(i).getGeneratedPayrollList().get(j).getEpfArearWagesEmployer());
+				SalaryCalc.setEsicWagesCal(salList.get(i).getGeneratedPayrollList().get(j).getArearEsicWages());
+				SalaryCalc.setGrossSalary(salList.get(i).getGeneratedPayrollList().get(j).getGrossSalaryDytemp());
+				SalaryCalc.setEpsWages(salList.get(i).getGeneratedPayrollList().get(j).getArearEpsWages());
+				SalaryCalc.setEsicWagesDec(salList.get(i).getGeneratedPayrollList().get(j).getArearEsicWagesDec());
+				SalaryCalc.setEmployeePf(salList.get(i).getGeneratedPayrollList().get(j).getPfArear());
+				SalaryCalc.setEmployerPf(salList.get(i).getGeneratedPayrollList().get(j).getArearEmployerPf());
+				SalaryCalc.setEmployerEps(salList.get(i).getGeneratedPayrollList().get(j).getArearEmployerEps());
+				SalaryCalc.setEsic(salList.get(i).getGeneratedPayrollList().get(j).getEsicArear());
+				SalaryCalc.setEmployerEsic(salList.get(i).getGeneratedPayrollList().get(j).getArearEmployerEsic());
+				SalaryCalc.setEsicStatus(salList.get(i).getGeneratedPayrollList().get(j).getEsicStatus());
+				SalaryCalc.setPfStatus(salList.get(i).getGeneratedPayrollList().get(j).getPfStatus());
+				SalaryCalc.setMlwf(0);
+				SalaryCalc.setTds(0);
+				SalaryCalc.setItded(0);
+				SalaryCalc.setFund(0);
+				SalaryCalc.setTotPfAdminCh(0);
+				SalaryCalc.setTotEdliCh(0);
+				SalaryCalc.setTotEdliAdminCh(0);
+				SalaryCalc.setNcpDays(salList.get(i).getGeneratedPayrollList().get(j).getNcpDays());
+				SalaryCalc.setStatus(salList.get(i).getGeneratedPayrollList().get(j).getStatus());
+				SalaryCalc.setPtDed(salList.get(i).getGeneratedPayrollList().get(j).getArearPtDed());
+				SalaryCalc.setAdvanceDed(0);
+				SalaryCalc.setLoanDed(0);
+				SalaryCalc.setMiscExpDed(0);
+				SalaryCalc.setMiscExpDedDeduct(0);
+				SalaryCalc.setNetSalary(salList.get(i).getGeneratedPayrollList().get(j).getNetCalArear());
+				SalaryCalc.setIsLocked("");
+				SalaryCalc.setLoginName("");
+				SalaryCalc.setLoginTime(sf.format(date));
+				SalaryCalc.setMlwfApplicable(salList.get(i).getGeneratedPayrollList().get(j).getMlwfApplicable());
+				SalaryCalc.setPtApplicable(salList.get(i).getGeneratedPayrollList().get(j).getPtApplicable());
+				SalaryCalc.setPayDed(0);
+				SalaryCalc.setCommentsForItBonus("");
+				SalaryCalc.setSocietyContribution(0);
+				SalaryCalc.setEmpCategory(salList.get(i).getSalBasis());
+				SalaryCalc.setBasicDefault(salList.get(i).getGeneratedPayrollList().get(j).getSalBasicDiff());
+				SalaryCalc.setCmpId(salList.get(i).getGeneratedPayrollList().get(j).getCmpId());
+				SalaryCalc.setAbDeduction(0);
+				SalaryCalc.setProductionInsentive(
+						salList.get(i).getGeneratedPayrollList().get(j).getArearProductionInsentive());
+				SalaryCalc.setPresentInsentive(0);
+				SalaryCalc.setNightAllow(0);
+				SalaryCalc.setEpfPercentage(salList.get(i).getGeneratedPayrollList().get(j).getEpfPercentage());
+				SalaryCalc.setEpsEmployeePercentage(
+						salList.get(i).getGeneratedPayrollList().get(j).getEpsEmployeePercentage());
+				SalaryCalc.setEpfEmployerPercentage(
+						salList.get(i).getGeneratedPayrollList().get(j).getEpfEmployerPercentage());
+				SalaryCalc.setEpsEmployerPercentage(
+						salList.get(i).getGeneratedPayrollList().get(j).getEpsEmployerPercentage());
+				SalaryCalc.setEpsDefault(0);
+				SalaryCalc.setEpmloyerEpfDefault(0);
+				SalaryCalc.setEpmloyerEpfExtra(0);
+				SalaryCalc.setPfAdminChPercentage(0);
+				SalaryCalc.setEdliPercentage(0);
+				SalaryCalc.setEdliAdminPercentage(0);
+				SalaryCalc.setEmployeeEsicPercentage(
+						salList.get(i).getGeneratedPayrollList().get(j).getEmployeeEsicPercentage());
+				SalaryCalc.setEmployerEsicPercentage(
+						salList.get(i).getGeneratedPayrollList().get(j).getEmployerEsicPercentage());
+				SalaryCalc.setEmployerMlwf(0);
+				SalaryCalc.setGrossSalDefault(salList.get(i).getGeneratedPayrollList().get(j).getSalTotalDiff());
+				SalaryCalc.setAdjustMinus(0);
+				SalaryCalc.setAdjustPlus(0);
+				SalaryCalc.setReward(0);
+				SalaryCalc.setNightRate(0);
+				SalaryCalc.setOtRate(0);
+				SalaryCalc.setBhatta(0);
+				SalaryCalc.setOther1(0);
+				ArearSalaryCalc saveres = arearSalaryCalcRepo.save(SalaryCalc);
 
-					ArearSalaryCalc SalaryCalc = new ArearSalaryCalc();
-					SalaryCalc.setEmpId(salList.get(i).getEmpId());
-					SalaryCalc.setEmpCode(salList.get(i).getEmpCode());
-					SalaryCalc.setEmpType(salList.get(i).getGeneratedPayrollList().get(j).getEmpType());
-					SalaryCalc.setContractorId(salList.get(i).getContractorId());
-					SalaryCalc.setDepartId(salList.get(i).getDepartId());
-					SalaryCalc.setDesignationId(salList.get(i).getGeneratedPayrollList().get(j).getDesignationId());
-					SalaryCalc.setLocationId(salList.get(i).getGeneratedPayrollList().get(j).getLocationId());
-					SalaryCalc.setCalcMonth(salList.get(i).getGeneratedPayrollList().get(j).getCalcMonth());
-					SalaryCalc.setCalcYear(salList.get(i).getGeneratedPayrollList().get(j).getCalcYear());
-					SalaryCalc.setAttSumId(salList.get(i).getGeneratedPayrollList().get(j).getId());
-					SalaryCalc.setSalTypeId(salList.get(i).getSalaryTypeId());
-					SalaryCalc.setBasicCal(salList.get(i).getGeneratedPayrollList().get(j).getBasicCalArear());
-					SalaryCalc.setPerformanceBonus(0);
-					SalaryCalc.setOtWages(salList.get(i).getGeneratedPayrollList().get(j).getArearOtWages());
-					SalaryCalc.setMiscExpAdd(0);
-					SalaryCalc.setBonusCal(0);
-					SalaryCalc.setExgretiaCal(salList.get(i).getGeneratedPayrollList().get(j).getExgretiaCal());
-					SalaryCalc.setDaArreasCal(0);
-					SalaryCalc.setIncrementArreasCal(0);
-					SalaryCalc.setEpfWages(salList.get(i).getGeneratedPayrollList().get(j).getArearEpfWages());
-					SalaryCalc.setEpfWagesEmployer(
-							salList.get(i).getGeneratedPayrollList().get(j).getEpfArearWagesEmployer());
-					SalaryCalc.setEsicWagesCal(salList.get(i).getGeneratedPayrollList().get(j).getArearEsicWages());
-					SalaryCalc.setGrossSalary(salList.get(i).getGeneratedPayrollList().get(j).getGrossSalaryDytemp());
-					SalaryCalc.setEpsWages(salList.get(i).getGeneratedPayrollList().get(j).getArearEpsWages());
-					SalaryCalc.setEsicWagesDec(salList.get(i).getGeneratedPayrollList().get(j).getArearEsicWagesDec());
-					SalaryCalc.setEmployeePf(salList.get(i).getGeneratedPayrollList().get(j).getPfArear());
-					SalaryCalc.setEmployerPf(salList.get(i).getGeneratedPayrollList().get(j).getArearEmployerPf());
-					SalaryCalc.setEmployerEps(salList.get(i).getGeneratedPayrollList().get(j).getArearEmployerEps());
-					SalaryCalc.setEsic(salList.get(i).getGeneratedPayrollList().get(j).getEsicArear());
-					SalaryCalc.setEmployerEsic(salList.get(i).getGeneratedPayrollList().get(j).getArearEmployerEsic());
-					SalaryCalc.setEsicStatus(salList.get(i).getGeneratedPayrollList().get(j).getEsicStatus());
-					SalaryCalc.setPfStatus(salList.get(i).getGeneratedPayrollList().get(j).getPfStatus());
-					SalaryCalc.setMlwf(0);
-					SalaryCalc.setTds(0);
-					SalaryCalc.setItded(0);
-					SalaryCalc.setFund(0);
-					SalaryCalc.setTotPfAdminCh(0);
-					SalaryCalc.setTotEdliCh(0);
-					SalaryCalc.setTotEdliAdminCh(0);
-					SalaryCalc.setNcpDays(salList.get(i).getGeneratedPayrollList().get(j).getNcpDays());
-					SalaryCalc.setStatus(salList.get(i).getGeneratedPayrollList().get(j).getStatus());
-					SalaryCalc.setPtDed(salList.get(i).getGeneratedPayrollList().get(j).getArearPtDed());
-					SalaryCalc.setAdvanceDed(0);
-					SalaryCalc.setLoanDed(0);
-					SalaryCalc.setMiscExpDed(0);
-					SalaryCalc.setMiscExpDedDeduct(0);
-					SalaryCalc.setNetSalary(salList.get(i).getGeneratedPayrollList().get(j).getNetCalArear());
-					SalaryCalc.setIsLocked("");
-					SalaryCalc.setLoginName("");
-					SalaryCalc.setLoginTime(sf.format(date));
-					SalaryCalc.setMlwfApplicable(salList.get(i).getGeneratedPayrollList().get(j).getMlwfApplicable());
-					SalaryCalc.setPtApplicable(salList.get(i).getGeneratedPayrollList().get(j).getPtApplicable());
-					SalaryCalc.setPayDed(0);
-					SalaryCalc.setCommentsForItBonus("");
-					SalaryCalc.setSocietyContribution(0);
-					SalaryCalc.setEmpCategory(salList.get(i).getSalBasis());
-					SalaryCalc.setBasicDefault(salList.get(i).getGeneratedPayrollList().get(j).getSalBasicDiff());
-					SalaryCalc.setCmpId(salList.get(i).getGeneratedPayrollList().get(j).getCmpId());
-					SalaryCalc.setAbDeduction(0);
-					SalaryCalc.setProductionInsentive(
-							salList.get(i).getGeneratedPayrollList().get(j).getArearProductionInsentive());
-					SalaryCalc.setPresentInsentive(0);
-					SalaryCalc.setNightAllow(0);
-					SalaryCalc.setEpfPercentage(salList.get(i).getGeneratedPayrollList().get(j).getEpfPercentage());
-					SalaryCalc.setEpsEmployeePercentage(
-							salList.get(i).getGeneratedPayrollList().get(j).getEpsEmployeePercentage());
-					SalaryCalc.setEpfEmployerPercentage(
-							salList.get(i).getGeneratedPayrollList().get(j).getEpfEmployerPercentage());
-					SalaryCalc.setEpsEmployerPercentage(
-							salList.get(i).getGeneratedPayrollList().get(j).getEpsEmployerPercentage());
-					SalaryCalc.setEpsDefault(0);
-					SalaryCalc.setEpmloyerEpfDefault(0);
-					SalaryCalc.setEpmloyerEpfExtra(0);
-					SalaryCalc.setPfAdminChPercentage(0);
-					SalaryCalc.setEdliPercentage(0);
-					SalaryCalc.setEdliAdminPercentage(0);
-					SalaryCalc.setEmployeeEsicPercentage(
-							salList.get(i).getGeneratedPayrollList().get(j).getEmployeeEsicPercentage());
-					SalaryCalc.setEmployerEsicPercentage(
-							salList.get(i).getGeneratedPayrollList().get(j).getEmployerEsicPercentage());
-					SalaryCalc.setEmployerMlwf(0);
-					SalaryCalc.setGrossSalDefault(salList.get(i).getGeneratedPayrollList().get(j).getSalTotalDiff());
-					SalaryCalc.setAdjustMinus(0);
-					SalaryCalc.setAdjustPlus(0);
-					SalaryCalc.setReward(0);
-					SalaryCalc.setNightRate(0);
-					SalaryCalc.setOtRate(0);
-					SalaryCalc.setBhatta(0);
-					SalaryCalc.setOther1(0);
-					ArearSalaryCalc saveres = arearSalaryCalcRepo.save(SalaryCalc);
+				List<ArearAllownceCal> allowlist = new ArrayList<>();
 
-					List<ArearAllownceCal> allowlist = new ArrayList<>();
+				for (int m = 0; m < salList.get(i).getGeneratedPayrollList().get(j).getDifAlloList().size(); m++) {
 
-					for (int m = 0; m < salList.get(i).getGeneratedPayrollList().get(j).getDifAlloList().size(); m++) {
+					ArearAllownceCal empAllowance = new ArearAllownceCal();
+					empAllowance.setSalaryCalcId(saveres.getId());
+					empAllowance.setAllowanceId(
+							salList.get(i).getGeneratedPayrollList().get(j).getDifAlloList().get(m).getAllowanceId());
+					empAllowance.setAllowanceValue(salList.get(i).getGeneratedPayrollList().get(j).getDifAlloList()
+							.get(m).getAllowanceDifference());
+					empAllowance.setEmpId(salList.get(i).getGeneratedPayrollList().get(j).getEmpId());
+					empAllowance.setAllowanceValueCal(
+							salList.get(i).getGeneratedPayrollList().get(j).getDifAlloList().get(m).getArearCal());
+					empAllowance.setShortName(
+							salList.get(i).getGeneratedPayrollList().get(j).getDifAlloList().get(m).getShortName());
+					empAllowance.setDelStatus(1);
+					// detailIds.add(salList.get(i).getGetAllowanceTempList().get(j).getEmpSalAllowanceId());
+					allowlist.add(empAllowance);
 
-						ArearAllownceCal empAllowance = new ArearAllownceCal();
-						empAllowance.setSalaryCalcId(saveres.getId());
-						empAllowance.setAllowanceId(salList.get(i).getGeneratedPayrollList().get(j).getDifAlloList()
-								.get(m).getAllowanceId());
-						empAllowance.setAllowanceValue(salList.get(i).getGeneratedPayrollList().get(j).getDifAlloList()
-								.get(m).getAllowanceDifference());
-						empAllowance.setEmpId(salList.get(i).getGeneratedPayrollList().get(j).getEmpId());
-						empAllowance.setAllowanceValueCal(
-								salList.get(i).getGeneratedPayrollList().get(j).getDifAlloList().get(m).getArearCal());
-						empAllowance.setShortName(
-								salList.get(i).getGeneratedPayrollList().get(j).getDifAlloList().get(m).getShortName());
-						empAllowance.setDelStatus(1);
-						// detailIds.add(salList.get(i).getGetAllowanceTempList().get(j).getEmpSalAllowanceId());
-						allowlist.add(empAllowance);
-
-					}
-
-					List<ArearAllownceCal> saveAllores = arearAllownceCalRepo.saveAll(allowlist);
 				}
+
+				List<ArearAllownceCal> saveAllores = arearAllownceCalRepo.saveAll(allowlist);
 			}
-
-			info.setError(false);
-			info.setMsg("success");
-
-		} catch (Exception e) {
-			info.setError(true);
-			info.setMsg("failed");
-			e.printStackTrace();
 		}
+
+		info.setError(false);
+		info.setMsg("success");
+
+		/*
+		 * } catch (Exception e) { info.setError(true); info.setMsg("failed");
+		 * e.printStackTrace(); }
+		 */
 
 		return info;
 	}
