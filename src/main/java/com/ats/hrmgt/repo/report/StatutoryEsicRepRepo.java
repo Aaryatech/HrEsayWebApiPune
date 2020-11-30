@@ -31,7 +31,9 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"        tsc.employer_esic,\n" + 
 			"        tasd.payable_days as present_days,\n" + 
 			"        tasd.year,\n" + 
-			"        tasd.month,tsc.esic\n" + 
+			"        tasd.month,tsc.esic,\n" + 
+			"        '' as   reason, \n" + 
+			"        '' as   esic_leave_date\n" + 
 			"    FROM\n" + 
 			"        m_employees AS te\n" + 
 			"    INNER JOIN tbl_attt_summary_daily AS tasd\n" + 
@@ -91,7 +93,9 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"        tsc.employer_esic,\n" + 
 			"        tasd.payable_days as present_days,\n" + 
 			"        tasd.year,\n" + 
-			"        tasd.month,tsc.esic\n" + 
+			"        tasd.month,tsc.esic,\n" + 
+			"        '' as   reason, \n" + 
+			"        '' as   esic_leave_date\n" + 
 			"    FROM\n" + 
 			"        m_employees AS te \n" + 
 			"    INNER JOIN tbl_attt_summary_daily AS tasd\n" + 
@@ -149,18 +153,22 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"            tasd.payable_days as present_days,\n" + 
 			"            tasd.year,\n" + 
 			"            tasd.month,\n" + 
-			"            tsc.esic     \n" + 
+			"            tsc.esic, case when si.leaving_reason_esic>-1 then si.leaving_reason_esic else '' end as reason, \n" + 
+			"            case when si.leaving_reason_esic>-1 then si.ex_var1   else '' end as esic_leave_date    \n" + 
 			"        FROM\n" + 
 			"            m_employees AS te     \n" + 
 			"        INNER JOIN\n" + 
 			"            tbl_attt_summary_daily AS tasd     \n" + 
 			"                ON         tasd.emp_id = te.emp_id \n" + 
 			"                AND tasd.month = :month AND tasd.year = :year         \n" + 
-			"            INNER JOIN\n" + 
+			"         INNER JOIN\n" + 
 			"                tbl_salary_calc AS tsc         \n" + 
 			"                    ON             tsc.emp_id = te.emp_id \n" + 
 			"                    AND tsc.calc_month = tasd.month AND tsc.calc_year = tasd.year \n" + 
-			"                    and tsc.esic_status=1             \n" + 
+			"                    and tsc.esic_status=1\n" + 
+			"        INNER JOIN\n" + 
+			"            tbl_emp_salary_info AS si                              \n" + 
+			"                ON             si.emp_id = te.emp_id             \n" + 
 			"                WHERE\n" + 
 			"                      tsc.cmp_id =:companyId\n" + 
 			"                    AND te.del_status=1 \n" + 
@@ -188,7 +196,9 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"        tsc.employer_esic,\n" + 
 			"        tasd.payable_days as present_days,\n" + 
 			"        tasd.year,\n" + 
-			"        tasd.month,tsc.esic\n" + 
+			"        tasd.month,tsc.esic,\n" + 
+			"        '' as   reason, \n" + 
+			"        '' as   esic_leave_date\n" + 
 			"    FROM\n" + 
 			"        m_employees AS te\n" + 
 			"    INNER JOIN tbl_attt_summary_daily AS tasd\n" + 

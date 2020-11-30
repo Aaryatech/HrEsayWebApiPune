@@ -27,6 +27,7 @@ import com.ats.hrmgt.model.EmpShiftDetails;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.GetDailyDailyRecord;
 import com.ats.hrmgt.model.GetDailyDailyRecordRepository;
+import com.ats.hrmgt.model.GetPfStatementSummary;
 import com.ats.hrmgt.model.LeaveApply;
 import com.ats.hrmgt.model.LedgerDetailList;
 import com.ats.hrmgt.model.LwfChallanData;
@@ -60,6 +61,7 @@ import com.ats.hrmgt.repository.DeductionAndLoanAmtRepo;
 import com.ats.hrmgt.repository.EcrFileDataRepo;
 import com.ats.hrmgt.repository.EmpOpningLoanListRepo;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
+import com.ats.hrmgt.repository.GetPfStatementSummaryRepo;
 import com.ats.hrmgt.repository.LeaveApplyRepository;
 import com.ats.hrmgt.repository.LwfChallanDataRepo;
 import com.ats.hrmgt.repository.PayDeductionDetailsRepo;
@@ -77,6 +79,9 @@ public class LeaveReportApiController {
 
 	@Autowired
 	EmployeeMasterRepository empRepo;
+
+	@Autowired
+	GetPfStatementSummaryRepo getPfStatementSummaryRepo;
 
 	@RequestMapping(value = { "/getAdvanceReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetAdvance> getAdvanceReport(@RequestParam("companyId") int companyId,
@@ -357,6 +362,30 @@ public class LeaveReportApiController {
 		}
 
 		return advYearList;
+
+	}
+
+	@RequestMapping(value = { "/getPfStatementSummary" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetPfStatementSummary> getPfStatementSummary(@RequestParam("companyId") int companyId,
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
+			@RequestParam("locId") int locId) {
+
+		List<GetPfStatementSummary> list = new ArrayList<GetPfStatementSummary>();
+
+		String from[] = fromDate.split("-");
+		String to[] = toDate.split("-");
+
+		try {
+
+			list = getPfStatementSummaryRepo.getPfStatementSummary(companyId, from[2].trim(), from[1].trim(), to[2],
+					to[1], locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
 
 	}
 
@@ -646,6 +675,25 @@ public class LeaveReportApiController {
 		try {
 
 			ecrFileDataList = ecrFileDataRepo.getEcrFileData(cmpId, month, year, locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return ecrFileDataList;
+
+	}
+
+	@RequestMapping(value = { "/getArrearsEcrFileData" }, method = RequestMethod.POST)
+	public @ResponseBody List<EcrFileData> getArrearsEcrFileData(@RequestParam("cmpId") int cmpId,
+			@RequestParam("month") String month, @RequestParam("year") String year, @RequestParam("locId") int locId) {
+
+		List<EcrFileData> ecrFileDataList = new ArrayList<EcrFileData>();
+
+		try {
+
+			ecrFileDataList = ecrFileDataRepo.getArrearsEcrFileData(cmpId, month, year, locId);
 
 		} catch (Exception e) {
 

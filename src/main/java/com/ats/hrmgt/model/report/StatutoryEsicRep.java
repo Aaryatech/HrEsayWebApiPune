@@ -1,7 +1,11 @@
 package com.ats.hrmgt.model.report;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class StatutoryEsicRep {
@@ -27,7 +31,25 @@ public class StatutoryEsicRep {
 	 
 	private int year;
 	
-	
+	private String reason;
+
+	private Date esicLeaveDate;
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+	@JsonFormat(locale = "English", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getEsicLeaveDate() {
+		return esicLeaveDate;
+	}
+
+	public void setEsicLeaveDate(Date esicLeaveDate) {
+		this.esicLeaveDate = esicLeaveDate;
+	}
 
 	public int getMonth() {
 		return month;
