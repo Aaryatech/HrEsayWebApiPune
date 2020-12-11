@@ -2614,13 +2614,25 @@ public class AttendanceApiControllerchange {
 	@RequestMapping(value = { "/getListForfixunfixAttendance" }, method = RequestMethod.POST)
 	public @ResponseBody List<EmpSalaryInfoForPayroll> getListForfixunfixAttendance(@RequestParam("month") int month,
 			@RequestParam("year") int year, @RequestParam("isFixed") int isFixed, @RequestParam("sts") String sts,
-			@RequestParam("locId") List<Integer> locId) {
+			@RequestParam("locId") List<Integer> locId, @RequestParam("deptId") int deptId,
+			@RequestParam("typeId") int typeId) {
 
 		List<EmpSalaryInfoForPayroll> list = new ArrayList<>();
 
 		try {
 
-			list = empSalaryInfoForPayrollRepository.getListForfixunfixAttendance(month, year, isFixed, sts, locId);
+			if (deptId != 0 && typeId != 0) {
+				list = empSalaryInfoForPayrollRepository.getListForfixunfixAttendance(month, year, isFixed, sts, locId,
+						typeId, deptId);
+			} else if (deptId == 0 && typeId != 0) {
+				list = empSalaryInfoForPayrollRepository.getListForfixunfixAttendanceTypeId(month, year, isFixed, sts,
+						locId, typeId);
+			} else if (deptId != 0 && typeId == 0) {
+				list = empSalaryInfoForPayrollRepository.getListForfixunfixAttendanceDeptId(month, year, isFixed, sts,
+						locId, deptId);
+			} else {
+				list = empSalaryInfoForPayrollRepository.getListForfixunfixAttendance(month, year, isFixed, sts, locId);
+			}
 
 		} catch (Exception e) {
 

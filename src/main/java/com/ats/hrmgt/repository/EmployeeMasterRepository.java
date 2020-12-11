@@ -48,14 +48,14 @@ public interface EmployeeMasterRepository extends JpaRepository<EmployeeMaster, 
 	@Query(value = "SELECT e.* from m_employees e  where e.emp_id=:empId", nativeQuery = true)
 	EmployeeMaster getEmpInfoByEmpId(@Param("empId") int empId);
 	
-	@Query(value = "SELECT count(emp_id) FROM m_employees WHERE cmp_code=:companyId AND contractor_id=:contractId and e.del_status=1", nativeQuery = true)
+	@Query(value = "SELECT count(emp_id) FROM m_employees WHERE cmp_code=:companyId AND contractor_id=:contractId and del_status=1", nativeQuery = true)
 	int getEmpInfoByContractId(@Param("contractId") int contractId, @Param("companyId") int companyId);
 	
-	@Query(value = "SELECT count(emp_id) FROM m_employees WHERE cmp_code=:companyId AND depart_id=:deptId and e.del_status=1",nativeQuery=true)
+	@Query(value = "SELECT count(emp_id) FROM m_employees WHERE cmp_code=:companyId AND depart_id=:deptId and del_status=1",nativeQuery=true)
 	int getEmpInfoByDepartment(@Param("deptId") int deptId, @Param("companyId") int companyId);
 	
 	
-	@Query(value = "SELECT count(emp_id) FROM m_employees WHERE cmp_code=:companyId AND designation_id=:desigId and e.del_status=1",nativeQuery=true)
+	@Query(value = "SELECT count(emp_id) FROM m_employees WHERE cmp_code=:companyId AND designation_id=:desigId and del_status=1",nativeQuery=true)
 	int getEmpInfoByDesigId(@Param("desigId") int desigId, @Param("companyId") int companyId);
 
 	public List<EmployeeMaster> findByCmpCodeAndDelStatusOrderByEmpIdDesc(int companyId, int del);

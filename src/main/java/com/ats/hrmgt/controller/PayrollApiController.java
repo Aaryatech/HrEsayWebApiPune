@@ -26,6 +26,7 @@ import com.ats.hrmgt.model.AllowanceWithDifferenceForArear;
 import com.ats.hrmgt.model.Allowances;
 import com.ats.hrmgt.model.ArearAllownceCal;
 import com.ats.hrmgt.model.ArearSalaryCalc;
+import com.ats.hrmgt.model.BankTrasferReport;
 import com.ats.hrmgt.model.EmpAllowanceList;
 import com.ats.hrmgt.model.EmpInfoForArear;
 import com.ats.hrmgt.model.EmpSalAllowance;
@@ -71,6 +72,7 @@ import com.ats.hrmgt.repo.loan.LoanMainRepo;
 import com.ats.hrmgt.repository.AllowancesRepo;
 import com.ats.hrmgt.repository.ArearAllownceCalRepo;
 import com.ats.hrmgt.repository.ArearSalaryCalcRepo;
+import com.ats.hrmgt.repository.BankTrasferReportRepo;
 import com.ats.hrmgt.repository.EmpInfoForArearRepository;
 import com.ats.hrmgt.repository.EmpSalAllowanceRepo;
 import com.ats.hrmgt.repository.EmpSalInfoDaiyInfoTempInfoRepo;
@@ -219,15 +221,33 @@ public class PayrollApiController {
 	@Autowired
 	ArearAllownceCalRepo arearAllownceCalRepo;
 
+	@Autowired
+	BankTrasferReportRepo bankTrasferReportRepo;
+
 	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForPayRoll" }, method = RequestMethod.POST)
 	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForPayRoll(@RequestParam("month") int month,
-			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId) {
+			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId,
+			@RequestParam("deptId") int deptId, @RequestParam("typeId") int typeId) {
 
 		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
 
 		try {
-			List<EmpSalaryInfoForPayroll> list = empSalaryInfoForPayrollRepository
-					.getEmployeeListWithEmpSalEnfoForPayRoll(month, year, locId, (year + "-" + month + "-01"));
+			List<EmpSalaryInfoForPayroll> list = new ArrayList<>();
+
+			if (deptId != 0 && typeId != 0) {
+				list = empSalaryInfoForPayrollRepository.getEmployeeListWithEmpSalEnfoForPayRoll(month, year, locId,
+						typeId, deptId, (year + "-" + month + "-01"));
+			} else if (deptId == 0 && typeId != 0) {
+				list = empSalaryInfoForPayrollRepository.getEmployeeListWithEmpSalEnfoForPayRollTypeId(month, year,
+						locId, typeId, (year + "-" + month + "-01"));
+			} else if (deptId != 0 && typeId == 0) {
+				list = empSalaryInfoForPayrollRepository.getEmployeeListWithEmpSalEnfoForPayRollDeptId(month, year,
+						locId, deptId, (year + "-" + month + "-01"));
+			} else {
+				list = empSalaryInfoForPayrollRepository.getEmployeeListWithEmpSalEnfoForPayRoll(month, year, locId,
+						(year + "-" + month + "-01"));
+			}
+
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
 			List<EmpSalAllowance> empAllowanceList = empSalAllowanceRepo.findByDelStatus(1);
 
@@ -250,6 +270,7 @@ public class PayrollApiController {
 							empAllowance.setValue(empAllowanceList.get(k).getAllowanceValue());
 							allowlist.add(empAllowance);
 							flag = 1;
+							// empAllowanceList.remove(k);
 							break;
 
 						}
@@ -1488,16 +1509,17 @@ public class PayrollApiController {
 
 						// we have not add any code to avoid esci deduction. as it mendatory to deduct
 						// esic till some month, but kishore has changed the code to cut the esic
-						if (getSalaryTempList.get(i).getEsicWagesCal() >= esic_limit) {
-							getSalaryTempList.get(i).setEmployerEsic(0);
-							getSalaryTempList.get(i).setEsic(0);
-						} else {
+						/*
+						 * if (getSalaryTempList.get(i).getEsicWagesCal() >= esic_limit) {
+						 * getSalaryTempList.get(i).setEmployerEsic(0);
+						 * getSalaryTempList.get(i).setEsic(0); } else {
+						 */
 
-							getSalaryTempList.get(i).setEmployerEsic(castNumber(
-									((getSalaryTempList.get(i).getEsicWagesCal()) * employer_esic_percentage), 3));
-							getSalaryTempList.get(i).setEsic(castNumber(
-									((getSalaryTempList.get(i).getEsicWagesCal()) * employee_esic_percentage), 3));
-						}
+						getSalaryTempList.get(i).setEmployerEsic(castNumber(
+								((getSalaryTempList.get(i).getEsicWagesCal()) * employer_esic_percentage), 3));
+						getSalaryTempList.get(i).setEsic(castNumber(
+								((getSalaryTempList.get(i).getEsicWagesCal()) * employee_esic_percentage), 3));
+						// }
 						/*
 						 * System.out.println("ESIC ==== " + getSalaryTempList.get(i).getEsicWagesCal()
 						 * + "##" + employee_esic_percentage);
@@ -2335,6 +2357,24 @@ public class PayrollApiController {
 		}
 
 		return payRollDataForProcessing;
+	}
+
+	@RequestMapping(value = { "/getBankTransferReport" }, method = RequestMethod.POST)
+	@ResponseBody
+	public List<BankTrasferReport> getBankTransferReport(@RequestParam("month") int month,
+			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId) {
+
+		List<BankTrasferReport> list = new ArrayList<>();
+
+		try {
+
+			list = bankTrasferReportRepo.getBankTransferReport(month, year, locId);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 
 	@RequestMapping(value = { "/getPayrollGenratedListByAuthority" }, method = RequestMethod.POST)
