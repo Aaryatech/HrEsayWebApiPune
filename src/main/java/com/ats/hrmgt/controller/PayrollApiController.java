@@ -2362,13 +2362,14 @@ public class PayrollApiController {
 	@RequestMapping(value = { "/getBankTransferReport" }, method = RequestMethod.POST)
 	@ResponseBody
 	public List<BankTrasferReport> getBankTransferReport(@RequestParam("month") int month,
-			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId) {
+			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId,
+			@RequestParam("bankId") int bankId) {
 
 		List<BankTrasferReport> list = new ArrayList<>();
 
 		try {
 
-			list = bankTrasferReportRepo.getBankTransferReport(month, year, locId);
+			list = bankTrasferReportRepo.getBankTransferReport(month, year, locId, bankId);
 
 		} catch (Exception e) {
 			e.printStackTrace();
