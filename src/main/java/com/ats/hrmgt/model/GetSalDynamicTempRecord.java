@@ -56,6 +56,7 @@ public class GetSalDynamicTempRecord {
 	private double advanceDed;
 	private double loanDed;
 	private double miscExpDed;
+	private double nightAllow;
 	private int  miscExpDedDeduct;
 	private double netSalary;
 	private String isLocked;
@@ -466,6 +467,12 @@ public class GetSalDynamicTempRecord {
 	public void setOther1(double other1) {
 		this.other1 = other1;
 	}
+	public double getNightAllow() {
+		return nightAllow;
+	}
+	public void setNightAllow(double nightAllow) {
+		this.nightAllow = nightAllow;
+	}
 	@Override
 	public String toString() {
 		return "GetSalDynamicTempRecord [id=" + id + ", cmpId=" + cmpId + ", empId=" + empId + ", empCode=" + empCode
@@ -482,10 +489,10 @@ public class GetSalDynamicTempRecord {
 				+ mlwf + ", tds=" + tds + ", itded=" + itded + ", fund=" + fund + ", totPfAdminCh=" + totPfAdminCh
 				+ ", totEdliCh=" + totEdliCh + ", totEdliAdminCh=" + totEdliAdminCh + ", ncpDays=" + ncpDays
 				+ ", status=" + status + ", ptDed=" + ptDed + ", advanceDed=" + advanceDed + ", loanDed=" + loanDed
-				+ ", miscExpDed=" + miscExpDed + ", miscExpDedDeduct=" + miscExpDedDeduct + ", netSalary=" + netSalary
-				+ ", isLocked=" + isLocked + ", loginName=" + loginName + ", loginTime=" + loginTime
-				+ ", mlwfApplicable=" + mlwfApplicable + ", ptApplicable=" + ptApplicable + ", payDed=" + payDed
-				+ ", reward=" + reward + ", bhatta=" + bhatta + ", other1=" + other1 + ", commentsForItBonus="
+				+ ", miscExpDed=" + miscExpDed + ", nightAllow=" + nightAllow + ", miscExpDedDeduct=" + miscExpDedDeduct
+				+ ", netSalary=" + netSalary + ", isLocked=" + isLocked + ", loginName=" + loginName + ", loginTime="
+				+ loginTime + ", mlwfApplicable=" + mlwfApplicable + ", ptApplicable=" + ptApplicable + ", payDed="
+				+ payDed + ", reward=" + reward + ", bhatta=" + bhatta + ", other1=" + other1 + ", commentsForItBonus="
 				+ commentsForItBonus + ", societyContribution=" + societyContribution + ", empCategory=" + empCategory
 				+ ", basicDefault=" + basicDefault + ", empName=" + empName + ", designation=" + designation
 				+ ", salTypeName=" + salTypeName + "]";

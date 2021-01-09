@@ -15,9 +15,10 @@ public interface SalaryCalcTempRepo extends JpaRepository<SalaryCalcTemp, Intege
 
 	@Transactional
 	@Modifying
-	@Query(value = "UPDATE tbl_salary_dynamic_temp SET itded=:itAmt,performance_bonus=:perBonus,other1=:other1 WHERE id=:tempSalDaynamicId", nativeQuery = true)
+	@Query(value = "UPDATE tbl_salary_dynamic_temp SET itded=:itAmt,performance_bonus=:perBonus,other1=:other1,night_allow=:nightAllowAmt WHERE id=:tempSalDaynamicId", nativeQuery = true)
 	int updateBonusAmt(@Param("tempSalDaynamicId") int tempSalDaynamicId, @Param("itAmt") float itAmt,
-			@Param("perBonus") float perBonus,@Param("other1") float other1);
+			@Param("perBonus") float perBonus, @Param("other1") float other1,
+			@Param("nightAllowAmt") float nightAllowAmt);
 
 	@Query(value = "select * from tbl_salary_dynamic_temp  where calc_month=:month and calc_year=:year and emp_id in (:empIds)", nativeQuery = true)
 	List<SalaryCalcTemp> listForUpdatedValue(@Param("month") int month, @Param("year") int year,
