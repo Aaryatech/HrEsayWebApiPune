@@ -1564,7 +1564,7 @@ public class PayrollApiController {
 								+ getSalaryTempList.get(i).getPayDed() + getSalaryTempList.get(i).getEsic()
 								+ getSalaryTempList.get(i).getEmployeePf() + getSalaryTempList.get(i).getPtDed()
 								+ getSalaryTempList.get(i).getItded() + getSalaryTempList.get(i).getTds()
-								+ getSalaryTempList.get(i).getSocietyContributionDytemp()),
+								+ getSalaryTempList.get(i).getSocietyContributionDytemp()+ getSalaryTempList.get(i).getMlwf()),
 						amount_round));
 
 				getSalaryTempList.get(i).setLoginName(String.valueOf(userId));
