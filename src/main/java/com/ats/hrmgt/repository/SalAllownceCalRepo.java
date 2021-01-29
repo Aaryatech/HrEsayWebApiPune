@@ -13,8 +13,30 @@ public interface SalAllownceCalRepo extends JpaRepository<SalAllownceCal, Intege
 	@Query(value = "select sa.* from tbl_salary_calc_allowance_cal sa,tbl_salary_calc sc where sa.salary_calc_id=sc.id and sc.calc_month=:month and calc_year=:year", nativeQuery = true)
 	List<SalAllownceCal> getPayrollAllownceList(@Param("month") int month, @Param("year") int year);
 
-	@Query(value = "select sa.* from tbl_salary_calc_allowance_cal sa,tbl_salary_calc sc where sa.salary_calc_id=sc.id and "
-			+ "sc.calc_month=:month and calc_year=:year and sc.emp_id in(:empIds)", nativeQuery = true)
+	@Query(value = "select\n"
+			+ "        sa.emp_sal_allowance_id,\n"
+			+ "        sa.salary_calc_id,\n"
+			+ "        sa.emp_id,\n"
+			+ "        sa.allowance_id,\n"
+			+ "        sa.allowance_value,\n"
+			+ "        sa.allowance_value_cal,\n"
+			+ "        sa.maker_enter_datetime,\n"
+			+ "        sa.del_status,\n"
+			+ "        sa.ex_int1,\n"
+			+ "        sa.ex_int2,\n"
+			+ "        a.name as ex_var1,\n"
+			+ "        sa.ex_var2,\n"
+			+ "        sa.short_name\n"
+			+ "    from\n"
+			+ "        tbl_salary_calc_allowance_cal sa,\n"
+			+ "        tbl_salary_calc sc,\n"
+			+ "        m_allowances a\n"
+			+ "    where\n"
+			+ "        sa.salary_calc_id=sc.id \n"
+			+ "        and a.allowance_id=sa.allowance_id\n"
+			+ "        and sc.calc_month=:month\n"
+			+ "        and calc_year=:year \n"
+			+ "        and sc.emp_id in(:empIds)", nativeQuery = true)
 	List<SalAllownceCal> getPayrollAllownceList(@Param("month") int month, @Param("year") int year,@Param("empIds") List<Integer> empIds);
 
 	@Query(value = "select sa.* from tbl_salary_calc_allowance_cal sa,tbl_salary_calc sc,m_employees e where sa.salary_calc_id=sc.id and "
