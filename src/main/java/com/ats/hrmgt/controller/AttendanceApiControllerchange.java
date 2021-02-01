@@ -50,6 +50,7 @@ import com.ats.hrmgt.model.LeaveApply;
 import com.ats.hrmgt.model.LeaveCancelEmployee;
 import com.ats.hrmgt.model.LeaveStsAndLeaveId;
 import com.ats.hrmgt.model.LeaveTrail;
+import com.ats.hrmgt.model.LiveThumbData;
 import com.ats.hrmgt.model.LoginResponse;
 import com.ats.hrmgt.model.LvType;
 import com.ats.hrmgt.model.LvmSumUp;
@@ -80,6 +81,7 @@ import com.ats.hrmgt.repository.HolidayRepo;
 import com.ats.hrmgt.repository.InfoForUploadAttendanceRepository;
 import com.ats.hrmgt.repository.LeaveApplyRepository;
 import com.ats.hrmgt.repository.LeaveTrailRepository;
+import com.ats.hrmgt.repository.LiveThumbDataRepository;
 import com.ats.hrmgt.repository.LvTypeRepository;
 import com.ats.hrmgt.repository.LvmSumUpRepository;
 import com.ats.hrmgt.repository.MstEmpTypeRepository;
@@ -182,6 +184,9 @@ public class AttendanceApiControllerchange {
 
 	@Autowired
 	DailyAttendaceReportRepository dailyAttendaceReportRepository;
+
+	@Autowired
+	LiveThumbDataRepository liveThumbDataRepository;
 
 	@RequestMapping(value = { "/initiallyInsertDailyRecord" }, method = RequestMethod.POST)
 	public @ResponseBody Info initiallyInsertDailyRecord(@RequestParam("fromDate") String fromDate,
@@ -3355,5 +3360,69 @@ public class AttendanceApiControllerchange {
 		}
 
 		return ret;
+	}
+
+	@RequestMapping(value = { "/autoThumbAttendance" }, method = RequestMethod.GET)
+	public @ResponseBody List<LiveThumbData> autoThumbAttendance() {
+
+		List<LiveThumbData> dailyAttendanceList = new ArrayList<>();
+		try {
+
+			// String date = "2021-01-01";
+
+			Date dt = new Date();
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
+
+			String dateyy = sf.format(dt);
+			String datedd = dd.format(dt);
+
+			/*
+			 * String dateyy = "2020-05-03"; String datedd = "03-05-2020";
+			 */
+
+			
+			Calendar a = Calendar.getInstance();
+			a.setTime(dt);
+			int year = a.get(Calendar.YEAR);
+			int month = a.get(Calendar.MONTH) + 1;
+
+			dailyAttendanceList = liveThumbDataRepository.getThumbData(dateyy);
+
+			DataForUpdateAttendance dataForUpdateAttendance = new DataForUpdateAttendance();
+			dataForUpdateAttendance.setFromDate(dateyy);
+			dataForUpdateAttendance.setToDate(dateyy);
+			dataForUpdateAttendance.setEmpId(0);
+			dataForUpdateAttendance.setUserId(1);
+			dataForUpdateAttendance.setMonth(month);
+			dataForUpdateAttendance.setYear(year);
+			List<FileUploadedData> fileUploadedDataList = new ArrayList<>();
+
+			for (int i = 0; i < dailyAttendanceList.size(); i++) {
+				FileUploadedData fileUploadedData = new FileUploadedData();
+				fileUploadedData.setEmpCode(dailyAttendanceList.get(i).getEmpCode());
+				fileUploadedData.setEmpName(dailyAttendanceList.get(i).getEmpCode());
+				fileUploadedData.setLogDate(DateConvertor.convertToDMY(datedd));
+				fileUploadedData.setInTime(dailyAttendanceList.get(i).getInTime());
+				fileUploadedData.setOutTime(dailyAttendanceList.get(i).getOutTime());
+				fileUploadedDataList.add(fileUploadedData);
+			}
+			dataForUpdateAttendance.setFileUploadedDataList(fileUploadedDataList);
+
+			Info info = getVariousListForUploadAttendace(dataForUpdateAttendance);
+
+			// SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			Date firstDay = new GregorianCalendar(year, month - 1, 1).getTime();
+			Date lastDay = new GregorianCalendar(year, month, 0).getTime();
+
+			info = finalUpdateDailySumaryRecord(sf.format(firstDay), sf.format(lastDay), 1, 01, 2021, 0);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+		return dailyAttendanceList;
+
 	}
 }
