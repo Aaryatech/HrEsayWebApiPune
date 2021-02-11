@@ -38,6 +38,7 @@ import com.ats.hrmgt.model.GetLeaveApplyAuthwise;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.InfoForCompOffList;
 import com.ats.hrmgt.model.LeaveApply;
+import com.ats.hrmgt.model.LeaveEncash;
 import com.ats.hrmgt.model.LeaveHistory;
 import com.ats.hrmgt.model.LeaveHistoryDetailForCarry;
 import com.ats.hrmgt.model.LeaveStsAndLeaveId;
@@ -47,6 +48,7 @@ import com.ats.hrmgt.model.MstEmpType;
 import com.ats.hrmgt.model.PayableDayAndPresentDays;
 import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.repo.DailyRecordForCompOffRepository;
+import com.ats.hrmgt.repo.LeaveEncashRepository;
 import com.ats.hrmgt.repository.AuthorityInformationRepository;
 import com.ats.hrmgt.repository.CalculateYearRepository;
 import com.ats.hrmgt.repository.EmpBasicAllownceForLeaveInCashRepo;
@@ -116,6 +118,9 @@ public class LeaveActionApiController {
 
 	@Autowired
 	LeaveHistoryDetailForCarryRepo leaveHistoryDetailForCarryRepo;
+
+	@Autowired
+	LeaveEncashRepository leaveEncashRepository;
 
 	@RequestMapping(value = { "/updateLeaveStatus" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateLeaveStatus(@RequestParam("leaveId") int leaveId,
@@ -613,7 +618,7 @@ public class LeaveActionApiController {
 		return info;
 
 	}
-	
+
 	@RequestMapping(value = { "/getValidationOfFreezeMonthSalary" }, method = RequestMethod.POST)
 	public @ResponseBody Info getValidationOfFreezeMonthSalary(@RequestParam("month") String month,
 			@RequestParam("year") String year, @RequestParam("empId") int empId) {
@@ -958,6 +963,26 @@ public class LeaveActionApiController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	@RequestMapping(value = { "/newLeaveEncash" }, method = RequestMethod.POST)
+	public @ResponseBody Info newLeaveEncash(@RequestBody LeaveEncash leaveEncash) {
+
+		Info info = new Info();
+
+		try {
+
+			LeaveEncash res = leaveEncashRepository.save(leaveEncash);
+			info.setError(false);
+			info.setMsg("save successfullyy");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
 
 	}
 }

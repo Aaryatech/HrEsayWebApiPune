@@ -13,63 +13,78 @@ import com.ats.hrmgt.model.LeaveHistory;
 public interface LeaveHistoryRepo  extends JpaRepository<LeaveHistory, Integer>{
 
 	
-	@Query(value = "SELECT\n" + 
-			"        leave_type.lv_type_id,\n" + 
-			"        leave_type.lv_title_short,\n" + 
-			"        leave_type.lv_title,\n" + 
-			"        leave_structure_details.lvs_alloted_leaves,\n" + 
-			"        leave_structure_header.lvs_id,leave_type.is_file,leave_structure_details.max_accumulate_carryforward,\n" + 
-			"        leave_structure_details.is_carryforward,\n" + 
-			"        leave_structure_details.max_carryforward,leave_structure_details.ex_int1 as is_in_cash,\n" + 
-			"        coalesce((select\n" + 
-			"            b.op_bal \n" + 
-			"        from\n" + 
-			"            leave_balance_cal b,\n" + 
-			"            dm_cal_year y \n" + 
-			"        where\n" + 
-			"            b.emp_id=m_employees.emp_id \n" + 
-			"            and leave_type.lv_type_id=b.lv_type_id \n" + 
-			"            and y.cal_yr_id=b.cal_yr_id \n" + 
-			"            and y.is_current=1),\n" + 
-			"        0) as bal_leave,\n" + 
-			"        coalesce((select\n" + 
-			"            sum(b.leave_num_days) \n" + 
-			"        from\n" + 
-			"            leave_apply b,\n" + 
-			"            dm_cal_year y \n" + 
-			"        where\n" + 
-			"            b.emp_id=m_employees.emp_id \n" + 
-			"            and leave_type.lv_type_id=b.lv_type_id \n" + 
-			"            and y.cal_yr_id=b.cal_yr_id \n" + 
-			"            and y.is_current=1 \n" + 
-			"            and b.ex_int1=3),\n" + 
-			"        0) as saction_leave,\n" + 
-			"        coalesce((select\n" + 
-			"            sum(b.leave_num_days) \n" + 
-			"        from\n" + 
-			"            leave_apply b,\n" + 
-			"            dm_cal_year y \n" + 
-			"        where\n" + 
-			"            b.emp_id=m_employees.emp_id \n" + 
-			"            and leave_type.lv_type_id=b.lv_type_id \n" + 
-			"            and y.cal_yr_id=b.cal_yr_id \n" + 
-			"            and y.is_current=1 \n" + 
-			"            and b.ex_int1 in (1,2)),\n" + 
-			"        0) as apllied_leaeve,leave_structure_header.lvs_name \n" + 
-			"    FROM\n" + 
-			"        leave_type,\n" + 
-			"        m_employees,\n" + 
-			"        leave_structure_header,\n" + 
-			"        leave_structure_details,\n" + 
-			"        leave_structure_allotment \n" + 
-			"    WHERE\n" + 
-			"        m_employees.emp_id = leave_structure_allotment.emp_id \n" + 
-			"        AND leave_structure_allotment.lvs_id = leave_structure_header.lvs_id \n" + 
-			"        AND leave_structure_header.lvs_id = leave_structure_details.lvs_id \n" + 
-			"        AND leave_structure_details.lv_type_id = leave_type.lv_type_id \n" + 
-			"        AND m_employees.emp_id =:empId \n" + 
-			"        and leave_structure_allotment.cal_yr_id=:currYrId \n" + 
-			"        and leave_type.del_status=1", nativeQuery = true) 
+	@Query(value = "SELECT\n"
+			+ "        leave_type.lv_type_id,\n"
+			+ "        leave_type.lv_title_short,\n"
+			+ "        leave_type.lv_title,\n"
+			+ "        leave_structure_details.lvs_alloted_leaves,\n"
+			+ "        leave_structure_header.lvs_id,\n"
+			+ "        leave_type.is_file,\n"
+			+ "        leave_structure_details.max_accumulate_carryforward,\n"
+			+ "        leave_structure_details.is_carryforward,\n"
+			+ "        leave_structure_details.max_carryforward,\n"
+			+ "        leave_structure_details.ex_int1 as is_in_cash,\n"
+			+ "        coalesce((select\n"
+			+ "            b.op_bal          \n"
+			+ "        from\n"
+			+ "            leave_balance_cal b,\n"
+			+ "            dm_cal_year y          \n"
+			+ "        where\n"
+			+ "            b.emp_id=m_employees.emp_id              \n"
+			+ "            and leave_type.lv_type_id=b.lv_type_id              \n"
+			+ "            and y.cal_yr_id=b.cal_yr_id              \n"
+			+ "            and y.is_current=1),\n"
+			+ "        0) as bal_leave,\n"
+			+ "        coalesce((select\n"
+			+ "            sum(b.leave_num_days)          \n"
+			+ "        from\n"
+			+ "            leave_apply b,\n"
+			+ "            dm_cal_year y          \n"
+			+ "        where\n"
+			+ "            b.emp_id=m_employees.emp_id              \n"
+			+ "            and leave_type.lv_type_id=b.lv_type_id              \n"
+			+ "            and y.cal_yr_id=b.cal_yr_id              \n"
+			+ "            and y.is_current=1              \n"
+			+ "            and b.ex_int1=3),\n"
+			+ "        0) as saction_leave,\n"
+			+ "        coalesce((select\n"
+			+ "            sum(b.leave_num_days)          \n"
+			+ "        from\n"
+			+ "            leave_apply b,\n"
+			+ "            dm_cal_year y          \n"
+			+ "        where\n"
+			+ "            b.emp_id=m_employees.emp_id              \n"
+			+ "            and leave_type.lv_type_id=b.lv_type_id              \n"
+			+ "            and y.cal_yr_id=b.cal_yr_id              \n"
+			+ "            and y.is_current=1              \n"
+			+ "            and b.ex_int1 in (1,2)),\n"
+			+ "        0) as apllied_leaeve,\n"
+			+ "        leave_structure_header.lvs_name,\n"
+			+ "        coalesce((select\n"
+			+ "            sum(b.leave_count)          \n"
+			+ "        from\n"
+			+ "            t_encash b,\n"
+			+ "            dm_cal_year y          \n"
+			+ "        where\n"
+			+ "            b.emp_id=m_employees.emp_id              \n"
+			+ "            and leave_type.lv_type_id=b.lv_type_id              \n"
+			+ "            and y.cal_yr_id=b.year_id              \n"
+			+ "            and y.is_current=1 ),\n"
+			+ "        0) as leave_encash_count\n"
+			+ "    FROM\n"
+			+ "        leave_type,\n"
+			+ "        m_employees,\n"
+			+ "        leave_structure_header,\n"
+			+ "        leave_structure_details,\n"
+			+ "        leave_structure_allotment      \n"
+			+ "    WHERE\n"
+			+ "        m_employees.emp_id = leave_structure_allotment.emp_id          \n"
+			+ "        AND leave_structure_allotment.lvs_id = leave_structure_header.lvs_id          \n"
+			+ "        AND leave_structure_header.lvs_id = leave_structure_details.lvs_id          \n"
+			+ "        AND leave_structure_details.lv_type_id = leave_type.lv_type_id          \n"
+			+ "        AND m_employees.emp_id =:empId          \n"
+			+ "        and leave_structure_allotment.cal_yr_id=:currYrId          \n"
+			+ "        and leave_type.del_status=1", nativeQuery = true) 
 	List<LeaveHistory> getLeaveHistoryByEmpId(@Param("empId") int empId,@Param("currYrId") int currYrId);
 	
 	
@@ -123,7 +138,16 @@ public interface LeaveHistoryRepo  extends JpaRepository<LeaveHistory, Integer>{
 			"            and leave_type.lv_type_id=b.lv_type_id              \n" + 
 			"            and b.cal_yr_id=leave_structure_allotment.cal_yr_id              \n" + 
 			"            and b.ex_int1 in (1,2)),\n" + 
-			"        0) as apllied_leaeve,leave_structure_header.lvs_name     \n" + 
+			"        0) as apllied_leaeve,leave_structure_header.lvs_name,"
+			+ "coalesce((select\n"
+			+ "            sum(b.leave_count)          \n"
+			+ "        from\n"
+			+ "            t_encash b,          \n"
+			+ "        where\n"
+			+ "            b.emp_id=m_employees.emp_id              \n"
+			+ "            and leave_type.lv_type_id=b.lv_type_id              \n"
+			+ "            and leave_structure_allotment.cal_yr_id=b.year_id ),\n"
+			+ "        0) as leave_encash_count     \n" + 
 			"    FROM\n" + 
 			"        leave_type,\n" + 
 			"        m_employees,\n" + 

@@ -3368,20 +3368,14 @@ public class AttendanceApiControllerchange {
 		List<LiveThumbData> dailyAttendanceList = new ArrayList<>();
 		try {
 
-			// String date = "2021-01-01";
-
 			Date dt = new Date();
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
 
 			String dateyy = sf.format(dt);
-			String datedd = dd.format(dt);
+			//String datedd = dd.format(dt);
 
-			/*
-			 * String dateyy = "2020-05-03"; String datedd = "03-05-2020";
-			 */
-
-			
+			//String dateyy = "2021-01-01";
 			Calendar a = Calendar.getInstance();
 			a.setTime(dt);
 			int year = a.get(Calendar.YEAR);
@@ -3402,7 +3396,7 @@ public class AttendanceApiControllerchange {
 				FileUploadedData fileUploadedData = new FileUploadedData();
 				fileUploadedData.setEmpCode(dailyAttendanceList.get(i).getEmpCode());
 				fileUploadedData.setEmpName(dailyAttendanceList.get(i).getEmpCode());
-				fileUploadedData.setLogDate(DateConvertor.convertToDMY(datedd));
+				fileUploadedData.setLogDate(DateConvertor.convertToDMY(dateyy));
 				fileUploadedData.setInTime(dailyAttendanceList.get(i).getInTime());
 				fileUploadedData.setOutTime(dailyAttendanceList.get(i).getOutTime());
 				fileUploadedDataList.add(fileUploadedData);
