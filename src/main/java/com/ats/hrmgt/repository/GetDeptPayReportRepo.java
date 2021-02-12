@@ -65,7 +65,7 @@ public interface GetDeptPayReportRepo extends JpaRepository<GetDeptPayReport, In
 			"        sum(sc.adjust_plus) as adjust_plus,\n" + 
 			"        sum(sc.reward) as reward,\n" + 
 			"        sum(sc.bhatta) as bhatta,\n" + 
-			"        sum(sc.other1)   as other1     \n" + 
+			"        sum(sc.other1)   as other1, sum(sc.leave_encash_amt) as leave_encash_amt    \n" + 
 			"    from\n" + 
 			"        tbl_salary_calc sc,\n" + 
 			"        m_employees e,\n" + 

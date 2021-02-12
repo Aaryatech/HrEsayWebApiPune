@@ -47,6 +47,7 @@ import com.ats.hrmgt.model.GetPayrollGeneratedListForArear;
 import com.ats.hrmgt.model.GetSalDynamicTempRecord;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.LateMarkListForInsertAdvance;
+import com.ats.hrmgt.model.LeaveEncash;
 import com.ats.hrmgt.model.MlwfMaster;
 import com.ats.hrmgt.model.MstEmpType;
 import com.ats.hrmgt.model.PayRollDataForProcessing;
@@ -67,6 +68,7 @@ import com.ats.hrmgt.model.advance.Advance;
 import com.ats.hrmgt.model.loan.LoanDetails;
 import com.ats.hrmgt.model.loan.LoanMain;
 import com.ats.hrmgt.repo.GetEmpDetailRepo;
+import com.ats.hrmgt.repo.LeaveEncashRepository;
 import com.ats.hrmgt.repo.bonus.PayBonusDetailsRepo;
 import com.ats.hrmgt.repo.loan.LoanDetailsRepo;
 import com.ats.hrmgt.repo.loan.LoanMainRepo;
@@ -224,6 +226,9 @@ public class PayrollApiController {
 
 	@Autowired
 	BankTrasferReportRepo bankTrasferReportRepo;
+
+	@Autowired
+	LeaveEncashRepository leaveEncashRepository;
 
 	@RequestMapping(value = { "/getEmployeeListWithEmpSalEnfoForPayRoll" }, method = RequestMethod.POST)
 	public PayRollDataForProcessing getEmployeeListWithEmpSalEnfoForPayRoll(@RequestParam("month") int month,
@@ -2089,6 +2094,7 @@ public class PayrollApiController {
 				SalaryCalc.setOtRate(salList.get(i).getOtRate());
 				SalaryCalc.setBhatta(salList.get(i).getBhatta());
 				SalaryCalc.setOther1(salList.get(i).getOther1());
+				SalaryCalc.setLeaveEncashAmt(salList.get(i).getLeaveEncashAmt());
 				SalaryCalc saveres = salaryCalcRepo.save(SalaryCalc);
 
 				List<SalAllownceCal> allowlist = new ArrayList<>();
@@ -2174,6 +2180,11 @@ public class PayrollApiController {
 				int updateBonus = payBonusDetailsRepo.updateBonus(month, year, empIds);
 			}
 
+			try {
+				int updateEncashAmt = leaveEncashRepository.updateEncashAmt(month, year, empIds);
+			} catch (Exception e) {
+
+			}
 			// List<GetPayDedList> getLoanList = getPayDedListRepo.getLoanList(year + "-" +
 			// month + "-01", empIds);
 

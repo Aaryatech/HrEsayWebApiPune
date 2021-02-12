@@ -66,7 +66,8 @@ public class GetDeptPayReport {
 	private double reward;
 	private double bhatta;
 	private double other1;
-	  
+	private double leaveEncashAmt;
+	
 	@Transient
 	private List<SalAllownceCal> payrollAllownceList;
 
@@ -494,6 +495,14 @@ public class GetDeptPayReport {
 		this.payrollAllownceList = payrollAllownceList;
 	}
 
+	public double getLeaveEncashAmt() {
+		return leaveEncashAmt;
+	}
+
+	public void setLeaveEncashAmt(double leaveEncashAmt) {
+		this.leaveEncashAmt = leaveEncashAmt;
+	}
+
 	@Override
 	public String toString() {
 		return "GetDeptPayReport [id=" + id + ", departName=" + departName + ", departId=" + departId + ", calcMonth="
@@ -512,7 +521,8 @@ public class GetDeptPayReport {
 				+ ", abDeduction=" + abDeduction + ", productionInsentive=" + productionInsentive
 				+ ", presentInsentive=" + presentInsentive + ", nightAllow=" + nightAllow + ", grossSalDefault="
 				+ grossSalDefault + ", adjustMinus=" + adjustMinus + ", adjustPlus=" + adjustPlus + ", reward=" + reward
-				+ ", bhatta=" + bhatta + ", other1=" + other1 + ", payrollAllownceList=" + payrollAllownceList + "]";
+				+ ", bhatta=" + bhatta + ", other1=" + other1 + ", leaveEncashAmt=" + leaveEncashAmt
+				+ ", payrollAllownceList=" + payrollAllownceList + "]";
 	}
 	
 	
