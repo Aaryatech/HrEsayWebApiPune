@@ -87,7 +87,7 @@ public class EmpSalInfoDaiyInfoTempInfo {
 	private double otRate;
 	private double bhatta;
 	private double other1;
-	
+	private double leaveEncashAmt;
 	
 	@Transient
 	private double epsDefault;
@@ -1213,6 +1213,12 @@ public class EmpSalInfoDaiyInfoTempInfo {
 	public void setOtPerHr(int otPerHr) {
 		this.otPerHr = otPerHr;
 	}
+	public double getLeaveEncashAmt() {
+		return leaveEncashAmt;
+	}
+	public void setLeaveEncashAmt(double leaveEncashAmt) {
+		this.leaveEncashAmt = leaveEncashAmt;
+	}
 	@Override
 	public String toString() {
 		return "EmpSalInfoDaiyInfoTempInfo [uuid=" + uuid + ", id=" + id + ", cmpId=" + cmpId + ", empId=" + empId
@@ -1239,16 +1245,16 @@ public class EmpSalInfoDaiyInfoTempInfo {
 				+ epfEmployerPercentage + ", epsEmployerPercentage=" + epsEmployerPercentage + ", presentInsentive="
 				+ presentInsentive + ", nightAllow=" + nightAllow + ", adjustMinus=" + adjustMinus + ", adjustPlus="
 				+ adjustPlus + ", reward=" + reward + ", nightRate=" + nightRate + ", otRate=" + otRate + ", bhatta="
-				+ bhatta + ", other1=" + other1 + ", epsDefault=" + epsDefault + ", epmloyerEpfDefault="
-				+ epmloyerEpfDefault + ", epmloyerEpfExtra=" + epmloyerEpfExtra + ", pfAdminChPercentage="
-				+ pfAdminChPercentage + ", edliPercentage=" + edliPercentage + ", edliAdminPercentage="
-				+ edliAdminPercentage + ", employerEsicPercentageSal=" + employerEsicPercentageSal
-				+ ", employeeEsicPercentageSal=" + employeeEsicPercentageSal + ", employerMlwf=" + employerMlwf
-				+ ", salaryInfoId=" + salaryInfoId + ", salaryTypeId=" + salaryTypeId + ", basic=" + basic + ", da="
-				+ da + ", hra=" + hra + ", spa=" + spa + ", pfApplicable=" + pfApplicable + ", pfType=" + pfType
-				+ ", pfEmpPer=" + pfEmpPer + ", pfEmplrPer=" + pfEmplrPer + ", esicApplicable=" + esicApplicable
-				+ ", cmpJoiningDate=" + cmpJoiningDate + ", cmpLeavingDate=" + cmpLeavingDate + ", epfJoiningDate="
-				+ epfJoiningDate + ", leavingReason=" + leavingReason + ", salBasis=" + salBasis
+				+ bhatta + ", other1=" + other1 + ", leaveEncashAmt=" + leaveEncashAmt + ", epsDefault=" + epsDefault
+				+ ", epmloyerEpfDefault=" + epmloyerEpfDefault + ", epmloyerEpfExtra=" + epmloyerEpfExtra
+				+ ", pfAdminChPercentage=" + pfAdminChPercentage + ", edliPercentage=" + edliPercentage
+				+ ", edliAdminPercentage=" + edliAdminPercentage + ", employerEsicPercentageSal="
+				+ employerEsicPercentageSal + ", employeeEsicPercentageSal=" + employeeEsicPercentageSal
+				+ ", employerMlwf=" + employerMlwf + ", salaryInfoId=" + salaryInfoId + ", salaryTypeId=" + salaryTypeId
+				+ ", basic=" + basic + ", da=" + da + ", hra=" + hra + ", spa=" + spa + ", pfApplicable=" + pfApplicable
+				+ ", pfType=" + pfType + ", pfEmpPer=" + pfEmpPer + ", pfEmplrPer=" + pfEmplrPer + ", esicApplicable="
+				+ esicApplicable + ", cmpJoiningDate=" + cmpJoiningDate + ", cmpLeavingDate=" + cmpLeavingDate
+				+ ", epfJoiningDate=" + epfJoiningDate + ", leavingReason=" + leavingReason + ", salBasis=" + salBasis
 				+ ", ceilingLimitEmpApplicable=" + ceilingLimitEmpApplicable + ", ceilingLimitEmployerApplicable="
 				+ ceilingLimitEmployerApplicable + ", leavingReasonEsic=" + leavingReasonEsic + ", leavingReasonPf="
 				+ leavingReasonPf + ", mlwfApplicable=" + mlwfApplicable + ", ptApplicable=" + ptApplicable

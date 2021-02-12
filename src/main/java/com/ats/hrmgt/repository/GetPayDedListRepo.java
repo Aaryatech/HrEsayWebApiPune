@@ -102,4 +102,9 @@ public interface GetPayDedListRepo extends JpaRepository<GetPayDedList, Integer>
 	List<GetPayDedList> getPartialLoanList(@Param("month") int month, @Param("year") int year,
 			@Param("empIds") List<Integer> empIds);
 
+	@Query(value = "select uuid() as id,c.emp_id , sum(total_amt) as amt from t_encash c where "
+			+ "c.del_status=1 and c.month=:month and year=:year and c.emp_id in (:empIds) group by c.emp_id", nativeQuery = true)
+	List<GetPayDedList> getEncashLeaveAmtList(@Param("month") int month, @Param("year") int year,
+			@Param("empIds") List<Integer> empIds);
+
 }

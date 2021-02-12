@@ -83,7 +83,7 @@ public interface EmpSalInfoDaiyInfoTempInfoRepo extends JpaRepository<EmpSalInfo
 			"        sdt.night_rate,\n" + 
 			"        sdt.ot_rate,\n" + 
 			"        sdt.bhatta,\n" + 
-			"        sdt.other1,\n" + 
+			"        sdt.other1,sdt.leave_encash_amt,\n" + 
 			"        si.salary_info_id,\n" + 
 			"        si.salary_type_id,\n" + 
 			"        si.basic,\n" + 

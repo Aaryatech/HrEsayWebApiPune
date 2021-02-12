@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.ats.hrmgt.advance.repository.AdvanceRepo;
 import com.ats.hrmgt.claim.repository.ClaimHeaderRepo;
 import com.ats.hrmgt.common.EmailUtility;
@@ -846,6 +847,15 @@ public class PayrollApiController {
 				getSalaryTempList.get(i).setGetAllowanceTempList(list);
 			}
 
+			List<GetPayDedList> getEncashLeaveAmtList = new ArrayList<>();
+
+			try {
+				getEncashLeaveAmtList = getPayDedListRepo.getEncashLeaveAmtList(month, year, empIds);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			double epf_wages_employee = 0;
 			double epf_wages_employeR = 0;
 			double employeePfOnAmt = 0;
@@ -955,16 +965,22 @@ public class PayrollApiController {
 					}
 
 				}
+				if (nightAllow == 1) {
+					getSalaryTempList.get(i).setNightRate(night_allo_rate);
+					getSalaryTempList.get(i).setNightAllow(getSalaryTempList.get(i).getFullNight() * night_allo_rate);
+				}
 
+				int empId = getSalaryTempList.get(i).getEmpId();
+				Optional<GetPayDedList> result = getEncashLeaveAmtList.stream().filter(obj -> empId == obj.getEmpId())
+						.findFirst();
+
+				if (result.isPresent()) {
+
+					getSalaryTempList.get(i).setLeaveEncashAmt(result.get().getAmt());
+				}
 				for (int j = 0; j < salaryTermList.size(); j++) {
 
 					if (salaryTermList.get(j).getSalTypeId() == salaryType.getSalTypeId()) {
-
-						if (nightAllow == 1) {
-							getSalaryTempList.get(i).setNightRate(night_allo_rate);
-							getSalaryTempList.get(i)
-									.setNightAllow(getSalaryTempList.get(i).getFullNight() * night_allo_rate);
-						}
 
 						double ammt = 0;
 						int index = 0;
@@ -1136,14 +1152,16 @@ public class PayrollApiController {
 								getSalaryTempList.get(i).setEpfWages(temp);
 								salaryTermList.get(j).setValue(temp);
 							} else if (salaryTermList.get(j).getFieldName().equals("esic_wages_cal")) {
-								temp = temp + getSalaryTempList.get(i).getNightAllow();
+								temp = temp + getSalaryTempList.get(i).getNightAllow()
+										+ getSalaryTempList.get(i).getLeaveEncashAmt();
 								getSalaryTempList.get(i).setEsicWagesCal(temp);
 								salaryTermList.get(j).setValue(temp);
 							} else if (salaryTermList.get(j).getFieldName().equals("eps_wages_cal")) {
 								getSalaryTempList.get(i).setEpsWages(temp);
 								salaryTermList.get(j).setValue(temp);
 							} else if (salaryTermList.get(j).getFieldName().equals("esic_wages_dec_cal")) {
-								temp = temp + getSalaryTempList.get(i).getNightAllow();
+								temp = temp + getSalaryTempList.get(i).getNightAllow()
+										+ getSalaryTempList.get(i).getLeaveEncashAmt();
 								getSalaryTempList.get(i).setEsicWagesDec(temp);
 								salaryTermList.get(j).setValue(temp);
 							} else {
@@ -1568,7 +1586,8 @@ public class PayrollApiController {
 						+ getSalaryTempList.get(i).getPerformanceBonus() + getSalaryTempList.get(i).getMiscExpAdd()
 						+ getSalaryTempList.get(i).getReward() + getSalaryTempList.get(i).getOtWages()
 						+ getSalaryTempList.get(i).getProductionInsentive() + getSalaryTempList.get(i).getNightAllow()
-						+ getSalaryTempList.get(i).getBhatta() + getSalaryTempList.get(i).getOther1())
+						+ getSalaryTempList.get(i).getBhatta() + getSalaryTempList.get(i).getOther1()
+						+ getSalaryTempList.get(i).getLeaveEncashAmt())
 						- (getSalaryTempList.get(i).getAdvanceDed() + getSalaryTempList.get(i).getLoanDed()
 								+ getSalaryTempList.get(i).getPayDed() + getSalaryTempList.get(i).getEsic()
 								+ getSalaryTempList.get(i).getEmployeePf() + getSalaryTempList.get(i).getPtDed()
