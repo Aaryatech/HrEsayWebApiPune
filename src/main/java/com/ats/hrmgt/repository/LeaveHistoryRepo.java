@@ -69,7 +69,7 @@ public interface LeaveHistoryRepo  extends JpaRepository<LeaveHistory, Integer>{
 			+ "            b.emp_id=m_employees.emp_id              \n"
 			+ "            and leave_type.lv_type_id=b.lv_type_id              \n"
 			+ "            and y.cal_yr_id=b.year_id              \n"
-			+ "            and y.is_current=1 ),\n"
+			+ "            and y.is_current=1 and b.del_status=1),\n"
 			+ "        0) as leave_encash_count\n"
 			+ "    FROM\n"
 			+ "        leave_type,\n"
@@ -146,7 +146,7 @@ public interface LeaveHistoryRepo  extends JpaRepository<LeaveHistory, Integer>{
 			+ "        where\n"
 			+ "            b.emp_id=m_employees.emp_id              \n"
 			+ "            and leave_type.lv_type_id=b.lv_type_id              \n"
-			+ "            and leave_structure_allotment.cal_yr_id=b.year_id ),\n"
+			+ "            and leave_structure_allotment.cal_yr_id=b.year_id and b.del_status=1),\n"
 			+ "        0) as leave_encash_count     \n" + 
 			"    FROM\n" + 
 			"        leave_type,\n" + 

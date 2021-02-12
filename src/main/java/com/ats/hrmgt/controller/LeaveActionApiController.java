@@ -35,6 +35,7 @@ import com.ats.hrmgt.model.FileUploadedData;
 import com.ats.hrmgt.model.GetAuthorityIds;
 import com.ats.hrmgt.model.GetDetailForGraduaty;
 import com.ats.hrmgt.model.GetLeaveApplyAuthwise;
+import com.ats.hrmgt.model.GetLeaveEncashDetail;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.InfoForCompOffList;
 import com.ats.hrmgt.model.LeaveApply;
@@ -58,6 +59,7 @@ import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.GetAuthorityIdsRepo;
 import com.ats.hrmgt.repository.GetDetailForGraduatyRepo;
 import com.ats.hrmgt.repository.GetLeaveApplyAuthwiseRepo;
+import com.ats.hrmgt.repository.GetLeaveEncashDetailRepository;
 import com.ats.hrmgt.repository.LeaveApplyRepository;
 import com.ats.hrmgt.repository.LeaveHistoryDetailForCarryRepo;
 import com.ats.hrmgt.repository.LeaveHistoryRepo;
@@ -121,6 +123,9 @@ public class LeaveActionApiController {
 
 	@Autowired
 	LeaveEncashRepository leaveEncashRepository;
+
+	@Autowired
+	GetLeaveEncashDetailRepository getLeaveEncashDetailRepository;
 
 	@RequestMapping(value = { "/updateLeaveStatus" }, method = RequestMethod.POST)
 	public @ResponseBody Info updateLeaveStatus(@RequestParam("leaveId") int leaveId,
@@ -974,15 +979,68 @@ public class LeaveActionApiController {
 		try {
 
 			LeaveEncash res = leaveEncashRepository.save(leaveEncash);
-			info.setError(false);
-			info.setMsg("save successfullyy");
+
+			if (res != null) {
+				info.setError(false);
+				info.setMsg("save successfullyy");
+			} else {
+				info.setError(true);
+				info.setMsg("error while encash leave");
+			}
+
+		} catch (Exception e) {
+			info.setError(true);
+			info.setMsg("error while encash leave");
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
+	@RequestMapping(value = { "/deleteEncashLeave" }, method = RequestMethod.POST)
+	public @ResponseBody Info deleteEncashLeave(@RequestParam("id") int id) {
+
+		Info info = new Info();
+
+		try {
+
+			int delete = leaveEncashRepository.deleteEncashLeave(id);
+
+			if (delete > 0) {
+				info.setError(false);
+				info.setMsg("delete successfullyy");
+			} else {
+				info.setError(true);
+				info.setMsg("error while delete");
+			}
+
+		} catch (Exception e) {
+			info.setError(true);
+			info.setMsg("error delete");
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
+
+	@RequestMapping(value = { "/getLeaveEncashDetailByEmpId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetLeaveEncashDetail> getLeaveEncashDetailByEmpId(@RequestParam("empId") int empId,
+			@RequestParam("currYrId") int yearId) {
+
+		List<GetLeaveEncashDetail> list = new ArrayList<>();
+
+		try {
+
+			list = getLeaveEncashDetailRepository.getLeaveEncashDetailByEmpId(empId, yearId);
 
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
 
-		return info;
+		return list;
 
 	}
 }
