@@ -8,37 +8,40 @@ import javax.persistence.Id;
 
 @Entity
 public class LiveThumbData {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name="id")
+	@Column(name = "id")
 	private String id;
-	
-	@Column(name="emp_code")
+
+	@Column(name = "emp_code")
 	private String empCode;
-	
-	@Column(name="in_id")
+
+	@Column(name = "count_thumb")
+	private int countThumb;
+
+	@Column(name = "in_id")
 	private int inId;
-	
-	@Column(name="in_punch_time")
+
+	@Column(name = "in_punch_time")
 	private String inPunchTime;
-	
-	@Column(name="in_date")
+
+	@Column(name = "in_date")
 	private String inDate;
-	
-	@Column(name="in_time")
+
+	@Column(name = "in_time")
 	private String inTime;
-	
-	@Column(name="out_id")
+
+	@Column(name = "out_id")
 	private int outId;
-	
-	@Column(name="out_punch_time")
+
+	@Column(name = "out_punch_time")
 	private String outPunch_time;
-	
-	@Column(name="out_date")
+
+	@Column(name = "out_date")
 	private String outDate;
-	
-	@Column(name="out_time")
+
+	@Column(name = "out_time")
 	private String outTime;
 
 	public String getId() {
@@ -121,14 +124,19 @@ public class LiveThumbData {
 		this.outTime = outTime;
 	}
 
+	public int getCountThumb() {
+		return countThumb;
+	}
+
+	public void setCountThumb(int countThumb) {
+		this.countThumb = countThumb;
+	}
+
 	@Override
 	public String toString() {
-		return "LiveThumbData [id=" + id + ", empCode=" + empCode + ", inId=" + inId + ", inPunchTime=" + inPunchTime
-				+ ", inDate=" + inDate + ", inTime=" + inTime + ", outId=" + outId + ", outPunch_time=" + outPunch_time
-				+ ", outDate=" + outDate + ", outTime=" + outTime + "]";
+		return "LiveThumbData [id=" + id + ", empCode=" + empCode + ", countThumb=" + countThumb + ", inId=" + inId
+				+ ", inPunchTime=" + inPunchTime + ", inDate=" + inDate + ", inTime=" + inTime + ", outId=" + outId
+				+ ", outPunch_time=" + outPunch_time + ", outDate=" + outDate + ", outTime=" + outTime + "]";
 	}
-	
-	
-	
-	
+
 }

@@ -79,6 +79,7 @@ import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.GetWeeklyOffRepo;
 import com.ats.hrmgt.repository.HolidayRepo;
 import com.ats.hrmgt.repository.InfoForUploadAttendanceRepository;
+import com.ats.hrmgt.repository.InoutTableRepo;
 import com.ats.hrmgt.repository.LeaveApplyRepository;
 import com.ats.hrmgt.repository.LeaveTrailRepository;
 import com.ats.hrmgt.repository.LiveThumbDataRepository;
@@ -3362,43 +3363,62 @@ public class AttendanceApiControllerchange {
 		return ret;
 	}
 
+	@Autowired
+	InoutTableRepo inoutTableRepo;
+
 	@RequestMapping(value = { "/autoThumbAttendance" }, method = RequestMethod.GET)
 	public @ResponseBody List<LiveThumbData> autoThumbAttendance() {
 
 		List<LiveThumbData> dailyAttendanceList = new ArrayList<>();
 		try {
 
-			Date dt = new Date();
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
+			Date dt = new Date();
 
-			String dateyy = sf.format(dt);
-			//String datedd = dd.format(dt);
+			// String dateyy = sf.format(dt);
+			String dateyy = "2021-01-01";
 
-			//String dateyy = "2021-01-01";
-			Calendar a = Calendar.getInstance();
-			a.setTime(dt);
-			int year = a.get(Calendar.YEAR);
-			int month = a.get(Calendar.MONTH) + 1;
+			List<Integer> yesterdaysIds = new ArrayList<>();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(sf.parse(dateyy));
+			cal.add(Calendar.DATE, -1);
+			Date yesterday = cal.getTime();
 
-			dailyAttendanceList = liveThumbDataRepository.getThumbData(dateyy);
+			int yesterdayYear = cal.get(Calendar.YEAR);
+			int yesterdayMonth = cal.get(Calendar.MONTH) + 1;
+
+			List<LiveThumbData> yesterdayAttendanceList = liveThumbDataRepository.getThumbDataYesterday(dateyy,
+					sf.format(yesterday));
 
 			DataForUpdateAttendance dataForUpdateAttendance = new DataForUpdateAttendance();
-			dataForUpdateAttendance.setFromDate(dateyy);
-			dataForUpdateAttendance.setToDate(dateyy);
+			dataForUpdateAttendance.setFromDate(sf.format(yesterday));
+			dataForUpdateAttendance.setToDate(sf.format(yesterday));
 			dataForUpdateAttendance.setEmpId(0);
 			dataForUpdateAttendance.setUserId(1);
-			dataForUpdateAttendance.setMonth(month);
-			dataForUpdateAttendance.setYear(year);
+			dataForUpdateAttendance.setMonth(yesterdayYear);
+			dataForUpdateAttendance.setYear(yesterdayMonth);
 			List<FileUploadedData> fileUploadedDataList = new ArrayList<>();
 
-			for (int i = 0; i < dailyAttendanceList.size(); i++) {
+			for (int i = 0; i < yesterdayAttendanceList.size(); i++) {
+
 				FileUploadedData fileUploadedData = new FileUploadedData();
-				fileUploadedData.setEmpCode(dailyAttendanceList.get(i).getEmpCode());
-				fileUploadedData.setEmpName(dailyAttendanceList.get(i).getEmpCode());
-				fileUploadedData.setLogDate(DateConvertor.convertToDMY(dateyy));
-				fileUploadedData.setInTime(dailyAttendanceList.get(i).getInTime());
-				fileUploadedData.setOutTime(dailyAttendanceList.get(i).getOutTime());
+
+				yesterdaysIds.add(yesterdayAttendanceList.get(i).getInId());
+				yesterdaysIds.add(yesterdayAttendanceList.get(i).getOutId());
+
+				if (yesterdayAttendanceList.get(i).getInId() != 0 && yesterdayAttendanceList.get(i).getOutId() != 0) {
+					fileUploadedData.setInTime(yesterdayAttendanceList.get(i).getInTime());
+					fileUploadedData.setOutTime(yesterdayAttendanceList.get(i).getOutTime());
+				} else {
+					fileUploadedData.setInTime("00:00");
+					fileUploadedData.setOutTime("00:00");
+				}
+
+				fileUploadedData.setEmpCode(yesterdayAttendanceList.get(i).getEmpCode());
+				fileUploadedData.setEmpName(yesterdayAttendanceList.get(i).getEmpCode());
+				fileUploadedData.setLogDate(dd.format(yesterday));
+
 				fileUploadedDataList.add(fileUploadedData);
 			}
 			dataForUpdateAttendance.setFileUploadedDataList(fileUploadedDataList);
@@ -3406,10 +3426,80 @@ public class AttendanceApiControllerchange {
 			Info info = getVariousListForUploadAttendace(dataForUpdateAttendance);
 
 			// SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-			Date firstDay = new GregorianCalendar(year, month - 1, 1).getTime();
-			Date lastDay = new GregorianCalendar(year, month, 0).getTime();
+			Date firstDay = new GregorianCalendar(yesterdayYear, yesterdayMonth - 1, 1).getTime();
+			Date lastDay = new GregorianCalendar(yesterdayYear, yesterdayMonth, 0).getTime();
 
-			info = finalUpdateDailySumaryRecord(sf.format(firstDay), sf.format(lastDay), 1, 01, 2021, 0);
+			info = finalUpdateDailySumaryRecord(sf.format(firstDay), sf.format(lastDay), 1, yesterdayMonth,
+					yesterdayYear, 0);
+
+			try {
+
+				System.out.println(yesterdayAttendanceList);
+				System.out.println(yesterdaysIds);
+				// int updateThumbFlag = inoutTableRepo.updatethumbflag(yesterdaysIds);
+			} catch (Exception e) {
+
+			}
+
+			// -------------current date attendace-------------------------------
+
+			List<Integer> ids = new ArrayList<>();
+			Calendar a = Calendar.getInstance();
+			a.setTime(sf.parse(dateyy));
+			int year = a.get(Calendar.YEAR);
+			int month = a.get(Calendar.MONTH) + 1;
+
+			dailyAttendanceList = liveThumbDataRepository.getThumbData(dateyy);
+
+			DataForUpdateAttendance dataForUpdateAttendance1 = new DataForUpdateAttendance();
+			dataForUpdateAttendance1.setFromDate(dateyy);
+			dataForUpdateAttendance1.setToDate(dateyy);
+			dataForUpdateAttendance1.setEmpId(0);
+			dataForUpdateAttendance1.setUserId(1);
+			dataForUpdateAttendance1.setMonth(month);
+			dataForUpdateAttendance1.setYear(year);
+			fileUploadedDataList = new ArrayList<>();
+
+			for (int i = 0; i < dailyAttendanceList.size(); i++) {
+
+				FileUploadedData fileUploadedData = new FileUploadedData();
+
+				ids.add(dailyAttendanceList.get(i).getInId());
+				ids.add(dailyAttendanceList.get(i).getOutId());
+
+				if (dailyAttendanceList.get(i).getInId() != 0 && dailyAttendanceList.get(i).getOutId() != 0) {
+					fileUploadedData.setInTime(dailyAttendanceList.get(i).getInTime());
+					fileUploadedData.setOutTime(dailyAttendanceList.get(i).getOutTime());
+				} else {
+					fileUploadedData.setInTime("00:00");
+					fileUploadedData.setOutTime("00:00");
+				}
+
+				fileUploadedData.setEmpCode(dailyAttendanceList.get(i).getEmpCode());
+				fileUploadedData.setEmpName(dailyAttendanceList.get(i).getEmpCode());
+				fileUploadedData.setLogDate(DateConvertor.convertToDMY(dateyy));
+
+				fileUploadedDataList.add(fileUploadedData);
+			}
+			dataForUpdateAttendance.setFileUploadedDataList(fileUploadedDataList);
+
+			info = getVariousListForUploadAttendace(dataForUpdateAttendance);
+
+			// SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			Date firstDayYeasterday = new GregorianCalendar(year, month - 1, 1).getTime();
+			Date lastDayYeasterday = new GregorianCalendar(year, month, 0).getTime();
+
+			info = finalUpdateDailySumaryRecord(sf.format(firstDayYeasterday), sf.format(lastDayYeasterday), 1, month,
+					year, 0);
+
+			try {
+
+				System.out.println(dailyAttendanceList);
+				System.out.println(ids);
+				// int updateThumbFlag = inoutTableRepo.updatethumbflag(ids);
+			} catch (Exception e) {
+
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
