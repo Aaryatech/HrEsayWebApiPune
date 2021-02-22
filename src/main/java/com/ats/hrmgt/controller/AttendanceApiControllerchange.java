@@ -61,9 +61,11 @@ import com.ats.hrmgt.model.ShiftAssignDaily;
 import com.ats.hrmgt.model.ShiftMaster;
 import com.ats.hrmgt.model.SummaryAttendance;
 import com.ats.hrmgt.model.SummaryDailyAttendance;
+import com.ats.hrmgt.model.ThumbLiveRecord;
 import com.ats.hrmgt.model.VariousList;
 import com.ats.hrmgt.model.WeeklyOff;
 import com.ats.hrmgt.model.WeeklyOffShit;
+import com.ats.hrmgt.model.bonus.BonusMaster;
 import com.ats.hrmgt.repo.EmpJsonDataRepository;
 import com.ats.hrmgt.repo.ShiftAssignDailyRepository;
 import com.ats.hrmgt.repository.AccessRightModuleRepository;
@@ -90,6 +92,7 @@ import com.ats.hrmgt.repository.SettingRepo;
 import com.ats.hrmgt.repository.ShiftMasterRepository;
 import com.ats.hrmgt.repository.SummaryAttendanceRepository;
 import com.ats.hrmgt.repository.SummaryDailyAttendanceRepository;
+import com.ats.hrmgt.repository.ThumbLiveRecordRepository;
 import com.ats.hrmgt.repository.WeeklyOffRepo;
 import com.ats.hrmgt.repository.WeeklyOffShitRepository;
 import com.ats.hrmgt.service.CommonFunctionService;
@@ -3520,6 +3523,47 @@ public class AttendanceApiControllerchange {
 		}
 
 		return dailyAttendanceList;
+
+	}
+
+	@Autowired
+	ThumbLiveRecordRepository thumbLiveRecordRepository;
+
+	@RequestMapping(value = { "/getPresentAttendaceLiveRecordFromThumb" }, method = RequestMethod.POST)
+	public @ResponseBody List<ThumbLiveRecord> getAttendaceLiveRecordFromThumb(@RequestParam("locId") int locId) {
+
+		List<ThumbLiveRecord> list = new ArrayList<>();
+		try {
+
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd"); 
+			Date dt = new Date();
+			list = thumbLiveRecordRepository.getPresentAttendaceLiveRecordFromThumb(locId,sf.format(dt));
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+	
+	@RequestMapping(value = { "/getAvailableAttendaceLiveRecordFromThumb" }, method = RequestMethod.POST)
+	public @ResponseBody List<ThumbLiveRecord> getAvailableAttendaceLiveRecordFromThumb(@RequestParam("locId") int locId) {
+
+		List<ThumbLiveRecord> list = new ArrayList<>();
+		try {
+
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd"); 
+			Date dt = new Date();
+			list = thumbLiveRecordRepository.getAvailableAttendaceLiveRecordFromThumb(locId,sf.format(dt));
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
 
 	}
 }
