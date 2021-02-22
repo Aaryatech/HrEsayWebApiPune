@@ -1760,7 +1760,8 @@ public class AttendanceApiControllerchange {
 				}
 			}
 
-			System.out.println("summaryDailyAttendanceList " + summaryDailyAttendanceList);
+			// System.out.println("summaryDailyAttendanceList " +
+			// summaryDailyAttendanceList);
 
 			List<SummaryDailyAttendance> summaryDailyAttendanceSaveRes = summaryDailyAttendanceRepository
 					.saveAll(summaryDailyAttendanceList);
@@ -1920,7 +1921,7 @@ public class AttendanceApiControllerchange {
 				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAlllocId(fromDate, toDate, locId);
 			}
 
-			System.out.println("OK");
+			// System.out.println("OK");
 			List<String> dates = new ArrayList<>();
 			List<DateAndDay> dateAndDayList = new ArrayList<>();
 
@@ -2394,7 +2395,7 @@ public class AttendanceApiControllerchange {
 					DailyAttendance updateRes = dailyAttendanceRepository.save(dailyRecordById);
 				}
 
-				System.out.println("Update Finalllllllllllll");
+				// System.out.println("Update Finalllllllllllll");
 				String[] othrsarry = dailyRecordById.getAttDate().split("-");
 				Date firstDay = new GregorianCalendar(Integer.parseInt(othrsarry[0]),
 						Integer.parseInt(othrsarry[1]) - 1, 1).getTime();
@@ -2456,7 +2457,7 @@ public class AttendanceApiControllerchange {
 
 		Info info = new Info();
 		try {
-			System.out.println(dailyRecordByDate.size());
+			// System.out.println(dailyRecordByDate.size());
 			if (dailyRecordByDate.size() > 0) {
 
 				if (dailyRecordByDate.get(0).getByFileUpdated() == 1) {
@@ -3118,8 +3119,10 @@ public class AttendanceApiControllerchange {
 								String atteanceCase = weekEndStatus + "" + holidayStatus + "" + leaveStatus + ""
 										+ presentStatus;
 								dailyAttendanceList.get(i).setCasetype(atteanceCase);
-								System.out
-										.println("case" + atteanceCase + " " + dailyAttendanceList.get(i).getEmpName());
+								/*
+								 * System.out .println("case" + atteanceCase + " " +
+								 * dailyAttendanceList.get(i).getEmpName());
+								 */
 								if (atteanceCase.equals("1357") || atteanceCase.equals("1457")
 										|| atteanceCase.equals("2357") || atteanceCase.equals("2457")) {
 
@@ -3221,7 +3224,7 @@ public class AttendanceApiControllerchange {
 										// System.out.println(dailyAttendanceList.get(i).getAttStatus());
 									}
 								}
-								System.out.println("STS" + dailyAttendanceList.get(i).getAttsSdShow());
+								// System.out.println("STS" + dailyAttendanceList.get(i).getAttsSdShow());
 							}
 							break;
 
@@ -3367,8 +3370,10 @@ public class AttendanceApiControllerchange {
 	InoutTableRepo inoutTableRepo;
 
 	@RequestMapping(value = { "/autoThumbAttendance" }, method = RequestMethod.GET)
+	@Scheduled(cron = "* 58 23 * * ? ")
 	public @ResponseBody List<LiveThumbData> autoThumbAttendance() {
 
+		/* @RequestParam("dateyy") String dateyy */
 		List<LiveThumbData> dailyAttendanceList = new ArrayList<>();
 		try {
 
@@ -3376,8 +3381,8 @@ public class AttendanceApiControllerchange {
 			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
 			Date dt = new Date();
 
-			// String dateyy = sf.format(dt);
-			String dateyy = "2021-01-01";
+			String dateyy = sf.format(dt);
+			// String dateyy = "2021-02-01";
 
 			List<Integer> yesterdaysIds = new ArrayList<>();
 			Calendar cal = Calendar.getInstance();
@@ -3423,24 +3428,29 @@ public class AttendanceApiControllerchange {
 			}
 			dataForUpdateAttendance.setFileUploadedDataList(fileUploadedDataList);
 
-			Info info = getVariousListForUploadAttendace(dataForUpdateAttendance);
+			if (yesterdayAttendanceList.size() > 0) {
 
-			// SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-			Date firstDay = new GregorianCalendar(yesterdayYear, yesterdayMonth - 1, 1).getTime();
-			Date lastDay = new GregorianCalendar(yesterdayYear, yesterdayMonth, 0).getTime();
+				Info info = getVariousListForUploadAttendace(dataForUpdateAttendance);
 
-			info = finalUpdateDailySumaryRecord(sf.format(firstDay), sf.format(lastDay), 1, yesterdayMonth,
-					yesterdayYear, 0);
+				// SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+				Date firstDay = new GregorianCalendar(yesterdayYear, yesterdayMonth - 1, 1).getTime();
+				Date lastDay = new GregorianCalendar(yesterdayYear, yesterdayMonth, 0).getTime();
 
-			try {
+				info = finalUpdateDailySumaryRecord(sf.format(firstDay), sf.format(lastDay), 1, yesterdayMonth,
+						yesterdayYear, 0);
 
-				System.out.println(yesterdayAttendanceList);
-				System.out.println(yesterdaysIds);
-				// int updateThumbFlag = inoutTableRepo.updatethumbflag(yesterdaysIds);
-			} catch (Exception e) {
+				try {
 
+					/*
+					 * System.out.println(yesterdayAttendanceList);
+					 * System.out.println(yesterdaysIds);
+					 */
+
+					int updateThumbFlag = inoutTableRepo.updatethumbflag(yesterdaysIds);
+				} catch (Exception e) {
+
+				}
 			}
-
 			// -------------current date attendace-------------------------------
 
 			List<Integer> ids = new ArrayList<>();
@@ -3481,26 +3491,29 @@ public class AttendanceApiControllerchange {
 
 				fileUploadedDataList.add(fileUploadedData);
 			}
-			dataForUpdateAttendance.setFileUploadedDataList(fileUploadedDataList);
+			dataForUpdateAttendance1.setFileUploadedDataList(fileUploadedDataList);
 
-			info = getVariousListForUploadAttendace(dataForUpdateAttendance);
+			if (dailyAttendanceList.size() > 0) {
+				Info info = getVariousListForUploadAttendace(dataForUpdateAttendance1);
 
-			// SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-			Date firstDayYeasterday = new GregorianCalendar(year, month - 1, 1).getTime();
-			Date lastDayYeasterday = new GregorianCalendar(year, month, 0).getTime();
+				// SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+				Date firstDayYeasterday = new GregorianCalendar(year, month - 1, 1).getTime();
+				Date lastDayYeasterday = new GregorianCalendar(year, month, 0).getTime();
 
-			info = finalUpdateDailySumaryRecord(sf.format(firstDayYeasterday), sf.format(lastDayYeasterday), 1, month,
-					year, 0);
+				info = finalUpdateDailySumaryRecord(sf.format(firstDayYeasterday), sf.format(lastDayYeasterday), 1,
+						month, year, 0);
 
-			try {
+				try {
 
-				System.out.println(dailyAttendanceList);
-				System.out.println(ids);
-				// int updateThumbFlag = inoutTableRepo.updatethumbflag(ids);
-			} catch (Exception e) {
+					/*
+					 * System.out.println(dailyAttendanceList); System.out.println(ids);
+					 */
 
+					int updateThumbFlag = inoutTableRepo.updatethumbflag(ids);
+				} catch (Exception e) {
+
+				}
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 
