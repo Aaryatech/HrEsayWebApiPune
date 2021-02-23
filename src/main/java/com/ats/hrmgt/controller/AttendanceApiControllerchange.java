@@ -3372,9 +3372,9 @@ public class AttendanceApiControllerchange {
 	@Autowired
 	InoutTableRepo inoutTableRepo;
 
-	@RequestMapping(value = { "/autoThumbAttendance" }, method = RequestMethod.GET)
-	@Scheduled(cron = "* 58 23 * * ? ")
-	public @ResponseBody List<LiveThumbData> autoThumbAttendance() {
+	@RequestMapping(value = { "/autoThumbAttendance" }, method = RequestMethod.POST)
+	/* @Scheduled(cron = "* 58 23 * * ? ") */
+	public @ResponseBody List<LiveThumbData> autoThumbAttendance(@RequestParam("dateyy") String dateyy ) {
 
 		/* @RequestParam("dateyy") String dateyy */
 		List<LiveThumbData> dailyAttendanceList = new ArrayList<>();
@@ -3382,9 +3382,9 @@ public class AttendanceApiControllerchange {
 
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
-			Date dt = new Date();
+			//Date dt = new Date();
 
-			String dateyy = sf.format(dt);
+			//String dateyy = sf.format(dt);
 			// String dateyy = "2021-02-01";
 
 			List<Integer> yesterdaysIds = new ArrayList<>();
