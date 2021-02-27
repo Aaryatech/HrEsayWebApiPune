@@ -803,7 +803,7 @@ public class LeaveActionApiController {
 
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.setTime(dt);
-				cal.add(Calendar.DATE, -45);
+				cal.add(Calendar.DATE, -60);
 				dt = cal.getTime();
 				toDate = sf.format(dt);
 
