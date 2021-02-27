@@ -400,25 +400,24 @@ public class ShiftAssignApiController {
 
 	@RequestMapping(value = { "/getEmpProjectionMatrix" }, method = RequestMethod.POST)
 	public List<EmpWithShiftDetail> getEmpProjectionMatrix(@RequestParam String fromDate, @RequestParam String toDate,
-			@RequestParam int locId) {
+			@RequestParam int locId, @RequestParam int userType, @RequestParam int userId, @RequestParam List<Integer> deptId) {
 
 		List<EmpWithShiftDetail> empShiftList = new ArrayList<EmpWithShiftDetail>();
 
 		try {
+			List<EmpShiftAllocationDetail> shiftallocationDetailList = new ArrayList<EmpShiftAllocationDetail>();
+			if (userType != 2) {
 
-			// List<ShiftMaster> shiftmList = shiftMasterRepository.findByStatus(1);
+				empShiftList = empWithShiftDetailRepository.getEmpListAuthorityWise(userId,deptId);
+				shiftallocationDetailList = empShiftAllocationDetailRepository
+						.getEmpShiftAllocationDetailAuthorityWise(fromDate, toDate, userId,deptId);
 
-			/*
-			 * DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); DateFormat ddfrmt
-			 * = new SimpleDateFormat("dd-MM-yyyy");
-			 */
+			} else {
 
-			// Date myDate = dateFormat.parse(fromDate);
-			// Date oneDayBefore = new Date(myDate.getTime() - 2);
-			// String previousDate = dateFormat.format(oneDayBefore);
-			empShiftList = empWithShiftDetailRepository.getEmpListAll(locId);
-			List<EmpShiftAllocationDetail> shiftallocationDetailList = empShiftAllocationDetailRepository
-					.getEmpShiftAllocationDetail(fromDate, toDate);
+				empShiftList = empWithShiftDetailRepository.getEmpListAll(locId,deptId);
+				shiftallocationDetailList = empShiftAllocationDetailRepository.getEmpShiftAllocationDetail(fromDate,
+						toDate, locId,deptId);
+			}
 
 			List<WeeklyOff> weeklyOfflist = weeklyOffRepo.getWeeklyOffList();
 			List<LeaveApply> leavetList = leaveApplyRepository.getleavetListForAttndace(fromDate, toDate);
