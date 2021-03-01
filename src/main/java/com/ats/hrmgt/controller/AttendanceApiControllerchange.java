@@ -2843,8 +2843,8 @@ public class AttendanceApiControllerchange {
 			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
 			Date fmdt = dd.parse(fromDate);
 			Date todt = dd.parse(toDate);
-			List<DailyAttendance> dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceList(fromDate, toDate,
-					empId);
+			List<DailyAttendance> dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceList(
+					DateConvertor.convertToYMD(fromDate), DateConvertor.convertToYMD(toDate), empId);
 
 			List<FileUploadedData> fileUploadedDataList = new ArrayList<>();
 
@@ -2854,8 +2854,18 @@ public class AttendanceApiControllerchange {
 				fileUploadedData.setEmpCode(dailyAttendanceList.get(i).getEmpCode());
 				fileUploadedData.setEmpName(dailyAttendanceList.get(i).getEmpName());
 				fileUploadedData.setLogDate(DateConvertor.convertToDMY(dailyAttendanceList.get(i).getAttDate()));
-				fileUploadedData.setInTime(dailyAttendanceList.get(i).getInTime().substring(0, 5));
-				fileUploadedData.setOutTime(dailyAttendanceList.get(i).getOutTime().substring(0, 5));
+				if (dailyAttendanceList.get(i).getInTime() == null || dailyAttendanceList.get(i).getInTime() == "") {
+					fileUploadedData.setInTime("00:00");
+				} else {
+					fileUploadedData.setInTime(dailyAttendanceList.get(i).getInTime().substring(0, 5));
+				}
+
+				if (dailyAttendanceList.get(i).getOutTime() == null || dailyAttendanceList.get(i).getOutTime() == "") {
+					fileUploadedData.setOutTime("00:00");
+				} else {
+					fileUploadedData.setOutTime(dailyAttendanceList.get(i).getOutTime().substring(0, 5));
+				}
+
 				fileUploadedDataList.add(fileUploadedData);
 			}
 
@@ -3374,7 +3384,7 @@ public class AttendanceApiControllerchange {
 
 	@RequestMapping(value = { "/autoThumbAttendance" }, method = RequestMethod.POST)
 	/* @Scheduled(cron = "* 58 23 * * ? ") */
-	public @ResponseBody List<LiveThumbData> autoThumbAttendance(@RequestParam("dateyy") String dateyy ) {
+	public @ResponseBody List<LiveThumbData> autoThumbAttendance(@RequestParam("dateyy") String dateyy) {
 
 		/* @RequestParam("dateyy") String dateyy */
 		List<LiveThumbData> dailyAttendanceList = new ArrayList<>();
@@ -3382,9 +3392,9 @@ public class AttendanceApiControllerchange {
 
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat dd = new SimpleDateFormat("dd-MM-yyyy");
-			//Date dt = new Date();
+			// Date dt = new Date();
 
-			//String dateyy = sf.format(dt);
+			// String dateyy = sf.format(dt);
 			// String dateyy = "2021-02-01";
 
 			List<Integer> yesterdaysIds = new ArrayList<>();
@@ -3535,9 +3545,9 @@ public class AttendanceApiControllerchange {
 		List<ThumbLiveRecord> list = new ArrayList<>();
 		try {
 
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd"); 
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			Date dt = new Date();
-			list = thumbLiveRecordRepository.getPresentAttendaceLiveRecordFromThumb(locId,sf.format(dt));
+			list = thumbLiveRecordRepository.getPresentAttendaceLiveRecordFromThumb(locId, sf.format(dt));
 
 		} catch (Exception e) {
 
@@ -3547,16 +3557,17 @@ public class AttendanceApiControllerchange {
 		return list;
 
 	}
-	
+
 	@RequestMapping(value = { "/getAvailableAttendaceLiveRecordFromThumb" }, method = RequestMethod.POST)
-	public @ResponseBody List<ThumbLiveRecord> getAvailableAttendaceLiveRecordFromThumb(@RequestParam("locId") int locId) {
+	public @ResponseBody List<ThumbLiveRecord> getAvailableAttendaceLiveRecordFromThumb(
+			@RequestParam("locId") int locId) {
 
 		List<ThumbLiveRecord> list = new ArrayList<>();
 		try {
 
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd"); 
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 			Date dt = new Date();
-			list = thumbLiveRecordRepository.getAvailableAttendaceLiveRecordFromThumb(locId,sf.format(dt));
+			list = thumbLiveRecordRepository.getAvailableAttendaceLiveRecordFromThumb(locId, sf.format(dt));
 
 		} catch (Exception e) {
 
