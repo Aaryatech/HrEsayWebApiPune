@@ -1081,11 +1081,12 @@ public class PayrollApiController {
 												&& getSalaryTempList.get(i).getGender().equalsIgnoreCase("male")
 												&& slabMasterList.get(k).getGender() == 1) {
 
-											if (getSalaryTempList.get(i).getMonth() == 2 && slabMasterList.get(k)
-													.getAmount() == febmonthptamount_condtioncheck) {
+											if (getSalaryTempList.get(i).getMonth() == 2
+													&& slabMasterList.get(k)
+															.getAmount() == febmonthptamount_condtioncheck
+													&& slabMasterList.get(k).getExInt2() == 1) {
 												tempValNew = febmonthptamount;
-											} // $calc_month == "2" && $amt == "200"
-											else {
+											} else {
 												tempValNew = slabMasterList.get(k).getAmount();
 											}
 											break;
@@ -1094,15 +1095,35 @@ public class PayrollApiController {
 												&& getSalaryTempList.get(i).getGender().equalsIgnoreCase("female")
 												&& slabMasterList.get(k).getGender() == 2) {
 
-											if (getSalaryTempList.get(i).getMonth() == 2 && slabMasterList.get(k)
-													.getAmount() == febmonthptamount_condtioncheck) {
-												tempValNew = febmonthptamount;
-											} // $calc_month == "2" && $amt == "200"
-											else {
-												tempValNew = slabMasterList.get(k).getAmount();
-											}
+											/*
+											 * if (getSalaryTempList.get(i).getMonth() == 2 && slabMasterList.get(k)
+											 * .getAmount() == febmonthptamount_condtioncheck) { tempValNew =
+											 * febmonthptamount; } else {
+											 */
+											tempValNew = slabMasterList.get(k).getAmount();
+											// }
 											break;
 										}
+
+										/*
+										 * if (tempVal >= slabMasterList.get(k).getMinVal() && tempVal <=
+										 * slabMasterList.get(k).getMaxVal() &&
+										 * getSalaryTempList.get(i).getGender().equalsIgnoreCase("male") &&
+										 * slabMasterList.get(k).getGender() == 1) {
+										 * 
+										 * if (getSalaryTempList.get(i).getMonth() == 2 && slabMasterList.get(k)
+										 * .getAmount() == febmonthptamount_condtioncheck) { tempValNew =
+										 * febmonthptamount; } else { tempValNew = slabMasterList.get(k).getAmount(); }
+										 * break; } else if (tempVal >= slabMasterList.get(k).getMinVal() && tempVal <=
+										 * slabMasterList.get(k).getMaxVal() &&
+										 * getSalaryTempList.get(i).getGender().equalsIgnoreCase("female") &&
+										 * slabMasterList.get(k).getGender() == 2) {
+										 * 
+										 * if (getSalaryTempList.get(i).getMonth() == 2 && slabMasterList.get(k)
+										 * .getAmount() == febmonthptamount_condtioncheck) { tempValNew =
+										 * febmonthptamount; } else { tempValNew = slabMasterList.get(k).getAmount(); }
+										 * break; }
+										 */
 									}
 
 								}

@@ -1893,7 +1893,8 @@ public class AttendanceApiControllerchange {
 	@RequestMapping(value = { "/getAttendanceSheet" }, method = RequestMethod.POST)
 	public @ResponseBody AttendanceSheetData getAttendanceSheet(@RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("userType") int userType,
-			@RequestParam("userId") int userId, @RequestParam("locId") List<Integer> locId) {
+			@RequestParam("userId") int userId, @RequestParam("locId") List<Integer> locId,
+			@RequestParam("deptIds") List<Integer> deptIds) {
 
 		AttendanceSheetData info = new AttendanceSheetData();
 		try {
@@ -1915,13 +1916,13 @@ public class AttendanceApiControllerchange {
 
 			if (userType == 1) {
 
-				empList = empInfoRepository.getEmpListForHod(fromDate, userId);
-				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForHod(fromDate, toDate, userId);
+				empList = empInfoRepository.getEmpListForHodDeptId(fromDate, userId,deptIds);
+				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForHod(fromDate, toDate, userId,deptIds);
 
 			} else {
 
-				empList = empInfoRepository.getEmpListAlllocId(fromDate, locId);
-				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAlllocId(fromDate, toDate, locId);
+				empList = empInfoRepository.getEmpListAlllocIdDeptIds(fromDate, locId,deptIds);
+				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAlllocId(fromDate, toDate, locId,deptIds);
 			}
 
 			// System.out.println("OK");
@@ -2067,7 +2068,7 @@ public class AttendanceApiControllerchange {
 	@RequestMapping(value = { "/getMonthlySummryAttendace" }, method = RequestMethod.POST)
 	public @ResponseBody List<SummaryAttendance> getMonthlySummryAttendace(@RequestParam("month") int month,
 			@RequestParam("year") int year, @RequestParam("userType") int userType, @RequestParam("userId") int userId,
-			@RequestParam("locId") List<Integer> locId) {
+			@RequestParam("locId") List<Integer> locId,@RequestParam("deptIds") List<Integer> deptIds) {
 
 		List<SummaryAttendance> summaryDailyAttendanceList = new ArrayList<>();
 		try {
@@ -2075,11 +2076,11 @@ public class AttendanceApiControllerchange {
 			if (userType == 1) {
 
 				summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListForHod(month, year,
-						userId);
+						userId,deptIds);
 			} else {
 
 				summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListAlllocId(month, year,
-						locId);
+						locId,deptIds);
 			}
 
 		} catch (Exception e) {

@@ -19,8 +19,8 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 	@Query(value = "select * from tbl_attt_daily_daily where att_date between :fromDate and :toDate  ", nativeQuery = true)
 	List<DailyAttendance> dailyAttendanceListAll(String fromDate, String toDate);
 
-	@Query(value = "select d.* from tbl_attt_daily_daily d,leave_authority la where d.att_date between :fromDate and :toDate and la.emp_id=d.emp_id and la.ini_auth_emp_id=:userId ", nativeQuery = true)
-	List<DailyAttendance> dailyAttendanceListForHod(@Param("fromDate") String fromDate, @Param("toDate") String toDate,@Param("userId") int userId);
+	@Query(value = "select d.* from tbl_attt_daily_daily d,leave_authority la,m_employees e where d.att_date between :fromDate and :toDate and la.emp_id=d.emp_id and la.ini_auth_emp_id=:userId and d.emp_id=e.emp_id and e.depart_id in (:deptIds) and e.del_status=1", nativeQuery = true)
+	List<DailyAttendance> dailyAttendanceListForHod(@Param("fromDate") String fromDate, @Param("toDate") String toDate,@Param("userId") int userId, List<Integer> deptIds);
 	
 	@Query(value = "select * from tbl_attt_daily_daily where att_date between :fromDate and :toDate  AND  company_id=:companyId AND late_mark=1 ORDER BY emp_id ASC ", nativeQuery = true)
 	List<DailyAttendance> dailyAttendanceListAll1(int companyId, String fromDate, String toDate);
@@ -416,8 +416,8 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 			"        and d.comments_supervisor=8 and e.location_id in (:locId) order by e.notice_pay_amount asc,d.emp_name asc", nativeQuery = true)
 	List<DailyAttendance> getEmployyeDailyDailyListByAuthorityLocId(@Param("date")String date, @Param("empId")int empId, @Param("locId")List<Integer> locId);
 
-	@Query(value = "select ad.* from tbl_attt_daily_daily ad ,m_employees e where ad.att_date between :fromDate and :toDate  and ad.emp_id=e.emp_id and e.location_id in (:locId)", nativeQuery = true)
-	List<DailyAttendance> dailyAttendanceListAlllocId(@Param("fromDate")String fromDate,@Param("toDate") String toDate,@Param("locId") List<Integer> locId);
+	@Query(value = "select ad.* from tbl_attt_daily_daily ad ,m_employees e where ad.att_date between :fromDate and :toDate  and ad.emp_id=e.emp_id and e.location_id in (:locId) and e.depart_id in (:deptIds) and e.del_status=1", nativeQuery = true)
+	List<DailyAttendance> dailyAttendanceListAlllocId(@Param("fromDate")String fromDate,@Param("toDate") String toDate,@Param("locId") List<Integer> locId, List<Integer> deptIds);
 
 	
 	
