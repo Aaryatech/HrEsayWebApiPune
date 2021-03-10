@@ -205,6 +205,22 @@ public interface EmployeeMasterRepository extends JpaRepository<EmployeeMaster, 
 	@Modifying
 	@Query(value = "UPDATE m_employees SET  emp_code =:empCode WHERE emp_id IN(:id)", nativeQuery = true)
 	int submitupdateempcode(String empCode, int id);
+
+
+	@Query(value = " select\n" + 
+			"        emp_code \n" + 
+			"    from\n" + 
+			"        m_employees \n" + 
+			"    where\n" + 
+			"        emp_code = (\n" + 
+			"            select\n" + 
+			"                max(emp_code) \n" + 
+			"            from\n" + 
+			"                m_employees \n" + 
+			"            where\n" + 
+			"                emp_code LIKE :empCode\n" + 
+			"        )", nativeQuery = true)
+	String getLastEmpCode(@Param("empCode")String empCode);
  
 
 	

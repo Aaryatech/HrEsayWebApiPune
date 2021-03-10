@@ -24,6 +24,7 @@ import com.ats.hrmgt.model.EmployeDoc;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.EmployeeRelatedTbls;
 import com.ats.hrmgt.model.GetEmployeeDetails;
+import com.ats.hrmgt.model.Grade;
 import com.ats.hrmgt.model.Info;
 import com.ats.hrmgt.model.SalaryRateData;
 import com.ats.hrmgt.model.Setting;
@@ -40,6 +41,7 @@ import com.ats.hrmgt.repository.EmpSalaryInfoRepo;
 import com.ats.hrmgt.repository.EmployeeDocsRepository;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.GetEmployeeDetailsRepo;
+import com.ats.hrmgt.repository.GradeRepo;
 import com.ats.hrmgt.repository.SettingRepo;
 import com.ats.hrmgt.repository.TblEmpBankInfoRepo;
 import com.ats.hrmgt.repository.TblEmpInfoRepo;
@@ -86,6 +88,28 @@ public class EmployeeApiController {
 	GetEmployeeDetailsRepo getEmployeeDetailsRepo;
 
 	/********************************** Employee *********************************/
+
+	@RequestMapping(value = { "/getLastEmpCode" }, method = RequestMethod.POST)
+	public Info getLastEmpCode(@RequestParam String empCode) {
+		Info info = new Info();
+		try {
+			String emp = empRepo.getLastEmpCode(empCode + "%");
+
+			if (emp == null) {
+				info.setError(true);
+				info.setMsg("Series not available.");
+			} else {
+				info.setError(false);
+				info.setMsg(emp);
+			}
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return info;
+
+	}
 
 	@RequestMapping(value = { "/getEmpInfoByEmpCode" }, method = RequestMethod.POST)
 	public EmployeeMaster getEmpInfoByEmpCode(@RequestParam String empCode) {
@@ -630,8 +654,8 @@ public class EmployeeApiController {
 
 		try {
 			List<GetEmployeeDetails> list = getEmployeeDetailsRepo.getSalaryDetailRate(locId);
-			List<EmpSalAllowance> alloList = empSalAllowanceRepo.getEmployeeSalAllowancesInfoAll(locId); 
-			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1); 
+			List<EmpSalAllowance> alloList = empSalAllowanceRepo.getEmployeeSalAllowancesInfoAll(locId);
+			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
 			salaryRateData.setAllowancelist(allowancelist);
 			salaryRateData.setAlloList(alloList);
 			salaryRateData.setList(list);
@@ -698,6 +722,9 @@ public class EmployeeApiController {
 	@Autowired
 	ViewEmployeeRepo empProfileRepo;
 
+	@Autowired
+	GradeRepo gradeRepo;
+
 	@RequestMapping(value = { "/getEmployeeAllInfo" }, method = RequestMethod.POST)
 	public @ResponseBody ViewEmployee getEmployeeAllInfo(@RequestParam int empId) {
 
@@ -712,6 +739,80 @@ public class EmployeeApiController {
 		}
 
 		return emp;
+	}
+
+	@RequestMapping(value = { "/saveGrade" }, method = RequestMethod.POST)
+	public @ResponseBody Grade saveGrade(@RequestBody Grade grade) {
+
+		Grade emp = new Grade();
+		try {
+
+			emp = gradeRepo.save(grade);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return emp;
+	}
+
+	@RequestMapping(value = { "/getGradeById" }, method = RequestMethod.POST)
+	public @ResponseBody Grade getGradeById(@RequestParam int gradeId) {
+
+		Grade emp = new Grade();
+		try {
+
+			emp = gradeRepo.findByGradeIdAndDelStatus(gradeId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return emp;
+	}
+
+	@RequestMapping(value = { "/getAllGradeList" }, method = RequestMethod.GET)
+	public @ResponseBody List<Grade> getAllGradeList() {
+
+		List<Grade> list = new ArrayList<Grade>();
+		try {
+
+			list = gradeRepo.findByDelStatus(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	@RequestMapping(value = { "/deleteGreade" }, method = RequestMethod.POST)
+	public Info deleteGreade(@RequestParam int gradeId) {
+
+		Info info = new Info();
+		try {
+
+			int res = gradeRepo.deleteGreade(gradeId);
+
+			if (res > 0) {
+
+				info.setError(false);
+				info.setMsg("Sucess");
+			} else {
+				info.setError(true);
+				info.setMsg("Fail");
+			}
+
+		} catch (Exception e) {
+			System.err.println("Excep in deleteEmployee : " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return info;
+
 	}
 
 }
