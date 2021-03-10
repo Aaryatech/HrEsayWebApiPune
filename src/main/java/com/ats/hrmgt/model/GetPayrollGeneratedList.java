@@ -114,7 +114,8 @@ public class GetPayrollGeneratedList {
 	private float absentDays;
 
 	private String email;
-
+	private int gradeId;
+	
 	@Transient
 	List<SalAllownceCal> payrollAllownceList;
 
@@ -1026,6 +1027,14 @@ public class GetPayrollGeneratedList {
 		this.leaveEncashAmt = leaveEncashAmt;
 	}
 
+	public int getGradeId() {
+		return gradeId;
+	}
+
+	public void setGradeId(int gradeId) {
+		this.gradeId = gradeId;
+	}
+
 	@Override
 	public String toString() {
 		return "GetPayrollGeneratedList [id=" + id + ", cmpId=" + cmpId + ", empId=" + empId + ", empCode=" + empCode
@@ -1061,12 +1070,12 @@ public class GetPayrollGeneratedList {
 				+ ", departName=" + departName + ", designName=" + designName + ", payableDays=" + payableDays
 				+ ", presentDays=" + presentDays + ", weeklyOff=" + weeklyOff + ", paidHoliday=" + paidHoliday
 				+ ", paidLeave=" + paidLeave + ", unpaidLeave=" + unpaidLeave + ", absentDays=" + absentDays
-				+ ", email=" + email + ", payrollAllownceList=" + payrollAllownceList + ", getAdvanceList="
-				+ getAdvanceList + ", getAbsentDedList=" + getAbsentDedList + ", getLateMarkDedList="
-				+ getLateMarkDedList + ", getClaimList=" + getClaimList + ", getBhattaList=" + getBhattaList
-				+ ", getPayDedList=" + getPayDedList + ", getRewardList=" + getRewardList + ", getLoanList="
-				+ getLoanList + ", performance=" + performance + ", production=" + production + ", moneyInword="
-				+ moneyInword + ", difAlloList=" + difAlloList + "]";
+				+ ", email=" + email + ", gradeId=" + gradeId + ", payrollAllownceList=" + payrollAllownceList
+				+ ", getAdvanceList=" + getAdvanceList + ", getAbsentDedList=" + getAbsentDedList
+				+ ", getLateMarkDedList=" + getLateMarkDedList + ", getClaimList=" + getClaimList + ", getBhattaList="
+				+ getBhattaList + ", getPayDedList=" + getPayDedList + ", getRewardList=" + getRewardList
+				+ ", getLoanList=" + getLoanList + ", performance=" + performance + ", production=" + production
+				+ ", moneyInword=" + moneyInword + ", difAlloList=" + difAlloList + "]";
 	}
 
 }
