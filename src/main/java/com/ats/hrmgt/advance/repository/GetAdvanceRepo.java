@@ -118,7 +118,8 @@ public interface GetAdvanceRepo  extends JpaRepository<GetAdvance, Integer>{
 			"    tbl_advance,\n" + 
 			"    m_designation\n" + 
 			"WHERE\n" + 
-			"    m_employees.location_id=:locId and tbl_advance.del_status = 1  AND  tbl_advance.emp_id = m_employees.emp_id AND m_designation.desig_id = m_employees.designation_id AND tbl_advance.cmp_id=:companyId AND MONTH(tbl_advance.adv_date)=:month AND YEAR(tbl_advance.adv_date)=:year ORDER BY tbl_advance.emp_id ASC",nativeQuery=true)
+			"    m_employees.location_id=:locId and tbl_advance.del_status = 1  AND  tbl_advance.emp_id = m_employees.emp_id AND m_designation.desig_id = m_employees.designation_id AND tbl_advance.cmp_id=:companyId "
+			+ "AND MONTH(tbl_advance.adv_date)=:month AND YEAR(tbl_advance.adv_date)=:year ORDER BY tbl_advance.emp_id ASC",nativeQuery=true)
 	List<GetAdvance> getSpecEmpAdvForReport(@Param("companyId") int companyId,@Param("month") int month,@Param("year") int year,@Param("locId") int locId);
 
 	@Query(value=" SELECT\n" + 
@@ -155,6 +156,34 @@ public interface GetAdvanceRepo  extends JpaRepository<GetAdvance, Integer>{
 			"        AND tbl_advance.emp_id=:empId\n" + 
 			"    order by adv_date desc",nativeQuery=true)
 	List<GetAdvance> getAdvanceHistoryByEmpId(int empId);
+
+
+	@Query(value=" SELECT\n" + 
+			"    tbl_advance.*,\n" + 
+			"    m_employees.emp_code,\n" + 
+			"    m_employees.first_name,\n" + 
+			"    m_employees.middle_name,\n" + 
+			"    m_employees.surname,\n" + 
+			"     (\n" + 
+			"    SELECT\n" + 
+			"        CONCAT(\n" + 
+			"            m_employees.first_name,\n" + 
+			"            ' ',\n" + 
+			"            m_employees.surname\n" + 
+			"        )\n" + 
+			"    FROM\n" + 
+			"        m_employees\n" + 
+			"    WHERE\n" + 
+			"        m_employees.emp_id = tbl_advance.skip_login_name\n" + 
+			") AS designation \n" + 
+			"FROM\n" + 
+			"    m_employees,\n" + 
+			"    tbl_advance,\n" + 
+			"    m_designation\n" + 
+			"WHERE\n" + 
+			"    m_employees.location_id=:locId and m_employees.depart_id in (:deptIds) and tbl_advance.del_status = 1  AND  tbl_advance.emp_id = m_employees.emp_id AND m_designation.desig_id = m_employees.designation_id AND tbl_advance.cmp_id=:companyId "
+			+ "AND MONTH(tbl_advance.adv_date)=:month AND YEAR(tbl_advance.adv_date)=:year ORDER BY tbl_advance.emp_id ASC",nativeQuery=true)
+	List<GetAdvance> getSpecEmpAdvForReportDeptId(int companyId, int month, int year, int locId, List<Integer> deptIds);
 	
 	
 	 

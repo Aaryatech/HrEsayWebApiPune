@@ -18,12 +18,12 @@ public interface GetPtChallanRepo extends JpaRepository<GetPtChallan, Integer> {
 			"    WHEN sb.gender=1 \n" + 
 			"        THEN (select \n" + 
 			"                count('')  from tbl_salary_calc s,m_employees e,tbl_emp_info ef where s.esic_status=1 and  s.calc_month=:month and  \n" + 
-			"                s.calc_year=:year and e.emp_id=s.emp_id and ef.emp_id=e.emp_id and ef.gender='male' and e.location_id=sb.ex_int1 and \n" + 
+			"                s.calc_year=:year and e.emp_id=s.emp_id and ef.emp_id=e.emp_id and ef.gender='male' and e.location_id=sb.ex_int1 and e.depart_id in (:deptIds) and \n" + 
 			"                (s.gross_salary+s.production_insentive+s.ot_wages) >= sb.min_val and (s.gross_salary+s.production_insentive+s.ot_wages) <=sb.max_val and s.cmp_id=:companyId)\n" + 
 			"    WHEN sb.gender = 2 \n" + 
 			"        THEN (select \n" + 
 			"                count('')  from tbl_salary_calc s,m_employees e,tbl_emp_info ef where s.esic_status=1 and  s.calc_month=:month and  \n" + 
-			"                s.calc_year=:year and e.emp_id=s.emp_id and ef.emp_id=e.emp_id and ef.gender='female' and e.location_id=sb.ex_int1 and \n" + 
+			"                s.calc_year=:year and e.emp_id=s.emp_id and ef.emp_id=e.emp_id and ef.gender='female' and e.location_id=sb.ex_int1 and e.depart_id in (:deptIds) and \n" + 
 			"                (s.gross_salary+s.production_insentive+s.ot_wages) >= sb.min_val and (s.gross_salary+s.production_insentive+s.ot_wages) <=sb.max_val and s.cmp_id=:companyId) \n" + 
 			"            \n" + 
 			"    ELSE 0\n" + 
@@ -32,7 +32,7 @@ public interface GetPtChallanRepo extends JpaRepository<GetPtChallan, Integer> {
 			"    WHEN sb.gender=2 then 'FEMALE' \n" + 
 			"    ELSE '-' \n" + 
 			"END AS gender_name from tbl_slabs  sb where sb.ex_int1=:locId",nativeQuery=true)
-	List<GetPtChallan> getPtChallan(@Param("month") String month, @Param("year") String year,@Param("companyId") int companyId,@Param("locId") int locId);
+	List<GetPtChallan> getPtChallan(@Param("month") String month, @Param("year") String year,@Param("companyId") int companyId,@Param("locId") int locId, List<Integer> deptIds);
 	
 	 
 }

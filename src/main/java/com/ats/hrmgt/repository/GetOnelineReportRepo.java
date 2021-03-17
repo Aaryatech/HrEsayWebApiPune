@@ -53,10 +53,10 @@ public interface GetOnelineReportRepo extends JpaRepository<GetOnelineReport, In
 			"        and ei.emp_id=e.emp_id         \n" + 
 			"        and dd.id=sc.att_sum_id \n" + 
 			"        and e.location_id in (:locId) and si.emp_id=e.emp_id\n" + 
-			"        and bi.emp_id=e.emp_id\n" + 
+			"        and bi.emp_id=e.emp_id and e.depart_id in (:deptIds)\n" + 
 			"    order by\n" + 
 			"        e.emp_id asc", nativeQuery = true)
 	List<GetOnelineReport> getPayOneLineReport(@Param("month") int month, @Param("year") int year,
-			@Param("locId") List<Integer> locId);
+			@Param("locId") List<Integer> locId,@Param("deptIds") List<Integer> deptIds);
 
 }

@@ -29,13 +29,13 @@ public interface EmpLateMarkDetailsRepo extends JpaRepository<EmpLateMarkDetails
 			"        AND emp.designation_id = desg.desig_id \n" + 
 			"        AND atd.year BETWEEN :year AND :toyear\n" + 
 			"        AND atd.month BETWEEN :month AND :tomonth\n" + 
-			"        AND emp.del_status = 1\n" + 
+			"        AND emp.depart_id in (:deptIds)\n" + 
 			"        and emp.location_id=:locId\n" + 
 			"        and atd.totlate_mins>0\n" + 
 			"    ORDER BY\n" + 
 			"        atd.month",nativeQuery=true)
 	List<EmpLateMarkDetails> getEmpLateMarkSummaryReport(@Param("locId")int locId, @Param("month")String month,
-			@Param("year") String year, @Param("tomonth") String tomonth, @Param("toyear") String toyear);
+			@Param("year") String year, @Param("tomonth") String tomonth, @Param("toyear") String toyear, @Param("deptIds") List<Integer> deptIds);
 	
 	@Query(value="SELECT\n" + 
 			"        UUID() AS id,\n" + 
@@ -52,10 +52,10 @@ public interface EmpLateMarkDetailsRepo extends JpaRepository<EmpLateMarkDetails
 			"    WHERE\n" + 
 			"        emp.emp_id = atd.emp_id \n" + 
 			"        AND emp.designation_id = desg.desig_id \n" + 
-			"        AND atd.att_date BETWEEN :fromDate AND :toDate AND emp.del_status = 1  and atd.late_mark=1 and emp.location_id=:locId\n" + 
+			"        AND atd.att_date BETWEEN :fromDate AND :toDate AND emp.depart_id in (:deptIds)  and atd.late_mark=1 and emp.location_id=:locId\n" + 
 			"    ORDER BY\n" + 
 			"        atd.emp_id,atd.att_date",nativeQuery=true)
-	List<EmpLateMarkDetails> getEmpLateMarkDetailReport(int locId, String fromDate, String toDate);
+	List<EmpLateMarkDetails> getEmpLateMarkDetailReport(int locId, String fromDate, String toDate,List<Integer> deptIds);
 
 	
 	@Query(value="SELECT\n" + 

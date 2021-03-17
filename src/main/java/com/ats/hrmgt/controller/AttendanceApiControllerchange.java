@@ -1916,13 +1916,15 @@ public class AttendanceApiControllerchange {
 
 			if (userType == 1) {
 
-				empList = empInfoRepository.getEmpListForHodDeptId(fromDate, userId,deptIds);
-				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForHod(fromDate, toDate, userId,deptIds);
+				empList = empInfoRepository.getEmpListForHodDeptId(fromDate, userId, deptIds);
+				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListForHod(fromDate, toDate, userId,
+						deptIds);
 
 			} else {
 
-				empList = empInfoRepository.getEmpListAlllocIdDeptIds(fromDate, locId,deptIds);
-				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAlllocId(fromDate, toDate, locId,deptIds);
+				empList = empInfoRepository.getEmpListAlllocIdDeptIds(fromDate, locId, deptIds);
+				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceListAlllocId(fromDate, toDate, locId,
+						deptIds);
 			}
 
 			// System.out.println("OK");
@@ -2012,7 +2014,8 @@ public class AttendanceApiControllerchange {
 
 	@RequestMapping(value = { "/getAttendanceSheetReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<DateAndDay> getAttendanceSheetReport(@RequestParam("fromDate") String fromDate,
-			@RequestParam("toDate") String toDate, @RequestParam("locId") int locId) {
+			@RequestParam("toDate") String toDate, @RequestParam("locId") int locId,
+			@RequestParam("deptIds") List<Integer> deptIds) {
 
 		List<DateAndDay> dateAndDayList = new ArrayList<>();
 		try {
@@ -2022,7 +2025,7 @@ public class AttendanceApiControllerchange {
 			Date todt = df.parse(toDate);
 
 			List<DailyAttendaceReport> dailyAttendanceList = dailyAttendaceReportRepository
-					.dailyAttendanceListAlllocId(fromDate, toDate, locId);
+					.dailyAttendanceListAlllocId(fromDate, toDate, locId, deptIds);
 
 			// System.out.println("OK");
 			// List<String> dates = new ArrayList<>();
@@ -2068,7 +2071,7 @@ public class AttendanceApiControllerchange {
 	@RequestMapping(value = { "/getMonthlySummryAttendace" }, method = RequestMethod.POST)
 	public @ResponseBody List<SummaryAttendance> getMonthlySummryAttendace(@RequestParam("month") int month,
 			@RequestParam("year") int year, @RequestParam("userType") int userType, @RequestParam("userId") int userId,
-			@RequestParam("locId") List<Integer> locId,@RequestParam("deptIds") List<Integer> deptIds) {
+			@RequestParam("locId") List<Integer> locId, @RequestParam("deptIds") List<Integer> deptIds) {
 
 		List<SummaryAttendance> summaryDailyAttendanceList = new ArrayList<>();
 		try {
@@ -2076,11 +2079,11 @@ public class AttendanceApiControllerchange {
 			if (userType == 1) {
 
 				summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListForHod(month, year,
-						userId,deptIds);
+						userId, deptIds);
 			} else {
 
 				summaryDailyAttendanceList = summaryAttendanceRepository.summaryDailyAttendanceListAlllocId(month, year,
-						locId,deptIds);
+						locId, deptIds);
 			}
 
 		} catch (Exception e) {

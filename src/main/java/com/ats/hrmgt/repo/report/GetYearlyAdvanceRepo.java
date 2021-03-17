@@ -28,11 +28,12 @@ public interface GetYearlyAdvanceRepo extends JpaRepository<GetYearlyAdvance, In
 			"    tbl_advance,\n" + 
 			"    m_designation\n" + 
 			"WHERE\n" + 
-			"    tbl_advance.del_status = 1 AND tbl_advance.emp_id = m_employees.emp_id AND m_designation.desig_id = m_employees.designation_id AND tbl_advance.cmp_id =:companyId AND YEAR(tbl_advance.adv_date) =:year and m_employees.location_id=:locId\n" + 
+			"    tbl_advance.del_status = 1 AND tbl_advance.emp_id = m_employees.emp_id AND m_designation.desig_id = m_employees.designation_id AND tbl_advance.cmp_id =:companyId AND YEAR(tbl_advance.adv_date) =:year and m_employees.location_id=:locId and "
+			+ "  m_employees.depart_id in (:deptIds)\n" + 
 			"GROUP BY\n" + 
 			"    tbl_advance.emp_id,\n" + 
 			"    MONTH(tbl_advance.adv_date)",nativeQuery=true)
-	List<GetYearlyAdvance> getSpecEmpAdvForReport(@Param("companyId") int companyId,@Param("year") int year, @Param("locId")int locId);
+	List<GetYearlyAdvance> getSpecEmpAdvForReport(@Param("companyId") int companyId,@Param("year") int year, @Param("locId")int locId, @Param("deptIds")List<Integer> deptIds);
 	
 	
 }

@@ -45,7 +45,7 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 			"    ) <= DATE_FORMAT(\n" + 
 			"        CONCAT(:toYear, '-', :toMonth, '-01'),\n" + 
 			"        '%Y-%m-%d'\n" + 
-			"    ) AND tfc.emp_id = emp.emp_id and emp.location_id=:locId\n" + 
+			"    ) AND tfc.emp_id = emp.emp_id and emp.location_id=:locId and emp.depart_id in (:deptIds)\n" + 
 			"GROUP BY\n" + 
 			"    \n" + 
 			"    DATE_FORMAT(\n" + 
@@ -57,7 +57,7 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 			"        ),\n" + 
 			"        '%Y-%m'\n" + 
 			"    )",nativeQuery=true)
-	List<EsiSumaryRep> getEsiSumm(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,@Param("companyId") int companyId, int locId);
+	List<EsiSumaryRep> getEsiSumm(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,@Param("companyId") int companyId, int locId, List<Integer> deptIds);
 
 	@Query(value="SELECT\n" + 
 			"    UUID() AS key_new, count(emp.emp_id) as no_emp,\n" + 
@@ -92,7 +92,7 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 			"    ) <= DATE_FORMAT(\n" + 
 			"        CONCAT(:toYear, '-', :toMonth, '-01'),\n" + 
 			"        '%Y-%m-%d'\n" + 
-			"    ) AND tfc.emp_id = emp.emp_id and emp.location_id=:locId\n" + 
+			"    ) AND tfc.emp_id = emp.emp_id and emp.location_id=:locId and emp.depart_id in (:deptIds)\n" + 
 			"GROUP BY\n" + 
 			"     \n" + 
 			"    DATE_FORMAT(\n" + 
@@ -105,7 +105,7 @@ public interface EsiSumaryRepRepo extends JpaRepository<EsiSumaryRep, String> {
 			"        '%Y-%m'\n" + 
 			"    )",nativeQuery=true)
 	List<EsiSumaryRep> getEsiSummAll(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,
-			@Param("locId") int locId);
+			@Param("locId") int locId, List<Integer> deptIds);
 
 
 }

@@ -411,7 +411,7 @@ public class GraphApiController {
 	@RequestMapping(value = { "/getEmpAttendanceSum" }, method = RequestMethod.POST)
 	public List<EmpDailyAttendanceGraph> getEmpAttendanceSum(@RequestParam("companyId") int companyId,
 			@RequestParam("locId") int locId, @RequestParam("fromDate") String fromDate,
-			@RequestParam("toDate") String toDate) {
+			@RequestParam("toDate") String toDate, @RequestParam("deptIds") List<Integer> deptIds) {
 		List<EmpDailyAttendanceGraph> list = new ArrayList<EmpDailyAttendanceGraph>();
 		try {
 			// String[] shortMonths = new DateFormatSymbols().getShortMonths();
@@ -434,7 +434,7 @@ public class GraphApiController {
 			// System.out.println("To------------"+lmonth+" "+lyear);
 
 			List<SummaryDailyAttendance> attList = summaryDailyAttendanceRepository.findAllByCompanyId(locId, fmonth,
-					fyear, lmonth, lyear);
+					fyear, lmonth, lyear,deptIds);
 			// System.out.println("List:::::::::::"+attList);
 
 			// System.err.println(" attList" + attList.toString());

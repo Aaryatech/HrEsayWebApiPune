@@ -221,6 +221,10 @@ public interface EmployeeMasterRepository extends JpaRepository<EmployeeMaster, 
 			"                emp_code LIKE :empCode\n" + 
 			"        )", nativeQuery = true)
 	String getLastEmpCode(@Param("empCode")String empCode);
+
+
+	@Query(value = "SELECT e.* from m_employees e  where e.del_status=1 AND e.location_id=:locId and e.depart_id in (:deptId)", nativeQuery = true)
+	List<EmployeeMaster> findBylocIdAndDept(int locId, List<Integer> deptId);
  
 
 	

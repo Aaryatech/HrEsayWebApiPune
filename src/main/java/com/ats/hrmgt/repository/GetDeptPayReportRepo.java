@@ -75,9 +75,9 @@ public interface GetDeptPayReportRepo extends JpaRepository<GetDeptPayReport, In
 			"        and calc_year=:year                            \n" + 
 			"        and e.emp_id=sc.emp_id                            \n" + 
 			"        and d.depart_id=sc.depart_id              \n" + 
-			"        and e.location_id in (:locId)       \n" + 
+			"        and e.location_id in (:locId) and e.depart_id in (:deptIds)       \n" + 
 			"    group  by\n" + 
 			"        sc.depart_id", nativeQuery = true)
-	List<GetDeptPayReport> departmentwisePayrollReport(int month, int year, List<Integer> locId);
+	List<GetDeptPayReport> departmentwisePayrollReport(int month, int year, List<Integer> locId, List<Integer> deptIds);
 
 }

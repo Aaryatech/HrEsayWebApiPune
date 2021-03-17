@@ -132,8 +132,7 @@ public class EmpShiftDetailsController {
 				String currShiftName = null;
 
 				DailyAttendance dailyRec = dailyAttendanceRepository.findLastMonthRecordOfEmp(empId);
-				
-				
+
 				if (dailyRec != null) {
 					currShiftId = dailyRec.getCurrentShiftid();
 					currShiftName = dailyRec.getCurrentShiftname();
@@ -358,6 +357,23 @@ public class EmpShiftDetailsController {
 			}
 
 		}
+		return emplist;
+
+	}
+
+	@RequestMapping(value = { "/getAllEmpByLocAndDepartment" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmployeeMaster> getAllEmpByLocAndDepartment(@RequestParam("locId") int locId,
+			@RequestParam("deptId") List<Integer> deptId) {
+
+		List<EmployeeMaster> emplist = new ArrayList<EmployeeMaster>();
+
+		try {
+			emplist = empRepo.findBylocIdAndDept(locId, deptId);
+		} catch (Exception e) {
+			System.err.println("Excep in getAllEmployee : " + e.getMessage());
+			e.printStackTrace();
+		}
+
 		return emplist;
 
 	}

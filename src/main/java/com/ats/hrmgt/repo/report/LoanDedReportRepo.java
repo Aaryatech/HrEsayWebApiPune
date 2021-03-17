@@ -33,11 +33,11 @@ public interface LoanDedReportRepo  extends JpaRepository<LoanDedReport, String>
 			"        and tlm.id=ld.loan_main_id\n" + 
 			"        and ld.months=:month\n" + 
 			"        and ld.years=:year\n" + 
-			"        and dp.depart_id=te.depart_id\n" + 
+			"        and dp.depart_id=te.depart_id and  dp.depart_id in (:deptIds) \n" + 
 			"    group by tlm.emp_id\n" + 
 			"    ORDER BY\n" + 
 			"        department_name asc,emp_name ASC",nativeQuery=true)
-	List<LoanDedReport> getSpecEmpDedLoanReport(@Param("month") String month,@Param("year") String year, @Param("locId") int locId);
+	List<LoanDedReport> getSpecEmpDedLoanReport(@Param("month") String month,@Param("year") String year, @Param("locId") int locId, @Param("deptIds")List<Integer> deptIds);
 
 	
 

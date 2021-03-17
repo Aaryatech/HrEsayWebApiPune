@@ -10,13 +10,13 @@ import com.ats.hrmgt.model.EmpOpningLoanList;
 
 public interface EmpOpningLoanListRepo extends JpaRepository<EmpOpningLoanList, Integer>{
 
-	@Query(value = "select UUID() as id,a.*,(ifnull(b.loan_amt,0) - ifnull(c.paid_amt,0) ) as op_amt,ifnull(d.loan_count,0) as loan_count from ( select e.emp_id,concat(e.first_name,\" \",e.surname ,\" (\",e.emp_code,\")\") as emp_name , DATE_FORMAT(:fromDate, '%m-%Y') as month_year  from m_employees e where e.del_status=1 and e.location_id=:locId) a\n" + 
+	@Query(value = "select UUID() as id,a.*,(ifnull(b.loan_amt,0) - ifnull(c.paid_amt,0) ) as op_amt,ifnull(d.loan_count,0) as loan_count from ( select e.emp_id,concat(e.first_name,\" \",e.surname ,\" (\",e.emp_code,\")\") as emp_name , DATE_FORMAT(:fromDate, '%m-%Y') as month_year  from m_employees e where e.del_status=1 and e.location_id=:locId and e.depart_id in (:deptIds)) a\n" + 
 			"left join (select lm.emp_id, sum(lm.loan_amt)  as loan_amt from tbl_loan_main lm where lm.del_status=1 and DATE_FORMAT(loan_repay_start, '%Y-%m')<DATE_FORMAT(:fromDate, '%Y-%m')  group by lm.emp_id) b on b.emp_id=a.emp_id\n" + 
 			"left join (select lm.emp_id, sum(ld.amount_emi)  as paid_amt from tbl_loan_main lm,tbl_loan_details ld where lm.id=ld.loan_main_id and DATE_FORMAT(concat(ld.years,'-',ld.months,'-01'), '%Y-%m')<DATE_FORMAT(:fromDate, '%Y-%m')  group by lm.emp_id) c on c.emp_id=a.emp_id \n" + 
 			"left join (select lm.emp_id, count('')  as loan_count from tbl_loan_main lm where loan_repay_start between :fromDate and :toDate and lm.del_status=1   group by lm.emp_id) d on d.emp_id=a.emp_id \n" + 
 			"where (ifnull(b.loan_amt,0) - ifnull(c.paid_amt,0) )>0 or loan_count>0\n" + 
 			" ", nativeQuery = true)
-	List<EmpOpningLoanList> payLoanLedgerReport(@Param("fromDate")String date,@Param("toDate") String toDate, @Param("locId") int locId);
+	List<EmpOpningLoanList> payLoanLedgerReport(@Param("fromDate")String date,@Param("toDate") String toDate, @Param("locId") int locId, List<Integer> deptIds);
 
 	@Query(value = "select\n" + 
 			"            UUID() as id,adv.emp_id,\n" + 
@@ -38,9 +38,9 @@ public interface EmpOpningLoanListRepo extends JpaRepository<EmpOpningLoanList, 
 			"            and ded_month=:month\n" + 
 			"            and ded_year=:year\n" + 
 			"            and adv.del_status=1\n" + 
-			"            and is_ded=1\n" + 
+			"            and is_ded=1 and e.depart_id in (:deptIds)\n" + 
 			"        group by e.emp_id\n" + 
 			"        order by emp_name", nativeQuery = true)
-	List<EmpOpningLoanList> getAdvanceDeductionReport(@Param("month")String month,@Param("year") String year, @Param("locId")int locId);
+	List<EmpOpningLoanList> getAdvanceDeductionReport(@Param("month")String month,@Param("year") String year, @Param("locId")int locId, @Param("deptIds")List<Integer> deptIds);
 
 }

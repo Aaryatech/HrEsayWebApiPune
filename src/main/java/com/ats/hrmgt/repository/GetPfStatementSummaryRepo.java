@@ -30,13 +30,13 @@ public interface GetPfStatementSummaryRepo extends JpaRepository<GetPfStatementS
 			"    INNER JOIN\n" + 
 			"        m_employees emp \n" + 
 			"            ON     salc.emp_id = emp.emp_id \n" + 
-			"            and emp.location_id=:locId \n" + 
+			"            and emp.location_id=:locId and emp.depart_id in (:deptIds)\n" + 
 			"    WHERE\n" + 
 			"        salc.pf_status = 1 \n" + 
 			"        and date_format(concat(salc.calc_year,'-',salc.calc_month,'-01'),'%Y-%m-%d') between concat(:fromYear,'-',:fromMonth,'-01') and concat(:toYear,'-',:toMonth,'-01')\n" + 
 			"        AND salc.cmp_id =:companyId\n" + 
 			"    group by   salc.emp_id",nativeQuery=true)
 	List<GetPfStatementSummary> getPfStatementSummary(int companyId, String fromYear, String fromMonth, String toYear,
-			String toMonth, int locId);
+			String toMonth, int locId, List<Integer> deptIds);
 
 }

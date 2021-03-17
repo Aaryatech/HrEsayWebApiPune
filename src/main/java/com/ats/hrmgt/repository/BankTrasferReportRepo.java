@@ -35,13 +35,13 @@ public interface BankTrasferReportRepo extends JpaRepository<BankTrasferReport, 
 			"        and d.depart_id=sc.depart_id                   \n" + 
 			"        and dg.desig_id=e.designation_id   \n" + 
 			"        and e.location_id in (:locId)          \n" + 
-			"        and bi.emp_id=e.emp_id and bi.bank_id=:bankId     \n" + 
+			"        and bi.emp_id=e.emp_id and bi.bank_id=:bankId  and e.depart_id in (:deptIds)   \n" + 
 			"    order by\n" + 
 			"        e.emp_id asc) a\n" + 
 			"left join(\n" + 
 			"select * from m_bank\n" + 
 			")b on b.bank_id=a.bank_id\n" + 
 			"order by a.bank_id desc", nativeQuery = true)
-	List<BankTrasferReport> getBankTransferReport(int month, int year, List<Integer> locId, int bankId);
+	List<BankTrasferReport> getBankTransferReport(int month, int year, List<Integer> locId, int bankId, List<Integer> deptIds);
 
 }

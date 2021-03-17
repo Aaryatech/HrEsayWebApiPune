@@ -31,7 +31,7 @@ public interface EmpOtRegRepo extends JpaRepository<EmpOtReg, Integer> {
 		"        tbl_attt_summary_daily atd      \n" + 
 		"    inner join\n" + 
 		"        m_employees emp \n" + 
-		"            on atd.emp_id  = emp.emp_id and emp.location_id=:locId      \n" + 
+		"            on atd.emp_id  = emp.emp_id and emp.location_id=:locId  and emp.depart_id in (:deptIds)    \n" + 
 		"    inner join\n" + 
 		"        m_designation desg \n" + 
 		"            on emp.designation_id  = desg.desig_id       \n" + 
@@ -50,7 +50,7 @@ public interface EmpOtRegRepo extends JpaRepository<EmpOtReg, Integer> {
 		"        atd.emp_id,\n" + 
 		"        atd.month",nativeQuery=true)
 List<EmpOtReg> getEmpOtSummary(@Param("locId") int locId, @Param("month")String month,
-		@Param("year") String year, @Param("tomonth") String tomonth, @Param("toyear") String toyear);
+		@Param("year") String year, @Param("tomonth") String tomonth, @Param("toyear") String toyear, @Param("deptIds") List<Integer> deptIds);
 
 @Query(value="SELECT\n" + 
 		"        UUID() AS id,\n" + 
@@ -71,7 +71,7 @@ List<EmpOtReg> getEmpOtSummary(@Param("locId") int locId, @Param("month")String 
 		"        tbl_attt_daily_daily  atd           \n" + 
 		"    inner join\n" + 
 		"        m_employees emp              \n" + 
-		"            on atd.emp_id  = emp.emp_id and emp.location_id=:locId          \n" + 
+		"            on atd.emp_id  = emp.emp_id and emp.location_id=:locId  and emp.depart_id in (:deptIds)        \n" + 
 		"    inner join\n" + 
 		"        m_designation desg              \n" + 
 		"            on emp.designation_id  = desg.desig_id            \n" + 
@@ -88,7 +88,7 @@ List<EmpOtReg> getEmpOtSummary(@Param("locId") int locId, @Param("month")String 
 		"    ORDER BY\n" + 
 		"        atd.emp_id,\n" + 
 		"        atd.att_date",nativeQuery=true)
-List<EmpOtReg> getEmpOtDetails(@Param("locId") int locId, @Param("fromDate") String fromDate, @Param("toDate") String toDate);
+List<EmpOtReg> getEmpOtDetails(@Param("locId") int locId, @Param("fromDate") String fromDate, @Param("toDate") String toDate,@Param("deptIds") List<Integer> deptIds);
 
 }
 

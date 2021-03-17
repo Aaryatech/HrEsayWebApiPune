@@ -67,9 +67,9 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"                    '%Y-%m-%d'\n" + 
 			"                ) <=:toDate) and tsc.esic_status=1\n" + 
 			"            WHERE\n" + 
-			"                te.is_emp = '1' AND tsc.cmp_id =:companyId AND te.del_status=1 and te.location_id=:locId\n" + 
+			"                te.is_emp = '1' AND tsc.cmp_id =:companyId AND te.del_status=1 and te.location_id=:locId and te.depart_id in (:deptIds)\n" + 
 			"            ) AS a",nativeQuery=true)
-	List<StatutoryEsicRep> getStatutoryEsic(@Param("fromDate") String fromDate,@Param("toDate") String toDate,@Param("companyId") int companyId,@Param("locId") int locId);
+	List<StatutoryEsicRep> getStatutoryEsic(@Param("fromDate") String fromDate,@Param("toDate") String toDate,@Param("companyId") int companyId,@Param("locId") int locId, List<Integer> deptIds);
 
 	
 	
@@ -129,9 +129,9 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"                    '%Y-%m-%d'\n" + 
 			"                ) <=:toDate ) and tsc.esic_status=1\n" + 
 			"            WHERE\n" + 
-			"                te.is_emp = '1' AND te.del_status=1 and te.location_id=:locId\n" + 
+			"                te.is_emp = '1' AND te.del_status=1 and te.location_id=:locId and te.depart_id in (:deptIds)\n" + 
 			"            ) AS a",nativeQuery=true)
-	List<StatutoryEsicRep> getStatutoryEsicAll(@Param("fromDate") String fromDate,@Param("toDate") String toDate, @Param("locId")  int locId);
+	List<StatutoryEsicRep> getStatutoryEsicAll(@Param("fromDate") String fromDate,@Param("toDate") String toDate, @Param("locId")  int locId, List<Integer> deptIds);
 
 
 	@Query(value="SELECT\n" + 
@@ -172,8 +172,8 @@ public interface StatutoryEsicRepRepo extends JpaRepository<StatutoryEsicRep, In
 			"                WHERE\n" + 
 			"                      tsc.cmp_id =:companyId\n" + 
 			"                    AND te.del_status=1 \n" + 
-			"                    and te.location_id=:locId) AS a",nativeQuery=true)
-	List<StatutoryEsicRep> showEsicDataUpload(@Param("month")String month, @Param("year") String year, @Param("locId") int locId, @Param("companyId") int companyId);
+			"                    and te.location_id=:locId and te.depart_id in (:deptIds)) AS a",nativeQuery=true)
+	List<StatutoryEsicRep> showEsicDataUpload(@Param("month")String month, @Param("year") String year, @Param("locId") int locId, @Param("companyId") int companyId, List<Integer> deptIds);
 
 
 

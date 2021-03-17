@@ -2339,7 +2339,8 @@ public class PayrollApiController {
 	@RequestMapping(value = { "/getPayOneLineReport" }, method = RequestMethod.POST)
 	@ResponseBody
 	public PayRollDataForProcessing getPayOneLineReport(@RequestParam("month") int month,
-			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId) {
+			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId,
+			@RequestParam("deptIds") List<Integer> deptIds) {
 
 		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
 
@@ -2347,7 +2348,7 @@ public class PayrollApiController {
 
 			List<GetOnelineReport> onelinereportlist = new ArrayList<>();
 
-			onelinereportlist = getOnelineReportRepo.getPayOneLineReport(month, year, locId);
+			onelinereportlist = getOnelineReportRepo.getPayOneLineReport(month, year, locId, deptIds);
 
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
 			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceListlocId(month, year,
@@ -2381,7 +2382,8 @@ public class PayrollApiController {
 	@RequestMapping(value = { "/departmentwisePayrollReport" }, method = RequestMethod.POST)
 	@ResponseBody
 	public PayRollDataForProcessing departmentwisePayrollReport(@RequestParam("month") int month,
-			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId) {
+			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId,
+			@RequestParam("deptIds") List<Integer> deptIds) {
 
 		PayRollDataForProcessing payRollDataForProcessing = new PayRollDataForProcessing();
 
@@ -2389,7 +2391,7 @@ public class PayrollApiController {
 
 			List<GetDeptPayReport> onelinereportlist = new ArrayList<>();
 
-			onelinereportlist = getDeptPayReportRepo.departmentwisePayrollReport(month, year, locId);
+			onelinereportlist = getDeptPayReportRepo.departmentwisePayrollReport(month, year, locId, deptIds);
 
 			List<Allowances> allowancelist = allowanceRepo.findBydelStatusAndIsActive(0, 1);
 			List<SalAllownceCal> getPayrollAllownceList = salAllownceCalRepo.getPayrollAllownceListlocIdDept(month,
@@ -2424,13 +2426,13 @@ public class PayrollApiController {
 	@ResponseBody
 	public List<BankTrasferReport> getBankTransferReport(@RequestParam("month") int month,
 			@RequestParam("year") int year, @RequestParam("locId") List<Integer> locId,
-			@RequestParam("bankId") int bankId) {
+			@RequestParam("bankId") int bankId, @RequestParam("deptIds") List<Integer> deptIds) {
 
 		List<BankTrasferReport> list = new ArrayList<>();
 
 		try {
 
-			list = bankTrasferReportRepo.getBankTransferReport(month, year, locId, bankId);
+			list = bankTrasferReportRepo.getBankTransferReport(month, year, locId, bankId, deptIds);
 
 		} catch (Exception e) {
 			e.printStackTrace();
