@@ -1,5 +1,7 @@
 package com.ats.hrmgt.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +21,9 @@ public interface TblEmpInfoRepo extends JpaRepository<TblEmpInfo, Integer> {
 	@Modifying
 	@Query(value="UPDATE `tbl_emp_info` SET del_status=0 WHERE emp_id=:empId",nativeQuery=true)
 	public int deleteEmployeeInfo(@Param("empId") int empId);
+
+	@Transactional
+	@Modifying
+	@Query(value="UPDATE `tbl_emp_info` SET ex_int1=:upDateId WHERE emp_id in (:empIdList)",nativeQuery=true)
+	public int empEmpGradeUpdate(List<Integer> empIdList, String upDateId);
 }

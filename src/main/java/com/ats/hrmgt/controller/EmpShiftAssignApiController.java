@@ -27,9 +27,11 @@ import com.ats.hrmgt.repository.EmpSalaryInfoRepo;
 import com.ats.hrmgt.repository.EmployeeMasterRepository;
 import com.ats.hrmgt.repository.GetEmployeeDetailsForCarryFrwdLeaveRepo;
 import com.ats.hrmgt.repository.GetEmployeeDetailsRepo;
+import com.ats.hrmgt.repository.GradeRepo;
 import com.ats.hrmgt.repository.MstEmpTypeRepository;
 import com.ats.hrmgt.repository.SalaryTypesMasterRepo;
 import com.ats.hrmgt.repository.ShiftMasterRepository;
+import com.ats.hrmgt.repository.TblEmpInfoRepo;
 import com.ats.hrmgt.repository.UserRepo;
 
 @RestController
@@ -82,7 +84,7 @@ public class EmpShiftAssignApiController {
 
 		return list;
 	}
-	
+
 	@RequestMapping(value = { "/getAllEmployeeDetailAccesibleLoc" }, method = RequestMethod.GET)
 	public List<GetEmployeeDetails> getAllEmployeeDetailAccesibleLoc() {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -185,6 +187,21 @@ public class EmpShiftAssignApiController {
 		return list;
 	}
 
+	@RequestMapping(value = { "/getAllEmployeeDetailGradeLocId" }, method = RequestMethod.POST)
+	public List<GetEmployeeDetails> getAllEmployeeDetailGradeLocId(@RequestParam("locId") List<Integer> locId) {
+		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
+		try {
+
+			list = getEmployeeDetailsRepo.getAllEmployeeDetailGradeLocId(locId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
 	@RequestMapping(value = { "/getEmpDetailListByLocId" }, method = RequestMethod.POST)
 	public List<GetEmployeeDetails> getEmpDetailListByLocId(@RequestParam("locationIds") List<Integer> locationIds) {
 		List<GetEmployeeDetails> list = new ArrayList<GetEmployeeDetails>();
@@ -259,6 +276,9 @@ public class EmpShiftAssignApiController {
 
 	@Autowired
 	SalaryTypesMasterRepo salaryTypesMasterRepo;
+	
+	@Autowired
+	TblEmpInfoRepo empInfoRepo;
 
 	@RequestMapping(value = { "/getSalryTypesMst" }, method = RequestMethod.GET)
 	public @ResponseBody List<SalaryTypesMaster> getSalryTypesMst() {
@@ -347,6 +367,8 @@ public class EmpShiftAssignApiController {
 				res = employeeMasterRepository.empEmpCategoryUpdate(empIdList, upDateId);
 			} else if (flag == 12) {
 				res = employeeMasterRepository.empEmpShiftGroupUpdate(empIdList, upDateId);
+			} else if (flag == 13) {
+				res = empInfoRepo.empEmpGradeUpdate(empIdList, upDateId);
 			} else {
 				res = 0;
 			}
