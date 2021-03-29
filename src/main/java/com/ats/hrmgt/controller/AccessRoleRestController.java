@@ -100,14 +100,14 @@ public class AccessRoleRestController {
 
 		LoginResponse loginResponse = new LoginResponse();
 		try {
-			if (username.contains("@")) {
+			/*if (username.contains("@")) {
 				System.err.println("Its Email");
 				loginResponse = loginResponseRepository.CheckUserForPasswordByEmail(username);
 
-			} else {
+			} else {*/
 				System.err.println("Its Code ");
 				loginResponse = loginResponseRepository.CheckUserForPasswordByUsername(username);
-			}
+			//}
 			if (loginResponse == null) {
 				loginResponse = new LoginResponse();
 				loginResponse.setIsError(true);

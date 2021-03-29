@@ -103,7 +103,7 @@ public class MasterWebApiController {
 
 	@Autowired
 	MailByUsernameRepo mailByUsernameRepo;
-	
+
 	@Autowired
 	GetClaimApplyAuthwiseRepo getClaimApplyAuthwiseRepo;
 	/*
@@ -376,22 +376,23 @@ public class MasterWebApiController {
 
 	}
 
-	/*@RequestMapping(value = { "/getEmpListForClaimAuthByEmpId" }, method = RequestMethod.POST)
-	public @ResponseBody List<EmployeeInfo> getEmpListForClaimAuthByEmpId(@RequestParam("empId") int empId) {
-
-		List<EmployeeInfo> list = new ArrayList<EmployeeInfo>();
-		try {
-
-			list = employeeInfoRepository.getEmpListForClaimByEmpId(empId);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		return list;
-
-	}*/
+	/*
+	 * @RequestMapping(value = { "/getEmpListForClaimAuthByEmpId" }, method =
+	 * RequestMethod.POST) public @ResponseBody List<EmployeeInfo>
+	 * getEmpListForClaimAuthByEmpId(@RequestParam("empId") int empId) {
+	 * 
+	 * List<EmployeeInfo> list = new ArrayList<EmployeeInfo>(); try {
+	 * 
+	 * list = employeeInfoRepository.getEmpListForClaimByEmpId(empId);
+	 * 
+	 * } catch (Exception e) {
+	 * 
+	 * e.printStackTrace(); }
+	 * 
+	 * return list;
+	 * 
+	 * }
+	 */
 	/*
 	 * @RequestMapping(value = { "/checkUniqueEmail" }, method = RequestMethod.POST)
 	 * public @ResponseBody Info checkUniqueEmail(@RequestParam("email") String
@@ -594,21 +595,51 @@ public class MasterWebApiController {
 		Info emailRes = new Info();
 		try {
 
-			MailByUsername mailByUsername = mailByUsernameRepo.getUserByEmailId(inputValue);
+			// MailByUsername mailByUsername =
+			// mailByUsernameRepo.getUserByEmailId(inputValue);
 
-			RandomString randomString = new RandomString();
-			String password = randomString.nextString();
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] messageDigest = md.digest(password.getBytes());
-			BigInteger number = new BigInteger(1, messageDigest);
-			String hashtext = number.toString(16);
+			LoginResponse loginResponse = new LoginResponse();
 
-			String finalmsg = "Your Password is:" + password
-					+ "\n DO NOT REPLY to this EMAIL-ID - contact HR.PUNE@infrabeat.com.";
+			/*if (inputValue.contains("@")) {
+				System.err.println("Its Email");
+				loginResponse = loginResponseRepository.CheckUserForPasswordByEmail(inputValue);
 
-			emailRes = EmailUtility.sendEmail("atsinfosoft@gmail.com", "atsinfosoft@123", mailByUsername.getEmail(),
-					" HRMS Password Recovery", mailByUsername.getEmail(), finalmsg);
-			int update = userRepo.updateIsVistStatus(mailByUsername.getEmpId(), hashtext);
+			} else {*/
+				System.err.println("Its Code ");
+				loginResponse = loginResponseRepository.CheckUserForPasswordByUsername(inputValue);
+			//}
+			if (loginResponse != null) {
+				RandomString randomString = new RandomString();
+				String password = randomString.nextString();
+				MessageDigest md = MessageDigest.getInstance("MD5");
+				byte[] messageDigest = md.digest(password.getBytes());
+				BigInteger number = new BigInteger(1, messageDigest);
+				String hashtext = number.toString(16);
+
+				String finalmsg = "Your Password is:" + password + "\n DO NOT REPLY to this EMAIL-ID";
+
+				emailRes = EmailUtility.sendEmail("atsinfosoft@gmail.com", "atsinfosoft@123",
+						loginResponse.getEmailId(), " Password Recovery", loginResponse.getEmailId(), finalmsg);
+				int update = userRepo.updateIsVistStatus(loginResponse.getEmpId(), hashtext);
+			} else {
+				emailRes.setError(true);
+			}
+
+			/*
+			 * RandomString randomString = new RandomString(); String password =
+			 * randomString.nextString(); MessageDigest md =
+			 * MessageDigest.getInstance("MD5"); byte[] messageDigest =
+			 * md.digest(password.getBytes()); BigInteger number = new BigInteger(1,
+			 * messageDigest); String hashtext = number.toString(16);
+			 * 
+			 * String finalmsg = "Your Password is:" + password +
+			 * "\n DO NOT REPLY to this EMAIL-ID";
+			 * 
+			 * emailRes = EmailUtility.sendEmail("atsinfosoft@gmail.com", "atsinfosoft@123",
+			 * mailByUsername.getEmail(), " HRMS Password Recovery",
+			 * mailByUsername.getEmail(), finalmsg); int update =
+			 * userRepo.updateIsVistStatus(mailByUsername.getEmpId(), hashtext);
+			 */
 		} catch (Exception e) {
 
 			e.printStackTrace();
