@@ -744,8 +744,14 @@ public class AttendanceApiControllerchange {
 
 								int actualotmin = otintHrs * 60;
 
-								if (otintmin > 30 && otintmin < 60) {
+								/*
+								 * if (otintmin > 30 && otintmin < 60) { actualotmin = actualotmin + 30; }
+								 */
+
+								if (otintmin >= 25 && otintmin < 45) {
 									actualotmin = actualotmin + 30;
+								} else if (otintmin >= 45 && otintmin <= 60) {
+									actualotmin = actualotmin + 60;
 								}
 
 								dailyAttendanceList.get(i).setOtHr(String.valueOf(actualotmin));
@@ -3580,5 +3586,25 @@ public class AttendanceApiControllerchange {
 
 		return list;
 
+	}
+
+	@Scheduled(cron = "0 0 2 * * ? ")
+	/* @Scheduled(cron = "0/20 * * * * ? ") */
+	public void updateAutoAttendace() {
+
+		try {
+
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, -1);
+			Date yesterday = cal.getTime();
+
+			// System.out.println(sf.format(yesterday));
+
+			autoThumbAttendance(sf.format(yesterday));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
