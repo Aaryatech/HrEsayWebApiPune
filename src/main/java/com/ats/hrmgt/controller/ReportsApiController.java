@@ -58,7 +58,7 @@ public class ReportsApiController {
 
 		try {
 
-			list = pendLoanRepo.getEmpPendingLoanDetails(locId,deptIds);
+			list = pendLoanRepo.getEmpPendingLoanDetails(locId, deptIds);
 
 		} catch (Exception e) {
 
@@ -135,6 +135,26 @@ public class ReportsApiController {
 		try {
 
 			list = otRepo.getEmpOtDetails(locId, fromDate, toDate, deptIds);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/getEmpOtApprovalPending" }, method = RequestMethod.POST)
+	public @ResponseBody List<EmpOtReg> getEmpOtApprovalPending(@RequestParam("locId") int locId,
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate,
+			@RequestParam("sts") int sts, @RequestParam("deptIds") List<Integer> deptIds) {
+
+		List<EmpOtReg> list = new ArrayList<EmpOtReg>();
+
+		try {
+
+			list = otRepo.getEmpOtApprovalPending(locId, fromDate, toDate, deptIds,sts);
 
 		} catch (Exception e) {
 

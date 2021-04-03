@@ -37,12 +37,10 @@ public interface EmpOtRegRepo extends JpaRepository<EmpOtReg, Integer> {
 		"            on emp.designation_id  = desg.desig_id       \n" + 
 		"    inner join\n" + 
 		"        tbl_mst_emp_types  emptype \n" + 
-		"            on emp.emp_type  = emptype.emp_type_id  \n" + 
-		"            and ot_applicable='Yes' \n" + 
+		"            on emp.emp_type  = emptype.emp_type_id " + 
 		"    WHERE\n" + 
 		"        atd.year BETWEEN :year AND :toyear \n" + 
-		"        AND atd.month BETWEEN :month AND :tomonth \n" + 
-		"        AND emp.del_status = 1  \n" + 
+		"        AND atd.month BETWEEN :month AND :tomonth " + 
 		"    GROUP BY\n" + 
 		"        atd.emp_id ,\n" + 
 		"        atd.month \n" + 
@@ -77,11 +75,10 @@ List<EmpOtReg> getEmpOtSummary(@Param("locId") int locId, @Param("month")String 
 		"            on emp.designation_id  = desg.desig_id            \n" + 
 		"    inner join\n" + 
 		"        tbl_mst_emp_types  emptype              \n" + 
-		"            on emp.emp_type  = emptype.emp_type_id               \n" + 
-		"            and ot_applicable='Yes'      \n" + 
+		"            on emp.emp_type  = emptype.emp_type_id      \n" + 
 		"    WHERE\n" + 
 		"        atd.att_date BETWEEN :fromDate  AND :toDate         \n" + 
-		"        AND emp.del_status = 1 and atd.ot_hr>0          \n" + 
+		"        AND   atd.ot_hr>0   and atd.freeze_by_supervisor=2       \n" + 
 		"    GROUP BY\n" + 
 		"        atd.emp_id ,\n" + 
 		"        atd.att_date      \n" + 
@@ -89,6 +86,44 @@ List<EmpOtReg> getEmpOtSummary(@Param("locId") int locId, @Param("month")String 
 		"        atd.emp_id,\n" + 
 		"        atd.att_date",nativeQuery=true)
 List<EmpOtReg> getEmpOtDetails(@Param("locId") int locId, @Param("fromDate") String fromDate, @Param("toDate") String toDate,@Param("deptIds") List<Integer> deptIds);
+
+
+@Query(value="SELECT\n" + 
+		"        UUID() AS id,\n" + 
+		"        atd.emp_id,\n" + 
+		"        atd.emp_code,\n" + 
+		"        atd.emp_name AS emp_name,\n" + 
+		"        desg.name AS designation,\n" + 
+		"        CONCAT(FLOOR(atd.ot_hr/60),\n" + 
+		"        ':',\n" + 
+		"        LPAD(MOD(atd.ot_hr,\n" + 
+		"        60),\n" + 
+		"        2,\n" + 
+		"        '0'))   AS ot_hr ,\n" + 
+		"        atd.att_date AS date,\n" + 
+		"        'NA' AS MONTH,\n" + 
+		"        atd.ot_hr as ot_min\n" + 
+		"    FROM\n" + 
+		"        tbl_attt_daily_daily  atd           \n" + 
+		"    inner join\n" + 
+		"        m_employees emp              \n" + 
+		"            on atd.emp_id  = emp.emp_id and emp.location_id=:locId  and emp.depart_id in (:deptIds)        \n" + 
+		"    inner join\n" + 
+		"        m_designation desg              \n" + 
+		"            on emp.designation_id  = desg.desig_id            \n" + 
+		"    inner join\n" + 
+		"        tbl_mst_emp_types  emptype              \n" + 
+		"            on emp.emp_type  = emptype.emp_type_id      \n" + 
+		"    WHERE\n" + 
+		"        atd.att_date BETWEEN :fromDate  AND :toDate         \n" + 
+		"        AND   atd.ot_hr>0   and atd.freeze_by_supervisor=:sts  and ot_applicable='Yes'     \n" + 
+		"    GROUP BY\n" + 
+		"        atd.emp_id ,\n" + 
+		"        atd.att_date      \n" + 
+		"    ORDER BY\n" + 
+		"        atd.emp_id,\n" + 
+		"        atd.att_date",nativeQuery=true)
+List<EmpOtReg> getEmpOtApprovalPending(int locId, String fromDate, String toDate, List<Integer> deptIds, int sts);
 
 }
 
