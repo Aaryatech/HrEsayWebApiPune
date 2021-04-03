@@ -1100,7 +1100,16 @@ public class PayrollApiController {
 											 * .getAmount() == febmonthptamount_condtioncheck) { tempValNew =
 											 * febmonthptamount; } else {
 											 */
-											tempValNew = slabMasterList.get(k).getAmount();
+
+											if (getSalaryTempList.get(i).getMonth() == 2
+													&& slabMasterList.get(k)
+															.getAmount() == febmonthptamount_condtioncheck
+													&& slabMasterList.get(k).getExInt2() == 1) {
+												tempValNew = febmonthptamount;
+											} else {
+												tempValNew = slabMasterList.get(k).getAmount();
+											}
+											// tempValNew = slabMasterList.get(k).getAmount();
 											// }
 											break;
 										}
