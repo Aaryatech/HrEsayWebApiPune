@@ -154,7 +154,11 @@ public class ReportsApiController {
 
 		try {
 
-			list = otRepo.getEmpOtApprovalPending(locId, fromDate, toDate, deptIds,sts);
+			if (sts == 0) {
+				list = otRepo.getEmpOtApprovalPending(locId, fromDate, toDate, deptIds, sts);
+			} else if (sts == 1) {
+				list = otRepo.getEmpOtApprovalFinalPending(locId, fromDate, toDate, deptIds, sts);
+			}
 
 		} catch (Exception e) {
 
