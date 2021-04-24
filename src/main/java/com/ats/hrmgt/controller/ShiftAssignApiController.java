@@ -400,7 +400,8 @@ public class ShiftAssignApiController {
 
 	@RequestMapping(value = { "/getEmpProjectionMatrix" }, method = RequestMethod.POST)
 	public List<EmpWithShiftDetail> getEmpProjectionMatrix(@RequestParam String fromDate, @RequestParam String toDate,
-			@RequestParam int locId, @RequestParam int userType, @RequestParam int userId, @RequestParam List<Integer> deptId) {
+			@RequestParam int locId, @RequestParam int userType, @RequestParam int userId,
+			@RequestParam List<Integer> deptId) {
 
 		List<EmpWithShiftDetail> empShiftList = new ArrayList<EmpWithShiftDetail>();
 
@@ -408,15 +409,15 @@ public class ShiftAssignApiController {
 			List<EmpShiftAllocationDetail> shiftallocationDetailList = new ArrayList<EmpShiftAllocationDetail>();
 			if (userType != 2) {
 
-				empShiftList = empWithShiftDetailRepository.getEmpListAuthorityWise(userId,deptId);
+				empShiftList = empWithShiftDetailRepository.getEmpListAuthorityWise(userId, deptId);
 				shiftallocationDetailList = empShiftAllocationDetailRepository
-						.getEmpShiftAllocationDetailAuthorityWise(fromDate, toDate, userId,deptId);
+						.getEmpShiftAllocationDetailAuthorityWise(fromDate, toDate, userId, deptId);
 
 			} else {
 
-				empShiftList = empWithShiftDetailRepository.getEmpListAll(locId,deptId);
+				empShiftList = empWithShiftDetailRepository.getEmpListAll(locId, deptId);
 				shiftallocationDetailList = empShiftAllocationDetailRepository.getEmpShiftAllocationDetail(fromDate,
-						toDate, locId,deptId);
+						toDate, locId, deptId);
 			}
 
 			List<WeeklyOff> weeklyOfflist = weeklyOffRepo.getWeeklyOffList();
@@ -720,6 +721,7 @@ public class ShiftAssignApiController {
 			String dailyDailyQuery = "INSERT INTO t_shift_assign_daily (id, emp_id, emp_code, shift_id, shift_date, month,  year, extra1, extra2, var1, var2) VALUES  ";
 
 			int flag = 0;
+			System.out.println(fromDate + " " + toDate);
 
 			for (int i = 0; i < empShiftList.size(); i++) {
 
