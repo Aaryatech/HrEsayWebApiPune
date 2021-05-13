@@ -17,12 +17,12 @@ public interface GetPtChallanRepo extends JpaRepository<GetPtChallan, Integer> {
 			"CASE\n" + 
 			"    WHEN sb.gender=1 \n" + 
 			"        THEN (select \n" + 
-			"                count('')  from tbl_salary_calc s,m_employees e,tbl_emp_info ef where s.esic_status=1 and  s.calc_month=:month and  \n" + 
+			"                count('')  from tbl_salary_calc s,m_employees e,tbl_emp_info ef where s.pt_applicable='yes' and  s.calc_month=:month and  \n" + 
 			"                s.calc_year=:year and e.emp_id=s.emp_id and ef.emp_id=e.emp_id and ef.gender='male' and e.location_id=sb.ex_int1 and e.depart_id in (:deptIds) and \n" + 
 			"                (s.gross_salary+s.production_insentive+s.ot_wages) >= sb.min_val and (s.gross_salary+s.production_insentive+s.ot_wages) <=sb.max_val and s.cmp_id=:companyId)\n" + 
 			"    WHEN sb.gender = 2 \n" + 
 			"        THEN (select \n" + 
-			"                count('')  from tbl_salary_calc s,m_employees e,tbl_emp_info ef where s.esic_status=1 and  s.calc_month=:month and  \n" + 
+			"                count('')  from tbl_salary_calc s,m_employees e,tbl_emp_info ef where s.pt_applicable='yes' and  s.calc_month=:month and  \n" + 
 			"                s.calc_year=:year and e.emp_id=s.emp_id and ef.emp_id=e.emp_id and ef.gender='female' and e.location_id=sb.ex_int1 and e.depart_id in (:deptIds) and \n" + 
 			"                (s.gross_salary+s.production_insentive+s.ot_wages) >= sb.min_val and (s.gross_salary+s.production_insentive+s.ot_wages) <=sb.max_val and s.cmp_id=:companyId) \n" + 
 			"            \n" + 

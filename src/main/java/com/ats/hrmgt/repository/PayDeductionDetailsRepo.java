@@ -145,8 +145,8 @@ public interface PayDeductionDetailsRepo extends JpaRepository<PayDeductionDetai
 			"    ) <= DATE_FORMAT(\n" + 
 			"        CONCAT(:toYear, '-', :toMonth, '-01'),\n" + 
 			"        '%Y-%m-%d'\n" + 
-			"    ) AND  tblm_pay_deduction_details.is_deducted !=0  ",nativeQuery=true)
-	List<PayDeductionDetails> getEmpPayDedAllEmp(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth);
+			"    ) AND  tblm_pay_deduction_details.is_deducted !=0  and m_employees.location_id=:locId",nativeQuery=true)
+	List<PayDeductionDetails> getEmpPayDedAllEmp(@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,@Param("locId")  int locId);
 	
 	
 

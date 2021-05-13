@@ -434,8 +434,8 @@ public class LeaveReportApiController {
 
 		try {
 
-			advYearList = getSalaryCalcReportRepo.getSpecEmpPTForReportComp(companyId, from[2], from[1], to[2], to[1],
-					locId, deptIds);
+			advYearList = getSalaryCalcReportRepo.getSpecEmpPTForReportComp(companyId, from[2].trim(), from[1].trim(),
+					to[2].trim(), to[1].trim(), locId, deptIds);
 
 		} catch (Exception e) {
 
@@ -550,7 +550,7 @@ public class LeaveReportApiController {
 
 	@RequestMapping(value = { "/getEmpPayDed" }, method = RequestMethod.POST)
 	public @ResponseBody List<PayDeductionDetails> getEmpPayDed(@RequestParam("empId") int empId,
-			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, int flag) {
+			@RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, int flag, int locId) {
 
 		List<PayDeductionDetails> advYearList = new ArrayList<PayDeductionDetails>();
 
@@ -567,7 +567,7 @@ public class LeaveReportApiController {
 				String from[] = fromDate.split("-");
 				String to[] = toDate.split("-");
 				advYearList = payDeductionDetailsRepo.getEmpPayDedAllEmp(from[2].trim(), from[1].trim(), to[2].trim(),
-						to[1].trim());
+						to[1].trim(), locId);
 			}
 
 		} catch (Exception e) {
@@ -601,10 +601,10 @@ public class LeaveReportApiController {
 		try {
 
 			if (companyId == 0) {
-				advYearList = statutoryEsicRepRepo.getStatutoryEsicAll(fromDate, toDate, locId,deptIds);
+				advYearList = statutoryEsicRepRepo.getStatutoryEsicAll(fromDate, toDate, locId, deptIds);
 
 			} else {
-				advYearList = statutoryEsicRepRepo.getStatutoryEsic(fromDate, toDate, companyId, locId,deptIds);
+				advYearList = statutoryEsicRepRepo.getStatutoryEsic(fromDate, toDate, companyId, locId, deptIds);
 
 			}
 
@@ -888,11 +888,11 @@ public class LeaveReportApiController {
 
 		try {
 			if (companyId == 0) {
-				advYearList = esiSumaryRepRepo.getEsiSummAll(from[2], from[1], to[2], to[1], locId,deptIds);
+				advYearList = esiSumaryRepRepo.getEsiSummAll(from[2], from[1], to[2], to[1], locId, deptIds);
 
 			} else {
 				advYearList = esiSumaryRepRepo.getEsiSumm(from[2].trim(), from[1].trim(), to[2].trim(), to[1].trim(),
-						companyId, locId,deptIds);
+						companyId, locId, deptIds);
 
 			}
 

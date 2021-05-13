@@ -172,11 +172,8 @@ public interface GetSalaryCalcReportRepo extends JpaRepository<GetSalaryCalcRepo
 			"INNER JOIN tbl_mst_sub_company subcomp ON\n" + 
 			"    salc.cmp_id = subcomp.company_id AND salc.cmp_id =:companyId\n" + 
 			"WHERE\n" + 
-			"    salc.pt_applicable ='yes' AND(\n" + 
-			"        salc.calc_month >=:fromMonth AND salc.calc_year =:fromYear \n" + 
-			"    ) OR(\n" + 
-			"        salc.calc_month <=:toMonth AND salc.calc_year =:toYear \n" + 
-			"    )",nativeQuery=true)
+			"    salc.pt_applicable ='yes' AND DATE_FORMAT(concat(salc.calc_year,'-',salc.calc_month,'-01'), '%d-%m-%Y') between DATE_FORMAT(concat(:fromYear,'-',:fromMonth,'-01'), '%d-%m-%Y')  and "
+			+ "  DATE_FORMAT(concat(:toYear,'-',:toMonth,'-01'), '%d-%m-%Y') ",nativeQuery=true)
 	List<GetSalaryCalcReport> getSpecEmpPTForReportComp(@Param("companyId") int companyId,@Param("fromYear") String fromYear,@Param("fromMonth") String fromMonth,@Param("toYear") String toYear,@Param("toMonth") String toMonth,
 			@Param("locId") int locId, List<Integer> deptIds);
 
