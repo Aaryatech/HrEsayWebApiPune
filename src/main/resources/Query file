@@ -175,3 +175,4 @@ CASE
     ELSE 0
 END as count from tbl_slabs  sb where sb.ex_int1=1
 
+select * from HRRAWINOUTDATA where DATE_FORMAT(PunchDateTime,'%Y-%m-%d')='2021-05-31'

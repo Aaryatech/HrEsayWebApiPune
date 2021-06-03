@@ -42,7 +42,7 @@ public interface SummaryAttendanceRepository extends JpaRepository<SummaryAttend
 			+ "CONCAT(FLOOR(totout_mins/60),'.',LPAD(MOD(totout_mins,60), 2, '0')) as totout_mins,CONCAT(FLOOR(totworking_hrs/60),'.',LPAD(MOD(totworking_hrs,60), 2, '0')) "
 			+ "as totworking_hrs,CONCAT(FLOOR(totot_hrs/60),'.',LPAD(MOD(totot_hrs,60), 2, '0')) as totot_hrs,CONCAT(FLOOR(tot_othr/60),'.',LPAD(MOD(tot_othr,60), 2, '0')) "
 			+ "as tot_othr,tot_late,hdpresent_hdleave,es.sal_basis,ds.total_days_inmonth from tbl_attt_summary_daily ds,tbl_emp_salary_info es,leave_authority la,m_employees e where month=:month "
-			+ "and year=:year and es.emp_id=ds.emp_id and la.emp_id=ds.emp_id and la.ini_auth_emp_id=:userId and e.depart_id in (:deptIds) and e.emp_id=ds.emp_id and e.del_status=1", nativeQuery = true)
+			+ "and year=:year and es.emp_id=ds.emp_id and la.emp_id=ds.emp_id and ( la.ini_auth_emp_id=:userId or la.fin_auth_emp_id=:userId ) and e.depart_id in (:deptIds) and e.emp_id=ds.emp_id and e.del_status=1", nativeQuery = true)
 	List<SummaryAttendance> summaryDailyAttendanceListForHod(@Param("month")int month,@Param("year") int year,@Param("userId") int userId, List<Integer> deptIds);
 
 	

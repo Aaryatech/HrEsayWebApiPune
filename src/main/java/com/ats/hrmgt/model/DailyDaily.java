@@ -29,7 +29,9 @@ public class DailyDaily {
 
 	private String dayName;
 	
+	private String inTime;
 	
+	private String outTime;
 	
 	public int getId() {
 		return id;
@@ -71,10 +73,26 @@ public class DailyDaily {
 		this.dayName = dayName;
 	}
 
+	public String getInTime() {
+		return inTime;
+	}
+
+	public void setInTime(String inTime) {
+		this.inTime = inTime;
+	}
+
+	public String getOutTime() {
+		return outTime;
+	}
+
+	public void setOutTime(String outTime) {
+		this.outTime = outTime;
+	}
+
 	@Override
 	public String toString() {
 		return "DailyDaily [id=" + id + ", empId=" + empId + ", otHr=" + otHr + ", attDate=" + attDate + ", dayName="
-				+ dayName + "]";
+				+ dayName + ", inTime=" + inTime + ", outTime=" + outTime + "]";
 	}
 	
 }

@@ -26,6 +26,8 @@ public class EcrFileData {
 	private int employerPf;
 	private int ncpDays	;
 	private int adv;
+	private int grossEarning;
+	
 	public String getId() {
 		return id;
 	}
@@ -110,13 +112,19 @@ public class EcrFileData {
 	public void setGrossSalary(int grossSalary) {
 		this.grossSalary = grossSalary;
 	}
+	public int getGrossEarning() {
+		return grossEarning;
+	}
+	public void setGrossEarning(int grossEarning) {
+		this.grossEarning = grossEarning;
+	}
 	@Override
 	public String toString() {
 		return "EcrFileData [id=" + id + ", uan=" + uan + ", firstName=" + firstName + ", middleName=" + middleName
 				+ ", surname=" + surname + ", grossSalary=" + grossSalary + ", epfWages=" + epfWages
 				+ ", epfWages_employer=" + epfWages_employer + ", epsWages=" + epsWages + ", employeePf=" + employeePf
 				+ ", employerEps=" + employerEps + ", employerPf=" + employerPf + ", ncpDays=" + ncpDays + ", adv="
-				+ adv + "]";
+				+ adv + ", grossEarning=" + grossEarning + "]";
 	}
 	
 	

@@ -19,7 +19,7 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 	@Query(value = "select * from tbl_attt_daily_daily where att_date between :fromDate and :toDate  ", nativeQuery = true)
 	List<DailyAttendance> dailyAttendanceListAll(String fromDate, String toDate);
 
-	@Query(value = "select d.* from tbl_attt_daily_daily d,leave_authority la,m_employees e where d.att_date between :fromDate and :toDate and la.emp_id=d.emp_id and la.ini_auth_emp_id=:userId and d.emp_id=e.emp_id and e.depart_id in (:deptIds) and e.del_status=1", nativeQuery = true)
+	@Query(value = "select d.* from tbl_attt_daily_daily d,leave_authority la,m_employees e where d.att_date between :fromDate and :toDate and la.emp_id=d.emp_id and ( la.ini_auth_emp_id=:userId or la.fin_auth_emp_id=:userId ) and d.emp_id=e.emp_id and e.depart_id in (:deptIds) and e.del_status=1", nativeQuery = true)
 	List<DailyAttendance> dailyAttendanceListForHod(@Param("fromDate") String fromDate, @Param("toDate") String toDate,@Param("userId") int userId, List<Integer> deptIds);
 	
 	@Query(value = "select * from tbl_attt_daily_daily where att_date between :fromDate and :toDate  AND  company_id=:companyId AND late_mark=1 ORDER BY emp_id ASC ", nativeQuery = true)
@@ -432,5 +432,8 @@ public interface DailyAttendanceRepository extends JpaRepository<DailyAttendance
 	@Modifying
 	@Query("UPDATE DailyAttendance set ot_hr=:otHr,freeze_by_supervisor=2  WHERE id=:id")
 	int updateOTByIdAndApprove(String otHr, int id);
+
+	@Query(value = "select * from tbl_attt_daily_daily where att_date between :fromDate and :toDate and is_fixed=0 and rec_status='o' and emp_code in (:empCodes);", nativeQuery = true)
+	List<DailyAttendance> dailyAttendanceList(String fromDate, String toDate, List<String> empCodes);
 
 }

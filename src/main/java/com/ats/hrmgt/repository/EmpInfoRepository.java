@@ -98,7 +98,7 @@ public interface EmpInfoRepository extends JpaRepository<EmpInfo, Integer> {
 			"    where\n" + 
 			"        e.emp_id=emp_sal.emp_id \n" + 
 			"        and e.del_status=1 and la.emp_id=e.emp_id           \n" + 
-			"        and la.ini_auth_emp_id=:userId \n" + 
+			"        and ( la.ini_auth_emp_id=:userId or la.fin_auth_emp_id=:userId ) \n" + 
 			"        and (\n" + 
 			"            emp_sal.cmp_leaving_date IS NULL \n" + 
 			"            or emp_sal.cmp_leaving_date='' \n" + 

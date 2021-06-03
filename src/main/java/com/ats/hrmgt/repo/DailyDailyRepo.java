@@ -16,7 +16,7 @@ import com.ats.hrmgt.model.DailyDaily;
 public interface DailyDailyRepo extends JpaRepository<DailyDaily, Integer> {
 
 	@Query(value = " SELECT id,emp_id,DATE_FORMAT(att_date,'%d-%m-%Y') as att_date, COALESCE( (CONCAT(FLOOR(SUM(ot_hr) / 60), ':',  "
-			+ "	 		 	 LPAD(MOD(SUM(ot_hr),60), 2, '0'))),0) AS ot_hr ,DAYNAME(att_date) as day_name "
+			+ "	 		 	 LPAD(MOD(SUM(ot_hr),60), 2, '0'))),0) AS ot_hr ,DAYNAME(att_date) as day_name,in_time, out_time "
 			+ " FROM tbl_attt_daily_daily WHERE att_date BETWEEN :fromDate and :toDate and emp_id=:empId and is_fixed=0 \n" + 
 			"                and rec_status='O' group by att_date ", nativeQuery = true)
 	List<DailyDaily> getData(@Param("fromDate") String fromDate, @Param("toDate") String toDate,
