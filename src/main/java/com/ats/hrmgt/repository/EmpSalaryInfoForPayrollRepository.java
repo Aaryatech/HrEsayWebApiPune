@@ -67,7 +67,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			"            0)     \n" + 
 			"            ELSE 1 \n" + 
 			"        END as can_generate_sal,\n" + 
-			"        ifnull(c.count_leave,0) as count_leave\n" + 
+			"        ifnull(c.count_leave,0) as count_leave,d.gender\n" + 
 			"    from\n" + 
 			"        (select\n" + 
 			"            e.emp_code,\n" + 
@@ -174,7 +174,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			"                group by\n" + 
 			"                    e.emp_id \n" + 
 			"            ) c \n" + 
-			"                on c.emp_id=a.emp_id", nativeQuery = true)
+			"                on c.emp_id=a.emp_id left join (select emp_id,gender from tbl_emp_info) d on d.emp_id=a.emp_id", nativeQuery = true)
 	List<EmpSalaryInfoForPayroll> getEmployeeListWithEmpSalEnfoForPayRoll(@Param("month") int month,
 			@Param("year") int year, @Param("locId") List<Integer> locId,  @Param("date") String date);
 
@@ -194,7 +194,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			"        ' ',\n" + 
 			"        e.surname) as emp_name,\n" + 
 			"        si.*,\n" + 
-			"        sd.id as sum_id, 0 as count_leave, 0 as can_generate_sal     \n" + 
+			"        sd.id as sum_id, 0 as count_leave, 0 as can_generate_sal,0 as gender     \n" + 
 			"    from\n" + 
 			"        tbl_emp_salary_info si,\n" + 
 			"        m_employees e,\n" + 
@@ -240,7 +240,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			@Param("year") int year,@Param("empIds") List<Integer> empIds);
 
 	
-	@Query(value = "select a.*,ifnull(b.count_leave,0) as count_leave, 0 as can_generate_sal from ( select \n" + 
+	@Query(value = "select a.*,ifnull(b.count_leave,0) as count_leave, 0 as can_generate_sal,0 as gender  from ( select \n" + 
 			"        e.emp_code,\n" + 
 			"        e.sub_cmp_id,\n" + 
 			"        et.name as emp_type_name,\n" + 
@@ -310,7 +310,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 	@Query(value = " select\n" + 
 			"        data.*,\n" + 
 			"        0 can_generate_sal,\n" + 
-			"        0 count_leave     \n" + 
+			"        0 count_leave,0 as gender      \n" + 
 			"    from\n" + 
 			"        (select\n" + 
 			"            e.emp_code,\n" + 
@@ -354,7 +354,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 	@Query(value = " select\n" + 
 			"        data.*,\n" + 
 			"        0 can_generate_sal,\n" + 
-			"        0 count_leave     \n" + 
+			"        0 count_leave,0 as gender      \n" + 
 			"    from\n" + 
 			"        (select\n" + 
 			"            e.emp_code,\n" + 
@@ -395,7 +395,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			"            e.emp_id) data", nativeQuery = true)
 	List<EmpSalaryInfoForPayroll> getEmployeeListWithEmpSalEnfoForArrearEmpId(List<Integer> empIds);
 
-	@Query(value = "select a.*,ifnull(b.count_leave,0) as count_leave, 0 as can_generate_sal from ( select \n" + 
+	@Query(value = "select a.*,ifnull(b.count_leave,0) as count_leave, 0 as can_generate_sal,0 as gender  from ( select \n" + 
 			"        e.emp_code,\n" + 
 			"        e.sub_cmp_id,\n" + 
 			"        et.name as emp_type_name,\n" + 
@@ -463,7 +463,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 	List<EmpSalaryInfoForPayroll> getListForfixunfixAttendanceTypeId(int month, int year, int isFixed, String sts,
 			List<Integer> locId, int typeId);
 
-	@Query(value = "select a.*,ifnull(b.count_leave,0) as count_leave, 0 as can_generate_sal from ( select \n" + 
+	@Query(value = "select a.*,ifnull(b.count_leave,0) as count_leave, 0 as can_generate_sal,0 as gender  from ( select \n" + 
 			"        e.emp_code,\n" + 
 			"        e.sub_cmp_id,\n" + 
 			"        et.name as emp_type_name,\n" + 
@@ -531,7 +531,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 	List<EmpSalaryInfoForPayroll> getListForfixunfixAttendanceDeptId(int month, int year, int isFixed, String sts,
 			List<Integer> locId, int deptId);
 
-	@Query(value = "select a.*,ifnull(b.count_leave,0) as count_leave, 0 as can_generate_sal from ( select \n" + 
+	@Query(value = "select a.*,ifnull(b.count_leave,0) as count_leave, 0 as can_generate_sal,0 as gender  from ( select \n" + 
 			"        e.emp_code,\n" + 
 			"        e.sub_cmp_id,\n" + 
 			"        et.name as emp_type_name,\n" + 
@@ -606,7 +606,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			"            0)     \n" + 
 			"            ELSE 1 \n" + 
 			"        END as can_generate_sal,\n" + 
-			"        ifnull(c.count_leave,0) as count_leave\n" + 
+			"        ifnull(c.count_leave,0) as count_leave,d.gender\n" + 
 			"    from\n" + 
 			"        (select\n" + 
 			"            e.emp_code,\n" + 
@@ -713,7 +713,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			"                group by\n" + 
 			"                    e.emp_id \n" + 
 			"            ) c \n" + 
-			"                on c.emp_id=a.emp_id", nativeQuery = true)
+			"                on c.emp_id=a.emp_id left join (select emp_id,gender from tbl_emp_info) d on d.emp_id=a.emp_id", nativeQuery = true)
 	List<EmpSalaryInfoForPayroll> getEmployeeListWithEmpSalEnfoForPayRollDeptId(int month, int year,
 			List<Integer> locId, int deptId, String date);
 
@@ -724,7 +724,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			"            0)     \n" + 
 			"            ELSE 1 \n" + 
 			"        END as can_generate_sal,\n" + 
-			"        ifnull(c.count_leave,0) as count_leave\n" + 
+			"        ifnull(c.count_leave,0) as count_leave,d.gender\n" + 
 			"    from\n" + 
 			"        (select\n" + 
 			"            e.emp_code,\n" + 
@@ -831,7 +831,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			"                group by\n" + 
 			"                    e.emp_id \n" + 
 			"            ) c \n" + 
-			"                on c.emp_id=a.emp_id", nativeQuery = true)
+			"                on c.emp_id=a.emp_id left join (select emp_id,gender from tbl_emp_info) d on d.emp_id=a.emp_id", nativeQuery = true)
 	List<EmpSalaryInfoForPayroll> getEmployeeListWithEmpSalEnfoForPayRollTypeId(int month, int year,
 			List<Integer> locId, int typeId, String date);
 
@@ -842,7 +842,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			"            0)     \n" + 
 			"            ELSE 1 \n" + 
 			"        END as can_generate_sal,\n" + 
-			"        ifnull(c.count_leave,0) as count_leave\n" + 
+			"        ifnull(c.count_leave,0) as count_leave,d.gender\n" + 
 			"    from\n" + 
 			"        (select\n" + 
 			"            e.emp_code,\n" + 
@@ -949,7 +949,7 @@ public interface EmpSalaryInfoForPayrollRepository extends JpaRepository<EmpSala
 			"                group by\n" + 
 			"                    e.emp_id \n" + 
 			"            ) c \n" + 
-			"                on c.emp_id=a.emp_id", nativeQuery = true)
+			"                on c.emp_id=a.emp_id left join (select emp_id,gender from tbl_emp_info) d on d.emp_id=a.emp_id", nativeQuery = true)
 	List<EmpSalaryInfoForPayroll> getEmployeeListWithEmpSalEnfoForPayRoll(int month, int year, List<Integer> locId,
 			int typeId, int deptId, String date);
 

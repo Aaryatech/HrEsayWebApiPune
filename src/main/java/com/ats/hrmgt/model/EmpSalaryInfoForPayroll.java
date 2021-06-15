@@ -171,6 +171,9 @@ public class EmpSalaryInfoForPayroll {
 	@Column(name="can_generate_sal")
 	private int canGenerateSal;
 	
+	@Column(name="gender")	
+	private String gender;
+
 	@Transient
 	List<EmpAllowanceList> empAllowanceList;
 	
@@ -590,6 +593,14 @@ public class EmpSalaryInfoForPayroll {
 		this.canGenerateSal = canGenerateSal;
 	}
 
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
 	@Override
 	public String toString() {
 		return "EmpSalaryInfoForPayroll [empId=" + empId + ", salaryInfoId=" + salaryInfoId + ", salaryTypeId="
@@ -609,7 +620,7 @@ public class EmpSalaryInfoForPayroll {
 				+ ", empName=" + empName + ", locName=" + locName + ", empTypeId=" + empTypeId + ", locId=" + locId
 				+ ", departId=" + departId + ", contractorId=" + contractorId + ", desigId=" + desigId + ", sumId="
 				+ sumId + ", subCmpId=" + subCmpId + ", countLeave=" + countLeave + ", canGenerateSal=" + canGenerateSal
-				+ ", empAllowanceList=" + empAllowanceList + "]";
+				+ ", gender=" + gender + ", empAllowanceList=" + empAllowanceList + "]";
 	}
 	
 	
