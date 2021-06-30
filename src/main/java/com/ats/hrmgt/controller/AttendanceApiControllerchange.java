@@ -1419,7 +1419,7 @@ public class AttendanceApiControllerchange {
 					// -----------------"+dailyAttendanceList.get(i).getCasetype());
 					if (dailyAttendanceList.get(i).getByFileUpdated() == 1 && update == 1) {
 						// dailyAttendanceList.get(i).setCommentsSupervisor("8");
-						System.out.println("queary" + dailyAttendanceList.get(i).getCasetype());
+						//System.out.println("queary" + dailyAttendanceList.get(i).getCasetype());
 						querysb.append("update\n" + "        tbl_attt_daily_daily \n" + "    set\n"
 								+ "        atsumm_uid='" + dailyAttendanceList.get(i).getAtsummUid() + "',"
 								+ "        att_date='" + dailyAttendanceList.get(i).getAttDate() + "',"
@@ -1463,7 +1463,7 @@ public class AttendanceApiControllerchange {
 								+ dailyAttendanceList.get(i).getAttsSdShow() + "'    where\n" + "        id="
 								+ dailyAttendanceList.get(i).getId() + ";");
 						try {
-							System.out.println("update " + dailyAttendanceList.get(i).getCasetype());
+							//System.out.println("update " + dailyAttendanceList.get(i).getCasetype());
 							String quiry = querysb.toString();
 							jdbcTemplate.batchUpdate(quiry);
 						} catch (Exception e) {
