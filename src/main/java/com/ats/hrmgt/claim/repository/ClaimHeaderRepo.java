@@ -116,5 +116,10 @@ public interface ClaimHeaderRepo extends JpaRepository<ClaimApplyHeader, Integer
 			"WHERE\n" + 
 			"    claim_apply_header.claim_status = 3 AND claim_apply_header.is_paid = 0 AND claim_apply_header.emp_id = m_employees.emp_id AND claim_apply_header.del_status=1 and m_employees.location_id in (:locId)", nativeQuery = true)
  List<ClaimApplyHeader> getClaimHeaderListByCompanyIdlocId(List<Integer> locId);
+
+	@Transactional
+	@Modifying
+	@Query("update ClaimApplyHeader set claim_amount=:amt  WHERE ca_head_id=:headerId")
+	int updateFinal(int headerId, float amt);
 	 
 }

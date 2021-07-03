@@ -31,7 +31,8 @@ import com.ats.hrmgt.claim.repository.GetEmployeeAuthorityWiseRepo;
 import com.ats.hrmgt.claim.repository.GetEmployeeClaimStrudtRepo;
 import com.ats.hrmgt.common.EmailUtility;
 import com.ats.hrmgt.common.Firebase;
-import com.ats.hrmgt.model.AuthorityInformation; 
+import com.ats.hrmgt.model.AuthorityInformation;
+import com.ats.hrmgt.model.ClaimUpdatAmount;
 import com.ats.hrmgt.model.EmployeeInfo;
 import com.ats.hrmgt.model.EmployeeMaster;
 import com.ats.hrmgt.model.GetAuthorityIds;
@@ -82,7 +83,7 @@ public class ClaimApplicationApiController {
 
 	@Autowired
 	ClaimHeaderRepo claimHeaderRepo;
-	
+
 	@Autowired
 	ClaimStructureDetailRepo claimStructureDetailRepo;
 
@@ -114,9 +115,7 @@ public class ClaimApplicationApiController {
 		List<ClaimStructureDetail> detailList = new ArrayList<>();
 		try {
 
-			  
-			 detailList = claimStructureDetailRepo.getClaimStructureDetailByEmpId(empId);
-			 
+			detailList = claimStructureDetailRepo.getClaimStructureDetailByEmpId(empId);
 
 		} catch (Exception e) {
 
@@ -126,6 +125,7 @@ public class ClaimApplicationApiController {
 		return detailList;
 
 	}
+
 	@RequestMapping(value = { "/getEmpInfoAuthWise" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetEmployeeInfo> getEmpInfoAuthWise(@RequestParam("companyId") int companyId,
 			@RequestParam("locIdList") List<Integer> locIdList, @RequestParam("empId") int empId) {
@@ -178,7 +178,7 @@ public class ClaimApplicationApiController {
 		List<GetEmployeeInfo> list = new ArrayList<GetEmployeeInfo>();
 		try {
 
-			list = getEmpInfo.getEmpListByCompanyIdForAuthClaim(companyId,locIdList);
+			list = getEmpInfo.getEmpListByCompanyIdForAuthClaim(companyId, locIdList);
 
 		} catch (Exception e) {
 
@@ -698,11 +698,11 @@ public class ClaimApplicationApiController {
 		Info info = new Info();
 		System.err.println("in updateLeaveStatus" + status + claimId);
 		try {
-			int delete=0;
+			int delete = 0;
 			if (status == 3) {
-				  delete = claimHeaderRepo.updateClaimStatusWithDate(claimId, status,month,year);
+				delete = claimHeaderRepo.updateClaimStatusWithDate(claimId, status, month, year);
 			} else {
-				  delete = claimHeaderRepo.updateClaimStatus(claimId, status);
+				delete = claimHeaderRepo.updateClaimStatus(claimId, status);
 			}
 
 			if (delete > 0) {
@@ -884,6 +884,37 @@ public class ClaimApplicationApiController {
 		}
 
 		return list;
+
+	}
+
+	@RequestMapping(value = { "/updateClaimAmt" }, method = RequestMethod.POST)
+	public @ResponseBody Info updateClaimAmt(@RequestBody List<ClaimUpdatAmount> list) {
+
+		Info info = new Info();
+
+		try {
+
+			float amt = 0;
+			int headerId = 0;
+
+			for (int i = 0; i < list.size(); i++) {
+
+				headerId = list.get(i).getClaimHeadId();
+				amt = amt + list.get(i).getAmt();
+				int delete = claimApplyRepository.updateClaimAmt(list.get(i).getClaimId(), list.get(i).getAmt());
+			}
+
+			int updateFinal = claimHeaderRepo.updateFinal(headerId, amt);
+
+			info.setError(false);
+			info.setMsg("updated");
+		} catch (Exception e) {
+			info.setError(true);
+			info.setMsg("failed");
+			e.printStackTrace();
+		}
+
+		return info;
 
 	}
 

@@ -30,6 +30,12 @@ public interface ClaimApplyRepo extends JpaRepository<ClaimApply, Integer>{
 	ClaimApply findByClaimIdAndDelStatus(int claimId, int delStatus);
 
 
+	@Transactional
+	@Modifying
+	@Query("update ClaimApply set claim_amount=:amt WHERE  claim_id=:claimId")
+	int updateClaimAmt(int claimId, float amt);
+
+
 }
 
 
