@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.hrmgt.advance.repository.GetAdvanceRepo;
+import com.ats.hrmgt.claim.repository.ClaimReportRepository;
 import com.ats.hrmgt.common.DateConvertor;
+import com.ats.hrmgt.model.ClaimReport;
 import com.ats.hrmgt.model.DailyAttendance;
 import com.ats.hrmgt.model.DeductionAndLoanAMT;
 import com.ats.hrmgt.model.EcrFileData;
@@ -934,6 +936,49 @@ public class LeaveReportApiController {
 		try {
 
 			list = leaveApplyRepository.findByCalYrIdAndDelStatusAndEmpId(calYrId, 1, empId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@Autowired
+	ClaimReportRepository claimReportRepository;
+
+	@RequestMapping(value = { "/claimHeaderReport" }, method = RequestMethod.POST)
+	public @ResponseBody List<ClaimReport> claimHeaderReport(@RequestParam("month") String month,
+			@RequestParam("year") String year, @RequestParam("locId") int locId, @RequestParam("sts") int sts,
+			@RequestParam("deptIds") List<Integer> deptIds) {
+
+		List<ClaimReport> list = new ArrayList<ClaimReport>();
+
+		try {
+
+			list = claimReportRepository.claimHeaderReport(month, year, locId, deptIds, sts);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/claimDetailReport" }, method = RequestMethod.POST)
+	public @ResponseBody List<ClaimReport> claimDetailReport(@RequestParam("month") String month,
+			@RequestParam("year") String year, @RequestParam("locId") int locId, @RequestParam("sts") int sts,
+			@RequestParam("deptIds") List<Integer> deptIds) {
+
+		List<ClaimReport> list = new ArrayList<ClaimReport>();
+
+		try {
+
+			list = claimReportRepository.claimDetailReport(month, year, locId, deptIds, sts);
 
 		} catch (Exception e) {
 
