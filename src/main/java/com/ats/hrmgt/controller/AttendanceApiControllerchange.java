@@ -32,6 +32,8 @@ import com.ats.hrmgt.model.DailyDailyInfomationForChart;
 import com.ats.hrmgt.model.DailyDailyInformation;
 import com.ats.hrmgt.model.DataForUpdateAttendance;
 import com.ats.hrmgt.model.DateAndDay;
+import com.ats.hrmgt.model.DirectAttendanceData;
+import com.ats.hrmgt.model.DirectUploadAttendace;
 import com.ats.hrmgt.model.EmpInfo;
 import com.ats.hrmgt.model.EmpInfoWithDateInfoList;
 import com.ats.hrmgt.model.EmpJsonData;
@@ -386,10 +388,9 @@ public class AttendanceApiControllerchange {
 		try {
 			List<FileUploadedData> fileUploadedDataList = dataForUpdateAttendance.getFileUploadedDataList();
 			List<String> empCodes = new ArrayList<>();
-			
 
 			for (int i = 1; i < fileUploadedDataList.size(); i++) {
-				//empCodes = empCodes + "," + ;
+				// empCodes = empCodes + "," + ;
 				empCodes.add(fileUploadedDataList.get(i).getEmpCode());
 			}
 			Setting leave_working_hr = settingRepo.findByKey("leave_working_hr");
@@ -422,7 +423,7 @@ public class AttendanceApiControllerchange {
 
 			} else {
 				leaveListAddeBySystem = leaveApplyRepository.leaveListAddeBySystem(fromDate, toDate);
-				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceList(fromDate, toDate,empCodes);
+				dailyAttendanceList = dailyAttendanceRepository.dailyAttendanceList(fromDate, toDate, empCodes);
 				leavetList = leaveApplyRepository.getleavetListForAttndace(fromDate, toDate);
 				jsonDataList = empJsonDataRepository.jsonDataList();
 				optionalHolidayList = empListForHolidayApproveRepo.getOptionalHolidayApprovalList(1);
@@ -468,7 +469,7 @@ public class AttendanceApiControllerchange {
 			List<LvType> lvTypeList = lvTypeRepository.findAll();
 			List<WeeklyOffShit> weeklyOffShitFromList = weeklyOffShitRepository.weeklyOffShitFromList(fromDate, toDate);
 
-			  System.out.println("*********** complete");
+			System.out.println("*********** complete");
 			/*
 			 * List<SummaryDailyAttendance> summaryDailyAttendanceList =
 			 * summaryDailyAttendanceRepository .summaryDailyAttendanceList(month, year);
@@ -1419,7 +1420,7 @@ public class AttendanceApiControllerchange {
 					// -----------------"+dailyAttendanceList.get(i).getCasetype());
 					if (dailyAttendanceList.get(i).getByFileUpdated() == 1 && update == 1) {
 						// dailyAttendanceList.get(i).setCommentsSupervisor("8");
-						//System.out.println("queary" + dailyAttendanceList.get(i).getCasetype());
+						// System.out.println("queary" + dailyAttendanceList.get(i).getCasetype());
 						querysb.append("update\n" + "        tbl_attt_daily_daily \n" + "    set\n"
 								+ "        atsumm_uid='" + dailyAttendanceList.get(i).getAtsummUid() + "',"
 								+ "        att_date='" + dailyAttendanceList.get(i).getAttDate() + "',"
@@ -1463,7 +1464,7 @@ public class AttendanceApiControllerchange {
 								+ dailyAttendanceList.get(i).getAttsSdShow() + "'    where\n" + "        id="
 								+ dailyAttendanceList.get(i).getId() + ";");
 						try {
-							//System.out.println("update " + dailyAttendanceList.get(i).getCasetype());
+							// System.out.println("update " + dailyAttendanceList.get(i).getCasetype());
 							String quiry = querysb.toString();
 							jdbcTemplate.batchUpdate(quiry);
 						} catch (Exception e) {
@@ -3634,5 +3635,80 @@ public class AttendanceApiControllerchange {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@RequestMapping(value = { "/updateDirectAttendaceRecord" }, method = RequestMethod.POST)
+	public @ResponseBody Info updateDirectAttendaceRecord(@RequestBody DirectAttendanceData directAttendanceData) {
+
+		Info info = new Info();
+
+		try {
+
+			int month = directAttendanceData.getMonth();
+			int year = directAttendanceData.getYear();
+
+			List<DirectUploadAttendace> uploadedList = directAttendanceData.getList();
+
+			List<SummaryDailyAttendance> summaryDailyAttendanceList = new ArrayList<>();
+
+			summaryDailyAttendanceList = summaryDailyAttendanceRepository.summaryDailyAttendanceListByEmpIds(month,
+					year, directAttendanceData.getEmpCodes());
+
+			for (int i = 0; i < summaryDailyAttendanceList.size(); i++) {
+
+				for (int j = 0; j < uploadedList.size(); j++) {
+
+					if (uploadedList.get(j).getEmpCode()
+							.equalsIgnoreCase(summaryDailyAttendanceList.get(i).getEmpCode())) {
+
+						try {
+
+							summaryDailyAttendanceList.get(i).setTotlateMins(uploadedList.get(j).getTotalLateMins());
+							summaryDailyAttendanceList.get(i).setTotLate(uploadedList.get(j).getTotalLateDays());
+							summaryDailyAttendanceList.get(i)
+									.setTotlateDays(uploadedList.get(j).getTotalLateDaysDeduct());
+							summaryDailyAttendanceList.get(i)
+									.setTotworkingHrs(uploadedList.get(j).getTotalWorkingHrs());
+							summaryDailyAttendanceList.get(i).setTotOthr(uploadedList.get(j).getOtHours());
+							summaryDailyAttendanceList.get(i).setPresentDays(uploadedList.get(j).getPresentDays());
+							summaryDailyAttendanceList.get(i).setPaidLeave(uploadedList.get(j).getPaidLeave());
+							summaryDailyAttendanceList.get(i).setWeeklyOff(uploadedList.get(j).getWeeklyOff());
+							summaryDailyAttendanceList.get(i).setPaidHoliday(uploadedList.get(j).getPaidHoliday());
+							summaryDailyAttendanceList.get(i).setUnpaidLeave(uploadedList.get(j).getUnpaidLeave());
+							summaryDailyAttendanceList.get(i).setAbsentDays(uploadedList.get(j).getAbsentDays());
+							summaryDailyAttendanceList.get(i)
+									.setWeeklyOffPresent(uploadedList.get(j).getWeeklyOffPresent());
+							summaryDailyAttendanceList.get(i)
+									.setHolidayPresent(uploadedList.get(j).getHolidaypresent());
+							summaryDailyAttendanceList.get(i)
+									.setWeeklyOffHolidayOffPresent(uploadedList.get(j).getWeeklyOffHolidayOffPresent());
+							summaryDailyAttendanceList.get(i).setFullNight(uploadedList.get(j).getNightshiftdays());
+							summaryDailyAttendanceList.get(i).setPayableDays(uploadedList.get(j).getPayableDays());
+
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+
+			// System.out.println("summaryDailyAttendanceList " +
+			// summaryDailyAttendanceList);
+
+			List<SummaryDailyAttendance> summaryDailyAttendanceSaveRes = summaryDailyAttendanceRepository
+					.saveAll(summaryDailyAttendanceList);
+
+			info.setError(false);
+			info.setMsg("success");
+
+		} catch (
+
+		Exception e) {
+
+			info.setError(true);
+			info.setMsg("failed");
+			e.printStackTrace();
+		}
+		return info;
 	}
 }

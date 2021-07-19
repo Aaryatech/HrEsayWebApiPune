@@ -102,5 +102,27 @@ public interface SummaryDailyAttendanceRepository extends JpaRepository<SummaryD
 			"        and e.location_id=:locId and e.depart_id in (:deptIds)", nativeQuery = true)
 	List<SummaryDailyAttendance> findAllByCompanyId(@Param("locId") int locId, @Param("fmonth") String fmonth, @Param("fyear") String fyear,
 			@Param("lmonth") String lmonth, @Param("lyear") String lyear,@Param("deptIds") List<Integer> deptIds);
+
+	@Query(value = " select a.* from\n"
+			+ "        (select sd.*      \n"
+			+ "    from\n"
+			+ "        tbl_attt_summary_daily sd      \n"
+			+ "    where\n"
+			+ "        sd.month=:month        \n"
+			+ "        and sd.year=:year and emp_code in (:empCodes)  \n"
+			+ "        group by emp_id) a\n"
+			+ "        left join \n"
+			+ "        (SELECT\n"
+			+ "                count('') as count_att,\n"
+			+ "                emp_id\n"
+			+ "            FROM\n"
+			+ "                tbl_attt_daily_daily              \n"
+			+ "            where\n"
+			+ "                YEAR(att_date) =:year                 \n"
+			+ "                and MONTH(att_date) =:month                  \n"
+			+ "                and is_fixed=0                  \n"
+			+ "                and rec_status='o'\n"
+			+ "        group by emp_id) b on b.emp_id=a.emp_id where b.count_att>0", nativeQuery = true)
+	List<SummaryDailyAttendance> summaryDailyAttendanceListByEmpIds(int month, int year, List<String> empCodes);
 	
 }
