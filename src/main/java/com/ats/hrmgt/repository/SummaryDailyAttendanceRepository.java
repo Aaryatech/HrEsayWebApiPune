@@ -27,26 +27,10 @@ public interface SummaryDailyAttendanceRepository extends JpaRepository<SummaryD
 	 * "                and is_fixed=0 \n" + "                and rec_status='o'\n"
 	 * + "        )", nativeQuery = true)
 	 */
-	@Query(value = " select a.* from\n"
-			+ "        (select sd.*      \n"
-			+ "    from\n"
-			+ "        tbl_attt_summary_daily sd      \n"
-			+ "    where\n"
-			+ "        sd.month=:month        \n"
-			+ "        and sd.year=:year \n"
-			+ "        group by emp_id) a\n"
-			+ "        left join \n"
-			+ "        (SELECT\n"
-			+ "                count('') as count_att,\n"
-			+ "                emp_id\n"
-			+ "            FROM\n"
-			+ "                tbl_attt_daily_daily              \n"
-			+ "            where\n"
-			+ "                YEAR(att_date) =:year                 \n"
-			+ "                and MONTH(att_date) =:month                  \n"
-			+ "                and is_fixed=0                  \n"
-			+ "                and rec_status='o'\n"
-			+ "        group by emp_id) b on b.emp_id=a.total_days_inmonth", nativeQuery = true)
+	@Query(value = "select a.* from (select sd.* from tbl_attt_summary_daily sd, m_employees e where sd.month=:month and sd.year=:year and "
+			+ "sd.emp_id=e.emp_id and location_id!=8 group by emp_id) a left join ( SELECT count('') as count_att, emp_id FROM "
+			+ "tbl_attt_daily_daily where YEAR(att_date) =:year and MONTH(att_date) =:month and is_fixed=0 and rec_status='o' group by emp_id ) "
+			+ "b on b.emp_id=a.emp_id where b.count_att>0", nativeQuery = true)
 	List<SummaryDailyAttendance> summaryDailyAttendanceListAll(@Param("month") int month, @Param("year") int year);
 
 	/*@Query(value = "select * from tbl_attt_summary_daily where month=:month and year=:year and emp_id=:empId", nativeQuery = true)*/

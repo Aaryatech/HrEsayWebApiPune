@@ -58,6 +58,7 @@ import com.ats.hrmgt.model.LvType;
 import com.ats.hrmgt.model.LvmSumUp;
 import com.ats.hrmgt.model.MstEmpType;
 import com.ats.hrmgt.model.ProductionIncentiveList;
+import com.ats.hrmgt.model.SaveLiveThumbData;
 import com.ats.hrmgt.model.Setting;
 import com.ats.hrmgt.model.ShiftAssignDaily;
 import com.ats.hrmgt.model.ShiftMaster;
@@ -69,6 +70,7 @@ import com.ats.hrmgt.model.WeeklyOff;
 import com.ats.hrmgt.model.WeeklyOffShit;
 import com.ats.hrmgt.model.bonus.BonusMaster;
 import com.ats.hrmgt.repo.EmpJsonDataRepository;
+import com.ats.hrmgt.repo.SaveLiveThumbDataRepository;
 import com.ats.hrmgt.repo.ShiftAssignDailyRepository;
 import com.ats.hrmgt.repository.AccessRightModuleRepository;
 import com.ats.hrmgt.repository.AttendaceLiveCountRepository;
@@ -193,6 +195,9 @@ public class AttendanceApiControllerchange {
 
 	@Autowired
 	LiveThumbDataRepository liveThumbDataRepository;
+
+	@Autowired
+	SaveLiveThumbDataRepository saveLiveThumbDataRepository;
 
 	@RequestMapping(value = { "/initiallyInsertDailyRecord" }, method = RequestMethod.POST)
 	public @ResponseBody Info initiallyInsertDailyRecord(@RequestParam("fromDate") String fromDate,
@@ -1785,7 +1790,7 @@ public class AttendanceApiControllerchange {
 												+ summaryDailyAttendanceList.get(i).getWeeklyOff() - latededuct);
 							}
 						} catch (Exception e) {
-							e.printStackTrace();
+							// e.printStackTrace();
 						}
 						summaryDailyAttendanceList.get(i).setPayableDays(
 								summaryDailyAttendanceList.get(i).getPayableDays() - (absentLeave * ab_deduction));
@@ -3710,5 +3715,25 @@ public class AttendanceApiControllerchange {
 			e.printStackTrace();
 		}
 		return info;
+	}
+
+	@RequestMapping(value = { "/saveLiveThumbData" }, method = RequestMethod.POST)
+	public @ResponseBody Info saveLiveThumbData(@RequestParam("dailyDailyQuery") String dailyDailyQuery) {
+
+		/* @RequestParam("dateyy") String dateyy */
+		Info dailyAttendanceList = new Info();
+		try {
+			jdbcTemplate.batchUpdate(dailyDailyQuery);
+			// dailyAttendanceList = saveLiveThumbDataRepository.saveAll(saveLiveThumbData);
+			dailyAttendanceList.setError(false);
+			dailyAttendanceList.setMsg("Updated");
+		} catch (Exception e) {
+			e.printStackTrace();
+			dailyAttendanceList.setError(true);
+			dailyAttendanceList.setMsg("error");
+		}
+
+		return dailyAttendanceList;
+
 	}
 }
